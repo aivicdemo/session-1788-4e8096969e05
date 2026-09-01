@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アクセシビリティ改善管理・ユーザーテスト分析システム</title>
+  <style>
+:root {
+  --primary: #2c3e50;
+  --primary-hover: #1a252f;
+  --bg-main: #f5f3f0;
+  --bg-card: #ede9e4;
+  --bg-sidebar: #e8e4dd;
+  --border: #c9c2b8;
+  --text: #1a1410;
+  --text-muted: #6b6560;
+  --top-bar-bg: #2c3e50;
+  --top-bar-border: #1a252f;
+  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --radius-card: 4px;
+  --radius-control: 3px;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --border-width: 1px;
+  --control-height: 36px;
+  --space-unit: 8px;
+  --motion-duration: 0.2s;
+  --surface-texture: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px), repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.005) 1px, rgba(0, 0, 0, 0.005) 2px);
+  --surface-texture-size: 100% 100%;
+  --surface-texture-position: 0 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  color: var(--text);
+  background: var(--bg-main);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-main);
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.menu-toggle {
+  display: none;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-toggle.show {
+  display: flex;
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.top-nav {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  margin-left: 24px;
+}
+
+.top-nav-item {
+  padding: 8px 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--motion-duration);
+  border-radius: var(--radius-control);
+  white-space: nowrap;
+}
+
+.top-nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.top-nav-item.aivic-active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 500;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+.user-name {
+  font-size: 13px;
+  color: white;
+}
+
+.logout-link {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color var(--motion-duration);
+}
+
+.logout-link:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--bg-sidebar);
+  border-right: var(--border-width) solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+  transition: transform var(--motion-duration);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+  position: absolute;
+  height: 100%;
+  z-index: 100;
+  box-shadow: var(--shadow-card);
+}
+
+.sidebar-section {
+  padding: 16px 0;
+}
+
+.sidebar-section:first-child {
+  padding-top: 12px;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 16px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-item {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all var(--motion-duration);
+  border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-item.aivic-active {
+  background: rgba(0, 0, 0, 0.08);
+  border-left-color: var(--primary);
+  font-weight: 500;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+}
+
+[data-aivic-panel] {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    display: none;
+  }
+
+  .menu-toggle.show {
+    display: flex;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .top-bar-left {
+    gap: 8px;
+  }
+
+  .logo {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    padding: 0 12px;
+  }
+
+  .top-bar-left {
+    gap: 4px;
+  }
+
+  .top-nav-item {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .user-name {
+    display: none;
+  }
+}
+  </style>
+  
+<script>
+window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
+window.AIVIC_APP_ID = "session-1788160285336";
+window.AIVIC_APPLICATION_NAME = "公共施設予約";
+window.AIVIC_SYSTEM_NAME = "アクセシビリティ改善管理・ユーザーテスト分析システム";
+window.AIVIC_TABLES = [{"tableName":"ユーザー","purpose":"セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ログイン時に使用するユーザー名"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ユーザーの連絡先メールアドレス"},{"name":"部門","type":"varchar(100)","required":false,"description":"ユーザーが属する部門名"},{"name":"役職","type":"varchar(100)","required":false,"description":"ユーザーの役職"},{"name":"ロール","type":"varchar(100)","required":true,"description":"システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効/無効/休止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"ユーザーが最後にシステムにログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーレコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザーレコードが最後に更新された日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"ユーザーレコードを作成したユーザーまたはシステム"},{"name":"更新者","type":"varchar(100)","required":false,"description":"ユーザーレコードを最後に更新したユーザーまたはシステム"}]},{"tableName":"UI改善実装記録","purpose":"アクセシビリティ改善の実装内容、実装状況、テスト結果を記録・管理し、改善の進捗追跡とユーザーテスト分析を支援する","columns":[{"name":"改善実装記録ID","type":"uuid","required":true,"description":"改善実装記録の一意識別子"},{"name":"改善項目名","type":"varchar(100)","required":true,"description":"実装するアクセシビリティ改善の項目名"},{"name":"改善内容","type":"text","required":true,"description":"改善の詳細な説明と実装内容"},{"name":"対象UI要素","type":"varchar(100)","required":true,"description":"改善対象となるUI要素またはページ名"},{"name":"実装ステータス","type":"varchar(100)","required":true,"description":"実装状況を示すステータス（計画中/実装中/完了/保留中など）"},{"name":"優先度","type":"varchar(100)","required":false,"description":"改善の優先度レベル（高/中/低）"},{"name":"実装予定日","type":"timestamp","required":false,"description":"改善実装の予定日時"},{"name":"実装完了日","type":"timestamp","required":false,"description":"改善実装の完了日時"},{"name":"テスト実施状況","type":"varchar(100)","required":false,"description":"ユーザーテスト実施の状況（未実施/実施中/完了）"},{"name":"テスト結果","type":"text","required":false,"description":"ユーザーテストの結果と分析内容"},{"name":"テスト参加者数","type":"integer","required":false,"description":"ユーザーテストに参加したユーザー数"},{"name":"改善効果","type":"text","required":false,"description":"実装による改善効果の測定結果"},{"name":"備考","type":"text","required":false,"description":"その他の補足情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"記録の作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"記録の最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"記録を作成したユーザーID（ユーザーテーブルへの外部キー）"}]},{"tableName":"ユーザーテスト","purpose":"アクセシビリティ改善の効果を検証するため、ユーザーによるテスト実施内容、結果、フィードバックを記録・管理する","columns":[{"name":"テストID","type":"uuid","required":true,"description":"ユーザーテストの一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"テスト参加ユーザーの外部キー参照"},{"name":"改善実装記録ID","type":"uuid","required":true,"description":"テスト対象のUI改善実装記録の外部キー参照"},{"name":"テスト実施日時","type":"timestamp","required":true,"description":"ユーザーテストを実施した日時"},{"name":"テスト種別","type":"varchar(100)","required":true,"description":"テストの種類（例：操作性テスト、スクリーンリーダー検証、キーボード操作確認）"},{"name":"テスト結果","type":"varchar(100)","required":true,"description":"テスト結果の判定（例：合格、不合格、部分合格）"},{"name":"所要時間秒","type":"integer","required":false,"description":"テスト実施にかかった時間（秒単位）"},{"name":"ユーザーフィードバック","type":"text","required":false,"description":"ユーザーから得られた改善に関する意見やコメント"},{"name":"問題点摘出","type":"text","required":false,"description":"テスト中に発見されたアクセシビリティ上の問題点"},{"name":"改善提案","type":"text","required":false,"description":"ユーザーから提案された改善案"},{"name":"満足度スコア","type":"integer","required":false,"description":"ユーザーの満足度を数値化したスコア（例：1-5段階）"},{"name":"作成日時","type":"timestamp","required":true,"description":"テストレコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"テストレコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"テストレコード作成者の識別子"}]}];
+window.AIVIC_PRESET_SEED = {"ユーザー":[{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"セキュリティ部門","役職":"部門長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-01T08:00:00+09:00","更新日時":"2025-01-10T14:20:00+09:00","作成者":"system","更新者":"鈴木花子"},{"ユーザーID":"rec-001","ユーザー名":"suzuki_analyst_01","メールアドレス":"suzuki.hanako@company.jp","部門":"インシデント対応チーム","役職":"シニア分析者","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"system","更新者":"佐藤太郎"},{"ユーザーID":"rec-001","ユーザー名":"suzuki_audit","メールアドレス":"suzuki.hanako@company.jp","部門":"監査部門","役職":"監査人","ロール":"監査ログ閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"system","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.hanako","メールアドレス":"tanaka.hanako@company.jp","部門":"営業部","役職":"営業事務","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":null,"作成日時":"2025-04-01T09:30:00+09:00","更新日時":"2025-04-01T09:30:00+09:00","作成者":"system","更新者":"system"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.co.jp","部門":"営業企画部","役職":"主任","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2023-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"system","更新者":"suzuki.hanako"},{"ユーザーID":"rec-001","ユーザー名":"yamada.hanako","メールアドレス":"yamada.hanako@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2024-08-15 14:32:00","作成日時":"2022-04-01 09:00:00","更新日時":"2024-09-01 10:15:00","作成者":"system","更新者":"admin_tanaka"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 10:15:00","作成者":"system","更新者":"suzuki.hanako"},{"ユーザーID":"rec-001","ユーザー名":"audit_guest_2024","メールアドレス":"tanaka.audit@external-firm.co.jp","部門":"外部監査機関","役職":"監査担当者","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2024-12-15 14:30:00","作成日時":"2024-12-01 09:15:00","更新日時":"2024-12-15 14:30:00","作成者":"管理者","更新者":"システム"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"system","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"yamada.jiro","メールアドレス":"yamada.jiro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2023-06-20 09:15:00","更新日時":"2025-01-22 11:45:00","作成者":"system","更新者":"佐藤花子"}],"UI改善実装記録":[{"改善実装記録ID":"rec-001","改善項目名":"スクリーンリーダー対応見出しタグ実装","改善内容":"視覚障害ユーザーがスクリーンリーダーで正確にコンテンツ構造を認識できるよう、全ページの見出しタグ（h1～h6）を適切に実装。既存のdivやspanで装飾されていた見出しをセマンティックなHTMLタグに変更し、階層構造を正規化。ARIAラベルの追加補完も実施。","対象UI要素":"全サイトページ（ヘッダー、メインコンテンツ、サイドバー、フッター）","実装ステータス":"完了","優先度":"高","実装予定日":"2024-10-15T09:00:00Z","実装完了日":"2024-11-28T17:30:00Z","テスト実施状況":"完了","テスト結果":"NVDA、JAWS、VoiceOverの3種類のスクリーンリーダーで検証。見出しナビゲーション機能が正常に動作し、ユーザーが効率的にページ構造を把握できることを確認。誤検出やスキップはなし。","テスト参加者数":8,"改善効果":"スクリーンリーダーユーザーのページ閲覧時間が平均32%短縮。見出しによる直接ジャンプ機能の利用率が導入前の0%から87%に向上。ユーザー満足度調査で4.6/5.0を達成。","備考":"実装過程でテンプレートエンジンの修正が必要だったため、予定より44日延期。今後の新規ページ作成時のガイドラインを整備済み。","作成日時":"2024-10-10T10:15:00Z","更新日時":"2024-11-28T18:00:00Z","作成者":"usr-佐藤花子"},{"改善実装記録ID":"rec-001","改善項目名":"色覚障害対応コントラスト比改善","改善内容":"WCAG 2.1 AA基準に準拠するため、ボタンおよびテキスト要素のコントラスト比を4.5:1以上に統一。特に、プライマリボタンの背景色を#0052CCから#003DA5に変更し、テキスト色を白色で統一。警告メッセージのテキスト色を#D32F2Fから#B71C1Cに変更。フォーム入力エラー表示のコントラスト比を改善し、赤と緑の組み合わせを避けてアイコンと記号を併用。","対象UI要素":"グローバルナビゲーション、CTA ボタン、フォーム入力エラー表示、ステータスメッセージ","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00+09:00","実装完了日":"2024-12-20T17:30:00+09:00","テスト実施状況":"完了","テスト結果":"色覚障害シミュレーターによる検証では全要素が4.5:1以上のコントラスト比を達成。P型色覚障害（赤色弱）ユーザー5名、D型色覚障害（緑色弱）ユーザー4名による実ユーザーテストでは、ボタンとテキストの識別性が大幅に向上したと報告。特にエラーメッセージの視認性が改善され、操作ミスが23%削減。","テスト参加者数":9,"改善効果":"アクセシビリティスコアが78から94に向上。色覚障害ユーザーのタスク完了率が68%から91%に改善。ページ離脱率が12%から3.8%に低下。一般ユーザーからも視認性向上による満足度向上の声が複数件報告。","備考":"実装後、全ページのスクリーンショットをWCAGコントラストチェッカーで検証済み。デザインシステムに新色パレットを反映し、今後の新規UI開発ガイドラインに組み込み。","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-12-21T14:20:00+09:00","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"キーボード操作のみでの完全なフォーム送信フロー実装","改善内容":"フォーム内のすべての入力フィールド、ボタン、チェックボックス、ラジオボタンに対してTabキーでの移動、Enterキーでの送信、Spaceキーでの選択が可能になるよう実装。フォーカス管理の改善、フォーカスインジケータの視認性向上、エラーメッセージの自動アナウンス機能を追加。","対象UI要素":"ユーザー登録フォーム、お問い合わせフォーム、決済フォーム","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー利用ユーザーを含む12名のテストを実施。キーボード操作のみでの全フロー完了率は98%。1件のマイナーなフォーカス順序の問題を発見し修正。エラーメッセージの読み上げ精度は99.5%。全体的な操作性の満足度は4.8/5.0。","テスト参加者数":12,"改善効果":"キーボード操作のみでのフォーム送信完了時間が平均45秒から28秒に短縮。スクリーンリーダー利用ユーザーのフォーム送信成功率が78%から96%に向上。アクセシビリティ準拠レベルがWCAG 2.1 AA達成。","備考":"実装にあたりaria-label、aria-describedby、aria-invalid属性を適切に設定。フォーカスアウトライン色はWCAG準拠の高コントラスト（3:1以上）を確保。モバイルキーボード環境での動作も確認済み。","作成日時":"2024-10-28T10:15:00Z","更新日時":"2024-12-20T18:45:00Z","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"モーダルダイアログのフォーカス管理改善","改善内容":"モーダルダイアログ表示時のキーボードフォーカス管理を実装。ダイアログ開時に最初のフォーカス要素を自動設定し、Tab キーでの移動を適切に制御。Escape キーでのダイアログ閉じる機能を追加し、スクリーンリーダーユーザーへの対応を強化。ARIA ロール（role=\"dialog\"）とaria-labelledby属性を設定。","対象UI要素":"ユーザー設定モーダル、確認ダイアログ、エラーメッセージダイアログ","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T00:00:00Z","実装完了日":"2024-12-10T18:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー（NVDA、JAWS）でのテストにおいて、ダイアログの役割と見出しが正しく読み上げられることを確認。キーボード操作では Tab キーでの順序が正確で、Escape キーでの閉じる動作も適切に機能。ただし、Safari での aria-modal 属性の対応状況に若干の差異があり、追加の互換性対応を実施。","テスト参加者数":8,"改善効果":"キーボード操作時のユーザビリティが向上し、スクリーンリーダーユーザーの操作効率が約35%改善。ユーザー満足度調査では「ダイアログの操作がわかりやすくなった」との評価が78%。WCAG 2.1 レベル AA の達成基準 2.4.3（フォーカス順序）と 2.1.1（キーボード）への準拠を確認。","備考":"実装時に既存の jQuery プラグインとの互換性問題が発生したため、段階的なロールアウトを実施。本番環境への展開は2024年12月中旬に完了。今後、モーダル以外のポップアップコンポーネントにも同様の改善を展開予定。","作成日時":"2024-11-10T09:15:00Z","更新日時":"2024-12-11T14:45:00Z","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"動画コンテンツへの字幕・音声解説トラックの追加","改善内容":"聴覚障害者および視覚障害者向けのアクセシビリティ対応として、全動画コンテンツに対して日本語字幕と音声解説トラックを追加実装します。字幕は会話だけでなく効果音や音楽情報も含め、音声解説は映像の重要な情報を補完する形式で提供します。WebVTT形式での字幕ファイル作成、音声解説の専門ナレーターによる録音、動画プレイヤーへの統合機能実装を行います。","対象UI要素":"動画プレイヤー、ラーニングプラットフォーム","実装ステータス":"実装中","優先度":"高","実装予定日":"2025-03-31T18:00:00Z","実装完了日":null,"テスト実施状況":"実施中","テスト結果":"聴覚障害者5名によるユーザーテストを実施。字幕の表示タイミングと正確性について高い満足度（平均4.6/5.0）を確認。視覚障害者3名による音声解説テストでは、映像情報の補完性が十分であることが確認されました。改善提案として、字幕フォントサイズのカスタマイズ機能追加の要望が複数件ありました。","テスト参加者数":8,"改善効果":"字幕提供により聴覚障害ユーザーの動画コンテンツアクセス率が前月比62%向上。音声解説により視覚障害ユーザーの学習完了率が34%改善。全体的なプラットフォーム利用時間が18%増加し、コンテンツ満足度スコアが3.8から4.3へ上昇。","備考":"字幕作成は外部翻訳業者に委託、音声解説はアクセシビリティ専門のナレーション制作会社と協力。既存の400本の動画のうち320本が対応完了予定。今後、多言語字幕対応（英語・中国語）の拡張を検討中。","作成日時":"2024-11-15T09:30:00Z","更新日時":"2025-02-20T14:15:00Z","作成者":"usr-2847"},{"改善実装記録ID":"rec-001","改善項目名":"ページネーション機能のWAI-ARIA属性対応","改善内容":"ページネーションコンポーネントにaria-label、aria-current、role属性を追加し、スクリーンリーダーユーザーが現在のページ位置と移動可能なページ数を正確に認識できるように対応。前ページ・次ページボタンにはaria-disabled属性を追加し、無効状態を適切に通知。","対象UI要素":"商品一覧ページ、検索結果ページ","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00+09:00","実装完了日":"2024-12-10T17:30:00+09:00","テスト実施状況":"完了","テスト結果":"スクリーンリーダー（NVDA、JAWS）での読み上げ確認により、ページネーション機能の操作性が大幅に向上。ユーザーが現在位置を正確に把握でき、ページ間の移動がスムーズになったことを確認。キーボード操作でのTab順序も適切に機能していることを検証。","テスト参加者数":8,"改善効果":"スクリーンリーダーユーザーの操作効率が約65%向上。ページネーション機能の使用時間が平均2.3分から1.4分に短縮。ユーザー満足度スコアが3.2/5.0から4.6/5.0に改善。","備考":"実装時にHTML構造の変更を最小限に抑え、CSSとJavaScriptのみでの対応を実現。既存の視覚的デザインへの影響なし。他のコンポーネントのWAI-ARIA対応の参考実装として活用予定。","作成日時":"2024-11-10T10:15:00+09:00","更新日時":"2024-12-11T14:45:00+09:00","作成者":"usr-8f7a2c9e"},{"改善実装記録ID":"rec-001","改善項目名":"フォーム入力エラーメッセージの読み上げ対応と位置情報改善","改善内容":"スクリーンリーダー利用者がフォーム送信時のエラーメッセージを正確に認識できるよう、aria-liveリージョンを実装し、エラー発生時に自動でアナウンスされるように対応。併せてエラーメッセージの表示位置をエラー入力フィールドの直下に統一し、視覚的・音声的な関連性を強化した。","対象UI要素":"会員登録フォーム、お問い合わせフォーム","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-10T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー利用者5名によるテストを実施。全員がエラーメッセージを正確に認識でき、メッセージ内容の理解度が改善前の60%から95%に向上。ただしメッセージの読み上げ速度が速すぎるとの指摘が1件あり、読み上げ間隔の調整を追加実装した。","テスト参加者数":5,"改善効果":"エラーメッセージの認識率が向上し、ユーザーサポート問い合わせが月平均12件削減。フォーム完了率が改善前の78%から84%に上昇。特にスクリーンリーダー利用者の完了率が改善前の45%から72%に大幅改善。","備考":"実装後、定期的なアクセシビリティ監査を月1回実施予定。今後のフェーズではバリデーションエラーの複数件同時表示時の読み上げ順序最適化を検討中。","作成日時":"2024-11-10T10:15:00Z","更新日時":"2024-12-15T14:45:00Z","作成者":"a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6"},{"改善実装記録ID":"rec-001","改善項目名":"画像の代替テキスト（alt属性）の全面見直しと統一化","改善内容":"全サービス内の画像要素に対して、WCAG 2.1 AA レベルに準拠した代替テキストを実装。既存の不適切または不足していたalt属性を統一的なガイドラインに基づいて見直し、スクリーンリーダーユーザーの利便性を大幅に向上させる。装飾的な画像にはaria-hiddenを適用し、意味のある画像には簡潔かつ正確な説明文を付与。","対象UI要素":"全ページの画像要素、商品画像、グラフ・チャート、アイコン、バナー広告","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2025-01-28T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー（NVDA、JAWS）を用いた検証において、全画像要素で代替テキストが正常に読み上げられることを確認。視覚障害者ユーザー5名によるユーザビリティテストを実施し、情報の理解度が従前比で87%向上。装飾画像の適切なスキップ機能も動作確認完了。","テスト参加者数":5,"改善効果":"スクリーンリーダーユーザーの情報アクセス性が大幅に改善。ページ読み込み時間は平均0.3秒短縮。SEO効果として検索エンジンのインデックス精度が向上し、画像検索での流入が月間で約12%増加。アクセシビリティスコアが68点から94点に向上。","備考":"実装過程で既存の画像ライブラリ約2,847枚を統一ガイドラインに基づいて分類・整理。今後の新規画像追加時のためのalt属性作成テンプレートを整備。翻訳対応言語は日本語・英語・簡体字中国語の3言語。","作成日時":"2024-10-20T10:15:00Z","更新日時":"2025-01-28T18:45:00Z","作成者":"a3f2c8d1-9e7b-4a2c-b5f6-e1d8c9a3f2b4"},{"改善実装記録ID":"rec-001","改善項目名":"モバイル表示時のタッチターゲットサイズ拡大","改善内容":"モバイルデバイス上でのユーザー操作性向上のため、すべてのインタラクティブ要素（ボタン、リンク、フォーム入力欄など）のタッチターゲットサイズを最小44×44ピクセルに統一。指の太さを考慮し、誤操作を削減し、アクセシビリティを向上させる実装を行う。","対象UI要素":"ヘッダーナビゲーション、メインコンテンツボタン、フッターリンク、モーダルダイアログ操作ボタン","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00+09:00","実装完了日":"2024-12-20T17:30:00+09:00","テスト実施状況":"完了","テスト結果":"ユーザーテスト参加者12名中、操作ミス率が従前比で67%削減。特に高齢ユーザーと手が大きいユーザーから操作性向上の評価を得た。レスポンシブデザイン対応により、タブレット表示時の操作性も同時に改善された。","テスト参加者数":12,"改善効果":"モバイルアプリのタップエラー率が3.2%から1.1%に低下。ユーザー満足度スコアが4.1から4.6に上昇。アクセシビリティ準拠レベルがWCAG 2.1 AA基準を満たすことを確認。","備考":"実装時にCSSメディアクエリとFlexboxを活用し、既存デザインの統一性を保ちながら対応。今後、ダークモード対応時にも同基準を適用予定。","作成日時":"2024-11-10T10:15:00+09:00","更新日時":"2024-12-20T18:45:00+09:00","作成者":"u-7f4a9c2e"},{"改善実装記録ID":"rec-001","改善項目名":"ダークモード対応による視認性改善","改善内容":"ユーザーインターフェース全体にダークモード機能を実装し、背景色を#1a1a1aに統一、テキスト色を#f0f0f0に設定。WCAG 2.1 AA基準に準拠したコントラスト比7:1以上を確保。システムの明暗設定に自動追従する機能も搭載。","対象UI要素":"ダッシュボード、設定画面、レポート表示ページ","実装ステータス":"完了","優先度":"高","実装予定日":"2024-10-15T09:00:00+09:00","実装完了日":"2024-11-28T17:30:00+09:00","テスト実施状況":"完了","テスト結果":"ユーザーテストにおいて、長時間使用時の目の疲労が平均32%削減されたことを確認。コントラスト比の測定結果は全要素で基準値を超過。ダークモード使用率は約68%と高い評価を得た。","テスト参加者数":24,"改善効果":"ユーザー満足度が4.2/5.0から4.7/5.0に向上。夜間利用時のアクセス数が前月比42%増加。アクセシビリティ関連のサポートチケット件数が月平均8件から2件に削減。","備考":"iOS/Androidアプリ版も同時対応完了。今後、季節別カラーテーマの追加実装を検討予定。","作成日時":"2024-10-12T10:15:00+09:00","更新日時":"2024-11-28T18:45:00+09:00","作成者":"usr-7f3e2c1a"}],"ユーザーテスト":[{"テストID":"rec-001","ユーザーID":"rec-u-042","改善実装記録ID":"rec-i-156","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"全体的には操作しやすくなりましたが、グラフセクションのアナウンスが不十分です。データ更新時の通知も聞き取りにくい状態です。ウィジェットの順序変更機能は直感的で良いです。","問題点摘出":"1. グラフ要素のaltテキストが数値のみで、グラフの傾向説明がない。2. リアルタイム更新通知がaria-liveで適切にアナウンスされていない。3. ダッシュボードフィルタボタンのラベルが不明確で、目的が把握しにくい。4. テーブル内の行選択チェックボックスがスクリーンリーダーで認識されない。","改善提案":"グラフには『前月比〇%上昇』など傾向を含めた説明文を追加してください。更新通知はaria-live=politeで重要度を高めてください。フィルタボタンには『売上データフィルタ』など具体的なラベルを付与してください。テーブルチェックボックスはaria-checkedの実装を確認してください。","満足度スコア":3,"作成日時":"2024-11-15T15:45:22+09:00","更新日時":"2024-11-16T10:20:15+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-usr-047","改善実装記録ID":"rec-impl-012","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"キーボード操作確認","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"Tab キーでのフォーカス移動は良好でしたが、複数選択チェックボックスの操作時に Space キーの反応が遅延することがありました。全体的には操作可能ですが、より高速な応答があれば完璧です。","問題点摘出":"テキスト入力フィールドから複数選択チェックボックスへの Tab 移動時、フォーカス表示が不明確。Enter キーでのフォーム送信が機能しない場合がある。ドロップダウンメニュー内での矢印キー操作が反応しにくい。","改善提案":"フォーカス表示の視認性を高める（太い枠線や背景色の採用）。Enter キーでのフォーム送信機能を実装。ドロップダウンメニューの矢印キー応答速度を改善。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"佐藤花子"},{"テストID":"rec-001","ユーザーID":"rec-user-087","改善実装記録ID":"rec-impl-042","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"視認性テスト","テスト結果":"合格","所要時間秒":1240,"ユーザーフィードバック":"以前より文字がはっきり見えるようになりました。背景と文字の色の差がしっかりしているので、眼鏡をかけても見やすいです。ボタンのテキストも読みやすくなっていて助かります。","問題点摘出":"特に大きな問題は認められませんでしたが、一部のグラフ内の細い線は薄暗い環境では若干見づらい傾向が残っています。","改善提案":"グラフの線の太さをもう少し太くしていただくか、コントラスト比をさらに高めることで、より安定した視認性が得られると思います。","満足度スコア":4,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-15T15:45:00+09:00","作成者":"鈴木花子"},{"テストID":"rec-001","ユーザーID":"rec-user-047","改善実装記録ID":"rec-impl-023","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"キャプション表示検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"動画の日本語キャプションが正確に表示されており、内容の理解がしやすくなりました。ただし、専門用語の表記が統一されていない箇所があり、若干の混乱を感じました。全体的には実用的な改善だと思います。","問題点摘出":"①技術用語のキャプション表記が不統一（例：『APIキー』と『API鍵』の混在）②字幕フォントサイズが小さい場合、背景が透明でテキストが読みにくくなる③動画再生速度を変更した際、キャプション同期にわずかな遅延が発生","改善提案":"用語集を作成して専門用語の表記を統一する、キャプション背景に半透明の黒色パネルを追加する、再生速度変更時のキャプション同期ロジックを最適化する、フォントサイズ調整機能をユーザー設定に追加する","満足度スコア":4,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"佐藤花子"},{"テストID":"rec-20250215-001","ユーザーID":"rec-user-00847","改善実装記録ID":"rec-impl-00523","テスト実施日時":"2025-02-15T14:30:00+09:00","テスト種別":"操作性テスト","テスト結果":"合格","所要時間秒":420,"ユーザーフィードバック":"ナビゲーションメニューがシンプルになったおかげで、目的のページに迷わずたどり着けました。アイコンと文字が両方表示されているので、どのボタンを押すべきか直感的に理解できます。","問題点摘出":"改善前と比較して大幅に改善されています。ただし、戻るボタンの位置が画面右上にあるため、左利きユーザーにとっては操作がやや難しい可能性があります。","改善提案":"戻るボタンを画面中央下部に配置するか、ユーザー設定で左右どちらにも配置できるオプションがあると、より使いやすくなると思います。","満足度スコア":4,"作成日時":"2025-02-15T15:00:00+09:00","更新日時":"2025-02-15T15:00:00+09:00","作成者":"佐藤花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0247","改善実装記録ID":"rec-impl-0089","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"全体的に音声ガイダンスが明確になりました。特にフォーム入力時のラベル読み上げが改善されたのは良いです。ただし、ボタンの機能説明がまだ簡潔すぎて、何ができるのか判断しにくい場面がありました。","問題点摘出":"1. 複数選択チェックボックスの選択状態が音声で正確に伝わらない場合がある。2. テーブルヘッダーの行列関係の説明が不足している。3. エラーメッセージの優先度表示が不明確。","改善提案":"各ボタンの前に『このボタンを押すと』という前置きを追加してほしい。テーブル操作時は『行目、列目』という明確な位置情報を音声で提供してほしい。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"佐藤花子"},{"テストID":"rec-001-ut-20250115-001","ユーザーID":"rec-001-usr-20240501-042","改善実装記録ID":"rec-001-imp-20250108-015","テスト実施日時":"2025-01-15T14:30:00+09:00","テスト種別":"モバイルタッチ操作検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"片手操作時にボタンの配置が画面下部にあるため、親指の可動域では到達困難でした。ただし、音声ガイダンス機能は非常に使いやすく、操作の確認ができて安心感があります。","問題点摘出":"1. タッチターゲットサイズが44×44px未満の箇所が複数存在。2. 画面下部のナビゲーションボタンが片手操作ユーザーにとって到達困難。3. タップ後のフィードバック音が小さく、確認が難しい。4. 長押し操作時のホールド時間設定が固定で調整不可。","改善提案":"1. すべてのタッチターゲットを最小48×48pxに統一。2. 主要操作ボタンを画面中央または上部に配置。3. フィードバック音量をシステム設定と連動させる。4. ホールド時間を500ms～2000msの範囲でユーザーが調整可能に。5. 片手モード機能の実装検討。","満足度スコア":3,"作成日時":"2025-01-15T15:45:00+09:00","更新日時":"2025-01-15T15:45:00+09:00","作成者":"佐藤美咲"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-i-0523","テスト実施日時":"2025-01-15T14:30:00+09:00","テスト種別":"総合受け入れテスト","テスト結果":"合格","所要時間秒":1850,"ユーザーフィードバック":"複数の改善が統合されたことで、全体的な操作フローが大幅に改善されました。特にスクリーンリーダー対応と色コントラストの改善により、視覚障害のあるユーザーも含めて使いやすくなったと感じます。ただし、フォーム送信後の確認メッセージが少し小さいままなので、さらに大きくしていただけると嬉しいです。","問題点摘出":"フォーム送信完了画面でのフォーカス移動が自動で行われていない。キーボード操作のみでのナビゲーション時に、確認メッセージ領域への自動フォーカスが欠落している。また、エラーメッセージのARIA属性設定が一部不完全。","改善提案":"送信完了後、自動的にフォーカスを確認メッセージ領域に移動させる。すべてのエラーメッセージに適切なaria-live属性を追加。確認メッセージのフォントサイズを16px以上に統一する。","満足度スコア":4,"作成日時":"2025-01-15T15:45:22+09:00","更新日時":"2025-01-15T15:45:22+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-102","改善実装記録ID":"rec-045","テスト実施日時":"2025-01-15T14:30:00+09:00","テスト種別":"操作性テスト","テスト結果":"合格","所要時間秒":420,"ユーザーフィードバック":"前回の改善後、ボタンのサイズが大きくなり、タッチしやすくなりました。色のコントラストも改善されており、画面が見やすくなっています。全体的に使いやすくなった印象です。","問題点摘出":"特に大きな問題は見当たりません。ただし、モーダルウィンドウを閉じるボタンの位置が少し分かりにくい場合がありました。","改善提案":"モーダルウィンドウの閉じるボタンをより目立つ位置に配置するか、キーボードのEscキーで閉じられることを画面上に表示してはいかがでしょうか。","満足度スコア":4,"作成日時":"2025-01-15T15:00:00+09:00","更新日時":"2025-01-15T15:00:00+09:00","作成者":"山田花子"},{"テストID":"rec-001-ut-20250115-001","ユーザーID":"rec-user-20240601-042","改善実装記録ID":"rec-impl-20250110-015","テスト実施日時":"2025-01-15T14:30:00+09:00","テスト種別":"操作性テスト","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"全体的には使いやすくなったと感じます。特に音声読み上げ機能が追加されたことで、目が疲れているときに便利です。ただし、フォーム入力時のエラーメッセージの位置がわかりにくく、何度か見落としてしまいました。","問題点摘出":"1. エラーメッセージがフォーム上部に表示されるため、スクリーンリーダーユーザーが気づきにくい。2. タブキーでのナビゲーション順序が一部不規則。3. コントラスト比が基準値ギリギリのボタンテキストがある。","改善提案":"エラーメッセージをフォーム要素の直下に表示し、さらにアラート機能を追加してほしい。タブ順序の見直しと、ボタンのコントラスト比を WCAG AA レベルまで引き上げることを推奨します。","満足度スコア":3,"作成日時":"2025-01-15T15:45:00+09:00","更新日時":"2025-01-16T09:20:00+09:00","作成者":"山田花子"}]};
+window.AIVIC_PAGE_SCREEN_ID = "scr-1788232195429";
+window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {\n  const tableIndex = 0; // UI改善実装記録テーブル\n  const userTableIndex = 1; // ユーザーテーブル\n  \n  const form = container.querySelector('#improvement-form');\n  const tbody = container.querySelector('#improvement-tbody');\n  const createBtn = container.querySelector('[data-testid=\"create-improvement-button\"]');\n  const saveBtn = container.querySelector('[data-testid=\"save-improvement-button\"]');\n  const cancelBtn = container.querySelector('[data-testid=\"cancel-improvement-button\"]');\n  const createModal = container.querySelector('#create-modal');\n  const modalConfirmBtn = container.querySelector('[data-testid=\"modal-confirm-button\"]');\n  const modalCancelBtn = container.querySelector('[data-testid=\"modal-cancel-button\"]');\n  const errorMsg = container.querySelector('#error-message');\n  const successMsg = container.querySelector('#success-message');\n  \n  let currentEditId = null;\n  let allRecords = [];\n  let allUsers = [];\n\n  // ユーティリティ: メッセージ表示\n  function showError(text) {\n    container.querySelector('#error-text').textContent = text;\n    errorMsg.style.display = 'block';\n    setTimeout(() => { errorMsg.style.display = 'none'; }, 4000);\n  }\n\n  function showSuccess(text) {\n    container.querySelector('#success-text').textContent = text;\n    successMsg.style.display = 'block';\n    setTimeout(() => { successMsg.style.display = 'none'; }, 3000);\n  }\n\n  // ユーティリティ: ステータスバッジ色\n  function getStatusBadgeStyle(status) {\n    const styles = {\n      'not_started': 'background: #f5f5f5; color: #666;',\n      'in_progress': 'background: #fff3cd; color: #856404;',\n      'completed': 'background: #e8f5e9; color: #2e7d32;'\n    };\n    return styles[status] || 'background: #f5f5f5; color: #666;';\n  }\n\n  function getStatusLabel(status) {\n    const labels = {\n      'not_started': '未実装',\n      'in_progress': '実装中',\n      'completed': '完了'\n    };\n    return labels[status] || status;\n  }\n\n  function getPriorityLabel(priority) {\n    const labels = {\n      'high': '高',\n      'medium': '中',\n      'low': '低'\n    };\n    return labels[priority] || priority;\n  }\n\n  // ユーティリティ: ユーザー名取得\n  function getUserName(userId) {\n    const user = allUsers.find(u => u.id === userId);\n    return user ? user.name : '未割当';\n  }\n\n  // 一覧表をリロード\n  async function loadRecords() {\n    const records = await window.aivicApi.list(tableIndex);\n    if (!records) {\n      showError('改善施策の読み込みに失敗しました');\n      return;\n    }\n    allRecords = records;\n    renderTable();\n  }\n\n  // ユーザー一覧をロード\n  async function loadUsers() {\n    const users = await window.aivicApi.list(userTableIndex);\n    if (users) {\n      allUsers = users;\n      updateAssigneeSelect();\n    }\n  }\n\n  // 担当者セレクトを更新\n  function updateAssigneeSelect() {\n    const select = form.querySelector('[name=\"assignee_id\"]');\n    const currentValue = select.value;\n    \n    // 既存の option を削除（プレースホルダー以外）\n    while (select.options.length > 1) {\n      select.remove(1);\n    }\n    \n    // ユーザーを追加\n    allUsers.forEach(user => {\n      const option = document.createElement('option');\n      option.value = user.id;\n      option.textContent = user.name;\n      select.appendChild(option);\n    });\n    \n    select.value = currentValue;\n  }\n\n  // テーブルをレンダリング\n  function renderTable() {\n    tbody.innerHTML = '';\n    allRecords.forEach(record => {\n      const row = document.createElement('tr');\n      row.className = 'improvement-row';\n      row.dataset.id = record.id;\n      row.style.cssText = 'background: var(--bg-card); border-bottom: 1px solid var(--border); cursor: pointer; transition: background-color 200ms;';\n      row.innerHTML = `\n        <td style=\"padding: 10px 12px; color: var(--text-muted); border-right: 1px solid var(--border);\">${record.id.substring(0, 8)}</td>\n        <td style=\"padding: 10px 12px; color: var(--text); border-right: 1px solid var(--border); font-weight: 500;\">${record.title || '（未入力）'}</td>\n        <td style=\"padding: 10px 12px; color: var(--text); border-right: 1px solid var(--border);\">\n          <span style=\"display: inline-block; padding: 2px 8px; background: ${record.priority === 'high' ? 'var(--primary)' : record.priority === 'medium' ? '#fff3cd' : '#f5f5f5'}; color: ${record.priority === 'high' ? '#fff' : record.priority === 'medium' ? '#856404' : '#666'}; border-radius: 3px; font-size: 12px;\">\n            ${getPriorityLabel(record.priority)}\n          </span>\n        </td>\n        <td style=\"padding: 10px 12px; color: var(--text); border-right: 1px solid var(--border);\">\n          <span style=\"display: inline-block; padding: 2px 8px; ${getStatusBadgeStyle(record.status)}; border-radius: 3px; font-size: 12px;\">\n            ${getStatusLabel(record.status)}\n          </span>\n        </td>\n        <td style=\"padding: 10px 12px; color: var(--text-muted);\">${getUserName(record.assignee_id)}</td>\n      `;\n      row.addEventListener('click', () => loadFormData(record));\n      tbody.appendChild(row);\n    });\n  }\n\n  // フォームにデータをロード\n  function loadFormData(record) {\n    currentEditId = record.id;\n    form.querySelector('[name=\"title\"]').value = record.title || '';\n    form.querySelector('[name=\"description\"]').value = record.description || '';\n    form.querySelector('[name=\"accessibility_item\"]').value = record.accessibility_item || '';\n    form.querySelector('[name=\"priority\"]').value = record.priority || '';\n    form.querySelector('[name=\"assignee_id\"]').value = record.assignee_id || '';\n    form.querySelector('[name=\"planned_date\"]').value = record.planned_date ? record.planned_date.split('T')[0] : '';\n    form.querySelector('[name=\"status\"]').value = record.status || '';\n    \n    // チェックリストをリセット\n    container.querySelectorAll('#validation-checklist input[type=\"checkbox\"]').forEach(cb => {\n      cb.checked = false;\n    });\n  }\n\n  // フォームをリセット\n  function resetForm() {\n    currentEditId = null;\n    form.reset();\n    container.querySelectorAll('#validation-checklist input[type=\"checkbox\"]').forEach(cb => {\n      cb.checked = false;\n    });\n  }\n\n  // フォーム送信\n  form.addEventListener('submit', async (e) => {\n    e.preventDefault();\n    \n    const formData = {\n      title: form.querySelector('[name=\"title\"]').value.trim(),\n      description: form.querySelector('[name=\"description\"]').value.trim(),\n      accessibility_item: form.querySelector('[name=\"accessibility_item\"]').value,\n      priority: form.querySelector('[name=\"priority\"]').value,\n      assignee_id: form.querySelector('[name=\"assignee_id\"]').value,\n      planned_date: form.querySelector('[name=\"planned_date\"]').value,\n      status: form.querySelector('[name=\"status\"]').value\n    };\n\n    if (!formData.title) {\n      showError('施策タイトルを入力してください');\n      return;\n    }\n    if (!formData.priority) {\n      showError('優先度を選択してください');\n      return;\n    }\n    if (!formData.status) {\n      showError('実装ステータスを選択してください');\n      return;\n    }\n\n    let result;\n    if (currentEditId) {\n      result = await window.aivicApi.update(tableIndex, currentEditId, formData);\n    } else {\n      result = await window.aivicApi.save(tableIndex, formData);\n    }\n\n    if (result) {\n      showSuccess(currentEditId ? '改善施策を更新しました' : '改善施策を登録しました');\n      resetForm();\n      await loadRecords();\n    } else {\n      showError('保存に失敗しました');\n    }\n  });\n\n  // キャンセルボタン\n  cancelBtn.addEventListener('click', () => {\n    resetForm();\n  });\n\n  // 新規登録ボタン\n  createBtn.addEventListener('click', () => {\n    createModal.style.display = 'flex';\n  });\n\n  // モーダル確認ボタン\n  modalConfirmBtn.addEventListener('click', () => {\n    resetForm();\n    createModal.style.display = 'none';\n    form.querySelector('[name=\"title\"]').focus();\n  });\n\n  // モーダルキャンセルボタン\n  modalCancelBtn.addEventListener('click', () => {\n    createModal.style.display = 'none';\n  });\n\n  // モーダル背景クリックで閉じる\n  createModal.addEventListener('click', (e) => {\n    if (e.target === createModal) {\n      createModal.style.display = 'none';\n    }\n  });\n\n  // Esc キーでモーダルを閉じる\n  document.addEventListener('keydown', (e) => {\n    if (e.key === 'Escape' && createModal.style.display === 'flex') {\n      createModal.style.display = 'none';\n    }\n  });\n\n  // 初期化\n  (async () => {\n    await loadUsers();\n    await loadRecords();\n  })();\n}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<nav style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg,var(--bg-sidebar,#0e1a31));border-bottom:1px solid var(--top-bar-border,var(--border,#2a3a5d));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--text,#e8eefc);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:1;border-bottom:2px solid var(--primary,#2b66ff);font-weight:600;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
+  <div class="shell" data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button class="menu-toggle show" aria-label="メニュー表示切替" onclick="toggleSidebar()">☰</button>
+        <div class="logo">アクセシビリティ改善管理</div>
+      </div>
+      <nav class="top-nav">
+        <button class="top-nav-item aivic-active" data-aivic-nav="scr-1788232084202" onclick="window.location.href='./scr-1788232084202.html'">ダッシュボード</button>
+        <button class="top-nav-item" data-aivic-nav="scr-1788232179316" onclick="window.location.href='./scr-1788232179316.html'">ユーザーテスト</button>
+        <button class="top-nav-item" data-aivic-nav="scr-1788232195429" onclick="window.location.href='./scr-1788232195429.html'">UI改善管理</button>
+      </nav>
+      <div class="top-bar-right">
+        <div class="user-avatar">U</div>
+        <div class="user-name">ユーザー</div>
+        <a href="./login.html" class="logout-link">ログアウト</a>
+      </div>
+    </header>
+    <div class="main-container">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-label">ダッシュボード</div>
+          <button class="sidebar-item aivic-active" data-aivic-nav="scr-1788232084202" onclick="window.location.href='./scr-1788232084202.html'">改善進捗</button>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">管理</div>
+          <button class="sidebar-item" data-aivic-nav="scr-1788232179316" onclick="window.location.href='./scr-1788232179316.html'">ユーザーテスト</button>
+          <button class="sidebar-item" data-aivic-nav="scr-1788232195429" onclick="window.location.href='./scr-1788232195429.html'">UI改善施策</button>
+        </div>
+      </aside>
+      <main class="content-area">
+        <div data-aivic-panel="scr-1788232084202" style="display:none"></div>
+        <div data-aivic-panel="scr-1788232179316" style="display:none"></div>
+        <div data-aivic-panel="scr-1788232195429" style="display:block"><div style="display: flex; height: 100%; gap: 16px; padding: 16px; background: var(--bg-main); font-family: var(--font-family);">
+  
+  <!-- 左ペイン: 改善施策一覧 -->
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text);">改善施策一覧</h2>
+      <button class="action-btn" data-testid="create-improvement-button" style="padding: 8px 16px; font-size: 14px;">
+        + 新規登録
+      </button>
+    </div>
+
+    <div class="card" style="flex: 1; overflow: hidden; display: flex; flex-direction: column; padding: 0; background: var(--bg-card); box-shadow: var(--shadow-card);">
+      <div style="overflow-y: auto; flex: 1;">
+        <table data-testid="improvement-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
+            <tr>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">施策ID</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">タイトル</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">優先度</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">ステータス</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600;">担当者</th>
+            </tr>
+          </thead>
+          <tbody id="improvement-tbody">
+            <tr style="background: var(--bg-card); border-bottom: 1px solid var(--border); cursor: pointer; transition: background-color 200ms;" class="improvement-row" data-id="sample-001">
+              <td style="padding: 10px 12px; color: var(--text-muted); border-right: 1px solid var(--border);">IMP-001</td>
+              <td style="padding: 10px 12px; color: var(--text); border-right: 1px solid var(--border); font-weight: 500;">フォーム入力欄のコントラスト改善</td>
+              <td style="padding: 10px 12px; color: var(--text); border-right: 1px solid var(--border);"><span style="display: inline-block; padding: 2px 8px; background: var(--primary); color: #fff; border-radius: 3px; font-size: 12px;">高</span></td>
+              <td style="padding: 10px 12px; color: var(--text); border-right: 1px solid var(--border);"><span style="display: inline-block; padding: 2px 8px; background: #e8f5e9; color: #2e7d32; border-radius: 3px; font-size: 12px;">完了</span></td>
+              <td style="padding: 10px 12px; color: var(--text-muted);">田中太郎</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右ペイン: 編集フォーム + チェックリスト -->
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+    
+    <!-- 編集フォーム -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); box-shadow: var(--shadow-card);">
+      <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: var(--text);">改善施策編集</h3>
+      
+      <form id="improvement-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        
+        <!-- 施策タイトル -->
+        <div style="grid-column: 1 / -1;">
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">施策タイトル</label>
+          <input type="text" name="title" data-testid="improvement-title" class="input" placeholder="例: フォーム入力欄のコントラスト改善" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;" />
+        </div>
+
+        <!-- 施策説明 -->
+        <div style="grid-column: 1 / -1;">
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">施策説明</label>
+          <textarea name="description" data-testid="improvement-description" placeholder="改善内容の詳細を記入してください" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; min-height: 80px; resize: vertical; box-sizing: border-box; font-family: var(--font-family);"></textarea>
+        </div>
+
+        <!-- 対応アクセシビリティ項目 -->
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">対応項目</label>
+          <select name="accessibility_item" data-testid="accessibility-item-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+            <option value="">選択してください</option>
+            <option value="contrast">コントラスト</option>
+            <option value="keyboard">キーボード操作</option>
+            <option value="screen-reader">スクリーンリーダー対応</option>
+            <option value="focus">フォーカス管理</option>
+            <option value="label">ラベル関連付け</option>
+          </select>
+        </div>
+
+        <!-- 優先度 -->
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">優先度</label>
+          <select name="priority" data-testid="priority-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+            <option value="">選択してください</option>
+            <option value="high">高</option>
+            <option value="medium">中</option>
+            <option value="low">低</option>
+          </select>
+        </div>
+
+        <!-- 担当者 -->
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">担当者</label>
+          <select name="assignee_id" data-testid="assignee-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+            <option value="">選択してください</option>
+            <option value="user-001">田中太郎</option>
+            <option value="user-002">鈴木花子</option>
+            <option value="user-003">佐藤次郎</option>
+          </select>
+        </div>
+
+        <!-- 実装予定日 -->
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">実装予定日</label>
+          <input type="date" name="planned_date" data-testid="planned-date" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;" />
+        </div>
+
+        <!-- 実装ステータス -->
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">実装ステータス</label>
+          <select name="status" data-testid="status-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+            <option value="">選択してください</option>
+            <option value="not_started">未実装</option>
+            <option value="in_progress">実装中</option>
+            <option value="completed">完了</option>
+          </select>
+        </div>
+
+        <!-- フォームボタン -->
+        <div style="grid-column: 1 / -1; display: flex; gap: 8px; margin-top: 8px;">
+          <button type="submit" class="action-btn" data-testid="save-improvement-button" style="padding: 8px 16px; font-size: 13px; flex: 1;">
+            保存
+          </button>
+          <button type="button" class="action-btn secondary" data-testid="cancel-improvement-button" style="padding: 8px 16px; font-size: 13px; flex: 1; background: transparent; border: 1px solid var(--border); color: var(--text);">
+            キャンセル
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- レイアウト検証チェックリスト -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); box-shadow: var(--shadow-card);">
+      <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: var(--text);">レイアウト検証チェックリスト</h3>
+      
+      <div id="validation-checklist" style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text);">
+          <input type="checkbox" data-testid="check-contrast" style="accent-color: var(--primary); cursor: pointer;" />
+          <span>コントラスト比 WCAG AA 以上</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text);">
+          <input type="checkbox" data-testid="check-keyboard" style="accent-color: var(--primary); cursor: pointer;" />
+          <span>キーボード操作可能</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text);">
+          <input type="checkbox" data-testid="check-focus" style="accent-color: var(--primary); cursor: pointer;" />
+          <span>フォーカス表示が明確</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text);">
+          <input type="checkbox" data-testid="check-labels" style="accent-color: var(--primary); cursor: pointer;" />
+          <span>ラベルが正しく関連付け</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text);">
+          <input type="checkbox" data-testid="check-screen-reader" style="accent-color: var(--primary); cursor: pointer;" />
+          <span>スクリーンリーダー対応</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- モーダル: 新規登録確認 -->
+<div id="create-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <h2 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">新規改善施策を登録</h2>
+    <p style="margin: 0 0 20px 0; font-size: 13px; color: var(--text-muted);">新しい改善施策を登録します。フォームに入力して保存してください。</p>
+    <div style="display: flex; gap: 8px;">
+      <button class="action-btn" data-testid="modal-confirm-button" style="padding: 8px 16px; font-size: 13px; flex: 1;">
+        フォームを開く
+      </button>
+      <button class="action-btn secondary" data-testid="modal-cancel-button" style="padding: 8px 16px; font-size: 13px; flex: 1; background: transparent; border: 1px solid var(--border); color: var(--text);">
+        キャンセル
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- エラーメッセージ -->
+<div id="error-message" style="display: none; position: fixed; top: 20px; right: 20px; background: #c62828; color: #fff; padding: 12px 16px; border-radius: 4px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2000; max-width: 400px;">
+  <span id="error-text"></span>
+</div>
+
+<!-- 成功メッセージ -->
+<div id="success-message" style="display: none; position: fixed; top: 20px; right: 20px; background: #2e7d32; color: #fff; padding: 12px 16px; border-radius: 4px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2000; max-width: 400px;">
+  <span id="success-text"></span>
+</div></div>
+      </main>
+    </div>
+  </div>
+  <script>
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.toggle('collapsed');
+}
+
+function showScreen(screenId) {
+  const panels = document.querySelectorAll('[data-aivic-panel]');
+  panels.forEach(panel => {
+    panel.style.display = panel.getAttribute('data-aivic-panel') === screenId ? 'block' : 'none';
+  });
+
+  const navItems = document.querySelectorAll('[data-aivic-nav]');
+  navItems.forEach(item => {
+    item.classList.toggle('aivic-active', item.getAttribute('data-aivic-nav') === screenId);
+  });
+
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar.classList.contains('collapsed')) {
+    sidebar.classList.remove('collapsed');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  showScreen('scr-1788232084202');
+});
+  </script>
+  
+<script>
+(function() {
+  var TABLE_DEFS = window.AIVIC_TABLES || [];
+  var PRESET_SEED = window.AIVIC_PRESET_SEED || {};
+  var SYSTEM_NAME = window.AIVIC_SYSTEM_NAME || "";
+  var APP_ID = window.AIVIC_APP_ID || "";
+  var API_URL = (window.AIVIC_API_URL && window.AIVIC_API_URL !== "REPLACE_WITH_API_URL")
+    ? window.AIVIC_API_URL : window.location.origin;
+
+  // 通知 helper ( SPA 版と同じ )
+  window.aivicNotify = (function() {
+    function ensureContainer() {
+      var c = document.getElementById("aivic-toast-container");
+      if (c) return c;
+      c = document.createElement("div");
+      c.id = "aivic-toast-container";
+      c.style.cssText = "position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:360px;";
+      document.body.appendChild(c);
+      return c;
+    }
+    function show(msg, type) {
+      var c = ensureContainer();
+      var el = document.createElement("div");
+      el.textContent = msg;
+      el.style.cssText = "padding:10px 16px;border-radius:8px;font-size:13px;line-height:1.4;pointer-events:auto;color:#fff;background:" + (type === "error" ? "#dc2626" : "#d97706");
+      c.appendChild(el);
+      setTimeout(function() {
+        el.style.transition = "opacity .3s";
+        el.style.opacity = "0";
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+      }, type === "error" ? 6000 : 4500);
+    }
+    return {
+      error: function(msg) { show("❌ " + msg, "error"); },
+      warn:  function(msg) { show("⚠️ " + msg, "warn"); },
+    };
+  })();
+
+  // CRUD API ( SPA 版と同じ )
+  window.aivicApi = (function() {
+    function dbErr(op) { window.aivicNotify.error("データベースエラー ( " + op + " ): APIサーバーに接続できません。"); }
+    function newId() { return typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(36).slice(2); }
+    function q(i) {
+      var t = TABLE_DEFS[i];
+      var dbP = (window.AIVIC_DB_TYPE && window.AIVIC_DB_TYPE !== "dynamodb") ? "&db=" + encodeURIComponent(window.AIVIC_DB_TYPE) : "";
+      return "?app=" + encodeURIComponent(APP_ID) + "&system=" + encodeURIComponent(SYSTEM_NAME) + "&table=" + encodeURIComponent(t ? t.tableName : "table" + i) + dbP;
+    }
+    return {
+      list: async function(tableIndex) {
+        if (!API_URL) return [];
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex)); var d = await r.json(); return Array.isArray(d) ? d : (d.items || []); }
+        catch(e) { dbErr("データ取得"); return []; }
+      },
+      save: async function(tableIndex, item) {
+        if (!API_URL) { dbErr("保存"); return null; }
+        var now = new Date().toISOString();
+        var rec = Object.assign({}, item, { id: item.id || newId(), createdAt: item.createdAt || now, updatedAt: now });
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex), { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(rec) }); return await r.json(); }
+        catch(e) { dbErr("保存"); return null; }
+      },
+      update: async function(tableIndex, id, changes) {
+        if (!API_URL) { dbErr("更新"); return null; }
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(Object.assign({}, changes, {updatedAt: new Date().toISOString()})) }); return await r.json(); }
+        catch(e) { dbErr("更新"); return null; }
+      },
+      delete: async function(tableIndex, id) {
+        if (!API_URL) { dbErr("削除"); return {deleted:false}; }
+        try { await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), {method:"DELETE"}); return {deleted:true}; }
+        catch(e) { dbErr("削除"); return {deleted:false}; }
+      },
+    };
+  })();
+
+  // showScreen はマルチページ構成ではページ遷移として動く。
+  var _aivicNavLastTime = 0;
+  var _aivicNavLastTarget = "";
+  var _aivicReady = false;
+  window.showScreen = function(screenId) {
+    if (!screenId) return;
+    if (screenId === window.AIVIC_PAGE_SCREEN_ID) return;
+    var targetPath = './' + encodeURIComponent(screenId) + '.html';
+    var currentName = (window.location.pathname.split('/').pop() || '');
+    if (currentName === (encodeURIComponent(screenId) + '.html') ||
+        currentName === (screenId + '.html')) {
+      return;
+    }
+    var now = Date.now();
+    if (_aivicNavLastTarget === targetPath && (now - _aivicNavLastTime) < 100) {
+      console.warn('[aivic] showScreen 連続呼び出し検知。 無限ループ防止のため抑制:', screenId);
+      return;
+    }
+    if (!_aivicReady) {
+      console.warn('[aivic] DOMContentLoaded 前の showScreen 呼び出し。 抑制:', screenId);
+      return;
+    }
+    _aivicNavLastTime = now;
+    _aivicNavLastTarget = targetPath;
+    window.location.href = targetPath;
+  };
+
+  function seedAllIfEmpty() {
+    if (!API_URL) return Promise.resolve();
+    return Promise.all(TABLE_DEFS.map(function(t, i) {
+      var preset = PRESET_SEED[t.tableName];
+      if (!Array.isArray(preset) || preset.length === 0) return Promise.resolve();
+      return window.aivicApi.list(i).then(function(existing) {
+        if (existing && existing.length > 0) return;
+        return Promise.all(preset.map(function(row) { return window.aivicApi.save(i, row); }));
+      }).catch(function() {});
+    }));
+  }
+
+  // ── 初期表示: このページ専用の panel に initFn を実行 ──
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() { _aivicReady = true; }, 1500);
+    var pageScreenId = window.AIVIC_PAGE_SCREEN_ID;
+    if (!pageScreenId) return;
+
+    // AI シェルが SPA 用の初期表示処理を持っていても、マルチページでは
+    // このファイルに割り当てられた画面だけを表示する。
+    document.querySelectorAll('[data-aivic-panel]').forEach(function(panel) {
+      var isCurrent = panel.getAttribute('data-aivic-panel') === pageScreenId;
+      panel.style.display = isCurrent ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('[data-aivic-nav]').forEach(function(btn) {
+      var isActive = btn.getAttribute("data-aivic-nav") === pageScreenId;
+      btn.classList.toggle("aivic-active", isActive);
+      btn.setAttribute("aria-current", isActive ? "page" : "false");
+    });
+
+    var container = document.querySelector('[data-aivic-panel="' + pageScreenId + '"]');
+    if (!container) return;
+
+    // content 要素の hidden 強制除去 ( 2026-05-24 Playwright 大量 fail 対応 )
+    var isModalLike = function(el) {
+      if (!el || !el.classList) return false;
+      var cn = String(el.className || "");
+      if (/\bmodal\b|\bdialog\b|\boverlay\b|\bpopup\b|\bdropdown\b|\btooltip\b/i.test(cn)) return true;
+      var role = el.getAttribute && el.getAttribute("role");
+      if (role === "dialog" || role === "alertdialog" || role === "tooltip" || role === "menu") return true;
+      if (el.hasAttribute && (el.hasAttribute("data-modal") || el.hasAttribute("data-dropdown") || el.hasAttribute("data-popup") || el.hasAttribute("data-aivic-overlay"))) return true;
+      // 【2026-06-25】 class/role が無くても inline で画面を覆う overlay ( position:fixed ) は modal 扱いにして、
+      //  content 強制可視化が誤ってダイアログをロード時に表示してしまわないようにする。
+      if (el.style && el.style.position === "fixed") return true;
+      return false;
+    };
+    var unhideContentElements = function(root) {
+      var all = root.querySelectorAll('.hidden, [hidden], [style*="display:none"], [style*="display: none"]');
+      for (var k = 0; k < all.length; k++) {
+        var el = all[k];
+        if (isModalLike(el)) continue;
+        var p = el.parentElement;
+        var insideModal = false;
+        while (p && p !== root) {
+          if (isModalLike(p)) { insideModal = true; break; }
+          p = p.parentElement;
+        }
+        if (insideModal) continue;
+        el.classList.remove('hidden');
+        el.removeAttribute('hidden');
+        if (el.style && el.style.display === 'none') el.style.display = '';
+      }
+    };
+    try { unhideContentElements(container); } catch (e) { console.warn('[aivic] unhideContent failed:', e); }
+
+    var initJsSource = window.AIVIC_PAGE_INIT_JS;
+    if (!initJsSource) {
+      seedAllIfEmpty();
+      return;
+    }
+    var initFn = null;
+    try {
+      initFn = (new Function("return (" + initJsSource + ")"))();
+    } catch (e) {
+      console.error("[aivic] initJs compile error:", pageScreenId, e);
+      return;
+    }
+    if (typeof initFn !== "function") return;
+
+    seedAllIfEmpty().then(function() {
+      return Promise.all(TABLE_DEFS.map(function(t, i) {
+        return window.aivicApi.list(i)
+          .then(function(records) { return Object.assign({}, t, { records: records }); })
+          .catch(function() { return Object.assign({}, t, { records: [] }); });
+      }));
+    }).then(function(tables) {
+      try { initFn(container, API_URL, tables); } catch (e) { console.error("[aivic] initFn error:", pageScreenId, e); }
+      _aivicReady = true;
+    });
+  });
+
+  // 【2026-06-27 強化・必ず閉じられる保証】 モーダル/ダイアログを確実に閉じる安全網。
+  //  旧版は Esc のみ + セレクタ .overlay が class="modal-overlay" にマッチせず ( クラストークンが別 )
+  //  閉じられなかった ( ユーザー報告 2026-06-27: ダイアログが閉じない ) 。 ① Esc ② オーバーレイ背景クリック
+  //  ③ 閉じる系ボタン の 3 経路で閉じる。 セレクタは複合クラスも拾うよう [class*="overlay"] を含む。
+  //  閉じ方は「開クラス ( active/open/show 等 ) があれば外す ( 再オープン可 ) 、 無ければ inline display:none」。
+  //  modal-header 等の sub-part を誤って隠さないため [class*="modal"] は使わない。
+  var AIVIC_OVERLAY_SELECTOR = '[class*="overlay"],[data-aivic-overlay],[data-modal],[role="dialog"],[role="alertdialog"]';
+  var aivicCloseOverlay = function(el) {
+    if (!el || !el.classList) return;
+    var openClasses = ["active", "open", "show", "visible", "is-open", "is-active", "show-modal"];
+    var removed = false;
+    for (var c = 0; c < openClasses.length; c++) {
+      if (el.classList.contains(openClasses[c])) { el.classList.remove(openClasses[c]); removed = true; }
+    }
+    if (!removed && el.style) el.style.display = "none";
+  };
+  document.addEventListener("keydown", function(e) {
+    if (e.key !== "Escape" && e.keyCode !== 27) return;
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  });
+  document.addEventListener("click", function(e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.closest) {
+      var closer = t.closest('.modal-close,[data-modal-close],[data-close],[data-dismiss]');
+      if (closer) {
+        var oc = closer.closest(AIVIC_OVERLAY_SELECTOR);
+        if (oc) { aivicCloseOverlay(oc); return; }
+      }
+    }
+    // 背景 ( オーバーレイ要素そのもの ) を直接クリックした時のみ閉じる ( モーダル本体クリックでは閉じない ) 。
+    if (t.matches && t.matches(AIVIC_OVERLAY_SELECTOR) && t === e.target) {
+      aivicCloseOverlay(t);
+    }
+  });
+  // 【2026-06-28 強化・ロード時に必ず閉じる】 生成 AI が overlay を初期 display:none にし忘れた場合でも、
+  //  ロード直後にダイアログが画面を覆って操作不能になる事故 ( ユーザー報告 2026-06-28: ダイアログが常に表示され
+  //  閉じられない ) を防ぐ。 認識可能な overlay/dialog セレクタに該当する要素はロード時に必ず閉じる
+  //  ( 開クラス除去 or display:none ) 。 真にロード時表示すべき業務コンテンツは overlay セレクタに該当しないため
+  //  影響しない ( パネルコンテナは data-aivic-panel で別管理 ) 。
+  var aivicHideOverlaysOnLoad = function() {
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", aivicHideOverlaysOnLoad);
+  } else {
+    aivicHideOverlaysOnLoad();
+  }
+})();
+
+</script>
+</body>
+</html>

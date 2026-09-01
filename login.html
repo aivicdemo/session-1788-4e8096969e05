@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公共施設予約 - ログイン画面</title>
+  <style>
+    :root {
+      /* 県庁の落ち着いたトーン：深い紺と薄墨のコントラスト、公務的な厳正さ */
+      --primary: #2c3e50;
+      --primary-hover: #1a252f;
+      --bg-main: #f4f3f0;
+      --bg-card: #ebe8e3;
+      --bg-sidebar: #e8e5df;
+      --border: #d4cfc5;
+      --text: #1a1815;
+      --text-muted: #6b6560;
+      --top-bar-bg: #3a4a5e;
+      --top-bar-border: #2c3e50;
+      --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+      --radius-card: 4px;
+      --radius-control: 3px;
+      --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --border-width: 1px;
+      --control-height: 36px;
+      --space-unit: 8px;
+      --motion-duration: 0.2s;
+      
+      /* 質感：和紙のような繊細さ、公文書の厳粛性 */
+      --surface-texture: 
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.01) 2px,
+          rgba(0, 0, 0, 0.01) 4px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          rgba(0, 0, 0, 0.008) 3px,
+          rgba(0, 0, 0, 0.008) 6px
+        );
+      --surface-texture-size: 100% 100%;
+      --surface-texture-position: 0 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: var(--font-family);
+      background-color: var(--bg-main);
+      background-image: var(--surface-texture);
+      background-size: var(--surface-texture-size);
+      background-position: var(--surface-texture-position);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: var(--space-unit);
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-card {
+      background-color: var(--bg-card);
+      background-image: var(--surface-texture);
+      background-size: var(--surface-texture-size);
+      background-position: var(--surface-texture-position);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: calc(var(--space-unit) * 5);
+    }
+
+    .login-header {
+      margin-bottom: calc(var(--space-unit) * 4);
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: calc(var(--space-unit) * 1);
+      letter-spacing: -0.3px;
+    }
+
+    .login-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--space-unit) * 3);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--space-unit) * 1.5);
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .form-group input {
+      height: var(--control-height);
+      padding: 0 calc(var(--space-unit) * 1.5);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-control);
+      background-color: #ffffff;
+      color: var(--text);
+      font-size: 14px;
+      font-family: var(--font-family);
+      transition: border-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.08);
+    }
+
+    .form-group input::placeholder {
+      color: #a8a39d;
+    }
+
+    .login-button-group {
+      display: flex;
+      gap: calc(var(--space-unit) * 2);
+      margin-top: calc(var(--space-unit) * 2);
+    }
+
+    .login-button {
+      flex: 1;
+      height: var(--control-height);
+      border: none;
+      border-radius: var(--radius-control);
+      background-color: var(--primary);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font-family);
+      cursor: pointer;
+      transition: background-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
+      letter-spacing: -0.2px;
+    }
+
+    .login-button:hover {
+      background-color: var(--primary-hover);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .login-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .login-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+    }
+
+    .login-footer {
+      margin-top: calc(var(--space-unit) * 4);
+      padding-top: calc(var(--space-unit) * 3);
+      border-top: var(--border-width) solid var(--border);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .login-footer p {
+      margin: 0;
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: calc(var(--space-unit) * 4);
+      }
+
+      .login-header h1 {
+        font-size: 20px;
+      }
+
+      .login-header p {
+        font-size: 12px;
+      }
+
+      .form-group input {
+        font-size: 16px;
+      }
+
+      .login-button {
+        font-size: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .form-group input,
+      .login-button {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1 data-testid="login-title">ログイン</h1>
+        <p>セキュリティインシデント対応・監査ログ分析システム</p>
+      </div>
+
+      <form data-testid="login-form" novalidate>
+        <div class="login-form">
+          <div class="form-group">
+            <label for="username">ユーザー名</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              data-testid="username"
+              placeholder="ユーザー名を入力"
+              autocomplete="username"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="password">パスワード</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              data-testid="password"
+              placeholder="パスワードを入力"
+              autocomplete="current-password"
+            >
+          </div>
+
+          <div class="login-button-group">
+            <button type="submit" class="login-button" data-testid="login-button">
+              ログイン
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="login-footer">
+        <p>※ サンプル実装ではどの入力でもログインできます</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('[data-testid="login-form"]').addEventListener('submit', function(e) {
+      e.preventDefault();
+      window.location.href = './index.html';
+    });
+  </script>
+</body>
+</html>

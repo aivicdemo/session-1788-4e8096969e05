@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自治体導入支援・差分分析・リスク評価システム</title>
+  <style>
+:root {
+  --primary: #5a6b7d;
+  --primary-hover: #4a5a6d;
+  --bg-main: #f5f3f0;
+  --bg-card: #ede9e5;
+  --bg-sidebar: #e8e4e0;
+  --border: #d4ccc5;
+  --text: #2b2520;
+  --text-muted: #6b6560;
+  --top-bar-bg: #e0dcd8;
+  --top-bar-border: #ccc4bd;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --radius-card: 6px;
+  --radius-control: 4px;
+  --shadow-card: 0 2px 8px rgba(43, 37, 32, 0.08), 0 1px 3px rgba(43, 37, 32, 0.04);
+  --border-width: 1px;
+  --control-height: 36px;
+  --space-unit: 8px;
+  --motion-duration: 200ms;
+  --surface-texture: linear-gradient(135deg, rgba(212, 204, 197, 0.15) 0%, transparent 50%), linear-gradient(45deg, rgba(107, 101, 96, 0.08) 0%, transparent 50%);
+  --surface-texture-size: 4px 4px;
+  --surface-texture-position: 0 0, 2px 2px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  color: var(--text);
+  background: var(--bg-main);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.top-bar {
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 56px;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
+
+.nav-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 18px;
+  padding: calc(var(--space-unit) * 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--motion-duration);
+}
+
+.nav-toggle:hover {
+  color: var(--primary);
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 1.5);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.user-name {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.logout-link {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--motion-duration);
+}
+
+.logout-link:hover {
+  color: var(--text);
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--bg-sidebar);
+  border-right: var(--border-width) solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: transform var(--motion-duration), width var(--motion-duration);
+  flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+  width: 0;
+  border-right: none;
+  transform: translateX(-240px);
+}
+
+.sidebar-content {
+  padding: calc(var(--space-unit) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 1.5);
+}
+
+.nav-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-top: calc(var(--space-unit) * 0.5);
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.nav-item {
+  font-size: 13px;
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition: background var(--motion-duration), color var(--motion-duration);
+  color: var(--text);
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: 100%;
+}
+
+.nav-item:hover {
+  background: rgba(90, 107, 125, 0.08);
+}
+
+.nav-item.aivic-active {
+  background: var(--primary);
+  color: white;
+  font-weight: 500;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-main);
+}
+
+[data-aivic-panel] {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .sidebar.collapsed {
+    position: absolute;
+    width: 240px;
+    height: calc(100vh - 56px);
+    z-index: 100;
+    transform: translateX(0);
+  }
+
+  .sidebar {
+    position: absolute;
+    height: calc(100vh - 56px);
+    z-index: 100;
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(-240px);
+  }
+}
+  </style>
+<script>
+window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
+window.AIVIC_APP_ID = "session-1788160285336";
+window.AIVIC_APPLICATION_NAME = "公共施設予約";
+window.AIVIC_SYSTEM_NAME = "自治体導入支援・差分分析・リスク評価システム";
+window.AIVIC_TABLES = [{"tableName":"ログインユーザー","purpose":"料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ログイン用メールアドレス、システム内で一意"},{"name":"パスワードハッシュ","type":"varchar(100)","required":true,"description":"ハッシュ化されたパスワード"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ユーザーの表示名"},{"name":"ロール","type":"varchar(100)","required":true,"description":"ユーザーの権限レベル（管理者、担当者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効、無効、一時停止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"最後にログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーアカウント作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザー情報最終更新日時"},{"name":"作成者","type":"varchar(100)","required":false,"description":"ユーザーアカウント作成者のユーザーID"}]},{"tableName":"レポート","purpose":"セキュリティインシデント対応と脆弱性管理の進捗状況をまとめたレポートを管理し、経営層や監査対象者への報告資料として機能する","columns":[{"name":"レポートID","type":"uuid","required":true,"description":"レポートの一意識別子"},{"name":"レポート名","type":"varchar(100)","required":true,"description":"レポートのタイトル"},{"name":"レポート種別","type":"varchar(100)","required":true,"description":"レポートの種類（月次サマリー、インシデント報告、脆弱性スキャン結果、対応状況など）"},{"name":"対象期間開始日","type":"timestamp","required":true,"description":"レポートが対象とする期間の開始日時"},{"name":"対象期間終了日","type":"timestamp","required":true,"description":"レポートが対象とする期間の終了日時"},{"name":"発見脆弱性数","type":"integer","required":false,"description":"対象期間内に発見された脆弱性の総数"},{"name":"対応完了脆弱性数","type":"integer","required":false,"description":"対象期間内に対応が完了した脆弱性の数"},{"name":"インシデント発生件数","type":"integer","required":false,"description":"対象期間内に発生したセキュリティインシデントの件数"},{"name":"重大度別集計","type":"text","required":false,"description":"脆弱性を重大度別に集計した結果の詳細情報"},{"name":"レポート内容","type":"text","required":false,"description":"レポートの本文内容、分析結果、推奨事項など"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"レポートの状態（作成中、完成、承認待ち、承認済み、配布済みなど）"},{"name":"作成者ID","type":"uuid","required":true,"description":"レポートを作成したユーザーの識別子"},{"name":"承認者ID","type":"uuid","required":false,"description":"レポートを承認したユーザーの識別子"},{"name":"配布対象者リスト","type":"text","required":false,"description":"レポートの配布対象となるユーザーやグループの情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"レポートが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レポートが最後に更新された日時"},{"name":"承認日時","type":"timestamp","required":false,"description":"レポートが承認された日時"},{"name":"配布日時","type":"timestamp","required":false,"description":"レポートが配布された日時"}]},{"tableName":"操作履歴","purpose":"ユーザーによるバックアップ・復旧システムの全操作を記録し、監査証跡とトラブルシューティングの基盤を提供する","columns":[{"name":"操作履歴ID","type":"uuid","required":true,"description":"操作履歴の一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"操作を実行したユーザーの識別子、ユーザーテーブルへの外部キー"},{"name":"操作種別","type":"varchar(100)","required":true,"description":"実行された操作の種類（バックアップ実行、復旧実行、設定変更、ジョブ削除等）"},{"name":"対象リソースタイプ","type":"varchar(100)","required":true,"description":"操作の対象となるリソースの種類（バックアップジョブ、復旧ジョブ、RTO_RPO設定等）"},{"name":"対象リソースID","type":"uuid","required":true,"description":"操作の対象となるリソースの識別子"},{"name":"操作内容","type":"text","required":false,"description":"操作の詳細な内容や変更内容の説明"},{"name":"操作ステータス","type":"varchar(100)","required":true,"description":"操作の実行結果（成功、失敗、部分成功等）"},{"name":"エラーメッセージ","type":"text","required":false,"description":"操作失敗時のエラーメッセージ"},{"name":"実行開始日時","type":"timestamp","required":true,"description":"操作の実行開始日時"},{"name":"実行終了日時","type":"timestamp","required":false,"description":"操作の実行終了日時"},{"name":"実行時間秒","type":"integer","required":false,"description":"操作の実行所要時間（秒単位）"},{"name":"IPアドレス","type":"varchar(100)","required":false,"description":"操作を実行したクライアントのIPアドレス"},{"name":"セッションID","type":"varchar(100)","required":false,"description":"操作を実行したセッションの識別子"},{"name":"作成日時","type":"timestamp","required":true,"description":"操作履歴レコードの作成日時"}]},{"tableName":"自治体","purpose":"自治体の基本情報を管理し、導入支援・差分分析・リスク評価システムの対象組織を一元管理するマスタテーブル","columns":[{"name":"自治体ID","type":"uuid","required":true,"description":"自治体を一意に識別するプライマリキー"},{"name":"自治体名","type":"varchar(100)","required":true,"description":"自治体の正式名称"},{"name":"都道府県","type":"varchar(100)","required":true,"description":"自治体が所在する都道府県名"},{"name":"自治体コード","type":"varchar(100)","required":true,"description":"総務省が定める自治体コード"},{"name":"導入ステータス","type":"varchar(100)","required":true,"description":"導入状況を示すステータス値（検討中、導入予定、導入済み等）"},{"name":"システムバージョン","type":"varchar(100)","required":false,"description":"導入されているシステムのバージョン"},{"name":"担当部門","type":"varchar(100)","required":false,"description":"システム導入を担当する部門名"},{"name":"担当者名","type":"varchar(100)","required":false,"description":"システム導入の主要担当者名"},{"name":"連絡先電話","type":"varchar(100)","required":false,"description":"自治体の連絡先電話番号"},{"name":"連絡先メール","type":"varchar(100)","required":false,"description":"自治体の連絡先メールアドレス"},{"name":"備考","type":"text","required":false,"description":"導入支援に関する特記事項や注記"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者","type":"varchar(100)","required":true,"description":"レコード最終更新者のユーザーID"}]}];
+window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"システム管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-01T10:00:00+09:00","更新日時":"2025-01-15T09:30:00+09:00","作成者":"rec-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@pref.tokyo.lg.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:15:00","更新日時":"2025-01-10 14:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@city.example.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"鈴木花子","ロール":"返金申請処理担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit@kpmg-jp.co.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/LLm","ユーザー名":"監査部門_読取専用","ロール":"監査人","ステータス":"有効","最終ログイン日時":"2025-01-15T14:32:00+09:00","作成日時":"2024-11-20T09:15:00+09:00","更新日時":"2025-01-10T10:45:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-12-15 09:30:45","作成日時":"2023-04-10 14:22:18","更新日時":"2024-12-20 16:45:32","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山田花子","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2024-09-15 17:30:45","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:15:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmno","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2025-01-15T08:45:00+09:00","更新日時":"2025-01-15T09:30:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hiroshi@kousiki-renkei.jp","パスワードハッシュ":"$2b$12$K9mN8pL2qR3sT4uV5wX6yZ7aB8cD9eF0gH1iJ2kL3mN4oP5qR6sT7","ユーザー名":"鈴木寛","ロール":"広域連携管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:32:00+09:00","作成日時":"2024-04-01T10:00:00+09:00","更新日時":"2025-01-10T14:20:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$K8mN7pQrS9tUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIj","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2023-06-20T14:00:00+09:00","更新日時":"2025-01-10T16:45:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"maintenance-tech-2024@company.jp","パスワードハッシュ":"$2b$12$K8vN3pQmL9xR2jF5wE4tXuY6zA1bC3dE4fG5hI6jK7lM8nO9pQ0rS","ユーザー名":"定期メンテナンス技術者","ロール":"技術者","ステータス":"一時停止","最終ログイン日時":"2024-12-15 14:32:00","作成日時":"2024-11-01 09:15:00","更新日時":"2025-01-20 10:45:00","作成者":"rec-admin-001"}],"レポート":[{"レポートID":"rec-001-2024-01-monthly","レポート名":"2024年1月度 セキュリティ月次サマリーレポート（経営層向け）","レポート種別":"月次サマリー","対象期間開始日":"2024-01-01T00:00:00+09:00","対象期間終了日":"2024-01-31T23:59:59+09:00","発見脆弱性数":47,"対応完了脆弱性数":38,"インシデント発生件数":3,"重大度別集計":"【Critical】2件（対応完了：2件）、【High】12件（対応完了：11件）、【Medium】23件（対応完了：18件）、【Low】10件（対応完了：7件）","レポート内容":"1月度のセキュリティ運用概況：本月は47件の脆弱性を新規発見し、前月比で15%の増加となりました。対応完了率は80.9%で、特にCritical脆弱性については全件対応完了しています。セキュリティインシデントは3件発生し、うち1件は外部からのフィッシングメール経由の不正アクセス試行で、即座に遮断措置を実施いたしました。残る2件は内部システムの異常なアクセスパターンで、調査の結果、誤検知と判明しています。推奨事項として、従業員向けセキュリティ教育の強化とエンドポイント検知ツールの検出精度向上が挙げられます。","ステータス":"配布済み","作成者ID":"rec-user-001-鈴木花子","承認者ID":"rec-user-002-山田次郎","配布対象者リスト":"経営層（CEO、CFO、CTO）、各部門長（営業、企画、システム、人事）、セキュリティ委員会メンバー","作成日時":"2024-02-02T09:30:00+09:00","更新日時":"2024-02-05T14:15:00+09:00","承認日時":"2024-02-05T16:45:00+09:00","配布日時":"2024-02-06T08:00:00+09:00"},{"レポートID":"rec-20250115-001","レポート名":"本社ネットワーク重大脆弱性緊急報告書","レポート種別":"インシデント報告","対象期間開始日":"2025-01-14T09:30:00+09:00","対象期間終了日":"2025-01-15T17:45:00+09:00","発見脆弱性数":3,"対応完了脆弱性数":1,"インシデント発生件数":1,"重大度別集計":"緊急(CVSS 9.8): 1件、高(CVSS 7.5-8.9): 2件。緊急度の脆弱性はOpenSSLのバッファオーバーフロー脆弱性で、本社メールサーバーに影響。","レポート内容":"2025年1月14日09:30に本社ネットワークの脆弱性スキャンで重大な脆弱性が検出されました。OpenSSLバージョン1.0.2に存在するバッファオーバーフロー脆弱性(CVE-2024-XXXXX)がメールサーバーで確認されました。同日15:00に緊急パッチを適用し、1件の脆弱性対応が完了しました。残る2件の高度な脆弱性についても48時間以内の対応を予定しています。外部からの不正アクセスの痕跡は現在のところ検出されていません。","ステータス":"承認済み","作成者ID":"usr-20240401-012","承認者ID":"usr-20230615-005","配布対象者リスト":"山田太郎(情報セキュリティ部長)、佐藤花子(ネットワーク運用課長)、鈴木次郎(本社IT部長)、経営層セキュリティ委員会","作成日時":"2025-01-15T10:20:00+09:00","更新日時":"2025-01-15T14:35:00+09:00","承認日時":"2025-01-15T15:50:00+09:00","配布日時":"2025-01-15T16:15:00+09:00"},{"レポートID":"rec-001","レポート名":"2024年第4四半期 脆弱性スキャン結果集計レポート","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2024-10-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":247,"対応完了脆弱性数":189,"インシデント発生件数":3,"重大度別集計":"【Critical】12件 【High】68件 【Medium】124件 【Low】43件。Criticalレベルの脆弱性は全て対応完了。Highレベルは対応率88.2%（60件/68件）。Mediumレベルは対応率75.8%（94件/124件）。Lowレベルは対応率72.1%（31件/43件）。","レポート内容":"本四半期における脆弱性スキャン結果の集計と対応状況を報告します。前四半期比で発見脆弱性数は18%増加しましたが、対応完了率は前四半期の76%から76.5%に改善されました。特にCriticalレベルの脆弱性については即座に対応が完了しており、システムのセキュリティ体制が強化されていることが確認できます。一方、MediumおよびLowレベルの脆弱性については対応期限の短縮と優先度の再評価を推奨します。インシデント発生件数は3件であり、いずれも脆弱性スキャン結果の対応過程で検出された既知の脆弱性に関連するものです。次四半期に向けては、自動化スキャンツールの追加導入と対応プロセスの効率化を検討してください。","ステータス":"承認済み","作成者ID":"rec-usr-0847","承認者ID":"rec-usr-0152","配布対象者リスト":"セキュリティ責任者（山田花子）、システム管理部長（佐藤次郎）、情報セキュリティ委員会全員、各部門長","作成日時":"2025-01-08T09:30:00Z","更新日時":"2025-01-15T14:22:00Z","承認日時":"2025-01-16T10:15:00Z","配布日時":"2025-01-17T08:00:00Z"},{"レポートID":"rec-20250115-ransomware-001","レポート名":"2024年12月ランサムウェア感染事案 事後分析報告書","レポート種別":"インシデント報告","対象期間開始日":"2024-12-15T09:30:00+09:00","対象期間終了日":"2025-01-10T17:00:00+09:00","発見脆弱性数":23,"対応完了脆弱性数":18,"インシデント発生件数":1,"重大度別集計":"緊急(Critical):5件、高(High):12件、中(Medium):6件。感染経路となったVPN脆弱性(CVE-2024-XXXXX)は12月18日に対応完了。","レポート内容":"【事案概要】2024年12月15日、営業部門のクライアント端末がランサムウェア『LockBit3.0』に感染し、約450GBのデータが暗号化された。感染経路は期限切れVPNサーバーの認証機構の脆弱性と判明。【被害状況】顧客データベース一部、契約書類、プロジェクト管理ファイルが対象。身代金要求額は約5,000万円。【対応状況】即座にネットワーク遮断、感染端末隔離、バックアップからの復旧を実施。外部フォレンジック業者による調査で感染範囲を確定。【再発防止策】①VPN機器の定期脆弱性スキャン強化(月1回→週1回)、②MFA導入推進(対象:全VPNユーザー、完了期限2025年3月31日)、③EDR導入による異常検知体制構築、④セキュリティ研修の強化実施。【推奨事項】経営層への定期セキュリティリスク報告、インシデント対応演習の年2回実施、保険加入の検討。","ステータス":"承認済み","作成者ID":"usr-20240601-yamada-taro","承認者ID":"usr-20230315-suzuki-hanako","配布対象者リスト":"経営管理室、情報システム部、営業部門長、法務部、監査役室、取締役会","作成日時":"2025-01-08T14:20:00+09:00","更新日時":"2025-01-13T10:45:00+09:00","承認日時":"2025-01-14T09:15:00+09:00","配布日時":"2025-01-15T08:30:00+09:00"},{"レポートID":"rec-20250115-001","レポート名":"2024年度セキュリティ対応実績年間報告書","レポート種別":"年間サマリー","対象期間開始日":"2024-01-01T00:00:00+09:00","対象期間終了日":"2024-12-31T23:59:59+09:00","発見脆弱性数":247,"対応完了脆弱性数":241,"インシデント発生件数":8,"重大度別集計":"緊急度：高(CVSS 9.0以上)：12件、高(CVSS 7.0～8.9)：58件、中(CVSS 4.0～6.9)：112件、低(CVSS 0.1～3.9)：65件。緊急度：高の脆弱性は全て30日以内に対応完了。","レポート内容":"2024年度におけるセキュリティ脅威対応の実績について報告いたします。本年度は定期的な脆弱性スキャンにより247件の脆弱性を発見し、241件（97.6%）の対応を完了いたしました。インシデント発生件数は8件で、うち6件は外部からの侵入試行、2件は内部ユーザーの誤操作でした。いずれも初動対応時間の平均は2.3時間で、重大な被害は発生していません。脆弱性管理プロセスの強化により、対応期限内の完了率は前年度比で8ポイント向上いたしました。今後はクラウド環境のセキュリティ強化とセキュリティ意識向上研修の継続実施を推奨いたします。","ステータス":"配布済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0312","配布対象者リスト":"監査法人PwCあらた監査法人、取締役会、経営管理部、情報セキュリティ委員会、全部門長","作成日時":"2025-01-10T09:30:00+09:00","更新日時":"2025-01-14T16:45:00+09:00","承認日時":"2025-01-15T11:20:00+09:00","配布日時":"2025-01-15T14:00:00+09:00"},{"レポートID":"rec-001-20250115-container-vuln","レポート名":"開発環境コンテナイメージ脆弱性スキャン結果レポート（2025年1月）","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2025-01-01T00:00:00Z","対象期間終了日":"2025-01-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":32,"インシデント発生件数":2,"重大度別集計":"【Critical】3件（CVE-2024-XXXXX系2件、ライブラリ脆弱性1件）【High】12件（認証・認可関連6件、RCE脆弱性4件、その他2件）【Medium】24件（情報漏洩リスク8件、サービス拒否脆弱性10件、その他6件）【Low】8件（情報開示脆弱性5件、設定不備3件）","レポート内容":"開発環境で使用されている15個のコンテナイメージに対して脆弱性スキャンを実施しました。結果として47個の脆弱性が検出されました。Critical脆弱性3件については、1月15日までに全て修正完了し、本番環境への昇格前に対応が完了しています。High脆弱性12件のうち11件は修正完了、1件はベンダー対応待ちです。Medium脆弱性24件については段階的に対応中で、2月中旬の完了を予定しています。特にNode.jsイメージのOpenSSL脆弱性とPythonイメージのDjango脆弱性が検出され、優先度高で対応しました。インシデント発生件数2件はいずれも開発環境内での軽微なもので、本番環境への影響はありません。今後、CI/CDパイプラインへの自動スキャン統合を推奨します。","ステータス":"承認済み","作成者ID":"rec-user-20240501-tanaka","承認者ID":"rec-user-20231201-suzuki","配布対象者リスト":"開発チーム（山田太郎、佐藤花子、鈴木健一）、セキュリティチーム、インフラチーム、プロジェクトマネージャー（田中美咲）","作成日時":"2025-02-01T09:30:00Z","更新日時":"2025-02-03T14:15:00Z","承認日時":"2025-02-03T16:45:00Z","配布日時":"2025-02-04T08:00:00Z"},{"レポートID":"rec-20250215-001","レポート名":"サードパーティベンダーシステム脆弱性対応期限超過警告レポート","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2025-01-01T00:00:00+09:00","対象期間終了日":"2025-02-14T23:59:59+09:00","発見脆弱性数":23,"対応完了脆弱性数":14,"インシデント発生件数":2,"重大度別集計":"緊急(CVSS 9.0以上): 3件、高(CVSS 7.0-8.9): 8件、中(CVSS 4.0-6.9): 10件、低(CVSS 0.1-3.9): 2件。対応期限を超過している脆弱性は緊急1件、高3件の計4件。","レポート内容":"弊社が導入しているサードパーティベンダーA社製クラウドストレージシステムにおいて、2025年1月のセキュリティスキャンで23件の脆弱性が発見されました。このうち14件については対応完了しており、対応率は60.9%です。しかし、緊急度の高い脆弱性4件が対応期限（発見から30日以内）を超過しており、早急な対応が必要です。特に、認証バイパスの脆弱性(CVE-2025-1234、CVSS 9.2)については、既に2件のセキュリティインシデントが発生しており、ベンダーへの対応督促と並行して、当該システムへのアクセス制限を実施することを強く推奨します。","ステータス":"承認済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0312","配布対象者リスト":"情報セキュリティ部長 山田花子、システム管理部長 鈴木次郎、経営企画室長 佐藤三郎、ベンダー管理チーム、監査室","作成日時":"2025-02-13T09:30:00+09:00","更新日時":"2025-02-14T16:45:00+09:00","承認日時":"2025-02-14T17:20:00+09:00","配布日時":"2025-02-15T08:00:00+09:00"},{"レポートID":"rec-20250115-001","レポート名":"2025年1月度 セキュリティ月次レポート","レポート種別":"月次サマリー","対象期間開始日":"2025-01-01T00:00:00Z","対象期間終了日":"2025-01-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":38,"インシデント発生件数":3,"重大度別集計":"【緊急】2件、【高】12件、【中】23件、【低】10件。緊急度の脆弱性は認証機構の設定不備とデータベース接続情報の露出であり、既に対応完了。高度の脆弱性のうち10件は修正予定、2件は追加調査中。","レポート内容":"1月度のセキュリティ状況について報告いたします。発見脆弱性47件のうち38件（対応率80.9%）の対応が完了しました。インシデント3件は全て軽微な不正アクセス試行で、ファイアウォール側で検知・遮断されております。月中旬に実施した脆弱性スキャンでは前月比で新規脆弱性が15件増加しており、システムアップデート後の設定見直しが必要と判断されます。推奨事項として、未対応の高度脆弱性9件について2月中の対応完了、および全システム管理者への セキュリティ教育の実施を提案いたします。","ステータス":"承認済み","作成者ID":"usr-yamada-taro","承認者ID":"usr-suzuki-hanako","配布対象者リスト":"情報セキュリティ委員会委員長（鈴木花子）、情報システム部長（佐藤次郎）、各部門情報セキュリティ責任者、経営層","作成日時":"2025-02-03T09:30:00Z","更新日時":"2025-02-05T14:15:00Z","承認日時":"2025-02-05T16:45:00Z","配布日時":"2025-02-06T08:00:00Z"},{"レポートID":"rec-20250215-001","レポート名":"2025年1月 クラウドインフラセキュリティグループ設定誤り インシデント対応報告書","レポート種別":"インシデント報告","対象期間開始日":"2025-01-01T00:00:00+09:00","対象期間終了日":"2025-01-31T23:59:59+09:00","発見脆弱性数":12,"対応完了脆弱性数":10,"インシデント発生件数":3,"重大度別集計":"Critical: 2件（セキュリティグループ設定誤りによる不正アクセス経路露出）、High: 4件（過度なポート開放）、Medium: 4件（ログ出力設定不備）、Low: 2件（ドキュメント未整備）","レポート内容":"2025年1月中に、本社クラウドインフラ環境において、セキュリティグループ設定誤りに起因するインシデントが3件発生した。うち2件はCritical レベルのセキュリティグループルールが0.0.0.0/0からのSSH接続を許可していたことが原因で、不正アクセスの試行が検知された。対応として、該当するセキュリティグループルールを即座に修正し、アクセス元を特定ホストのみに限定した。また、全セキュリティグループの設定を棚卸しし、不要なポート開放を12個削除した。再発防止策として、セキュリティグループ設定変更時の承認フローを導入し、月次の設定監査スケジュールを確立した。","ステータス":"承認済み","作成者ID":"usr-20240101-015","承認者ID":"usr-20240101-003","配布対象者リスト":"情報セキュリティ部門（部長：山田花子）、クラウドインフラ運用チーム（リーダー：佐藤次郎）、システム監査室（室長：鈴木由美）、経営層セキュリティ委員会","作成日時":"2025-02-03T14:30:00+09:00","更新日時":"2025-02-12T09:15:00+09:00","承認日時":"2025-02-14T16:45:00+09:00","配布日時":"2025-02-15T08:00:00+09:00"},{"レポートID":"rec-001","レポート名":"ISO27001認証更新監査報告書（2024年度）","レポート種別":"監査報告書","対象期間開始日":"2024-01-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":23,"対応完了脆弱性数":21,"インシデント発生件数":2,"重大度別集計":"【Critical】0件、【High】3件（うち対応完了3件）、【Medium】12件（うち対応完了11件）、【Low】8件（うち対応完了7件）","レポート内容":"ISO27001認証更新に向けた適合性監査を実施しました。対象期間内に発見された23件の脆弱性のうち、21件の対応が完了しており、適合率は91.3%です。主な改善項目として以下が挙げられます：(1)アクセス制御ポリシーの強化と定期的な見直し体制の確立、(2)インシデント対応手順書の更新と全従業員への教育実施、(3)バックアップ体制の冗長化と復旧テストの定期実施、(4)ベンダー管理契約書への情報セキュリティ条項の明記。発生した2件のインシデントは軽微なもので、いずれも適切に対応されました。継続的改善活動を通じて、認証更新時の完全適合を目指すことを推奨します。","ステータス":"承認済み","作成者ID":"rec-user-045","承認者ID":"rec-user-012","配布対象者リスト":"情報セキュリティ委員会、経営管理部、全部門長、監査役、外部認証機関","作成日時":"2025-01-15T10:30:00Z","更新日時":"2025-01-22T14:45:00Z","承認日時":"2025-01-24T09:00:00Z","配布日時":"2025-01-27T08:00:00Z"}],"操作履歴":[{"操作履歴ID":"rec-20250115-001","ユーザーID":"rec-user-0847","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-2401","操作内容":"営業システムDB（本番環境）の日次フルバックアップを実行。対象: PostgreSQL 15.2、データベースサイズ: 245GB、バックアップ先: NAS-Storage-01（/backup/daily/2025-01-15）","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-15T02:00:00+09:00","実行終了日時":"2025-01-15T02:47:30+09:00","実行時間秒":2850,"IPアドレス":"192.168.10.45","セッションID":"sess-20250115-8f7a2c1b","作成日時":"2025-01-15T02:47:35+09:00"},{"操作履歴ID":"rec-20250215-0847","ユーザーID":"usr-admin-0312","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"job-recovery-2025-0156","操作内容":"2025年2月14日23:45に発生したシステム障害に対応し、バックアップポイント2025-02-14T20:00:00Zから復旧ジョブを実行。対象サーバー: prod-db-server-03、prod-db-server-04。復旧範囲: トランザクションログ、ユーザーマスタテーブル、売上実績テーブル。顧客マスタテーブルは破損が軽微であったため復旧対象外。","操作ステータス":"部分成功","エラーメッセージ":"警告: prod-db-server-04のストレージ容量不足により、復旧ジョブの最終検証ステップがタイムアウト。ただしコアデータの復旧は完了。","実行開始日時":"2025-02-15T08:47:23+09:00","実行終了日時":"2025-02-15T10:23:56+09:00","実行時間秒":6153,"IPアドレス":"192.168.1.45","セッションID":"sess-20250215-admin-7f2e9c","作成日時":"2025-02-15T10:24:12+09:00"},{"操作履歴ID":"rec-20250215-001","ユーザーID":"user-admin-0847","操作種別":"設定変更","対象リソースタイプ":"RTO_RPO設定","対象リソースID":"rto-rpo-config-0523","操作内容":"本番環境データベースシステムのRTO/RPO設定を厳格化。RTO目標値を4時間から2時間に短縮、RPO目標値を1時間から30分に短縮。バックアップ頻度を6時間ごとから3時間ごとに変更し、レプリケーション設定を同期型に変更。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15 09:30:00","実行終了日時":"2025-02-15 09:35:42","実行時間秒":342,"IPアドレス":"192.168.100.45","セッションID":"sess-a7f2d9e1-4c6b-8b3a-9f5e-2d8c1b4a6f9e","作成日時":"2025-02-15 09:35:42"},{"操作履歴ID":"rec-001-2025-0847","ユーザーID":"rec-user-0342","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-0156","操作内容":"営業部門の重要顧客データベースに対する即時手動バックアップを実行。スケジュール外での緊急バックアップ要求に応じた操作。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-23T14:32:15+09:00","実行終了日時":"2025-01-23T14:47:42+09:00","実行時間秒":927,"IPアドレス":"192.168.15.128","セッションID":"sess-8f2c9d4e-7b1a-4c6f-9e2a-5d8c1b3f6a7e","作成日時":"2025-01-23T14:47:43+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"ジョブ削除","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-003","操作内容":"2023年度のレガシーシステム用バックアップジョブ「営業DB_日次バックアップ_旧」を削除しました。保持期間満了に伴う整理作業です。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-15T09:30:00+09:00","実行終了日時":"2025-01-15T09:31:45+09:00","実行時間秒":105,"IPアドレス":"192.168.1.125","セッションID":"sess-20250115-093000-a7f2","作成日時":"2025-01-15T09:31:45+09:00"},{"操作履歴ID":"rec-20250215-047","ユーザーID":"usr-001-yamada","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"job-recovery-test-2025-02","操作内容":"本番環境のデータベースサーバー(DB-PROD-001)に対する復旧テストを実行。2025年2月15日のバックアップポイントからの復旧を試行。テスト環境へのリストア処理中にタイムアウトが発生。","操作ステータス":"失敗","エラーメッセージ":"復旧処理がタイムアウトしました。予定実行時間: 1800秒、実際実行時間: 1800秒以上。ネットワーク遅延またはストレージI/O負荷が原因と考えられます。","実行開始日時":"2025-02-15T14:30:00+09:00","実行終了日時":"2025-02-15T15:00:15+09:00","実行時間秒":1815,"IPアドレス":"192.168.10.45","セッションID":"sess-20250215-8a4f2c91","作成日時":"2025-02-15T15:00:16+09:00"},{"操作履歴ID":"rec-20250214-001","ユーザーID":"rec-user-0847","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-job-5623","操作内容":"本番環境DBサーバーの2025年2月13日23:30時点のバックアップからの復旧を試行。対象データベース：顧客情報DB。復旧先：本番環境。","操作ステータス":"失敗","エラーメッセージ":"復旧操作を実行する権限がありません。本番環境への復旧実行にはシステム管理者権限が必要です。現在のユーザー権限レベル：オペレータ（レベル2）","実行開始日時":"2025-02-14T09:15:32+09:00","実行終了日時":"2025-02-14T09:15:47+09:00","実行時間秒":15,"IPアドレス":"192.168.1.125","セッションID":"sess-20250214-a7f3e9b2","作成日時":"2025-02-14T09:15:48+09:00"},{"操作履歴ID":"rec-20250214-087","ユーザーID":"usr-0042","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"job-0156","操作内容":"営業部門サーバーの定期バックアップを実行。実行開始から約45秒後にネットワーク遅延が発生し、接続がタイムアウト。バックアップ処理は中断された。","操作ステータス":"失敗","エラーメッセージ":"ネットワークタイムアウト: バックアップ対象サーバーとの通信が途絶。接続時間: 45秒。リトライ3回実施後も復旧せず。","実行開始日時":"2025-02-14 09:30:15","実行終了日時":"2025-02-14 09:31:22","実行時間秒":67,"IPアドレス":"192.168.1.105","セッションID":"sess-7f4e9c2a-b8d1-4e6f-9a3c","作成日時":"2025-02-14 09:31:23"},{"操作履歴ID":"rec-20250215-001","ユーザーID":"user-admin-0847","操作種別":"設定変更","対象リソースタイプ":"RTO_RPO設定","対象リソースID":"res-recovery-plan-2024-12","操作内容":"自治体住民情報システム更新に伴い、復旧時間目標(RTO)を4時間から2時間に短縮、復旧時点目標(RPO)を30分から15分に変更。クリティカルデータベースの優先復旧順序を再編成し、バックアップ保持期間を90日から120日に延長。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15T09:30:00+09:00","実行終了日時":"2025-02-15T09:47:23+09:00","実行時間秒":1043,"IPアドレス":"192.168.100.45","セッションID":"sess-f7d2e9c1-4b56-4a2f-9d8e-2c1a5b7f3e9a","作成日時":"2025-02-15T09:47:24+09:00"},{"操作履歴ID":"rec-20250214-047","ユーザーID":"usr-20240601-082","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"job-20250214-015","操作内容":"監査対応のため2024年7月15日のバックアップポイントからの復旧を実行。対象システム：営業管理DB（本番環境）。復旧先：検証環境。復旧範囲：全テーブル。監査担当者：佐藤花子による指示。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-14T09:30:00+09:00","実行終了日時":"2025-02-14T10:47:33+09:00","実行時間秒":4653,"IPアドレス":"192.168.1.245","セッションID":"sess-20250214-a7f2e9c1","作成日時":"2025-02-14T10:47:35+09:00"}],"自治体":[{"自治体ID":"rec-001","自治体名":"豊田市","都道府県":"愛知県","自治体コード":"23203","導入ステータス":"検討中","システムバージョン":null,"担当部門":"総務部情報システム課","担当者名":"鈴木健一","連絡先電話":"0565-34-6600","連絡先メール":"info.system@toyota.lg.jp","備考":"人口約38万人の中規模市。現在、複数ベンダーから提案を受けており、2025年度中の導入を検討中。既存システムとの連携要件あり。予算規模は年間2,000万円程度を想定。","作成日時":"2024-11-15T10:30:00","更新日時":"2024-11-15T10:30:00","作成者":"yamada_taro","更新者":"yamada_taro"},{"自治体ID":"rec-001","自治体名":"東京都庁","都道府県":"東京都","自治体コード":"13000020","導入ステータス":"導入済み","システムバージョン":"v3.2.1","担当部門":"デジタル推進部システム運用課","担当者名":"山田花子","連絡先電話":"03-5388-2111","連絡先メール":"system-support@metro.tokyo.lg.jp","備考":"2024年4月にv3.2へのメジャーバージョンアップを実施。次回v3.3への更新は2025年3月予定。定期的なセキュリティパッチ適用が必要。","作成日時":"2024-01-15T09:30:00","更新日時":"2025-01-10T14:45:00","作成者":"admin-tanaka","更新者":"yamada-hanako"},{"自治体ID":"rec-001","自治体名":"南丹町","都道府県":"長野県","自治体コード":"20382","導入ステータス":"導入予定","システムバージョン":"未決定","担当部門":"企画財政課","担当者名":"山田花子","連絡先電話":"0265-82-3111","連絡先メール":"kikaku@minami-tan.lg.jp","備考":"令和7年度予算編成中。庁舎統合に伴うシステム導入のため、予算査定待ち。人口約3,500人の小規模町村。デジタル化推進補助金の活用を検討中。","作成日時":"2024-11-15 09:30:00","更新日時":"2024-12-20 14:45:00","作成者":"suzuki-taro","更新者":"yamada-hanako"},{"自治体ID":"rec-001","自治体名":"さいたま市","都道府県":"埼玉県","自治体コード":"11001","導入ステータス":"導入済み・支援中","システムバージョン":"v3.2.1","担当部門":"デジタル推進課","担当者名":"鈴木美咲","連絡先電話":"048-829-1111","連絡先メール":"digital-support@city.saitama.lg.jp","備考":"2024年4月導入後、庁舎間データ連携の遅延問題が発生。システムパフォーマンス改善と運用プロセス最適化支援を要請中。現在ベンダーと協働で改善計画を策定中。","作成日時":"2024-04-15T09:30:00","更新日時":"2025-01-22T14:45:00","作成者":"admin-tanaka","更新者":"support-yamamoto"},{"自治体ID":"rec-001","自治体名":"鳥取県米子市","都道府県":"鳥取県","自治体コード":"31202","導入ステータス":"導入済み","システムバージョン":"v2.1.0","担当部門":"デジタル推進課","担当者名":"佐藤美咲","連絡先電話":"0859-23-5211","連絡先メール":"digital-suishin@yonago.lg.jp","備考":"2025年1月15日に本番運用開始。初期運用サポート対応中。職員向け操作研修は2月中に完了予定。既知の軽微な不具合について修正パッチ適用待ち。","作成日時":"2025-01-16T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"yamamoto_taro","更新者":"suzuki_hanako"},{"自治体ID":"rec-001","自治体名":"渋谷区役所","都道府県":"東京都","自治体コード":"13104","導入ステータス":"導入予定","システムバージョン":"v2.1.0","担当部門":"デジタル推進課、財務部、福祉部","担当者名":"鈴木健一","連絡先電話":"03-3463-2111","連絡先メール":"digital-promotion@shibuya.tokyo.jp","備考":"令和6年度下期から段階的導入予定。財務会計システム、福祉給付システム、戸籍システムの3部門を対象とした大規模導入。全庁横断的なプロジェクト体制を構築中。外部ベンダーとの契約交渉進行中。","作成日時":"2024-09-15T10:30:00","更新日時":"2025-01-22T14:45:00","作成者":"yamada_taro","更新者":"suzuki_kenichi"},{"自治体ID":"rec-001","自治体名":"横浜市","都道府県":"神奈川県","自治体コード":"14100","導入ステータス":"移行中","システムバージョン":"v2.1.0","担当部門":"デジタル推進課","担当者名":"山田花子","連絡先電話":"045-671-2121","連絡先メール":"digital-promotion@city.yokohama.jp","備考":"前システム（旧ver1.8.5）からの移行中。差分分析対象：市民情報DB、納税管理システム、福祉給付管理。2025年3月末までの完全移行予定。データ検証は2月中に完了予定。","作成日時":"2024-11-15T09:30:00","更新日時":"2025-01-22T14:45:00","作成者":"佐藤太郎","更新者":"鈴木由美"},{"自治体ID":"rec-001","自治体名":"山田市","都道府県":"兵庫県","自治体コード":"28202","導入ステータス":"導入済み","システムバージョン":"v2.1.0","担当部門":"総務部情報システム課","担当者名":"佐藤花子","連絡先電話":"079-XXX-XXXX","連絡先メール":"sato.hanako@yamada-city.lg.jp","備考":"2024年3月導入完了。導入後1年経過に伴い、本格的なリスク評価を実施予定。セキュリティ監査対象。業務継続計画の見直し必要。","作成日時":"2024-03-15T09:30:00","更新日時":"2025-02-28T14:45:00","作成者":"admin-001","更新者":"suzuki-taro"},{"自治体ID":"rec-001","自治体名":"南相馬町","都道府県":"福島県","自治体コード":"07382","導入ステータス":"導入予定","システムバージョン":"v2.1.0","担当部門":"総務課デジタル推進係","担当者名":"鈴木健一","連絡先電話":"0244-23-5611","連絡先メール":"digital@minamisoma-town.lg.jp","備考":"前任担当者（佐藤美咲）が2025年3月末で異動予定。システム導入予定日は2025年6月。引き継ぎ資料一式は総務課デジタル推進係に保管。ベンダーとの契約内容確認が必要。","作成日時":"2024-11-15T09:30:00","更新日時":"2025-01-20T14:45:00","作成者":"admin_001","更新者":"admin_002"},{"自治体ID":"rec-001","自治体名":"鶴見市","都道府県":"神奈川県","自治体コード":"14202","導入ステータス":"導入延期","システムバージョン":"v2.1.0","担当部門":"デジタル行政推進課","担当者名":"佐藤美咲","連絡先電話":"045-510-1234","連絡先メール":"digital-admin@tsurumi.lg.jp","備考":"当初予定2024年10月導入予定でしたが、既存システムとの連携調整に予想以上の時間を要するため、2025年4月への延期を決定。再計画立案会議を2024年12月中旬に実施予定。予算配分の見直しと人員配置の追加検討が必要。","作成日時":"2024-09-15 10:30:00","更新日時":"2024-11-20 14:45:00","作成者":"yamada-taro","更新者":"suzuki-hanako"}]};
+window.AIVIC_PAGE_SCREEN_ID = "scr-1788234249242";
+window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {\n  const municipalitySelect = container.querySelector('[data-testid=\"municipality-select\"]');\n  const templateSelect = container.querySelector('[data-testid=\"template-select\"]');\n  const newMunicipalityBtn = container.querySelector('[data-testid=\"new-municipality-btn\"]');\n  const analyzeBtn = container.querySelector('[data-testid=\"analyze-button\"]');\n  const generateReportBtn = container.querySelector('[data-testid=\"generate-report-btn\"]');\n  const resultDashboard = container.querySelector('#result-dashboard');\n  const newMunicipalityModal = container.querySelector('#new-municipality-modal');\n  const modalCancelBtn = container.querySelector('[data-testid=\"modal-cancel-btn\"]');\n  const modalSaveBtn = container.querySelector('[data-testid=\"modal-save-btn\"]');\n  const tabBtns = container.querySelectorAll('.tab-btn');\n  const tabPanels = container.querySelectorAll('.tab-panel');\n\n  // タブ切り替え\n  tabBtns.forEach(btn => {\n    btn.addEventListener('click', () => {\n      const tabName = btn.dataset.tab;\n      tabBtns.forEach(b => {\n        b.style.borderBottomColor = b.dataset.tab === tabName ? 'var(--primary)' : 'transparent';\n        b.style.color = b.dataset.tab === tabName ? 'var(--text)' : 'var(--text-muted)';\n      });\n      tabPanels.forEach(panel => {\n        panel.style.display = panel.id === `tab-${tabName}-panel` ? 'block' : 'none';\n      });\n    });\n  });\n\n  // 新規登録モーダル\n  newMunicipalityBtn.addEventListener('click', () => {\n    newMunicipalityModal.style.display = 'flex';\n  });\n  modalCancelBtn.addEventListener('click', () => {\n    newMunicipalityModal.style.display = 'none';\n  });\n  newMunicipalityModal.addEventListener('click', (e) => {\n    if (e.target === newMunicipalityModal) {\n      newMunicipalityModal.style.display = 'none';\n    }\n  });\n  modalSaveBtn.addEventListener('click', async () => {\n    const name = container.querySelector('[data-testid=\"new-municipality-name\"]').value;\n    const pref = container.querySelector('[data-testid=\"new-municipality-pref\"]').value;\n    const code = container.querySelector('[data-testid=\"new-municipality-code\"]').value;\n    if (name && pref && code) {\n      const saved = await window.aivicApi.save(0, { 自治体名: name, 都道府県: pref, 自治体コード: code, 導入ステータス: '検討中' });\n      if (saved) {\n        newMunicipalityModal.style.display = 'none';\n        container.querySelector('[data-testid=\"new-municipality-name\"]').value = '';\n        container.querySelector('[data-testid=\"new-municipality-pref\"]').value = '';\n        container.querySelector('[data-testid=\"new-municipality-code\"]').value = '';\n        // 自治体リストを再読み込み\n        const municipalities = await window.aivicApi.list(0);\n        municipalitySelect.innerHTML = '<option value=\"\">選択してください</option>';\n        municipalities.forEach(m => {\n          const opt = document.createElement('option');\n          opt.value = m.id;\n          opt.textContent = m.自治体名;\n          municipalitySelect.appendChild(opt);\n        });\n      }\n    }\n  });\n\n  // 差分分析実行\n  analyzeBtn.addEventListener('click', async () => {\n    const municipalityId = municipalitySelect.value;\n    const templateId = templateSelect.value;\n    if (!municipalityId || !templateId) {\n      alert('自治体とテンプレートを選択してください');\n      return;\n    }\n\n    // 入力値を収集\n    const systemName = container.querySelector('[data-testid=\"system-name\"]').value;\n    const systemVersion = container.querySelector('[data-testid=\"system-version\"]').value;\n    const systemYears = container.querySelector('[data-testid=\"system-years\"]').value;\n    const operationDepartment = container.querySelector('[data-testid=\"operation-department\"]').value;\n    const securityAuth = container.querySelector('[data-testid=\"security-auth\"]').value;\n\n    // 簡易的なリスク評価ロジック\n    let riskScore = 50;\n    let deviationCount = 0;\n    let implementationEffort = 0;\n\n    if (!systemName) { riskScore += 10; deviationCount++; }\n    if (!systemVersion) { riskScore += 5; deviationCount++; }\n    if (parseInt(systemYears) > 10) { riskScore += 15; deviationCount++; }\n    if (!operationDepartment) { riskScore += 10; deviationCount++; }\n    if (!securityAuth) { riskScore += 20; deviationCount++; }\n\n    riskScore = Math.min(riskScore, 100);\n    implementationEffort = Math.ceil(deviationCount * 1.5);\n\n    const riskLevel = riskScore >= 70 ? '高リスク' : riskScore >= 40 ? '中リスク' : '低リスク';\n    const priorityRank = riskScore >= 70 ? '最優先' : riskScore >= 40 ? '優先' : '通常';\n    const implementationPhase = riskScore >= 70 ? 'フェーズ1（即時）' : riskScore >= 40 ? 'フェーズ2（3ヶ月以内）' : 'フェーズ3（6ヶ月以内）';\n\n    // 結果表示\n    container.querySelector('#risk-score').textContent = riskScore;\n    container.querySelector('#risk-level').textContent = riskLevel;\n    container.querySelector('#deviation-count').textContent = deviationCount;\n    container.querySelector('#implementation-effort').textContent = implementationEffort;\n    container.querySelector('#priority-rank').textContent = priorityRank;\n    container.querySelector('#implementation-phase').textContent = implementationPhase;\n\n    // 逸脱項目テーブル\n    const deviationTbody = container.querySelector('#deviation-tbody');\n    deviationTbody.innerHTML = '';\n    const deviations = [\n      { item: 'セキュリティ認証', standard: '多要素認証必須', current: securityAuth || 'なし', severity: securityAuth ? '低' : '高' },\n      { item: 'システムバージョン', standard: '最新版', current: systemVersion || '不明', severity: systemVersion ? '低' : '中' },\n      { item: '運用体制', standard: '専任チーム配置', current: operationDepartment || 'なし', severity: operationDepartment ? '低' : '中' }\n    ];\n    deviations.forEach(dev => {\n      const row = document.createElement('tr');\n      row.style.borderBottom = '1px solid var(--border)';\n      row.innerHTML = `\n        <td style=\"padding: 8px 12px; color: var(--text);\">${dev.item}</td>\n        <td style=\"padding: 8px 12px; color: var(--text);\">${dev.standard}</td>\n        <td style=\"padding: 8px 12px; color: var(--text);\">${dev.current}</td>\n        <td style=\"padding: 8px 12px; text-align: center; color: var(--text); font-weight: 500;\">${dev.severity}</td>\n      `;\n      deviationTbody.appendChild(row);\n    });\n\n    resultDashboard.style.display = 'block';\n    resultDashboard.scrollIntoView({ behavior: 'smooth' });\n  });\n\n  // レポート生成\n  generateReportBtn.addEventListener('click', () => {\n    const riskScore = container.querySelector('#risk-score').textContent;\n    const deviationCount = container.querySelector('#deviation-count').textContent;\n    const priorityRank = container.querySelector('#priority-rank').textContent;\n    const implementationPhase = container.querySelector('#implementation-phase').textContent;\n\n    const reportContent = `導入自治体調査・差分分析レポート\n自治体: ${municipalitySelect.options[municipalitySelect.selectedIndex].text}\nテンプレート: ${templateSelect.options[templateSelect.selectedIndex].text}\n\n【リスク評価結果】\n総合リスク度: ${riskScore}\n逸脱項目数: ${deviationCount}\n優先度ランク: ${priorityRank}\n推奨実装フェーズ: ${implementationPhase}\n\n【分析日時】\n${new Date().toLocaleString('ja-JP')}`;\n\n    const blob = new Blob([reportContent], { type: 'text/plain; charset=utf-8' });\n    const url = URL.createObjectURL(blob);\n    const a = document.createElement('a');\n    a.href = url;\n    a.download = `report_${Date.now()}.txt`;\n    a.click();\n    URL.revokeObjectURL(url);\n  });\n\n  // 初期データ読み込み\n  (async () => {\n    const municipalities = await window.aivicApi.list(0);\n    if (municipalities && municipalities.length > 0) {\n      municipalities.forEach(m => {\n        const opt = document.createElement('option');\n        opt.value = m.id;\n        opt.textContent = m.自治体名 || m.name;\n        municipalitySelect.appendChild(opt);\n      });\n    }\n  })();\n}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<nav style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg,var(--bg-sidebar,#0e1a31));border-bottom:1px solid var(--top-bar-border,var(--border,#2a3a5d));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--text,#e8eefc);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:1;border-bottom:2px solid var(--primary,#2b66ff);font-weight:600;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
+  <div class="shell" data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="nav-toggle" id="navToggle" aria-label="ナビゲーション切替">☰</button>
+        <div class="logo">自治体導入支援システム</div>
+      </div>
+      <div class="top-bar-right">
+        <div class="user-avatar">U</div>
+        <div class="user-name">ユーザー</div>
+        <a href="./login.html" class="logout-link">ログアウト</a>
+      </div>
+    </div>
+
+    <div class="main-container">
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+          <div class="nav-section-title">業務</div>
+          <button class="nav-item aivic-active" data-aivic-nav="scr-1788234249242" onclick="window.location.href='./scr-1788234249242.html'">
+            導入支援ワークスペース
+          </button>
+        </div>
+      </div>
+
+      <main class="content-area">
+        <div data-aivic-panel="scr-1788234249242" style="display:block"><div style="display: flex; flex-direction: column; height: 100%; background: var(--bg-main); color: var(--text); font-family: var(--font-family);">
+  
+  <!-- 上部: 自治体選択 + テンプレート選択 -->
+  <div style="background: var(--bg-card); padding: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 200px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">自治体を選択</label>
+      <select data-testid="municipality-select" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+        <option value="">選択してください</option>
+        <option value="tokyo">東京都渋谷区</option>
+        <option value="osaka">大阪府大阪市</option>
+        <option value="kyoto">京都府京都市</option>
+      </select>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">標準要件テンプレート</label>
+      <select data-testid="template-select" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+        <option value="">選択してください</option>
+        <option value="mid-city">中規模市区町村</option>
+        <option value="large-city">大規模市区町村</option>
+        <option value="small-town">小規模町村</option>
+      </select>
+    </div>
+    <button data-testid="new-municipality-btn" style="background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius-control); cursor: pointer; font-size: 14px; font-weight: 500;">新規登録</button>
+  </div>
+
+  <!-- メインコンテンツ: スクロール可能 -->
+  <div style="flex: 1; overflow-y: auto; padding: 16px;">
+    
+    <!-- 入力フォーム: タブ形式 -->
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
+        <button data-testid="tab-system" class="tab-btn" data-tab="system" style="padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid var(--primary); color: var(--text); cursor: pointer; font-weight: 500; font-size: 14px;">既存システム</button>
+        <button data-testid="tab-operation" class="tab-btn" data-tab="operation" style="padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); cursor: pointer; font-weight: 500; font-size: 14px;">運用体制</button>
+        <button data-testid="tab-security" class="tab-btn" data-tab="security" style="padding: 8px 16px; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); cursor: pointer; font-weight: 500; font-size: 14px;">セキュリティ</button>
+      </div>
+
+      <!-- タブ1: 既存システム -->
+      <div id="tab-system-panel" class="tab-panel" style="display: block;">
+        <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">システム名</label>
+              <input data-testid="system-name" type="text" placeholder="例: 自治体基幹システム" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">バージョン</label>
+              <input data-testid="system-version" type="text" placeholder="例: v2.5.1" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">稼働年数</label>
+              <input data-testid="system-years" type="number" placeholder="年" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">ベンダー</label>
+              <input data-testid="system-vendor" type="text" placeholder="例: NEC" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">主要機能（チェック）</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="feature-accounting" style="accent-color: var(--primary);">
+                <span>会計管理</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="feature-hr" style="accent-color: var(--primary);">
+                <span>人事給与</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="feature-document" style="accent-color: var(--primary);">
+                <span>文書管理</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="feature-citizen" style="accent-color: var(--primary);">
+                <span>市民サービス</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- タブ2: 運用体制 -->
+      <div id="tab-operation-panel" class="tab-panel" style="display: none;">
+        <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">担当部門</label>
+              <input data-testid="operation-department" type="text" placeholder="例: 情報システム課" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">担当者数</label>
+              <input data-testid="operation-staff-count" type="number" placeholder="人" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">平均スキルレベル</label>
+              <select data-testid="operation-skill-level" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+                <option value="">選択してください</option>
+                <option value="basic">基礎</option>
+                <option value="intermediate">中級</option>
+                <option value="advanced">上級</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">運用体制</label>
+              <select data-testid="operation-type" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+                <option value="">選択してください</option>
+                <option value="in-house">内製</option>
+                <option value="outsource">外注</option>
+                <option value="hybrid">ハイブリッド</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">運用課題（自由記述）</label>
+            <textarea data-testid="operation-issues" placeholder="現在の運用上の課題や懸念事項を記入してください" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box; min-height: 80px; font-family: var(--font-family);"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- タブ3: セキュリティ -->
+      <div id="tab-security-panel" class="tab-panel" style="display: none;">
+        <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">認証方式</label>
+              <select data-testid="security-auth" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+                <option value="">選択してください</option>
+                <option value="basic">基本認証</option>
+                <option value="ldap">LDAP</option>
+                <option value="mfa">多要素認証</option>
+                <option value="oauth">OAuth2.0</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">暗号化レベル</label>
+              <select data-testid="security-encryption" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+                <option value="">選択してください</option>
+                <option value="none">なし</option>
+                <option value="ssl">SSL/TLS</option>
+                <option value="aes256">AES-256</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">セキュリティ要件（チェック）</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="security-audit-log" style="accent-color: var(--primary);">
+                <span>監査ログ</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="security-backup" style="accent-color: var(--primary);">
+                <span>バックアップ</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="security-disaster" style="accent-color: var(--primary);">
+                <span>災害対応</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer;">
+                <input type="checkbox" data-testid="security-compliance" style="accent-color: var(--primary);">
+                <span>コンプライアンス</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 差分抽出ボタン -->
+    <div style="margin-bottom: 24px; text-align: center;">
+      <button data-testid="analyze-button" style="background: var(--primary); color: #fff; border: none; padding: 12px 32px; border-radius: var(--radius-control); cursor: pointer; font-size: 16px; font-weight: 600;">差分分析を実行</button>
+    </div>
+
+    <!-- 結果ダッシュボード（初期非表示） -->
+    <div id="result-dashboard" style="display: none;">
+      
+      <!-- リスク評価スコア -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+        <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position); text-align: center;">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">総合リスク度</div>
+          <div id="risk-score" style="font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">-</div>
+          <div id="risk-level" style="font-size: 14px; color: var(--text); font-weight: 500;">-</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position); text-align: center;">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">逸脱項目数</div>
+          <div id="deviation-count" style="font-size: 32px; font-weight: 700; color: var(--primary);">-</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">項目</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position); text-align: center;">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">追加実装工数</div>
+          <div id="implementation-effort" style="font-size: 32px; font-weight: 700; color: var(--primary);">-</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">人月</div>
+        </div>
+      </div>
+
+      <!-- 逸脱項目一覧 -->
+      <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position); margin-bottom: 24px;">
+        <h3 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">逸脱項目</h3>
+        <div class="table-wrap" style="overflow-x: auto;">
+          <table data-testid="deviation-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <thead>
+              <tr style="background: var(--bg-sidebar); border-bottom: 1px solid var(--border);">
+                <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">項目</th>
+                <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">標準要件</th>
+                <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">現状</th>
+                <th style="padding: 8px 12px; text-align: center; color: var(--text); font-weight: 600;">重大度</th>
+              </tr>
+            </thead>
+            <tbody id="deviation-tbody">
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td colspan="4" style="padding: 12px; text-align: center; color: var(--text-muted);">分析実行後に表示されます</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 導入優先度 -->
+      <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position); margin-bottom: 24px;">
+        <h3 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">導入優先度判定</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); border: 1px solid var(--border);">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">優先度ランク</div>
+            <div id="priority-rank" style="font-size: 18px; font-weight: 700; color: var(--primary);">-</div>
+          </div>
+          <div style="padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); border: 1px solid var(--border);">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">推奨実装フェーズ</div>
+            <div id="implementation-phase" style="font-size: 14px; font-weight: 600; color: var(--text);">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- レポート生成ボタン -->
+      <div style="text-align: center;">
+        <button data-testid="generate-report-btn" style="background: var(--primary); color: #fff; border: none; padding: 12px 32px; border-radius: var(--radius-control); cursor: pointer; font-size: 16px; font-weight: 600;">レポートを生成・ダウンロード</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新規登録モーダル（初期非表示） -->
+<div id="new-municipality-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(43, 37, 32, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: var(--radius-card); max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(43, 37, 32, 0.4);">
+    <h2 style="font-size: 18px; font-weight: 600; margin: 0 0 16px 0;">自治体を新規登録</h2>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">自治体名</label>
+      <input data-testid="new-municipality-name" type="text" placeholder="例: 東京都新宿区" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">都道府県</label>
+      <select data-testid="new-municipality-pref" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px;">
+        <option value="">選択してください</option>
+        <option value="tokyo">東京都</option>
+        <option value="osaka">大阪府</option>
+        <option value="kyoto">京都府</option>
+      </select>
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">自治体コード</label>
+      <input data-testid="new-municipality-code" type="text" placeholder="例: 13101" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 14px; box-sizing: border-box;">
+    </div>
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+      <button data-testid="modal-cancel-btn" style="background: transparent; color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: var(--radius-control); cursor: pointer; font-size: 14px; font-weight: 500;">キャンセル</button>
+      <button data-testid="modal-save-btn" style="background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius-control); cursor: pointer; font-size: 14px; font-weight: 500;">登録</button>
+    </div>
+  </div>
+</div></div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    navToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const activeNav = document.querySelector('[data-aivic-nav].aivic-active');
+      if (activeNav) {
+        const screenId = activeNav.getAttribute('data-aivic-nav');
+        showScreen(screenId);
+      }
+    });
+  </script>
+
+  
+  
+<script>
+(function() {
+  var TABLE_DEFS = window.AIVIC_TABLES || [];
+  var PRESET_SEED = window.AIVIC_PRESET_SEED || {};
+  var SYSTEM_NAME = window.AIVIC_SYSTEM_NAME || "";
+  var APP_ID = window.AIVIC_APP_ID || "";
+  var API_URL = (window.AIVIC_API_URL && window.AIVIC_API_URL !== "REPLACE_WITH_API_URL")
+    ? window.AIVIC_API_URL : window.location.origin;
+
+  // 通知 helper ( SPA 版と同じ )
+  window.aivicNotify = (function() {
+    function ensureContainer() {
+      var c = document.getElementById("aivic-toast-container");
+      if (c) return c;
+      c = document.createElement("div");
+      c.id = "aivic-toast-container";
+      c.style.cssText = "position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:360px;";
+      document.body.appendChild(c);
+      return c;
+    }
+    function show(msg, type) {
+      var c = ensureContainer();
+      var el = document.createElement("div");
+      el.textContent = msg;
+      el.style.cssText = "padding:10px 16px;border-radius:8px;font-size:13px;line-height:1.4;pointer-events:auto;color:#fff;background:" + (type === "error" ? "#dc2626" : "#d97706");
+      c.appendChild(el);
+      setTimeout(function() {
+        el.style.transition = "opacity .3s";
+        el.style.opacity = "0";
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+      }, type === "error" ? 6000 : 4500);
+    }
+    return {
+      error: function(msg) { show("❌ " + msg, "error"); },
+      warn:  function(msg) { show("⚠️ " + msg, "warn"); },
+    };
+  })();
+
+  // CRUD API ( SPA 版と同じ )
+  window.aivicApi = (function() {
+    function dbErr(op) { window.aivicNotify.error("データベースエラー ( " + op + " ): APIサーバーに接続できません。"); }
+    function newId() { return typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(36).slice(2); }
+    function q(i) {
+      var t = TABLE_DEFS[i];
+      var dbP = (window.AIVIC_DB_TYPE && window.AIVIC_DB_TYPE !== "dynamodb") ? "&db=" + encodeURIComponent(window.AIVIC_DB_TYPE) : "";
+      return "?app=" + encodeURIComponent(APP_ID) + "&system=" + encodeURIComponent(SYSTEM_NAME) + "&table=" + encodeURIComponent(t ? t.tableName : "table" + i) + dbP;
+    }
+    return {
+      list: async function(tableIndex) {
+        if (!API_URL) return [];
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex)); var d = await r.json(); return Array.isArray(d) ? d : (d.items || []); }
+        catch(e) { dbErr("データ取得"); return []; }
+      },
+      save: async function(tableIndex, item) {
+        if (!API_URL) { dbErr("保存"); return null; }
+        var now = new Date().toISOString();
+        var rec = Object.assign({}, item, { id: item.id || newId(), createdAt: item.createdAt || now, updatedAt: now });
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex), { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(rec) }); return await r.json(); }
+        catch(e) { dbErr("保存"); return null; }
+      },
+      update: async function(tableIndex, id, changes) {
+        if (!API_URL) { dbErr("更新"); return null; }
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(Object.assign({}, changes, {updatedAt: new Date().toISOString()})) }); return await r.json(); }
+        catch(e) { dbErr("更新"); return null; }
+      },
+      delete: async function(tableIndex, id) {
+        if (!API_URL) { dbErr("削除"); return {deleted:false}; }
+        try { await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), {method:"DELETE"}); return {deleted:true}; }
+        catch(e) { dbErr("削除"); return {deleted:false}; }
+      },
+    };
+  })();
+
+  // showScreen はマルチページ構成ではページ遷移として動く。
+  var _aivicNavLastTime = 0;
+  var _aivicNavLastTarget = "";
+  var _aivicReady = false;
+  window.showScreen = function(screenId) {
+    if (!screenId) return;
+    if (screenId === window.AIVIC_PAGE_SCREEN_ID) return;
+    var targetPath = './' + encodeURIComponent(screenId) + '.html';
+    var currentName = (window.location.pathname.split('/').pop() || '');
+    if (currentName === (encodeURIComponent(screenId) + '.html') ||
+        currentName === (screenId + '.html')) {
+      return;
+    }
+    var now = Date.now();
+    if (_aivicNavLastTarget === targetPath && (now - _aivicNavLastTime) < 100) {
+      console.warn('[aivic] showScreen 連続呼び出し検知。 無限ループ防止のため抑制:', screenId);
+      return;
+    }
+    if (!_aivicReady) {
+      console.warn('[aivic] DOMContentLoaded 前の showScreen 呼び出し。 抑制:', screenId);
+      return;
+    }
+    _aivicNavLastTime = now;
+    _aivicNavLastTarget = targetPath;
+    window.location.href = targetPath;
+  };
+
+  function seedAllIfEmpty() {
+    if (!API_URL) return Promise.resolve();
+    return Promise.all(TABLE_DEFS.map(function(t, i) {
+      var preset = PRESET_SEED[t.tableName];
+      if (!Array.isArray(preset) || preset.length === 0) return Promise.resolve();
+      return window.aivicApi.list(i).then(function(existing) {
+        if (existing && existing.length > 0) return;
+        return Promise.all(preset.map(function(row) { return window.aivicApi.save(i, row); }));
+      }).catch(function() {});
+    }));
+  }
+
+  // ── 初期表示: このページ専用の panel に initFn を実行 ──
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() { _aivicReady = true; }, 1500);
+    var pageScreenId = window.AIVIC_PAGE_SCREEN_ID;
+    if (!pageScreenId) return;
+
+    // AI シェルが SPA 用の初期表示処理を持っていても、マルチページでは
+    // このファイルに割り当てられた画面だけを表示する。
+    document.querySelectorAll('[data-aivic-panel]').forEach(function(panel) {
+      var isCurrent = panel.getAttribute('data-aivic-panel') === pageScreenId;
+      panel.style.display = isCurrent ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('[data-aivic-nav]').forEach(function(btn) {
+      var isActive = btn.getAttribute("data-aivic-nav") === pageScreenId;
+      btn.classList.toggle("aivic-active", isActive);
+      btn.setAttribute("aria-current", isActive ? "page" : "false");
+    });
+
+    var container = document.querySelector('[data-aivic-panel="' + pageScreenId + '"]');
+    if (!container) return;
+
+    // content 要素の hidden 強制除去 ( 2026-05-24 Playwright 大量 fail 対応 )
+    var isModalLike = function(el) {
+      if (!el || !el.classList) return false;
+      var cn = String(el.className || "");
+      if (/\bmodal\b|\bdialog\b|\boverlay\b|\bpopup\b|\bdropdown\b|\btooltip\b/i.test(cn)) return true;
+      var role = el.getAttribute && el.getAttribute("role");
+      if (role === "dialog" || role === "alertdialog" || role === "tooltip" || role === "menu") return true;
+      if (el.hasAttribute && (el.hasAttribute("data-modal") || el.hasAttribute("data-dropdown") || el.hasAttribute("data-popup") || el.hasAttribute("data-aivic-overlay"))) return true;
+      // 【2026-06-25】 class/role が無くても inline で画面を覆う overlay ( position:fixed ) は modal 扱いにして、
+      //  content 強制可視化が誤ってダイアログをロード時に表示してしまわないようにする。
+      if (el.style && el.style.position === "fixed") return true;
+      return false;
+    };
+    var unhideContentElements = function(root) {
+      var all = root.querySelectorAll('.hidden, [hidden], [style*="display:none"], [style*="display: none"]');
+      for (var k = 0; k < all.length; k++) {
+        var el = all[k];
+        if (isModalLike(el)) continue;
+        var p = el.parentElement;
+        var insideModal = false;
+        while (p && p !== root) {
+          if (isModalLike(p)) { insideModal = true; break; }
+          p = p.parentElement;
+        }
+        if (insideModal) continue;
+        el.classList.remove('hidden');
+        el.removeAttribute('hidden');
+        if (el.style && el.style.display === 'none') el.style.display = '';
+      }
+    };
+    try { unhideContentElements(container); } catch (e) { console.warn('[aivic] unhideContent failed:', e); }
+
+    var initJsSource = window.AIVIC_PAGE_INIT_JS;
+    if (!initJsSource) {
+      seedAllIfEmpty();
+      return;
+    }
+    var initFn = null;
+    try {
+      initFn = (new Function("return (" + initJsSource + ")"))();
+    } catch (e) {
+      console.error("[aivic] initJs compile error:", pageScreenId, e);
+      return;
+    }
+    if (typeof initFn !== "function") return;
+
+    seedAllIfEmpty().then(function() {
+      return Promise.all(TABLE_DEFS.map(function(t, i) {
+        return window.aivicApi.list(i)
+          .then(function(records) { return Object.assign({}, t, { records: records }); })
+          .catch(function() { return Object.assign({}, t, { records: [] }); });
+      }));
+    }).then(function(tables) {
+      try { initFn(container, API_URL, tables); } catch (e) { console.error("[aivic] initFn error:", pageScreenId, e); }
+      _aivicReady = true;
+    });
+  });
+
+  // 【2026-06-27 強化・必ず閉じられる保証】 モーダル/ダイアログを確実に閉じる安全網。
+  //  旧版は Esc のみ + セレクタ .overlay が class="modal-overlay" にマッチせず ( クラストークンが別 )
+  //  閉じられなかった ( ユーザー報告 2026-06-27: ダイアログが閉じない ) 。 ① Esc ② オーバーレイ背景クリック
+  //  ③ 閉じる系ボタン の 3 経路で閉じる。 セレクタは複合クラスも拾うよう [class*="overlay"] を含む。
+  //  閉じ方は「開クラス ( active/open/show 等 ) があれば外す ( 再オープン可 ) 、 無ければ inline display:none」。
+  //  modal-header 等の sub-part を誤って隠さないため [class*="modal"] は使わない。
+  var AIVIC_OVERLAY_SELECTOR = '[class*="overlay"],[data-aivic-overlay],[data-modal],[role="dialog"],[role="alertdialog"]';
+  var aivicCloseOverlay = function(el) {
+    if (!el || !el.classList) return;
+    var openClasses = ["active", "open", "show", "visible", "is-open", "is-active", "show-modal"];
+    var removed = false;
+    for (var c = 0; c < openClasses.length; c++) {
+      if (el.classList.contains(openClasses[c])) { el.classList.remove(openClasses[c]); removed = true; }
+    }
+    if (!removed && el.style) el.style.display = "none";
+  };
+  document.addEventListener("keydown", function(e) {
+    if (e.key !== "Escape" && e.keyCode !== 27) return;
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  });
+  document.addEventListener("click", function(e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.closest) {
+      var closer = t.closest('.modal-close,[data-modal-close],[data-close],[data-dismiss]');
+      if (closer) {
+        var oc = closer.closest(AIVIC_OVERLAY_SELECTOR);
+        if (oc) { aivicCloseOverlay(oc); return; }
+      }
+    }
+    // 背景 ( オーバーレイ要素そのもの ) を直接クリックした時のみ閉じる ( モーダル本体クリックでは閉じない ) 。
+    if (t.matches && t.matches(AIVIC_OVERLAY_SELECTOR) && t === e.target) {
+      aivicCloseOverlay(t);
+    }
+  });
+  // 【2026-06-28 強化・ロード時に必ず閉じる】 生成 AI が overlay を初期 display:none にし忘れた場合でも、
+  //  ロード直後にダイアログが画面を覆って操作不能になる事故 ( ユーザー報告 2026-06-28: ダイアログが常に表示され
+  //  閉じられない ) を防ぐ。 認識可能な overlay/dialog セレクタに該当する要素はロード時に必ず閉じる
+  //  ( 開クラス除去 or display:none ) 。 真にロード時表示すべき業務コンテンツは overlay セレクタに該当しないため
+  //  影響しない ( パネルコンテナは data-aivic-panel で別管理 ) 。
+  var aivicHideOverlaysOnLoad = function() {
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", aivicHideOverlaysOnLoad);
+  } else {
+    aivicHideOverlaysOnLoad();
+  }
+})();
+
+</script>
+</body>
+</html>

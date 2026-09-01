@@ -1,0 +1,4167 @@
+[
+  {
+    "systemId": "itg-2",
+    "systemName": "アクセシビリティ改善管理・ユーザーテスト分析システム",
+    "screens": [
+      {
+        "id": "scr-1788232084202",
+        "name": "アクセシビリティ改善ダッシュボード",
+        "purpose": "アクセシビリティ改善の進捗状況を可視化し、改善実装状況の統計、ユーザーテスト結果、JIS X8341-3準拠項目の進捗を一元管理・追跡するダッシュボード",
+        "items": [
+          "改善進捗率サマリーカード",
+          "改善実装状況の円グラフ",
+          "JIS X8341-3準拠項目チェックリスト",
+          "最近の改善実装記録一覧",
+          "ユーザーテスト結果サマリー",
+          "テスト実施日時別グラフ",
+          "改善項目別の進捗バー",
+          "ユーザーテスト参加者数推移",
+          "準拠項目別の達成状況表",
+          "改善実装記録の詳細表示ボタン",
+          "ユーザーテスト結果の詳細表示ボタン",
+          "期間フィルター"
+        ]
+      },
+      {
+        "id": "scr-1788232179316",
+        "name": "ユーザーテスト管理・分析画面",
+        "purpose": "ユーザーテスト計画から結果記録、分類・優先度管理、自動集計・比較分析、レポート生成までを一元管理し、アクセシビリティ改善の優先度判定を支援する統合分析画面",
+        "items": [
+          "テスト計画一覧・検索フィルター",
+          "テスト計画新規作成ボタン",
+          "テスト計画詳細表示パネル",
+          "要件マッピング確認エリア",
+          "テスト実施記録入力フォーム",
+          "テスト実施日時・実施者・対象ユーザー選択",
+          "テスト結果テキスト入力欄",
+          "テスト結果分類ドロップダウン",
+          "優先度レベル選択（高・中・低）",
+          "改善項目リンク設定",
+          "テスト結果一覧表",
+          "結果ステータス表示（未対応・対応中・完了）"
+        ]
+      },
+      {
+        "id": "scr-1788232195429",
+        "name": "UI改善実装・管理画面",
+        "purpose": "UI改善施策の登録・管理、実装記録の追跡、レイアウト検証、アクセシビリティ対応状況の監視、改善履歴の一元管理を行う画面",
+        "items": [
+          "改善施策一覧表",
+          "改善施策登録ボタン",
+          "改善施策編集フォーム",
+          "施策タイトル入力欄",
+          "施策説明入力欄",
+          "対応するアクセシビリティ項目選択",
+          "優先度選択ドロップダウン",
+          "担当者割り当てフィールド",
+          "実装予定日入力欄",
+          "実装ステータス選択（未実装・実装中・完了）",
+          "レイアウト検証チェックリスト",
+          "検証結果記録欄"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "ユーザー",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル",
+        "columns": [
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーの一意識別子"
+          },
+          {
+            "name": "ユーザー名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン時に使用するユーザー名"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの連絡先メールアドレス"
+          },
+          {
+            "name": "部門",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーが属する部門名"
+          },
+          {
+            "name": "役職",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーの役職"
+          },
+          {
+            "name": "ロール",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの状態（有効/無効/休止等）"
+          },
+          {
+            "name": "最終ログイン日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "ユーザーが最後にシステムにログインした日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーレコードが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーレコードが最後に更新された日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーレコードを作成したユーザーまたはシステム"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーレコードを最後に更新したユーザーまたはシステム"
+          }
+        ]
+      },
+      {
+        "tableName": "UI改善実装記録",
+        "purpose": "アクセシビリティ改善の実装内容、実装状況、テスト結果を記録・管理し、改善の進捗追跡とユーザーテスト分析を支援する",
+        "columns": [
+          {
+            "name": "改善実装記録ID",
+            "type": "uuid",
+            "required": true,
+            "description": "改善実装記録の一意識別子"
+          },
+          {
+            "name": "改善項目名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "実装するアクセシビリティ改善の項目名"
+          },
+          {
+            "name": "改善内容",
+            "type": "text",
+            "required": true,
+            "description": "改善の詳細な説明と実装内容"
+          },
+          {
+            "name": "対象UI要素",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "改善対象となるUI要素またはページ名"
+          },
+          {
+            "name": "実装ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "実装状況を示すステータス（計画中/実装中/完了/保留中など）"
+          },
+          {
+            "name": "優先度",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "改善の優先度レベル（高/中/低）"
+          },
+          {
+            "name": "実装予定日",
+            "type": "timestamp",
+            "required": false,
+            "description": "改善実装の予定日時"
+          },
+          {
+            "name": "実装完了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "改善実装の完了日時"
+          },
+          {
+            "name": "テスト実施状況",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーテスト実施の状況（未実施/実施中/完了）"
+          },
+          {
+            "name": "テスト結果",
+            "type": "text",
+            "required": false,
+            "description": "ユーザーテストの結果と分析内容"
+          },
+          {
+            "name": "テスト参加者数",
+            "type": "integer",
+            "required": false,
+            "description": "ユーザーテストに参加したユーザー数"
+          },
+          {
+            "name": "改善効果",
+            "type": "text",
+            "required": false,
+            "description": "実装による改善効果の測定結果"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "その他の補足情報"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "記録の作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "記録の最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "記録を作成したユーザーID（ユーザーテーブルへの外部キー）"
+          }
+        ]
+      },
+      {
+        "tableName": "ユーザーテスト",
+        "purpose": "アクセシビリティ改善の効果を検証するため、ユーザーによるテスト実施内容、結果、フィードバックを記録・管理する",
+        "columns": [
+          {
+            "name": "テストID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテストの一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "テスト参加ユーザーの外部キー参照"
+          },
+          {
+            "name": "改善実装記録ID",
+            "type": "uuid",
+            "required": true,
+            "description": "テスト対象のUI改善実装記録の外部キー参照"
+          },
+          {
+            "name": "テスト実施日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーテストを実施した日時"
+          },
+          {
+            "name": "テスト種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "テストの種類（例：操作性テスト、スクリーンリーダー検証、キーボード操作確認）"
+          },
+          {
+            "name": "テスト結果",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "テスト結果の判定（例：合格、不合格、部分合格）"
+          },
+          {
+            "name": "所要時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "テスト実施にかかった時間（秒単位）"
+          },
+          {
+            "name": "ユーザーフィードバック",
+            "type": "text",
+            "required": false,
+            "description": "ユーザーから得られた改善に関する意見やコメント"
+          },
+          {
+            "name": "問題点摘出",
+            "type": "text",
+            "required": false,
+            "description": "テスト中に発見されたアクセシビリティ上の問題点"
+          },
+          {
+            "name": "改善提案",
+            "type": "text",
+            "required": false,
+            "description": "ユーザーから提案された改善案"
+          },
+          {
+            "name": "満足度スコア",
+            "type": "integer",
+            "required": false,
+            "description": "ユーザーの満足度を数値化したスコア（例：1-5段階）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "テストレコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "テストレコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "テストレコード作成者の識別子"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-3",
+    "systemName": "料金・返金ルール管理・検証システム",
+    "screens": [
+      {
+        "id": "scr-1788233353960",
+        "name": "料金ルール・返金条件管理画面",
+        "purpose": "料金ルール、返金条件、予約変更承認基準の定義・編集と変更内容の登録を行い、変更前後のルール適用対象予約データを自動抽出・影響範囲を検証した上で、段階的な適用スケジュールを管理・実行する",
+        "items": [
+          "料金ルール定義フォーム",
+          "返金条件設定フォーム",
+          "予約変更承認基準設定フォーム",
+          "ルール変更内容登録エリア",
+          "変更前ルール適用対象予約データ自動抽出ボタン",
+          "変更後ルール適用対象予約データ自動抽出ボタン",
+          "影響範囲検証結果表示パネル",
+          "影響対象予約件数サマリー",
+          "段階的適用スケジュール設定テーブル",
+          "適用開始日時指定フィールド",
+          "適用終了日時指定フィールド",
+          "段階別適用対象グループ設定"
+        ]
+      },
+      {
+        "id": "scr-1788233368370",
+        "name": "料金計算異常検出・分析画面",
+        "purpose": "月次料金計算処理の実行と結果確認、計算ルール適用の異常を検出・分析し、原因を特定して補正・返金処理を実行・管理する",
+        "items": [
+          "月次料金計算実行ボタン",
+          "計算対象期間選択",
+          "計算結果サマリー表示",
+          "異常検出結果一覧",
+          "異常項目詳細表示",
+          "適用ルール確認パネル",
+          "ルール検証実行ボタン",
+          "異常原因分析レポート",
+          "補正データ入力フォーム",
+          "補正内容確認・反映ボタン",
+          "返金対象者リスト",
+          "返金金額計算結果"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "ログインユーザー",
+        "purpose": "料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する",
+        "columns": [
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーの一意識別子"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン用メールアドレス、システム内で一意"
+          },
+          {
+            "name": "パスワードハッシュ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ハッシュ化されたパスワード"
+          },
+          {
+            "name": "ユーザー名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの表示名"
+          },
+          {
+            "name": "ロール",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの権限レベル（管理者、担当者等）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの状態（有効、無効、一時停止等）"
+          },
+          {
+            "name": "最終ログイン日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "最後にログインした日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーアカウント作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザー情報最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーアカウント作成者のユーザーID"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-4",
+    "systemName": "バックアップ・復旧管理・監視システム",
+    "screens": [
+      {
+        "id": "scr-1788233819944",
+        "name": "バックアップ監視ダッシュボード",
+        "purpose": "バックアップジョブの実行状況をリアルタイムで監視し、異常検出時に即座に通知を表示。アラート定義に基づく異常表示と通知設定の管理を一元化し、バックアップ運用の可視化と迅速な対応を実現する。",
+        "items": [
+          "バックアップジョブ実行状況サマリー",
+          "リアルタイム実行中ジョブ一覧",
+          "バックアップ実行履歴テーブル",
+          "異常検出アラート表示パネル",
+          "アラート定義に基づく異常フィルタリング",
+          "即時通知メッセージ表示エリア",
+          "通知設定確認ボタン",
+          "通知一時停止トグル",
+          "バックアップ失敗診断情報表示",
+          "バックアップログ参照リンク",
+          "ジョブ詳細表示ボタン",
+          "アラート発火履歴表示"
+        ]
+      },
+      {
+        "id": "scr-1788233833884",
+        "name": "バックアップ失敗診断・ログ分析",
+        "purpose": "失敗したバックアップジョブの自動診断、ログ集計、失敗原因の特定と推奨対応を行い、診断結果を履歴管理する",
+        "items": [
+          "失敗ジョブ検索フィルター",
+          "失敗ジョブ一覧表",
+          "自動診断実行ボタン",
+          "診断ステータス表示",
+          "失敗原因分析結果",
+          "推奨対応アクション",
+          "バックアップログビューア",
+          "ログ集計サマリー",
+          "エラーメッセージ詳細",
+          "スタックトレース表示",
+          "診断履歴一覧",
+          "診断実行日時"
+        ]
+      },
+      {
+        "id": "scr-1788233846880",
+        "name": "復旧実行・検証管理",
+        "purpose": "復旧ジョブの実行状況を監視し、復旧手順の進捗を記録・管理するとともに、復旧検証結果を記録し、復旧テスト実行時の所要時間を自動測定・記録し、実行履歴と検証結果をレポート形式で表示・出力する",
+        "items": [
+          "復旧ジョブ一覧",
+          "復旧ジョブ実行状況監視パネル",
+          "復旧手順進捗表示",
+          "復旧手順記録フォーム",
+          "復旧テスト開始ボタン",
+          "復旧テスト所要時間自動測定表示",
+          "復旧検証結果入力フォーム",
+          "復旧検証結果一覧",
+          "復旧実行履歴テーブル",
+          "復旧実行履歴詳細表示",
+          "復旧テスト実行記録一覧",
+          "復旧テスト実行記録詳細"
+        ]
+      },
+      {
+        "id": "scr-1788233859969",
+        "name": "RTO/RPO分析・レポート",
+        "purpose": "バックアップおよび復旧のRTO/RPO設定値と実績値の乖離を分析し、自動計算された乖離率に基づいてレポートを生成・出力する。復旧テスト実行記録を集計して、目標達成状況を可視化する。",
+        "items": [
+          "RTO/RPO設定値確認パネル",
+          "実績値表示エリア",
+          "乖離率自動計算結果",
+          "乖離分析グラフ",
+          "復旧テスト実行記録集計表",
+          "期間選択フィルター",
+          "バックアップジョブ別分析",
+          "復旧ジョブ別分析",
+          "目標達成状況サマリー",
+          "レポート生成ボタン",
+          "レポート出力形式選択",
+          "レポート生成履歴一覧"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "ユーザー",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル",
+        "columns": [
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーの一意識別子"
+          },
+          {
+            "name": "ユーザー名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン時に使用するユーザー名"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの連絡先メールアドレス"
+          },
+          {
+            "name": "部門",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーが属する部門名"
+          },
+          {
+            "name": "役職",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーの役職"
+          },
+          {
+            "name": "ロール",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの状態（有効/無効/休止等）"
+          },
+          {
+            "name": "最終ログイン日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "ユーザーが最後にシステムにログインした日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーレコードが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーレコードが最後に更新された日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーレコードを作成したユーザーまたはシステム"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーレコードを最後に更新したユーザーまたはシステム"
+          }
+        ]
+      },
+      {
+        "tableName": "バックアップジョブ",
+        "purpose": "バックアップ・復旧管理・監視システムにおいて、実行されるバックアップジョブの定義、スケジュール、実行履歴、ステータスを一元管理する",
+        "columns": [
+          {
+            "name": "ジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "バックアップジョブの一意識別子"
+          },
+          {
+            "name": "ジョブ名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "バックアップジョブの名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "ジョブの詳細説明"
+          },
+          {
+            "name": "バックアップ対象",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "バックアップ対象のシステム・データベース・サーバー名"
+          },
+          {
+            "name": "バックアップタイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "フル/差分/増分などのバックアップ方式"
+          },
+          {
+            "name": "スケジュール種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ワンタイム/日次/週次/月次などのスケジュール種別"
+          },
+          {
+            "name": "スケジュール詳細",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "実行時刻やcron式などのスケジュール詳細"
+          },
+          {
+            "name": "保持期間日数",
+            "type": "integer",
+            "required": true,
+            "description": "バックアップデータの保持期間（日数）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "有効/無効/一時停止などのジョブステータス"
+          },
+          {
+            "name": "最終実行日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "ジョブの最終実行日時"
+          },
+          {
+            "name": "最終実行結果",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "成功/失敗/警告などの最終実行結果"
+          },
+          {
+            "name": "次回予定実行日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "次回のジョブ実行予定日時"
+          },
+          {
+            "name": "通知先メールアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ジョブ実行結果の通知先メールアドレス"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ジョブ定義の作成日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "ジョブ定義を作成したユーザーID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ジョブ定義の最終更新日時"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "ジョブ定義を最後に更新したユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "バックアップ実行履歴",
+        "purpose": "バックアップジョブの実行結果と詳細情報を記録し、復旧管理と監視システムの履歴追跡および監査証跡を提供する",
+        "columns": [
+          {
+            "name": "実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "バックアップ実行履歴の一意識別子"
+          },
+          {
+            "name": "バックアップジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "実行されたバックアップジョブへの外部キー参照"
+          },
+          {
+            "name": "実行開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "バックアップ実行の開始日時"
+          },
+          {
+            "name": "実行終了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "バックアップ実行の終了日時"
+          },
+          {
+            "name": "実行ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "実行状態を示す値(実行中/成功/失敗/警告/キャンセル等)"
+          },
+          {
+            "name": "バックアップサイズ",
+            "type": "integer",
+            "required": false,
+            "description": "バックアップデータサイズ(バイト単位)"
+          },
+          {
+            "name": "処理時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "バックアップ処理に要した時間(秒単位)"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "実行失敗時のエラー詳細情報"
+          },
+          {
+            "name": "警告メッセージ",
+            "type": "text",
+            "required": false,
+            "description": "実行時の警告情報"
+          },
+          {
+            "name": "バックアップ保存先",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "バックアップデータの保存先パスまたはロケーション"
+          },
+          {
+            "name": "復旧可能フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "このバックアップから復旧可能かどうかを示すフラグ"
+          },
+          {
+            "name": "実行ユーザーID",
+            "type": "uuid",
+            "required": false,
+            "description": "バックアップを実行したユーザーへの外部キー参照"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "履歴レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "履歴レコード最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "バックアップ異常検出",
+        "purpose": "バックアップジョブの実行中に検出された異常・エラーを記録し、監視・アラート・復旧判断の基礎データとなる",
+        "columns": [
+          {
+            "name": "異常検出ID",
+            "type": "uuid",
+            "required": true,
+            "description": "異常検出レコードの一意識別子"
+          },
+          {
+            "name": "バックアップ実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連するバックアップ実行履歴への外部キー"
+          },
+          {
+            "name": "バックアップジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連するバックアップジョブへの外部キー"
+          },
+          {
+            "name": "異常タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "異常の分類（例：タイムアウト、容量不足、ネットワークエラー、データ検証失敗）"
+          },
+          {
+            "name": "重大度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "異常の重大度レベル（例：CRITICAL、WARNING、INFO）"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": true,
+            "description": "異常の詳細なエラーメッセージ"
+          },
+          {
+            "name": "検出日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "異常が検出された日時"
+          },
+          {
+            "name": "対応状況",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "異常への対応状況（例：未対応、対応中、解決済み、無視）"
+          },
+          {
+            "name": "対応者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "異常に対応したユーザーへの外部キー"
+          },
+          {
+            "name": "対応日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "異常に対応した日時"
+          },
+          {
+            "name": "対応内容",
+            "type": "text",
+            "required": false,
+            "description": "実施した対応内容の詳細"
+          },
+          {
+            "name": "自動復旧実行",
+            "type": "boolean",
+            "required": true,
+            "description": "自動復旧処理が実行されたかどうか"
+          },
+          {
+            "name": "復旧結果",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "自動復旧の結果（例：成功、失敗、部分成功）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "バックアップ失敗診断",
+        "purpose": "バックアップ失敗の原因を診断・分析し、復旧対応に必要な情報を管理する診断履歴テーブル",
+        "columns": [
+          {
+            "name": "診断ID",
+            "type": "uuid",
+            "required": true,
+            "description": "バックアップ失敗診断の一意識別子"
+          },
+          {
+            "name": "バックアップ実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "対象となるバックアップ実行履歴への外部キー"
+          },
+          {
+            "name": "バックアップジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "対象となるバックアップジョブへの外部キー"
+          },
+          {
+            "name": "失敗原因分類",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "失敗原因の分類コード（ストレージ不足、ネットワーク障害、権限不足等）"
+          },
+          {
+            "name": "失敗原因詳細",
+            "type": "text",
+            "required": true,
+            "description": "失敗原因の詳細説明とエラーメッセージ"
+          },
+          {
+            "name": "推奨対応内容",
+            "type": "text",
+            "required": false,
+            "description": "診断結果に基づく推奨される復旧対応内容"
+          },
+          {
+            "name": "診断ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "診断状態（診断中、診断完了、対応待ち、対応完了）"
+          },
+          {
+            "name": "診断実施者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "診断を実施したユーザーへの外部キー"
+          },
+          {
+            "name": "対応実施者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "推奨対応を実施したユーザーへの外部キー"
+          },
+          {
+            "name": "対応完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "推奨対応が完了した日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "診断レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "診断レコード最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "診断レコードを作成したユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "バックアップログ",
+        "purpose": "バックアップ実行時の詳細なログ情報を記録し、トラブルシューティング、監査、パフォーマンス分析に使用される履歴テーブル",
+        "columns": [
+          {
+            "name": "ログID",
+            "type": "uuid",
+            "required": true,
+            "description": "ログレコードの一意識別子"
+          },
+          {
+            "name": "バックアップ実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "バックアップ実行履歴テーブルへの外部キー参照"
+          },
+          {
+            "name": "ログレベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログの重要度レベル(INFO/WARNING/ERROR/DEBUG等)"
+          },
+          {
+            "name": "ログメッセージ",
+            "type": "text",
+            "required": true,
+            "description": "ログの詳細なメッセージ内容"
+          },
+          {
+            "name": "処理ステップ",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "バックアップ処理のどのステップで発生したか(初期化/データ抽出/圧縮/転送/検証等)"
+          },
+          {
+            "name": "エラーコード",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "エラー発生時のエラーコード"
+          },
+          {
+            "name": "スタックトレース",
+            "type": "text",
+            "required": false,
+            "description": "例外発生時のスタックトレース情報"
+          },
+          {
+            "name": "処理時間ミリ秒",
+            "type": "integer",
+            "required": false,
+            "description": "該当処理にかかった時間(ミリ秒単位)"
+          },
+          {
+            "name": "タイムスタンプ",
+            "type": "timestamp",
+            "required": true,
+            "description": "ログが記録された日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ログレコードが作成された日時"
+          }
+        ]
+      },
+      {
+        "tableName": "復旧ジョブ",
+        "purpose": "バックアップから対象システムへのデータ復旧処理を管理し、復旧タスクの定義、スケジューリング、実行状況の追跡を行う",
+        "columns": [
+          {
+            "name": "復旧ジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧ジョブの一意識別子"
+          },
+          {
+            "name": "ジョブ名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧ジョブの名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "復旧ジョブの詳細説明"
+          },
+          {
+            "name": "バックアップジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧対象のバックアップジョブへの外部キー"
+          },
+          {
+            "name": "復旧対象システム",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧先のシステム名またはホスト名"
+          },
+          {
+            "name": "復旧ポイント",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧対象のバックアップ時点"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧ジョブの状態(未実行、実行中、成功、失敗、一時停止等)"
+          },
+          {
+            "name": "スケジュール種別",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "復旧実行のスケジュール方式(手動、定期、イベント駆動等)"
+          },
+          {
+            "name": "優先度",
+            "type": "integer",
+            "required": false,
+            "description": "復旧ジョブの優先度レベル"
+          },
+          {
+            "name": "予定開始日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "復旧ジョブの予定開始時刻"
+          },
+          {
+            "name": "実際開始日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "復旧ジョブの実際の開始時刻"
+          },
+          {
+            "name": "完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "復旧ジョブの完了時刻"
+          },
+          {
+            "name": "実行時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "復旧ジョブの実行所要時間(秒)"
+          },
+          {
+            "name": "復旧データサイズバイト",
+            "type": "integer",
+            "required": false,
+            "description": "復旧されたデータの総サイズ(バイト)"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "復旧失敗時のエラー詳細"
+          },
+          {
+            "name": "再試行回数",
+            "type": "integer",
+            "required": false,
+            "description": "復旧ジョブの再試行実施回数"
+          },
+          {
+            "name": "最大再試行回数",
+            "type": "integer",
+            "required": false,
+            "description": "復旧ジョブの最大再試行回数設定"
+          },
+          {
+            "name": "検証実施",
+            "type": "boolean",
+            "required": false,
+            "description": "復旧後のデータ検証を実施するかどうか"
+          },
+          {
+            "name": "検証ステータス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "復旧データの検証結果(未実施、成功、失敗等)"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧ジョブの作成日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧ジョブを作成したユーザーへの外部キー"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧ジョブの最終更新日時"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": false,
+            "description": "復旧ジョブを最後に更新したユーザーへの外部キー"
+          }
+        ]
+      },
+      {
+        "tableName": "復旧実行履歴",
+        "purpose": "復旧ジョブの実行結果と進捗を記録し、復旧操作の履歴管理と監視を行うための履歴テーブル",
+        "columns": [
+          {
+            "name": "復旧実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧実行履歴の一意識別子"
+          },
+          {
+            "name": "復旧ジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する復旧ジョブの識別子"
+          },
+          {
+            "name": "バックアップ実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧元となるバックアップ実行履歴の識別子"
+          },
+          {
+            "name": "実行開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧実行の開始日時"
+          },
+          {
+            "name": "実行終了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "復旧実行の終了日時"
+          },
+          {
+            "name": "実行ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧の実行状態(実行中/成功/失敗/中断)"
+          },
+          {
+            "name": "進捗率",
+            "type": "integer",
+            "required": false,
+            "description": "復旧の進捗率(0-100)"
+          },
+          {
+            "name": "復旧対象リソース",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧対象のリソース名またはパス"
+          },
+          {
+            "name": "復旧先",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧先のリソース名またはパス"
+          },
+          {
+            "name": "復旧データサイズ",
+            "type": "integer",
+            "required": false,
+            "description": "復旧されたデータサイズ(バイト)"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "復旧失敗時のエラーメッセージ"
+          },
+          {
+            "name": "実行ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧を実行したユーザーの識別子"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "復旧検証結果",
+        "purpose": "バックアップから復旧したデータの検証結果を記録し、復旧の成功可否と検証内容を管理するテーブル",
+        "columns": [
+          {
+            "name": "復旧検証結果ID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧検証結果の一意識別子"
+          },
+          {
+            "name": "復旧実行履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応する復旧実行履歴への外部キー"
+          },
+          {
+            "name": "バックアップジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応するバックアップジョブへの外部キー"
+          },
+          {
+            "name": "検証ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "検証結果のステータス(成功/失敗/警告/実行中)"
+          },
+          {
+            "name": "検証タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "検証の種類(整合性チェック/データ量検証/サンプルデータ検証)"
+          },
+          {
+            "name": "検証開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "検証処理の開始日時"
+          },
+          {
+            "name": "検証完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "検証処理の完了日時"
+          },
+          {
+            "name": "検証対象レコード数",
+            "type": "integer",
+            "required": false,
+            "description": "検証対象となったレコード総数"
+          },
+          {
+            "name": "検証成功レコード数",
+            "type": "integer",
+            "required": false,
+            "description": "検証に成功したレコード数"
+          },
+          {
+            "name": "検証失敗レコード数",
+            "type": "integer",
+            "required": false,
+            "description": "検証に失敗したレコード数"
+          },
+          {
+            "name": "検証結果詳細",
+            "type": "text",
+            "required": false,
+            "description": "検証結果の詳細情報やエラーメッセージ"
+          },
+          {
+            "name": "検証判定",
+            "type": "boolean",
+            "required": true,
+            "description": "復旧データが本番環境への適用可能か判定(true:可能/false:不可)"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "復旧テスト実行記録",
+        "purpose": "復旧ジョブの定期的なテスト実行結果を記録し、復旧手順の有効性と復旧時間目標(RTO)の達成状況を追跡管理するテーブル",
+        "columns": [
+          {
+            "name": "復旧テスト実行記録ID",
+            "type": "uuid",
+            "required": true,
+            "description": "復旧テスト実行記録の一意識別子"
+          },
+          {
+            "name": "復旧ジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "対象となる復旧ジョブへの外部キー参照"
+          },
+          {
+            "name": "テスト実行日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧テストを実行した日時"
+          },
+          {
+            "name": "テスト開始時刻",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧テストの開始時刻"
+          },
+          {
+            "name": "テスト終了時刻",
+            "type": "timestamp",
+            "required": true,
+            "description": "復旧テストの終了時刻"
+          },
+          {
+            "name": "実行時間秒",
+            "type": "integer",
+            "required": true,
+            "description": "復旧テストの実行時間(秒単位)"
+          },
+          {
+            "name": "テスト結果ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "テスト結果のステータス(成功/失敗/部分成功/スキップ等)"
+          },
+          {
+            "name": "復旧成功フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "復旧テストが成功したかどうかを示すフラグ"
+          },
+          {
+            "name": "データ整合性確認結果",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "復旧後のデータ整合性確認結果(正常/異常/未実施等)"
+          },
+          {
+            "name": "RTO達成フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "復旧時間目標(RTO)を達成したかどうかを示すフラグ"
+          },
+          {
+            "name": "テスト実行者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "テストを実行したユーザーへの外部キー参照"
+          },
+          {
+            "name": "テスト環境",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "テストを実行した環境(本番/ステージング/テスト環境等)"
+          },
+          {
+            "name": "テスト対象バックアップID",
+            "type": "uuid",
+            "required": false,
+            "description": "テストに使用したバックアップへの外部キー参照"
+          },
+          {
+            "name": "検出された問題",
+            "type": "text",
+            "required": false,
+            "description": "テスト実行中に検出された問題や課題の詳細"
+          },
+          {
+            "name": "改善提案",
+            "type": "text",
+            "required": false,
+            "description": "テスト結果に基づく復旧手順の改善提案"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "その他の特記事項やコメント"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "RTO_RPO設定",
+        "purpose": "バックアップジョブおよび復旧ジョブに対するRTO(目標復旧時間)とRPO(目標復旧地点)の設定値を管理し、バックアップ・復旧戦略の基準を定義するマスタテーブル",
+        "columns": [
+          {
+            "name": "RTO_RPO設定ID",
+            "type": "uuid",
+            "required": true,
+            "description": "RTO_RPO設定の一意識別子"
+          },
+          {
+            "name": "ジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連するバックアップジョブまたは復旧ジョブの識別子"
+          },
+          {
+            "name": "ジョブタイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ジョブの種別(バックアップ/復旧)"
+          },
+          {
+            "name": "RTO分",
+            "type": "integer",
+            "required": true,
+            "description": "目標復旧時間(分単位)"
+          },
+          {
+            "name": "RPO分",
+            "type": "integer",
+            "required": true,
+            "description": "目標復旧地点(分単位)"
+          },
+          {
+            "name": "優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "バックアップ・復旧の優先度レベル(高/中/低)"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "設定が有効かどうかを示すフラグ"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "RTO_RPO設定に関する補足情報"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "RTO_RPO乖離分析",
+        "purpose": "RTOとRPOの設定値と実績値の乖離を分析し、バックアップ・復旧戦略の改善を支援するための分析テーブル",
+        "columns": [
+          {
+            "name": "乖離分析ID",
+            "type": "uuid",
+            "required": true,
+            "description": "乖離分析レコードの一意識別子"
+          },
+          {
+            "name": "バックアップジョブID",
+            "type": "uuid",
+            "required": true,
+            "description": "対象となるバックアップジョブの識別子"
+          },
+          {
+            "name": "分析対象期間開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "乖離分析の対象期間開始日時"
+          },
+          {
+            "name": "分析対象期間終了日",
+            "type": "timestamp",
+            "required": true,
+            "description": "乖離分析の対象期間終了日時"
+          },
+          {
+            "name": "設定RTO分",
+            "type": "integer",
+            "required": true,
+            "description": "RTO_RPO設定テーブルで定義された目標復旧時間（分）"
+          },
+          {
+            "name": "実績RTO分",
+            "type": "integer",
+            "required": true,
+            "description": "分析対象期間における実際の復旧時間の平均値（分）"
+          },
+          {
+            "name": "RTO乖離率",
+            "type": "integer",
+            "required": true,
+            "description": "実績RTOと設定RTOの乖離率（パーセンテージ）"
+          },
+          {
+            "name": "設定RPO分",
+            "type": "integer",
+            "required": true,
+            "description": "RTO_RPO設定テーブルで定義された目標復旧時点（分）"
+          },
+          {
+            "name": "実績RPO分",
+            "type": "integer",
+            "required": true,
+            "description": "分析対象期間における実際のデータ損失許容時間の平均値（分）"
+          },
+          {
+            "name": "RPO乖離率",
+            "type": "integer",
+            "required": true,
+            "description": "実績RPOと設定RPOの乖離率（パーセンテージ）"
+          },
+          {
+            "name": "RTO達成率",
+            "type": "integer",
+            "required": false,
+            "description": "分析対象期間におけるRTO達成の成功回数の割合（パーセンテージ）"
+          },
+          {
+            "name": "RPO達成率",
+            "type": "integer",
+            "required": false,
+            "description": "分析対象期間におけるRPO達成の成功回数の割合（パーセンテージ）"
+          },
+          {
+            "name": "乖離原因分類",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "乖離の主要原因（ネットワーク遅延、ストレージ制約、リソース不足など）"
+          },
+          {
+            "name": "改善推奨事項",
+            "type": "text",
+            "required": false,
+            "description": "RTO・RPO達成に向けた改善推奨事項"
+          },
+          {
+            "name": "分析ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "分析の状態（未実施、実施中、完了、確認待ち）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "乖離分析レコードの作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "乖離分析レコードの最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "乖離分析を作成したユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "乖離分析を最後に更新したユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "レポート生成履歴",
+        "purpose": "バックアップ・復旧管理システムで生成されたレポートの履歴を記録し、レポート生成の実行状況、結果、スケジュール情報を管理する",
+        "columns": [
+          {
+            "name": "レポート生成履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レポート生成履歴の一意識別子"
+          },
+          {
+            "name": "レポート種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "生成されたレポートの種別（バックアップ実行レポート、復旧実行レポート、RTO_RPO乖離分析レポート等）"
+          },
+          {
+            "name": "生成開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポート生成処理の開始日時"
+          },
+          {
+            "name": "生成完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "レポート生成処理の完了日時"
+          },
+          {
+            "name": "生成ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポート生成の状態（実行中、完了、失敗等）"
+          },
+          {
+            "name": "対象期間開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが対象とする期間の開始日時"
+          },
+          {
+            "name": "対象期間終了日",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが対象とする期間の終了日時"
+          },
+          {
+            "name": "レポートファイルパス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "生成されたレポートファイルの保存パスまたはURL"
+          },
+          {
+            "name": "レポートフォーマット",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートのフォーマット（PDF、CSV、HTML等）"
+          },
+          {
+            "name": "生成対象ユーザーID",
+            "type": "uuid",
+            "required": false,
+            "description": "レポート生成をリクエストしたユーザーID"
+          },
+          {
+            "name": "スケジュール実行フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "スケジュール設定による自動生成か手動リクエストかを示すフラグ"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "レポート生成失敗時のエラー詳細メッセージ"
+          },
+          {
+            "name": "処理時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "レポート生成に要した処理時間（秒単位）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "ユーザー権限",
+        "purpose": "ユーザーがバックアップ・復旧管理・監視システムで実行可能な操作を制御するための権限マスタテーブル。ユーザーに対して機能単位の権限を付与・管理し、アクセス制御と操作ログの監査を実現する。",
+        "columns": [
+          {
+            "name": "権限ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザー権限レコードの一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "権限が付与されるユーザーの外部キー参照"
+          },
+          {
+            "name": "権限コード",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "権限の種類を示すコード（例：BACKUP_CREATE、BACKUP_DELETE、RECOVERY_EXECUTE、REPORT_VIEW等）"
+          },
+          {
+            "name": "権限名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "権限の日本語表示名"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "権限の詳細説明"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "権限が有効かどうかを示すフラグ"
+          },
+          {
+            "name": "付与日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "権限が付与された日時"
+          },
+          {
+            "name": "失効日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "権限が失効する予定の日時（期限付き権限の場合）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "権限を付与した管理者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "操作履歴",
+        "purpose": "ユーザーによるバックアップ・復旧システムの全操作を記録し、監査証跡とトラブルシューティングの基盤を提供する",
+        "columns": [
+          {
+            "name": "操作履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作履歴の一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作を実行したユーザーの識別子、ユーザーテーブルへの外部キー"
+          },
+          {
+            "name": "操作種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "実行された操作の種類（バックアップ実行、復旧実行、設定変更、ジョブ削除等）"
+          },
+          {
+            "name": "対象リソースタイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "操作の対象となるリソースの種類（バックアップジョブ、復旧ジョブ、RTO_RPO設定等）"
+          },
+          {
+            "name": "対象リソースID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作の対象となるリソースの識別子"
+          },
+          {
+            "name": "操作内容",
+            "type": "text",
+            "required": false,
+            "description": "操作の詳細な内容や変更内容の説明"
+          },
+          {
+            "name": "操作ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "操作の実行結果（成功、失敗、部分成功等）"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "操作失敗時のエラーメッセージ"
+          },
+          {
+            "name": "実行開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "操作の実行開始日時"
+          },
+          {
+            "name": "実行終了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "操作の実行終了日時"
+          },
+          {
+            "name": "実行時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "操作の実行所要時間（秒単位）"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "操作を実行したクライアントのIPアドレス"
+          },
+          {
+            "name": "セッションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "操作を実行したセッションの識別子"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "操作履歴レコードの作成日時"
+          }
+        ]
+      },
+      {
+        "tableName": "通知設定",
+        "purpose": "ユーザーごとのバックアップ・復旧関連イベントの通知ルールを管理し、通知先、通知条件、通知方法を一元管理するマスタテーブル",
+        "columns": [
+          {
+            "name": "通知設定ID",
+            "type": "uuid",
+            "required": true,
+            "description": "通知設定の一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "通知設定を適用するユーザーの識別子、ユーザーテーブルへの外部キー"
+          },
+          {
+            "name": "通知種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知の種類（バックアップ成功、バックアップ失敗、復旧成功、復旧失敗、異常検出、RTO_RPO乖離等）"
+          },
+          {
+            "name": "通知方法",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知の配信方法（メール、Slack、Teams、Webhook等）"
+          },
+          {
+            "name": "通知先",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知の送信先アドレスまたはチャネル識別子"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "この通知設定が有効かどうかを示すフラグ"
+          },
+          {
+            "name": "重要度フィルタ",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "通知対象とする重要度レベル（全て、警告以上、エラーのみ等）"
+          },
+          {
+            "name": "対象ジョブID",
+            "type": "uuid",
+            "required": false,
+            "description": "特定のバックアップ・復旧ジョブに限定する場合のジョブID、NULLの場合は全ジョブが対象"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "通知設定の作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "通知設定の最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知設定を作成したユーザーの識別子"
+          }
+        ]
+      },
+      {
+        "tableName": "通知送信履歴",
+        "purpose": "バックアップ・復旧システムにおける通知送信の履歴を記録し、送信状況の追跡、再送信管理、通知配信の監査証跡を保持する",
+        "columns": [
+          {
+            "name": "通知送信履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "通知送信履歴の一意識別子"
+          },
+          {
+            "name": "通知設定ID",
+            "type": "uuid",
+            "required": true,
+            "description": "通知設定テーブルへの外部キー参照"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "通知受信者のユーザーID"
+          },
+          {
+            "name": "通知タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知の種類(バックアップ成功、バックアップ失敗、復旧完了、異常検出等)"
+          },
+          {
+            "name": "トリガーイベント",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知を発火させたイベント(バックアップジョブID、復旧ジョブID、異常検出ID等)"
+          },
+          {
+            "name": "送信先",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知送信先(メールアドレス、電話番号等)"
+          },
+          {
+            "name": "送信チャネル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "通知送信方法(メール、SMS、Slack等)"
+          },
+          {
+            "name": "通知内容",
+            "type": "text",
+            "required": true,
+            "description": "実際に送信された通知メッセージの内容"
+          },
+          {
+            "name": "送信日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "通知が送信された日時"
+          },
+          {
+            "name": "送信ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "送信結果(成功、失敗、保留中、再試行中等)"
+          },
+          {
+            "name": "ステータス詳細",
+            "type": "text",
+            "required": false,
+            "description": "送信失敗時のエラーメッセージやステータス詳細情報"
+          },
+          {
+            "name": "再試行回数",
+            "type": "integer",
+            "required": true,
+            "description": "送信失敗時の再試行実施回数"
+          },
+          {
+            "name": "最終再試行日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "最後に再試行を実施した日時"
+          },
+          {
+            "name": "開封フラグ",
+            "type": "boolean",
+            "required": false,
+            "description": "メール等で開封確認が可能な場合の開封状態"
+          },
+          {
+            "name": "開封日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "通知が開封された日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "通知送信履歴レコードの作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "通知送信履歴レコードの最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "アラート定義",
+        "purpose": "バックアップ・復旧システムにおけるアラート条件を定義し、監視対象のイベントや閾値を管理するマスタテーブル",
+        "columns": [
+          {
+            "name": "アラート定義ID",
+            "type": "uuid",
+            "required": true,
+            "description": "アラート定義を一意に識別するID"
+          },
+          {
+            "name": "アラート名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "アラートの名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "アラート定義の詳細説明"
+          },
+          {
+            "name": "監視対象タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "監視対象の種類(バックアップジョブ、復旧ジョブ、RTO_RPO等)"
+          },
+          {
+            "name": "条件タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "アラート条件の種類(閾値超過、失敗、タイムアウト等)"
+          },
+          {
+            "name": "条件値",
+            "type": "text",
+            "required": true,
+            "description": "アラート発火条件の詳細(JSON形式で複数条件を保持)"
+          },
+          {
+            "name": "重要度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "アラートの重要度レベル(緊急、高、中、低)"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "アラート定義が有効かどうか"
+          },
+          {
+            "name": "通知設定ID",
+            "type": "uuid",
+            "required": false,
+            "description": "関連する通知設定のID"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "アラート定義の作成日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "アラート定義を作成したユーザーID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "アラート定義の最終更新日時"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "アラート定義を最後に更新したユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "アラート発火履歴",
+        "purpose": "バックアップ・復旧システムで発火したアラートの履歴を記録し、アラート発生パターンの分析、対応状況の追跡、SLA監視を実現する",
+        "columns": [
+          {
+            "name": "アラート発火履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "アラート発火履歴の一意識別子"
+          },
+          {
+            "name": "アラート定義ID",
+            "type": "uuid",
+            "required": true,
+            "description": "アラート定義テーブルへの外部キー"
+          },
+          {
+            "name": "発火日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "アラートが発火した日時"
+          },
+          {
+            "name": "対象リソースタイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "アラート対象のリソースタイプ(バックアップジョブ/復旧ジョブ/ホスト等)"
+          },
+          {
+            "name": "対象リソースID",
+            "type": "uuid",
+            "required": true,
+            "description": "アラート対象のリソースID"
+          },
+          {
+            "name": "アラートレベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "アラートの重要度レベル(CRITICAL/WARNING/INFO等)"
+          },
+          {
+            "name": "アラートメッセージ",
+            "type": "text",
+            "required": true,
+            "description": "アラートの詳細メッセージ"
+          },
+          {
+            "name": "アラート状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "アラートの現在状態(未対応/対応中/解決/無視等)"
+          },
+          {
+            "name": "対応者ユーザーID",
+            "type": "uuid",
+            "required": false,
+            "description": "アラートに対応したユーザーID"
+          },
+          {
+            "name": "対応日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "アラートに対応した日時"
+          },
+          {
+            "name": "対応コメント",
+            "type": "text",
+            "required": false,
+            "description": "対応時のコメント"
+          },
+          {
+            "name": "関連バックアップ実行履歴ID",
+            "type": "uuid",
+            "required": false,
+            "description": "バックアップ実行履歴テーブルへの外部キー"
+          },
+          {
+            "name": "関連復旧実行履歴ID",
+            "type": "uuid",
+            "required": false,
+            "description": "復旧実行履歴テーブルへの外部キー"
+          },
+          {
+            "name": "関連異常検出ID",
+            "type": "uuid",
+            "required": false,
+            "description": "バックアップ異常検出テーブルへの外部キー"
+          },
+          {
+            "name": "通知送信済み",
+            "type": "boolean",
+            "required": true,
+            "description": "通知が送信されたかどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-5",
+    "systemName": "セキュリティ認証対応・コンプライアンス管理システム",
+    "screens": [
+      {
+        "id": "scr-1788234112218",
+        "name": "セキュリティ認証対応ダッシュボード",
+        "purpose": "セキュリティ認証対応状況を一元管理し、コンプライアンス要件との照合、対応漏れ検出、優先度判定を行い、レポート生成・監査資料出力を実現する統合管理画面",
+        "items": [
+          "認証基準対応状況サマリーパネル",
+          "認証基準カテゴリ別進捗表示",
+          "コンプライアンス要件照合結果表示",
+          "対応漏れ項目一覧",
+          "優先度別タスク表示",
+          "実装状況照会フォーム",
+          "セキュリティ要件チェックリスト",
+          "評価結果入力フォーム",
+          "照合分析結果グラフ",
+          "対応状況履歴タイムライン",
+          "監査ログ表示パネル",
+          "レポート生成ボタン"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "ユーザー",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル",
+        "columns": [
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーの一意識別子"
+          },
+          {
+            "name": "ユーザー名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン時に使用するユーザー名"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの連絡先メールアドレス"
+          },
+          {
+            "name": "部門",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーが属する部門名"
+          },
+          {
+            "name": "役職",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーの役職"
+          },
+          {
+            "name": "ロール",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの状態（有効/無効/休止等）"
+          },
+          {
+            "name": "最終ログイン日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "ユーザーが最後にシステムにログインした日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーレコードが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーレコードが最後に更新された日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーレコードを作成したユーザーまたはシステム"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーレコードを最後に更新したユーザーまたはシステム"
+          }
+        ]
+      },
+      {
+        "tableName": "監査ログ",
+        "purpose": "セキュリティインシデント対応と監査のため、システム内のすべてのセキュリティ関連イベント、ユーザーアクション、脆弱性スキャン結果の変更を記録・追跡する",
+        "columns": [
+          {
+            "name": "監査ログID",
+            "type": "uuid",
+            "required": true,
+            "description": "監査ログの一意識別子"
+          },
+          {
+            "name": "イベント種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイベントの種類（ユーザーアクション、脆弱性検出、スキャン実行、インシデント報告等）"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": false,
+            "description": "アクションを実行したユーザーの識別子"
+          },
+          {
+            "name": "対象リソース種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログの対象となるリソースの種類（脆弱性、スキャン結果、インシデント等）"
+          },
+          {
+            "name": "対象リソースID",
+            "type": "uuid",
+            "required": false,
+            "description": "対象リソースの識別子"
+          },
+          {
+            "name": "操作内容",
+            "type": "text",
+            "required": true,
+            "description": "実行された操作の詳細説明"
+          },
+          {
+            "name": "変更前値",
+            "type": "text",
+            "required": false,
+            "description": "変更があった場合の変更前の値"
+          },
+          {
+            "name": "変更後値",
+            "type": "text",
+            "required": false,
+            "description": "変更があった場合の変更後の値"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "アクションを実行したクライアントのIPアドレス"
+          },
+          {
+            "name": "セッションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーセッションの識別子"
+          },
+          {
+            "name": "重要度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイベントの重要度レベル（低、中、高、緊急）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "イベントの処理状態（未処理、処理中、完了、却下）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "監査ログが記録された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "監査ログが最後に更新された日時"
+          }
+        ]
+      },
+      {
+        "tableName": "レポート",
+        "purpose": "セキュリティインシデント対応と脆弱性管理の進捗状況をまとめたレポートを管理し、経営層や監査対象者への報告資料として機能する",
+        "columns": [
+          {
+            "name": "レポートID",
+            "type": "uuid",
+            "required": true,
+            "description": "レポートの一意識別子"
+          },
+          {
+            "name": "レポート名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートのタイトル"
+          },
+          {
+            "name": "レポート種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートの種類（月次サマリー、インシデント報告、脆弱性スキャン結果、対応状況など）"
+          },
+          {
+            "name": "対象期間開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが対象とする期間の開始日時"
+          },
+          {
+            "name": "対象期間終了日",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが対象とする期間の終了日時"
+          },
+          {
+            "name": "発見脆弱性数",
+            "type": "integer",
+            "required": false,
+            "description": "対象期間内に発見された脆弱性の総数"
+          },
+          {
+            "name": "対応完了脆弱性数",
+            "type": "integer",
+            "required": false,
+            "description": "対象期間内に対応が完了した脆弱性の数"
+          },
+          {
+            "name": "インシデント発生件数",
+            "type": "integer",
+            "required": false,
+            "description": "対象期間内に発生したセキュリティインシデントの件数"
+          },
+          {
+            "name": "重大度別集計",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性を重大度別に集計した結果の詳細情報"
+          },
+          {
+            "name": "レポート内容",
+            "type": "text",
+            "required": false,
+            "description": "レポートの本文内容、分析結果、推奨事項など"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートの状態（作成中、完成、承認待ち、承認済み、配布済みなど）"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レポートを作成したユーザーの識別子"
+          },
+          {
+            "name": "承認者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "レポートを承認したユーザーの識別子"
+          },
+          {
+            "name": "配布対象者リスト",
+            "type": "text",
+            "required": false,
+            "description": "レポートの配布対象となるユーザーやグループの情報"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが最後に更新された日時"
+          },
+          {
+            "name": "承認日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "レポートが承認された日時"
+          },
+          {
+            "name": "配布日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "レポートが配布された日時"
+          }
+        ]
+      },
+      {
+        "tableName": "対応状況履歴",
+        "purpose": "セキュリティインシデント対応チケットの状態遷移と対応履歴を時系列で記録し、対応プロセスの追跡と監査証跡を提供する",
+        "columns": [
+          {
+            "name": "対応状況履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応状況履歴レコードの一意識別子"
+          },
+          {
+            "name": "脆弱性対応チケットID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する脆弱性対応チケットへの外部キー参照"
+          },
+          {
+            "name": "変更前状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "状態遷移前のチケット状態コード"
+          },
+          {
+            "name": "変更後状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "状態遷移後のチケット状態コード"
+          },
+          {
+            "name": "対応内容",
+            "type": "text",
+            "required": false,
+            "description": "実施した対応内容の詳細説明"
+          },
+          {
+            "name": "対応者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応を実施したユーザーへの外部キー参照"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "対応状況履歴レコードが作成された日時"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "対応に関する追加情報やコメント"
+          }
+        ]
+      },
+      {
+        "tableName": "認証基準",
+        "purpose": "セキュリティ認証対応・コンプライアンス管理システムにおいて、組織が遵守すべき認証基準・要件を定義・管理するマスタテーブル。ユーザーの認証レベル判定、監査ログの基準チェック、対応状況の評価に使用される。",
+        "columns": [
+          {
+            "name": "認証基準ID",
+            "type": "uuid",
+            "required": true,
+            "description": "認証基準を一意に識別するプライマリキー"
+          },
+          {
+            "name": "基準コード",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証基準の業務上の識別コード（例：AUTH-001、COMP-SEC-02）"
+          },
+          {
+            "name": "基準名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証基準の名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "認証基準の詳細説明・背景・適用範囲"
+          },
+          {
+            "name": "カテゴリ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証基準の分類（例：多要素認証、アクセス制御、暗号化、監査ログ）"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "基準の重要度（例：Critical、High、Medium、Low）"
+          },
+          {
+            "name": "適用対象",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "基準が適用される対象（例：全ユーザー、管理者、特定部門）"
+          },
+          {
+            "name": "要件内容",
+            "type": "text",
+            "required": true,
+            "description": "具体的な要件・チェック項目の詳細"
+          },
+          {
+            "name": "コンプライアンス規格",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "関連するコンプライアンス規格（例：ISO27001、NIST、GDPR）"
+          },
+          {
+            "name": "有効開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "認証基準の適用開始日時"
+          },
+          {
+            "name": "有効終了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "認証基準の廃止予定日時（廃止予定がない場合はNULL）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "基準の状態（例：有効、無効、廃止予定）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "認証基準レコードの作成日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証基準を作成したユーザーID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "認証基準レコードの最終更新日時"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証基準を最後に更新したユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "認証対応状況",
+        "purpose": "セキュリティ認証基準に対する各ユーザー・システムの対応状況を管理し、コンプライアンス要件への適合性を追跡・監査するためのマスタテーブル",
+        "columns": [
+          {
+            "name": "認証対応状況ID",
+            "type": "uuid",
+            "required": true,
+            "description": "認証対応状況レコードの一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応状況の対象となるユーザーの外部キー参照"
+          },
+          {
+            "name": "認証基準ID",
+            "type": "uuid",
+            "required": true,
+            "description": "適用される認証基準の外部キー参照"
+          },
+          {
+            "name": "対応状況",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "現在の対応状況コード（未対応・進行中・完了・例外等）"
+          },
+          {
+            "name": "対応期限日",
+            "type": "timestamp",
+            "required": false,
+            "description": "要件への対応が必要な期限日時"
+          },
+          {
+            "name": "完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "対応が完了した日時"
+          },
+          {
+            "name": "対応内容",
+            "type": "text",
+            "required": false,
+            "description": "実施した対応内容の詳細説明"
+          },
+          {
+            "name": "リスク評価レベル",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "未対応時のリスク評価レベル（高・中・低等）"
+          },
+          {
+            "name": "例外承認フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "コンプライアンス例外として承認されているかどうか"
+          },
+          {
+            "name": "例外承認者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "例外を承認したユーザーの外部キー参照"
+          },
+          {
+            "name": "例外理由",
+            "type": "text",
+            "required": false,
+            "description": "例外承認の理由説明"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "コンプライアンス要件",
+        "purpose": "セキュリティ認証対応・コンプライアンス管理システムにおいて、組織が遵守すべき法令・規制・内部ポリシーなどのコンプライアンス要件を一元管理し、対応状況の追跡と監査を支援するマスタテーブル",
+        "columns": [
+          {
+            "name": "要件ID",
+            "type": "uuid",
+            "required": true,
+            "description": "コンプライアンス要件を一意に識別するプライマリキー"
+          },
+          {
+            "name": "要件名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "コンプライアンス要件の名称"
+          },
+          {
+            "name": "要件説明",
+            "type": "text",
+            "required": true,
+            "description": "コンプライアンス要件の詳細説明および背景"
+          },
+          {
+            "name": "要件カテゴリ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "要件の分類（例：法令遵守、セキュリティ、プライバシー、監査）"
+          },
+          {
+            "name": "適用対象",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "要件が適用される対象部門・システム・ユーザー区分"
+          },
+          {
+            "name": "優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "要件の優先度レベル（例：高、中、低）"
+          },
+          {
+            "name": "期限日",
+            "type": "timestamp",
+            "required": false,
+            "description": "コンプライアンス要件の対応期限"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "要件の現在のステータス（例：未対応、進行中、完了、保留）"
+          },
+          {
+            "name": "関連規格",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "関連する認証基準・規格コード（例：ISO27001、PCI-DSS）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "要件レコードの作成日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "要件を作成したユーザーID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "要件レコードの最終更新日時"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "要件を最後に更新したユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "認証基準カテゴリ",
+        "purpose": "認証基準を分類・管理するためのカテゴリマスタテーブル。セキュリティ認証対応やコンプライアンス管理において、複数の認証基準を体系的に整理し、監査・レポーティング時の検索・フィルタリングを効率化する。",
+        "columns": [
+          {
+            "name": "カテゴリID",
+            "type": "uuid",
+            "required": true,
+            "description": "認証基準カテゴリの一意識別子。主キー。"
+          },
+          {
+            "name": "カテゴリ名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証基準カテゴリの名称。例：ISO27001、GDPR、個人情報保護法など。"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "カテゴリの詳細説明。対象範囲や適用背景などを記載。"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "カテゴリの状態。有効/無効など。"
+          },
+          {
+            "name": "表示順序",
+            "type": "integer",
+            "required": false,
+            "description": "UI表示時のカテゴリ並び順。"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "カテゴリ作成日時。"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "カテゴリ最終更新日時。"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "カテゴリを作成したユーザーID。ユーザーテーブルへの外部キー。"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "カテゴリを最後に更新したユーザーID。ユーザーテーブルへの外部キー。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-6",
+    "systemName": "自治体導入支援・差分分析・リスク評価システム",
+    "screens": [
+      {
+        "id": "scr-1788234249242",
+        "name": "導入自治体調査・差分分析ワークスペース",
+        "purpose": "導入対象自治体の既存システム・運用体制・セキュリティ要件を調査・入力し、標準要件との差分を自動抽出・可視化して、導入リスクと実装優先度を自動判定・レポート生成するワークスペース",
+        "items": [
+          "自治体選択・新規登録パネル",
+          "既存システム調査データ入力フォーム",
+          "運用体制情報入力フォーム",
+          "セキュリティ要件入力フォーム",
+          "標準要件テンプレート参照・選択ドロップダウン",
+          "差分自動抽出実行ボタン",
+          "差分結果可視化ダッシュボード",
+          "逸脱項目一覧表示",
+          "追加実装分析表示",
+          "リスク評価スコアリング結果表示",
+          "影響範囲分析チャート",
+          "導入優先度自動判定結果表示"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "ログインユーザー",
+        "purpose": "料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する",
+        "columns": [
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーの一意識別子"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン用メールアドレス、システム内で一意"
+          },
+          {
+            "name": "パスワードハッシュ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ハッシュ化されたパスワード"
+          },
+          {
+            "name": "ユーザー名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの表示名"
+          },
+          {
+            "name": "ロール",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの権限レベル（管理者、担当者等）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーの状態（有効、無効、一時停止等）"
+          },
+          {
+            "name": "最終ログイン日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "最後にログインした日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザーアカウント作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ユーザー情報最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "ユーザーアカウント作成者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "レポート",
+        "purpose": "セキュリティインシデント対応と脆弱性管理の進捗状況をまとめたレポートを管理し、経営層や監査対象者への報告資料として機能する",
+        "columns": [
+          {
+            "name": "レポートID",
+            "type": "uuid",
+            "required": true,
+            "description": "レポートの一意識別子"
+          },
+          {
+            "name": "レポート名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートのタイトル"
+          },
+          {
+            "name": "レポート種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートの種類（月次サマリー、インシデント報告、脆弱性スキャン結果、対応状況など）"
+          },
+          {
+            "name": "対象期間開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが対象とする期間の開始日時"
+          },
+          {
+            "name": "対象期間終了日",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが対象とする期間の終了日時"
+          },
+          {
+            "name": "発見脆弱性数",
+            "type": "integer",
+            "required": false,
+            "description": "対象期間内に発見された脆弱性の総数"
+          },
+          {
+            "name": "対応完了脆弱性数",
+            "type": "integer",
+            "required": false,
+            "description": "対象期間内に対応が完了した脆弱性の数"
+          },
+          {
+            "name": "インシデント発生件数",
+            "type": "integer",
+            "required": false,
+            "description": "対象期間内に発生したセキュリティインシデントの件数"
+          },
+          {
+            "name": "重大度別集計",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性を重大度別に集計した結果の詳細情報"
+          },
+          {
+            "name": "レポート内容",
+            "type": "text",
+            "required": false,
+            "description": "レポートの本文内容、分析結果、推奨事項など"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レポートの状態（作成中、完成、承認待ち、承認済み、配布済みなど）"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レポートを作成したユーザーの識別子"
+          },
+          {
+            "name": "承認者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "レポートを承認したユーザーの識別子"
+          },
+          {
+            "name": "配布対象者リスト",
+            "type": "text",
+            "required": false,
+            "description": "レポートの配布対象となるユーザーやグループの情報"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レポートが最後に更新された日時"
+          },
+          {
+            "name": "承認日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "レポートが承認された日時"
+          },
+          {
+            "name": "配布日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "レポートが配布された日時"
+          }
+        ]
+      },
+      {
+        "tableName": "操作履歴",
+        "purpose": "ユーザーによるバックアップ・復旧システムの全操作を記録し、監査証跡とトラブルシューティングの基盤を提供する",
+        "columns": [
+          {
+            "name": "操作履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作履歴の一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作を実行したユーザーの識別子、ユーザーテーブルへの外部キー"
+          },
+          {
+            "name": "操作種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "実行された操作の種類（バックアップ実行、復旧実行、設定変更、ジョブ削除等）"
+          },
+          {
+            "name": "対象リソースタイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "操作の対象となるリソースの種類（バックアップジョブ、復旧ジョブ、RTO_RPO設定等）"
+          },
+          {
+            "name": "対象リソースID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作の対象となるリソースの識別子"
+          },
+          {
+            "name": "操作内容",
+            "type": "text",
+            "required": false,
+            "description": "操作の詳細な内容や変更内容の説明"
+          },
+          {
+            "name": "操作ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "操作の実行結果（成功、失敗、部分成功等）"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "操作失敗時のエラーメッセージ"
+          },
+          {
+            "name": "実行開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "操作の実行開始日時"
+          },
+          {
+            "name": "実行終了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "操作の実行終了日時"
+          },
+          {
+            "name": "実行時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "操作の実行所要時間（秒単位）"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "操作を実行したクライアントのIPアドレス"
+          },
+          {
+            "name": "セッションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "操作を実行したセッションの識別子"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "操作履歴レコードの作成日時"
+          }
+        ]
+      },
+      {
+        "tableName": "自治体",
+        "purpose": "自治体の基本情報を管理し、導入支援・差分分析・リスク評価システムの対象組織を一元管理するマスタテーブル",
+        "columns": [
+          {
+            "name": "自治体ID",
+            "type": "uuid",
+            "required": true,
+            "description": "自治体を一意に識別するプライマリキー"
+          },
+          {
+            "name": "自治体名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "自治体の正式名称"
+          },
+          {
+            "name": "都道府県",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "自治体が所在する都道府県名"
+          },
+          {
+            "name": "自治体コード",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "総務省が定める自治体コード"
+          },
+          {
+            "name": "導入ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "導入状況を示すステータス値（検討中、導入予定、導入済み等）"
+          },
+          {
+            "name": "システムバージョン",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "導入されているシステムのバージョン"
+          },
+          {
+            "name": "担当部門",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "システム導入を担当する部門名"
+          },
+          {
+            "name": "担当者名",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "システム導入の主要担当者名"
+          },
+          {
+            "name": "連絡先電話",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "自治体の連絡先電話番号"
+          },
+          {
+            "name": "連絡先メール",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "自治体の連絡先メールアドレス"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "導入支援に関する特記事項や注記"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-1",
+    "systemName": "セキュリティインシデント対応・監査ログ分析システム",
+    "screens": [
+      {
+        "id": "scr-1788230867652",
+        "name": "監査ログ・脆弱性分析ダッシュボード",
+        "purpose": "セキュリティインシデント対応と脆弱性管理を一元化し、監査ログの検索・分析、脆弱性スキャン結果の自動集計、影響範囲分析、対応状況の追跡、レポート生成を実現するダッシュボード",
+        "items": [
+          "監査ログ検索フォーム",
+          "監査ログフィルタリング条件パネル",
+          "監査ログ一覧テーブル",
+          "監査ログ異常検知アラート表示",
+          "脆弱性スキャン結果サマリーカード",
+          "脆弱性スキャン結果詳細テーブル",
+          "脆弱性発見時の自動集計結果表示",
+          "影響範囲分析グラフ・マップ表示",
+          "影響を受けるシステム資産一覧",
+          "脆弱性対応チケット一覧テーブル",
+          "チケット優先度・ステータスフィルタ",
+          "対応状況履歴タイムライン表示"
+        ]
+      },
+      {
+        "id": "scr-1788230891146",
+        "name": "脆弱性対応管理画面",
+        "purpose": "脆弱性対応チケットの作成・編集、対応状況の追跡・更新、対応履歴の記録、影響範囲分析の表示、関連監査ログの参照を統合し、脆弱性対応状況の一元管理とレポート生成を実現する",
+        "items": [
+          "脆弱性対応チケット一覧",
+          "チケット作成ボタン",
+          "チケット編集フォーム",
+          "対応状況ドロップダウン",
+          "対応状況更新ボタン",
+          "対応状況履歴タイムライン",
+          "影響範囲分析パネル",
+          "影響を受けるシステム資産リスト",
+          "関連監査ログビューア",
+          "監査ログフィルタ",
+          "チケット詳細表示パネル",
+          "対応担当者割り当てフィールド"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "脆弱性",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性の情報を一元管理し、リスク評価、対応状況の追跡、監査ログとの関連付けを行うためのマスタテーブル",
+        "columns": [
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性を一意に識別するプライマリキー"
+          },
+          {
+            "name": "脆弱性名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の名称またはタイトル"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性の詳細な説明と技術的背景"
+          },
+          {
+            "name": "CVE識別子",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "CVE番号などの外部脆弱性識別子"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の重要度（Critical/High/Medium/Low等）"
+          },
+          {
+            "name": "CVSS スコア",
+            "type": "integer",
+            "required": false,
+            "description": "CVSS脆弱性スコア（0-100）"
+          },
+          {
+            "name": "影響を受けるシステム",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "脆弱性が存在するシステムまたはコンポーネント名"
+          },
+          {
+            "name": "検出日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "脆弱性が検出された日時"
+          },
+          {
+            "name": "対応状況",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "対応状況（未対応/対応中/対応完了/受け入れ等）"
+          },
+          {
+            "name": "対応期限",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性への対応期限"
+          },
+          {
+            "name": "対応内容",
+            "type": "text",
+            "required": false,
+            "description": "実施した対応内容の詳細"
+          },
+          {
+            "name": "対応完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性対応が完了した日時"
+          },
+          {
+            "name": "担当者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "脆弱性対応の担当者"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "脆弱性スキャン結果",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、スキャン実行ごとの脆弱性検出結果を記録し、脆弱性の追跡、リスク評価、対応状況の管理を支援する。",
+        "columns": [
+          {
+            "name": "スキャン結果ID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性スキャン結果の一意識別子"
+          },
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "検出された脆弱性マスタへの外部キー参照"
+          },
+          {
+            "name": "スキャン実行日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "脆弱性スキャンが実行された日時"
+          },
+          {
+            "name": "対象リソース",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "スキャン対象となったシステム、ホスト、またはアプリケーション名"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "検出された脆弱性の重要度（Critical/High/Medium/Low等）"
+          },
+          {
+            "name": "検出状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の現在の状態（検出/確認/対応中/解決/誤検知等）"
+          },
+          {
+            "name": "詳細情報",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性の詳細な説明、影響範囲、技術的詳細"
+          },
+          {
+            "name": "推奨対応",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性に対する推奨される対応方法やパッチ情報"
+          },
+          {
+            "name": "対応期限",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性の対応が必要な期限日時"
+          },
+          {
+            "name": "対応担当者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "ユーザーテーブルへの外部キー参照、対応を担当するユーザー"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "スキャン結果レコードが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "スキャン結果レコードが最後に更新された日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテーブルへの外部キー参照、スキャン結果を作成したユーザー"
+          }
+        ]
+      },
+      {
+        "tableName": "脆弱性対応チケット",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性に対する対応状況を追跡・管理し、対応履歴と責任者を記録するためのチケット管理テーブル",
+        "columns": [
+          {
+            "name": "チケットID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性対応チケットの一意識別子"
+          },
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する脆弱性テーブルへの外部キー"
+          },
+          {
+            "name": "スキャン結果ID",
+            "type": "uuid",
+            "required": false,
+            "description": "脆弱性スキャン結果テーブルへの外部キー"
+          },
+          {
+            "name": "チケットタイトル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "対応チケットの簡潔なタイトル"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性対応の詳細説明と対応内容"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "チケットの現在のステータス（未対応、対応中、対応完了、却下等）"
+          },
+          {
+            "name": "優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "対応の優先度レベル（高、中、低等）"
+          },
+          {
+            "name": "割当者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "ユーザーテーブルへの外部キー、対応を担当するユーザー"
+          },
+          {
+            "name": "期限日",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性対応の期限日時"
+          },
+          {
+            "name": "対応完了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性対応が完了した日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "チケット作成日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテーブルへの外部キー、チケット作成者"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "チケット最終更新日時"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテーブルへの外部キー、最終更新者"
+          }
+        ]
+      },
+      {
+        "tableName": "影響範囲分析",
+        "purpose": "セキュリティインシデント発生時に脆弱性やインシデントの影響を受けるユーザー、システム、資産を特定・追跡し、対応優先度の判定と被害範囲の可視化を支援する",
+        "columns": [
+          {
+            "name": "影響範囲分析ID",
+            "type": "uuid",
+            "required": true,
+            "description": "影響範囲分析レコードの一意識別子"
+          },
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する脆弱性への外部キー参照"
+          },
+          {
+            "name": "脆弱性スキャン結果ID",
+            "type": "uuid",
+            "required": false,
+            "description": "関連するスキャン結果への外部キー参照"
+          },
+          {
+            "name": "脆弱性対応チケットID",
+            "type": "uuid",
+            "required": false,
+            "description": "関連する対応チケットへの外部キー参照"
+          },
+          {
+            "name": "影響を受けるユーザー数",
+            "type": "integer",
+            "required": true,
+            "description": "この脆弱性により影響を受けるユーザーの総数"
+          },
+          {
+            "name": "影響を受けるシステム数",
+            "type": "integer",
+            "required": true,
+            "description": "この脆弱性により影響を受けるシステムの総数"
+          },
+          {
+            "name": "影響度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "影響範囲の深刻度レベル（例：Critical、High、Medium、Low）"
+          },
+          {
+            "name": "影響範囲説明",
+            "type": "text",
+            "required": false,
+            "description": "影響範囲の詳細説明と分析結果"
+          },
+          {
+            "name": "対応優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "影響範囲に基づく対応優先度（例：P1、P2、P3、P4）"
+          },
+          {
+            "name": "分析状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "分析の進行状態（例：未実施、進行中、完了、再分析待ち）"
+          },
+          {
+            "name": "分析完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "影響範囲分析が完了した日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "分析を実施したユーザーまたはシステム"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "レコードを最後に更新したユーザーまたはシステム"
+          }
+        ]
+      },
+      {
+        "tableName": "システム資産",
+        "purpose": "組織内のIT資産(サーバー、ネットワークデバイス、ソフトウェア等)を一元管理し、脆弱性スキャンや監査ログの対象資産を特定するためのマスタテーブル",
+        "columns": [
+          {
+            "name": "資産ID",
+            "type": "uuid",
+            "required": true,
+            "description": "システム資産の一意識別子"
+          },
+          {
+            "name": "資産名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の名称(例:WEBサーバー01、ファイアウォール等)"
+          },
+          {
+            "name": "資産タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の種類(サーバー、ネットワークデバイス、ワークステーション、ソフトウェア等)"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "資産のIPアドレス(ネットワーク接続資産の場合)"
+          },
+          {
+            "name": "ホスト名",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "資産のホスト名またはFQDN"
+          },
+          {
+            "name": "OSタイプ",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "オペレーティングシステムの種類(Windows、Linux等)"
+          },
+          {
+            "name": "OSバージョン",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "オペレーティングシステムのバージョン"
+          },
+          {
+            "name": "所有部門",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産を管理する部門名"
+          },
+          {
+            "name": "責任者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "資産の管理責任者名"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の重要度(Critical、High、Medium、Low等)"
+          },
+          {
+            "name": "スキャン対象フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "脆弱性スキャンの対象とするかどうか"
+          },
+          {
+            "name": "監査対象フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "監査ログ収集の対象とするかどうか"
+          },
+          {
+            "name": "稼働状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の稼働状態(稼働中、停止中、廃止等)"
+          },
+          {
+            "name": "導入日",
+            "type": "timestamp",
+            "required": false,
+            "description": "資産の導入日"
+          },
+          {
+            "name": "廃止予定日",
+            "type": "timestamp",
+            "required": false,
+            "description": "資産の廃止予定日"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "その他の備考情報"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "権限設定",
+        "purpose": "ユーザーの役割に基づいたシステムアクセス権限と操作権限を管理し、セキュリティインシデント対応・監査ログ分析システムへのアクセス制御を実施する",
+        "columns": [
+          {
+            "name": "権限設定ID",
+            "type": "uuid",
+            "required": true,
+            "description": "権限設定の一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "権限が割り当てられるユーザーの識別子"
+          },
+          {
+            "name": "役割",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーに割り当てられた役割（管理者、セキュリティアナリスト、監査担当者等）"
+          },
+          {
+            "name": "監査ログ閲覧権限",
+            "type": "boolean",
+            "required": true,
+            "description": "監査ログの閲覧が許可されているかどうか"
+          },
+          {
+            "name": "脆弱性管理権限",
+            "type": "boolean",
+            "required": true,
+            "description": "脆弱性情報の管理・編集が許可されているかどうか"
+          },
+          {
+            "name": "インシデント対応権限",
+            "type": "boolean",
+            "required": true,
+            "description": "セキュリティインシデント対応チケットの作成・編集が許可されているかどうか"
+          },
+          {
+            "name": "レポート生成権限",
+            "type": "boolean",
+            "required": true,
+            "description": "セキュリティレポートの生成が許可されているかどうか"
+          },
+          {
+            "name": "システム資産管理権限",
+            "type": "boolean",
+            "required": true,
+            "description": "システム資産情報の管理が許可されているかどうか"
+          },
+          {
+            "name": "権限削除権限",
+            "type": "boolean",
+            "required": true,
+            "description": "他ユーザーの権限削除が許可されているかどうか"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "権限設定が有効かどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "権限設定が作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "権限設定が最後に更新された日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "権限設定を作成したユーザーの識別子"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "権限設定を最後に更新したユーザーの識別子"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "権限設定に関する補足情報"
+          }
+        ]
+      },
+      {
+        "tableName": "脆弱性マスタ",
+        "purpose": "脆弱性の基本情報を一元管理し、スキャン結果や対応チケットで参照される脆弱性の定義情報を保持するマスタテーブル",
+        "columns": [
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性を一意に識別するプライマリキー"
+          },
+          {
+            "name": "CVE_ID",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "CVE識別子（例：CVE-2024-1234）"
+          },
+          {
+            "name": "脆弱性名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": true,
+            "description": "脆弱性の詳細説明"
+          },
+          {
+            "name": "CVSS_スコア",
+            "type": "integer",
+            "required": true,
+            "description": "CVSS v3.1スコア（0-100）"
+          },
+          {
+            "name": "深刻度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "深刻度レベル（Critical/High/Medium/Low）"
+          },
+          {
+            "name": "攻撃ベクトル",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "攻撃ベクトル（Network/Adjacent/Local/Physical）"
+          },
+          {
+            "name": "影響範囲",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "影響範囲（Unchanged/Changed）"
+          },
+          {
+            "name": "公開日",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性が公開された日時"
+          },
+          {
+            "name": "参考URL",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性に関する参考情報のURL"
+          },
+          {
+            "name": "対応優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "組織内での対応優先度（P1/P2/P3/P4）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の状態（Active/Deprecated/Resolved）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "マスタレコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "マスタレコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "マスタレコード作成者のユーザーID"
+          }
+        ]
+      }
+    ]
+  }
+]

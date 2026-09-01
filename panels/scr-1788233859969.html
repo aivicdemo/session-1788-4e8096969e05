@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>バックアップ・復旧管理・監視システム</title>
+  <style>
+:root {
+  --primary: #2c3e50;
+  --primary-hover: #1a2635;
+  --bg-main: #f8f6f3;
+  --bg-card: #ffffff;
+  --bg-sidebar: #fafaf8;
+  --border: #d4cfc7;
+  --text: #1a1f2e;
+  --text-muted: #6b7280;
+  --top-bar-bg: #ffffff;
+  --top-bar-border: #e8e4df;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic, sans-serif;
+  --radius-card: 4px;
+  --radius-control: 3px;
+  --shadow-card: 0 1px 3px rgba(26, 31, 46, 0.08), 0 2px 6px rgba(26, 31, 46, 0.06);
+  --border-width: 1px;
+  --control-height: 36px;
+  --space-unit: 8px;
+  --motion-duration: 0.2s;
+  --surface-texture: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(26, 31, 46, 0.02) 2px, rgba(26, 31, 46, 0.02) 4px), repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(26, 31, 46, 0.01) 2px, rgba(26, 31, 46, 0.01) 4px);
+  --surface-texture-size: 100% 100%;
+  --surface-texture-position: 0 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+}
+
+[data-aivic-shell-pattern="command_center"] {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.shell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 24px;
+  flex-shrink: 0;
+  gap: 24px;
+}
+
+.shell-logo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: -0.3px;
+}
+
+.shell-nav-top {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+}
+
+.shell-nav-item {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  transition: all var(--motion-duration) ease;
+  white-space: nowrap;
+}
+
+.shell-nav-item:hover {
+  color: var(--text);
+  background: rgba(26, 31, 46, 0.04);
+}
+
+.shell-nav-item.aivic-active {
+  color: var(--primary);
+  background: rgba(44, 62, 80, 0.08);
+  font-weight: 600;
+}
+
+.shell-user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.shell-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.shell-user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.shell-user-logout {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--motion-duration) ease;
+}
+
+.shell-user-logout:hover {
+  color: var(--primary);
+}
+
+.shell-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+}
+
+[data-aivic-panel] {
+  padding: 24px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.kpi-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--primary);
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+
+.kpi-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+.table-container {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead {
+  background: rgba(26, 31, 46, 0.02);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: var(--border-width) solid var(--border);
+  color: var(--text);
+}
+
+tbody tr:hover {
+  background: rgba(26, 31, 46, 0.02);
+  cursor: pointer;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-control);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.status-success {
+  background: rgba(76, 175, 80, 0.1);
+  color: #2e7d32;
+}
+
+.status-failure {
+  background: rgba(244, 67, 54, 0.1);
+  color: #c62828;
+}
+
+.status-running {
+  background: rgba(25, 118, 210, 0.1);
+  color: #1565c0;
+}
+
+.status-warning {
+  background: rgba(245, 124, 0, 0.1);
+  color: #e65100;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width var(--motion-duration) ease;
+}
+
+.alert-panel {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+  border-left: 4px solid;
+}
+
+.alert-critical {
+  border-left-color: #d32f2f;
+}
+
+.alert-warning {
+  border-left-color: #f57c00;
+}
+
+.alert-info {
+  border-left-color: #1976d2;
+}
+
+.alert-title {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.alert-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height);
+  padding: 0 16px;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-control);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--motion-duration) ease;
+  gap: 8px;
+}
+
+.button:hover {
+  background: var(--primary-hover);
+}
+
+.button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: var(--border-width) solid var(--border);
+}
+
+.button-secondary:hover {
+  background: rgba(44, 62, 80, 0.04);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  font-family: var(--font-family);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg-card);
+  transition: border-color var(--motion-duration) ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.step-indicator {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.step.active .step-number {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.step.completed .step-number {
+  background: #4caf50;
+  color: #ffffff;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: #e0e0e0;
+  min-width: 20px;
+}
+
+.step.completed .step-connector {
+  background: #4caf50;
+}
+
+.chart-container {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+  height: 300px;
+}
+
+.gauge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.gauge {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) 0deg, var(--primary) var(--gauge-value, 180deg), #e0e0e0 var(--gauge-value, 180deg));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.gauge::after {
+  content: attr(data-value);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary);
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+
+.gauge-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.16);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: var(--border-width) solid var(--border);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  border-top: var(--border-width) solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.slide-panel {
+  position: fixed;
+  top: 56px;
+  right: 0;
+  width: 400px;
+  height: calc(100vh - 56px);
+  background: var(--bg-card);
+  border-left: var(--border-width) solid var(--border);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform var(--motion-duration) ease;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.slide-panel.active {
+  transform: translateX(0);
+}
+
+.slide-panel-header {
+  padding: 16px 20px;
+  border-bottom: var(--border-width) solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.slide-panel-body {
+  padding: 20px;
+}
+
+.accordion {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.accordion-item {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-header {
+  padding: 12px 16px;
+  background: rgba(26, 31, 46, 0.02);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background var(--motion-duration) ease;
+}
+
+.accordion-header:hover {
+  background: rgba(26, 31, 46, 0.04);
+}
+
+.accordion-content {
+  padding: 16px;
+  display: none;
+  background: var(--bg-card);
+}
+
+.accordion-content.active {
+  display: block;
+}
+
+.code-block {
+  background: rgba(26, 31, 46, 0.04);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  padding: 12px;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  font-size: 11px;
+  color: var(--text);
+  overflow-x: auto;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.empty-state-text {
+  font-size: 14px;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e0e0e0;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background: var(--primary);
+  color: #ffffff;
+  text-align: center;
+  padding: 8px;
+  border-radius: var(--radius-control);
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity var(--motion-duration) ease;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-control);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-primary {
+  background: rgba(44, 62, 80, 0.1);
+  color: var(--primary);
+}
+
+.badge-success {
+  background: rgba(76, 175, 80, 0.1);
+  color: #2e7d32;
+}
+
+.badge-danger {
+  background: rgba(244, 67, 54, 0.1);
+  color: #c62828;
+}
+
+.badge-warning {
+  background: rgba(245, 124, 0, 0.1);
+  color: #e65100;
+}
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .grid-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .shell-header {
+    padding: 0 16px;
+  }
+
+  .shell-nav-top {
+    display: none;
+  }
+
+  .grid-2col,
+  .grid-3col {
+    grid-template-columns: 1fr;
+  }
+
+  .slide-panel {
+    width: 100%;
+  }
+
+  [data-aivic-panel] {
+    padding: 16px;
+  }
+}
+  </style>
+<script>
+window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
+window.AIVIC_APP_ID = "session-1788160285336";
+window.AIVIC_APPLICATION_NAME = "公共施設予約";
+window.AIVIC_SYSTEM_NAME = "バックアップ・復旧管理・監視システム";
+window.AIVIC_TABLES = [{"tableName":"ユーザー","purpose":"セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ログイン時に使用するユーザー名"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ユーザーの連絡先メールアドレス"},{"name":"部門","type":"varchar(100)","required":false,"description":"ユーザーが属する部門名"},{"name":"役職","type":"varchar(100)","required":false,"description":"ユーザーの役職"},{"name":"ロール","type":"varchar(100)","required":true,"description":"システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効/無効/休止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"ユーザーが最後にシステムにログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーレコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザーレコードが最後に更新された日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"ユーザーレコードを作成したユーザーまたはシステム"},{"name":"更新者","type":"varchar(100)","required":false,"description":"ユーザーレコードを最後に更新したユーザーまたはシステム"}]},{"tableName":"バックアップジョブ","purpose":"バックアップ・復旧管理・監視システムにおいて、実行されるバックアップジョブの定義、スケジュール、実行履歴、ステータスを一元管理する","columns":[{"name":"ジョブID","type":"uuid","required":true,"description":"バックアップジョブの一意識別子"},{"name":"ジョブ名","type":"varchar(100)","required":true,"description":"バックアップジョブの名称"},{"name":"説明","type":"text","required":false,"description":"ジョブの詳細説明"},{"name":"バックアップ対象","type":"varchar(100)","required":true,"description":"バックアップ対象のシステム・データベース・サーバー名"},{"name":"バックアップタイプ","type":"varchar(100)","required":true,"description":"フル/差分/増分などのバックアップ方式"},{"name":"スケジュール種別","type":"varchar(100)","required":true,"description":"ワンタイム/日次/週次/月次などのスケジュール種別"},{"name":"スケジュール詳細","type":"varchar(100)","required":false,"description":"実行時刻やcron式などのスケジュール詳細"},{"name":"保持期間日数","type":"integer","required":true,"description":"バックアップデータの保持期間（日数）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"有効/無効/一時停止などのジョブステータス"},{"name":"最終実行日時","type":"timestamp","required":false,"description":"ジョブの最終実行日時"},{"name":"最終実行結果","type":"varchar(100)","required":false,"description":"成功/失敗/警告などの最終実行結果"},{"name":"次回予定実行日時","type":"timestamp","required":false,"description":"次回のジョブ実行予定日時"},{"name":"通知先メールアドレス","type":"varchar(100)","required":false,"description":"ジョブ実行結果の通知先メールアドレス"},{"name":"作成日時","type":"timestamp","required":true,"description":"ジョブ定義の作成日時"},{"name":"作成者","type":"uuid","required":true,"description":"ジョブ定義を作成したユーザーID"},{"name":"更新日時","type":"timestamp","required":true,"description":"ジョブ定義の最終更新日時"},{"name":"更新者","type":"uuid","required":true,"description":"ジョブ定義を最後に更新したユーザーID"}]},{"tableName":"バックアップ実行履歴","purpose":"バックアップジョブの実行結果と詳細情報を記録し、復旧管理と監視システムの履歴追跡および監査証跡を提供する","columns":[{"name":"実行履歴ID","type":"uuid","required":true,"description":"バックアップ実行履歴の一意識別子"},{"name":"バックアップジョブID","type":"uuid","required":true,"description":"実行されたバックアップジョブへの外部キー参照"},{"name":"実行開始日時","type":"timestamp","required":true,"description":"バックアップ実行の開始日時"},{"name":"実行終了日時","type":"timestamp","required":false,"description":"バックアップ実行の終了日時"},{"name":"実行ステータス","type":"varchar(100)","required":true,"description":"実行状態を示す値(実行中/成功/失敗/警告/キャンセル等)"},{"name":"バックアップサイズ","type":"integer","required":false,"description":"バックアップデータサイズ(バイト単位)"},{"name":"処理時間秒","type":"integer","required":false,"description":"バックアップ処理に要した時間(秒単位)"},{"name":"エラーメッセージ","type":"text","required":false,"description":"実行失敗時のエラー詳細情報"},{"name":"警告メッセージ","type":"text","required":false,"description":"実行時の警告情報"},{"name":"バックアップ保存先","type":"varchar(100)","required":false,"description":"バックアップデータの保存先パスまたはロケーション"},{"name":"復旧可能フラグ","type":"boolean","required":true,"description":"このバックアップから復旧可能かどうかを示すフラグ"},{"name":"実行ユーザーID","type":"uuid","required":false,"description":"バックアップを実行したユーザーへの外部キー参照"},{"name":"作成日時","type":"timestamp","required":true,"description":"履歴レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"履歴レコード最終更新日時"}]},{"tableName":"バックアップ異常検出","purpose":"バックアップジョブの実行中に検出された異常・エラーを記録し、監視・アラート・復旧判断の基礎データとなる","columns":[{"name":"異常検出ID","type":"uuid","required":true,"description":"異常検出レコードの一意識別子"},{"name":"バックアップ実行履歴ID","type":"uuid","required":true,"description":"関連するバックアップ実行履歴への外部キー"},{"name":"バックアップジョブID","type":"uuid","required":true,"description":"関連するバックアップジョブへの外部キー"},{"name":"異常タイプ","type":"varchar(100)","required":true,"description":"異常の分類（例：タイムアウト、容量不足、ネットワークエラー、データ検証失敗）"},{"name":"重大度","type":"varchar(100)","required":true,"description":"異常の重大度レベル（例：CRITICAL、WARNING、INFO）"},{"name":"エラーメッセージ","type":"text","required":true,"description":"異常の詳細なエラーメッセージ"},{"name":"検出日時","type":"timestamp","required":true,"description":"異常が検出された日時"},{"name":"対応状況","type":"varchar(100)","required":true,"description":"異常への対応状況（例：未対応、対応中、解決済み、無視）"},{"name":"対応者ID","type":"uuid","required":false,"description":"異常に対応したユーザーへの外部キー"},{"name":"対応日時","type":"timestamp","required":false,"description":"異常に対応した日時"},{"name":"対応内容","type":"text","required":false,"description":"実施した対応内容の詳細"},{"name":"自動復旧実行","type":"boolean","required":true,"description":"自動復旧処理が実行されたかどうか"},{"name":"復旧結果","type":"varchar(100)","required":false,"description":"自動復旧の結果（例：成功、失敗、部分成功）"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"}]},{"tableName":"バックアップ失敗診断","purpose":"バックアップ失敗の原因を診断・分析し、復旧対応に必要な情報を管理する診断履歴テーブル","columns":[{"name":"診断ID","type":"uuid","required":true,"description":"バックアップ失敗診断の一意識別子"},{"name":"バックアップ実行履歴ID","type":"uuid","required":true,"description":"対象となるバックアップ実行履歴への外部キー"},{"name":"バックアップジョブID","type":"uuid","required":true,"description":"対象となるバックアップジョブへの外部キー"},{"name":"失敗原因分類","type":"varchar(100)","required":true,"description":"失敗原因の分類コード（ストレージ不足、ネットワーク障害、権限不足等）"},{"name":"失敗原因詳細","type":"text","required":true,"description":"失敗原因の詳細説明とエラーメッセージ"},{"name":"推奨対応内容","type":"text","required":false,"description":"診断結果に基づく推奨される復旧対応内容"},{"name":"診断ステータス","type":"varchar(100)","required":true,"description":"診断状態（診断中、診断完了、対応待ち、対応完了）"},{"name":"診断実施者ID","type":"uuid","required":false,"description":"診断を実施したユーザーへの外部キー"},{"name":"対応実施者ID","type":"uuid","required":false,"description":"推奨対応を実施したユーザーへの外部キー"},{"name":"対応完了日時","type":"timestamp","required":false,"description":"推奨対応が完了した日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"診断レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"診断レコード最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"診断レコードを作成したユーザーID"}]},{"tableName":"バックアップログ","purpose":"バックアップ実行時の詳細なログ情報を記録し、トラブルシューティング、監査、パフォーマンス分析に使用される履歴テーブル","columns":[{"name":"ログID","type":"uuid","required":true,"description":"ログレコードの一意識別子"},{"name":"バックアップ実行履歴ID","type":"uuid","required":true,"description":"バックアップ実行履歴テーブルへの外部キー参照"},{"name":"ログレベル","type":"varchar(100)","required":true,"description":"ログの重要度レベル(INFO/WARNING/ERROR/DEBUG等)"},{"name":"ログメッセージ","type":"text","required":true,"description":"ログの詳細なメッセージ内容"},{"name":"処理ステップ","type":"varchar(100)","required":false,"description":"バックアップ処理のどのステップで発生したか(初期化/データ抽出/圧縮/転送/検証等)"},{"name":"エラーコード","type":"varchar(100)","required":false,"description":"エラー発生時のエラーコード"},{"name":"スタックトレース","type":"text","required":false,"description":"例外発生時のスタックトレース情報"},{"name":"処理時間ミリ秒","type":"integer","required":false,"description":"該当処理にかかった時間(ミリ秒単位)"},{"name":"タイムスタンプ","type":"timestamp","required":true,"description":"ログが記録された日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ログレコードが作成された日時"}]},{"tableName":"復旧ジョブ","purpose":"バックアップから対象システムへのデータ復旧処理を管理し、復旧タスクの定義、スケジューリング、実行状況の追跡を行う","columns":[{"name":"復旧ジョブID","type":"uuid","required":true,"description":"復旧ジョブの一意識別子"},{"name":"ジョブ名","type":"varchar(100)","required":true,"description":"復旧ジョブの名称"},{"name":"説明","type":"text","required":false,"description":"復旧ジョブの詳細説明"},{"name":"バックアップジョブID","type":"uuid","required":true,"description":"復旧対象のバックアップジョブへの外部キー"},{"name":"復旧対象システム","type":"varchar(100)","required":true,"description":"復旧先のシステム名またはホスト名"},{"name":"復旧ポイント","type":"timestamp","required":true,"description":"復旧対象のバックアップ時点"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"復旧ジョブの状態(未実行、実行中、成功、失敗、一時停止等)"},{"name":"スケジュール種別","type":"varchar(100)","required":false,"description":"復旧実行のスケジュール方式(手動、定期、イベント駆動等)"},{"name":"優先度","type":"integer","required":false,"description":"復旧ジョブの優先度レベル"},{"name":"予定開始日時","type":"timestamp","required":false,"description":"復旧ジョブの予定開始時刻"},{"name":"実際開始日時","type":"timestamp","required":false,"description":"復旧ジョブの実際の開始時刻"},{"name":"完了日時","type":"timestamp","required":false,"description":"復旧ジョブの完了時刻"},{"name":"実行時間秒","type":"integer","required":false,"description":"復旧ジョブの実行所要時間(秒)"},{"name":"復旧データサイズバイト","type":"integer","required":false,"description":"復旧されたデータの総サイズ(バイト)"},{"name":"エラーメッセージ","type":"text","required":false,"description":"復旧失敗時のエラー詳細"},{"name":"再試行回数","type":"integer","required":false,"description":"復旧ジョブの再試行実施回数"},{"name":"最大再試行回数","type":"integer","required":false,"description":"復旧ジョブの最大再試行回数設定"},{"name":"検証実施","type":"boolean","required":false,"description":"復旧後のデータ検証を実施するかどうか"},{"name":"検証ステータス","type":"varchar(100)","required":false,"description":"復旧データの検証結果(未実施、成功、失敗等)"},{"name":"作成日時","type":"timestamp","required":true,"description":"復旧ジョブの作成日時"},{"name":"作成者","type":"uuid","required":true,"description":"復旧ジョブを作成したユーザーへの外部キー"},{"name":"更新日時","type":"timestamp","required":true,"description":"復旧ジョブの最終更新日時"},{"name":"更新者","type":"uuid","required":false,"description":"復旧ジョブを最後に更新したユーザーへの外部キー"}]},{"tableName":"復旧実行履歴","purpose":"復旧ジョブの実行結果と進捗を記録し、復旧操作の履歴管理と監視を行うための履歴テーブル","columns":[{"name":"復旧実行履歴ID","type":"uuid","required":true,"description":"復旧実行履歴の一意識別子"},{"name":"復旧ジョブID","type":"uuid","required":true,"description":"関連する復旧ジョブの識別子"},{"name":"バックアップ実行履歴ID","type":"uuid","required":true,"description":"復旧元となるバックアップ実行履歴の識別子"},{"name":"実行開始日時","type":"timestamp","required":true,"description":"復旧実行の開始日時"},{"name":"実行終了日時","type":"timestamp","required":false,"description":"復旧実行の終了日時"},{"name":"実行ステータス","type":"varchar(100)","required":true,"description":"復旧の実行状態(実行中/成功/失敗/中断)"},{"name":"進捗率","type":"integer","required":false,"description":"復旧の進捗率(0-100)"},{"name":"復旧対象リソース","type":"varchar(100)","required":true,"description":"復旧対象のリソース名またはパス"},{"name":"復旧先","type":"varchar(100)","required":true,"description":"復旧先のリソース名またはパス"},{"name":"復旧データサイズ","type":"integer","required":false,"description":"復旧されたデータサイズ(バイト)"},{"name":"エラーメッセージ","type":"text","required":false,"description":"復旧失敗時のエラーメッセージ"},{"name":"実行ユーザーID","type":"uuid","required":true,"description":"復旧を実行したユーザーの識別子"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード更新日時"}]},{"tableName":"復旧検証結果","purpose":"バックアップから復旧したデータの検証結果を記録し、復旧の成功可否と検証内容を管理するテーブル","columns":[{"name":"復旧検証結果ID","type":"uuid","required":true,"description":"復旧検証結果の一意識別子"},{"name":"復旧実行履歴ID","type":"uuid","required":true,"description":"対応する復旧実行履歴への外部キー"},{"name":"バックアップジョブID","type":"uuid","required":true,"description":"対応するバックアップジョブへの外部キー"},{"name":"検証ステータス","type":"varchar(100)","required":true,"description":"検証結果のステータス(成功/失敗/警告/実行中)"},{"name":"検証タイプ","type":"varchar(100)","required":true,"description":"検証の種類(整合性チェック/データ量検証/サンプルデータ検証)"},{"name":"検証開始日時","type":"timestamp","required":true,"description":"検証処理の開始日時"},{"name":"検証完了日時","type":"timestamp","required":false,"description":"検証処理の完了日時"},{"name":"検証対象レコード数","type":"integer","required":false,"description":"検証対象となったレコード総数"},{"name":"検証成功レコード数","type":"integer","required":false,"description":"検証に成功したレコード数"},{"name":"検証失敗レコード数","type":"integer","required":false,"description":"検証に失敗したレコード数"},{"name":"検証結果詳細","type":"text","required":false,"description":"検証結果の詳細情報やエラーメッセージ"},{"name":"検証判定","type":"boolean","required":true,"description":"復旧データが本番環境への適用可能か判定(true:可能/false:不可)"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"レコード作成者のユーザーID"}]},{"tableName":"復旧テスト実行記録","purpose":"復旧ジョブの定期的なテスト実行結果を記録し、復旧手順の有効性と復旧時間目標(RTO)の達成状況を追跡管理するテーブル","columns":[{"name":"復旧テスト実行記録ID","type":"uuid","required":true,"description":"復旧テスト実行記録の一意識別子"},{"name":"復旧ジョブID","type":"uuid","required":true,"description":"対象となる復旧ジョブへの外部キー参照"},{"name":"テスト実行日時","type":"timestamp","required":true,"description":"復旧テストを実行した日時"},{"name":"テスト開始時刻","type":"timestamp","required":true,"description":"復旧テストの開始時刻"},{"name":"テスト終了時刻","type":"timestamp","required":true,"description":"復旧テストの終了時刻"},{"name":"実行時間秒","type":"integer","required":true,"description":"復旧テストの実行時間(秒単位)"},{"name":"テスト結果ステータス","type":"varchar(100)","required":true,"description":"テスト結果のステータス(成功/失敗/部分成功/スキップ等)"},{"name":"復旧成功フラグ","type":"boolean","required":true,"description":"復旧テストが成功したかどうかを示すフラグ"},{"name":"データ整合性確認結果","type":"varchar(100)","required":true,"description":"復旧後のデータ整合性確認結果(正常/異常/未実施等)"},{"name":"RTO達成フラグ","type":"boolean","required":true,"description":"復旧時間目標(RTO)を達成したかどうかを示すフラグ"},{"name":"テスト実行者ID","type":"uuid","required":true,"description":"テストを実行したユーザーへの外部キー参照"},{"name":"テスト環境","type":"varchar(100)","required":true,"description":"テストを実行した環境(本番/ステージング/テスト環境等)"},{"name":"テスト対象バックアップID","type":"uuid","required":false,"description":"テストに使用したバックアップへの外部キー参照"},{"name":"検出された問題","type":"text","required":false,"description":"テスト実行中に検出された問題や課題の詳細"},{"name":"改善提案","type":"text","required":false,"description":"テスト結果に基づく復旧手順の改善提案"},{"name":"備考","type":"text","required":false,"description":"その他の特記事項やコメント"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"}]},{"tableName":"RTO_RPO設定","purpose":"バックアップジョブおよび復旧ジョブに対するRTO(目標復旧時間)とRPO(目標復旧地点)の設定値を管理し、バックアップ・復旧戦略の基準を定義するマスタテーブル","columns":[{"name":"RTO_RPO設定ID","type":"uuid","required":true,"description":"RTO_RPO設定の一意識別子"},{"name":"ジョブID","type":"uuid","required":true,"description":"関連するバックアップジョブまたは復旧ジョブの識別子"},{"name":"ジョブタイプ","type":"varchar(100)","required":true,"description":"ジョブの種別(バックアップ/復旧)"},{"name":"RTO分","type":"integer","required":true,"description":"目標復旧時間(分単位)"},{"name":"RPO分","type":"integer","required":true,"description":"目標復旧地点(分単位)"},{"name":"優先度","type":"varchar(100)","required":true,"description":"バックアップ・復旧の優先度レベル(高/中/低)"},{"name":"有効フラグ","type":"boolean","required":true,"description":"設定が有効かどうかを示すフラグ"},{"name":"備考","type":"text","required":false,"description":"RTO_RPO設定に関する補足情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者","type":"uuid","required":true,"description":"レコード最終更新者のユーザーID"}]},{"tableName":"RTO_RPO乖離分析","purpose":"RTOとRPOの設定値と実績値の乖離を分析し、バックアップ・復旧戦略の改善を支援するための分析テーブル","columns":[{"name":"乖離分析ID","type":"uuid","required":true,"description":"乖離分析レコードの一意識別子"},{"name":"バックアップジョブID","type":"uuid","required":true,"description":"対象となるバックアップジョブの識別子"},{"name":"分析対象期間開始日","type":"timestamp","required":true,"description":"乖離分析の対象期間開始日時"},{"name":"分析対象期間終了日","type":"timestamp","required":true,"description":"乖離分析の対象期間終了日時"},{"name":"設定RTO分","type":"integer","required":true,"description":"RTO_RPO設定テーブルで定義された目標復旧時間（分）"},{"name":"実績RTO分","type":"integer","required":true,"description":"分析対象期間における実際の復旧時間の平均値（分）"},{"name":"RTO乖離率","type":"integer","required":true,"description":"実績RTOと設定RTOの乖離率（パーセンテージ）"},{"name":"設定RPO分","type":"integer","required":true,"description":"RTO_RPO設定テーブルで定義された目標復旧時点（分）"},{"name":"実績RPO分","type":"integer","required":true,"description":"分析対象期間における実際のデータ損失許容時間の平均値（分）"},{"name":"RPO乖離率","type":"integer","required":true,"description":"実績RPOと設定RPOの乖離率（パーセンテージ）"},{"name":"RTO達成率","type":"integer","required":false,"description":"分析対象期間におけるRTO達成の成功回数の割合（パーセンテージ）"},{"name":"RPO達成率","type":"integer","required":false,"description":"分析対象期間におけるRPO達成の成功回数の割合（パーセンテージ）"},{"name":"乖離原因分類","type":"varchar(100)","required":false,"description":"乖離の主要原因（ネットワーク遅延、ストレージ制約、リソース不足など）"},{"name":"改善推奨事項","type":"text","required":false,"description":"RTO・RPO達成に向けた改善推奨事項"},{"name":"分析ステータス","type":"varchar(100)","required":true,"description":"分析の状態（未実施、実施中、完了、確認待ち）"},{"name":"作成日時","type":"timestamp","required":true,"description":"乖離分析レコードの作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"乖離分析レコードの最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"乖離分析を作成したユーザーID"},{"name":"更新者","type":"varchar(100)","required":false,"description":"乖離分析を最後に更新したユーザーID"}]},{"tableName":"レポート生成履歴","purpose":"バックアップ・復旧管理システムで生成されたレポートの履歴を記録し、レポート生成の実行状況、結果、スケジュール情報を管理する","columns":[{"name":"レポート生成履歴ID","type":"uuid","required":true,"description":"レポート生成履歴の一意識別子"},{"name":"レポート種別","type":"varchar(100)","required":true,"description":"生成されたレポートの種別（バックアップ実行レポート、復旧実行レポート、RTO_RPO乖離分析レポート等）"},{"name":"生成開始日時","type":"timestamp","required":true,"description":"レポート生成処理の開始日時"},{"name":"生成完了日時","type":"timestamp","required":false,"description":"レポート生成処理の完了日時"},{"name":"生成ステータス","type":"varchar(100)","required":true,"description":"レポート生成の状態（実行中、完了、失敗等）"},{"name":"対象期間開始日","type":"timestamp","required":true,"description":"レポートが対象とする期間の開始日時"},{"name":"対象期間終了日","type":"timestamp","required":true,"description":"レポートが対象とする期間の終了日時"},{"name":"レポートファイルパス","type":"varchar(100)","required":false,"description":"生成されたレポートファイルの保存パスまたはURL"},{"name":"レポートフォーマット","type":"varchar(100)","required":true,"description":"レポートのフォーマット（PDF、CSV、HTML等）"},{"name":"生成対象ユーザーID","type":"uuid","required":false,"description":"レポート生成をリクエストしたユーザーID"},{"name":"スケジュール実行フラグ","type":"boolean","required":true,"description":"スケジュール設定による自動生成か手動リクエストかを示すフラグ"},{"name":"エラーメッセージ","type":"text","required":false,"description":"レポート生成失敗時のエラー詳細メッセージ"},{"name":"処理時間秒","type":"integer","required":false,"description":"レポート生成に要した処理時間（秒単位）"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"}]},{"tableName":"ユーザー権限","purpose":"ユーザーがバックアップ・復旧管理・監視システムで実行可能な操作を制御するための権限マスタテーブル。ユーザーに対して機能単位の権限を付与・管理し、アクセス制御と操作ログの監査を実現する。","columns":[{"name":"権限ID","type":"uuid","required":true,"description":"ユーザー権限レコードの一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"権限が付与されるユーザーの外部キー参照"},{"name":"権限コード","type":"varchar(100)","required":true,"description":"権限の種類を示すコード（例：BACKUP_CREATE、BACKUP_DELETE、RECOVERY_EXECUTE、REPORT_VIEW等）"},{"name":"権限名","type":"varchar(100)","required":true,"description":"権限の日本語表示名"},{"name":"説明","type":"text","required":false,"description":"権限の詳細説明"},{"name":"有効フラグ","type":"boolean","required":true,"description":"権限が有効かどうかを示すフラグ"},{"name":"付与日時","type":"timestamp","required":true,"description":"権限が付与された日時"},{"name":"失効日時","type":"timestamp","required":false,"description":"権限が失効する予定の日時（期限付き権限の場合）"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"権限を付与した管理者のユーザーID"}]},{"tableName":"操作履歴","purpose":"ユーザーによるバックアップ・復旧システムの全操作を記録し、監査証跡とトラブルシューティングの基盤を提供する","columns":[{"name":"操作履歴ID","type":"uuid","required":true,"description":"操作履歴の一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"操作を実行したユーザーの識別子、ユーザーテーブルへの外部キー"},{"name":"操作種別","type":"varchar(100)","required":true,"description":"実行された操作の種類（バックアップ実行、復旧実行、設定変更、ジョブ削除等）"},{"name":"対象リソースタイプ","type":"varchar(100)","required":true,"description":"操作の対象となるリソースの種類（バックアップジョブ、復旧ジョブ、RTO_RPO設定等）"},{"name":"対象リソースID","type":"uuid","required":true,"description":"操作の対象となるリソースの識別子"},{"name":"操作内容","type":"text","required":false,"description":"操作の詳細な内容や変更内容の説明"},{"name":"操作ステータス","type":"varchar(100)","required":true,"description":"操作の実行結果（成功、失敗、部分成功等）"},{"name":"エラーメッセージ","type":"text","required":false,"description":"操作失敗時のエラーメッセージ"},{"name":"実行開始日時","type":"timestamp","required":true,"description":"操作の実行開始日時"},{"name":"実行終了日時","type":"timestamp","required":false,"description":"操作の実行終了日時"},{"name":"実行時間秒","type":"integer","required":false,"description":"操作の実行所要時間（秒単位）"},{"name":"IPアドレス","type":"varchar(100)","required":false,"description":"操作を実行したクライアントのIPアドレス"},{"name":"セッションID","type":"varchar(100)","required":false,"description":"操作を実行したセッションの識別子"},{"name":"作成日時","type":"timestamp","required":true,"description":"操作履歴レコードの作成日時"}]},{"tableName":"通知設定","purpose":"ユーザーごとのバックアップ・復旧関連イベントの通知ルールを管理し、通知先、通知条件、通知方法を一元管理するマスタテーブル","columns":[{"name":"通知設定ID","type":"uuid","required":true,"description":"通知設定の一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"通知設定を適用するユーザーの識別子、ユーザーテーブルへの外部キー"},{"name":"通知種別","type":"varchar(100)","required":true,"description":"通知の種類（バックアップ成功、バックアップ失敗、復旧成功、復旧失敗、異常検出、RTO_RPO乖離等）"},{"name":"通知方法","type":"varchar(100)","required":true,"description":"通知の配信方法（メール、Slack、Teams、Webhook等）"},{"name":"通知先","type":"varchar(100)","required":true,"description":"通知の送信先アドレスまたはチャネル識別子"},{"name":"有効フラグ","type":"boolean","required":true,"description":"この通知設定が有効かどうかを示すフラグ"},{"name":"重要度フィルタ","type":"varchar(100)","required":false,"description":"通知対象とする重要度レベル（全て、警告以上、エラーのみ等）"},{"name":"対象ジョブID","type":"uuid","required":false,"description":"特定のバックアップ・復旧ジョブに限定する場合のジョブID、NULLの場合は全ジョブが対象"},{"name":"作成日時","type":"timestamp","required":true,"description":"通知設定の作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"通知設定の最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"通知設定を作成したユーザーの識別子"}]},{"tableName":"通知送信履歴","purpose":"バックアップ・復旧システムにおける通知送信の履歴を記録し、送信状況の追跡、再送信管理、通知配信の監査証跡を保持する","columns":[{"name":"通知送信履歴ID","type":"uuid","required":true,"description":"通知送信履歴の一意識別子"},{"name":"通知設定ID","type":"uuid","required":true,"description":"通知設定テーブルへの外部キー参照"},{"name":"ユーザーID","type":"uuid","required":true,"description":"通知受信者のユーザーID"},{"name":"通知タイプ","type":"varchar(100)","required":true,"description":"通知の種類(バックアップ成功、バックアップ失敗、復旧完了、異常検出等)"},{"name":"トリガーイベント","type":"varchar(100)","required":true,"description":"通知を発火させたイベント(バックアップジョブID、復旧ジョブID、異常検出ID等)"},{"name":"送信先","type":"varchar(100)","required":true,"description":"通知送信先(メールアドレス、電話番号等)"},{"name":"送信チャネル","type":"varchar(100)","required":true,"description":"通知送信方法(メール、SMS、Slack等)"},{"name":"通知内容","type":"text","required":true,"description":"実際に送信された通知メッセージの内容"},{"name":"送信日時","type":"timestamp","required":true,"description":"通知が送信された日時"},{"name":"送信ステータス","type":"varchar(100)","required":true,"description":"送信結果(成功、失敗、保留中、再試行中等)"},{"name":"ステータス詳細","type":"text","required":false,"description":"送信失敗時のエラーメッセージやステータス詳細情報"},{"name":"再試行回数","type":"integer","required":true,"description":"送信失敗時の再試行実施回数"},{"name":"最終再試行日時","type":"timestamp","required":false,"description":"最後に再試行を実施した日時"},{"name":"開封フラグ","type":"boolean","required":false,"description":"メール等で開封確認が可能な場合の開封状態"},{"name":"開封日時","type":"timestamp","required":false,"description":"通知が開封された日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"通知送信履歴レコードの作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"通知送信履歴レコードの最終更新日時"}]},{"tableName":"アラート定義","purpose":"バックアップ・復旧システムにおけるアラート条件を定義し、監視対象のイベントや閾値を管理するマスタテーブル","columns":[{"name":"アラート定義ID","type":"uuid","required":true,"description":"アラート定義を一意に識別するID"},{"name":"アラート名","type":"varchar(100)","required":true,"description":"アラートの名称"},{"name":"説明","type":"text","required":false,"description":"アラート定義の詳細説明"},{"name":"監視対象タイプ","type":"varchar(100)","required":true,"description":"監視対象の種類(バックアップジョブ、復旧ジョブ、RTO_RPO等)"},{"name":"条件タイプ","type":"varchar(100)","required":true,"description":"アラート条件の種類(閾値超過、失敗、タイムアウト等)"},{"name":"条件値","type":"text","required":true,"description":"アラート発火条件の詳細(JSON形式で複数条件を保持)"},{"name":"重要度","type":"varchar(100)","required":true,"description":"アラートの重要度レベル(緊急、高、中、低)"},{"name":"有効フラグ","type":"boolean","required":true,"description":"アラート定義が有効かどうか"},{"name":"通知設定ID","type":"uuid","required":false,"description":"関連する通知設定のID"},{"name":"作成日時","type":"timestamp","required":true,"description":"アラート定義の作成日時"},{"name":"作成者","type":"uuid","required":true,"description":"アラート定義を作成したユーザーID"},{"name":"更新日時","type":"timestamp","required":true,"description":"アラート定義の最終更新日時"},{"name":"更新者","type":"uuid","required":true,"description":"アラート定義を最後に更新したユーザーID"}]},{"tableName":"アラート発火履歴","purpose":"バックアップ・復旧システムで発火したアラートの履歴を記録し、アラート発生パターンの分析、対応状況の追跡、SLA監視を実現する","columns":[{"name":"アラート発火履歴ID","type":"uuid","required":true,"description":"アラート発火履歴の一意識別子"},{"name":"アラート定義ID","type":"uuid","required":true,"description":"アラート定義テーブルへの外部キー"},{"name":"発火日時","type":"timestamp","required":true,"description":"アラートが発火した日時"},{"name":"対象リソースタイプ","type":"varchar(100)","required":true,"description":"アラート対象のリソースタイプ(バックアップジョブ/復旧ジョブ/ホスト等)"},{"name":"対象リソースID","type":"uuid","required":true,"description":"アラート対象のリソースID"},{"name":"アラートレベル","type":"varchar(100)","required":true,"description":"アラートの重要度レベル(CRITICAL/WARNING/INFO等)"},{"name":"アラートメッセージ","type":"text","required":true,"description":"アラートの詳細メッセージ"},{"name":"アラート状態","type":"varchar(100)","required":true,"description":"アラートの現在状態(未対応/対応中/解決/無視等)"},{"name":"対応者ユーザーID","type":"uuid","required":false,"description":"アラートに対応したユーザーID"},{"name":"対応日時","type":"timestamp","required":false,"description":"アラートに対応した日時"},{"name":"対応コメント","type":"text","required":false,"description":"対応時のコメント"},{"name":"関連バックアップ実行履歴ID","type":"uuid","required":false,"description":"バックアップ実行履歴テーブルへの外部キー"},{"name":"関連復旧実行履歴ID","type":"uuid","required":false,"description":"復旧実行履歴テーブルへの外部キー"},{"name":"関連異常検出ID","type":"uuid","required":false,"description":"バックアップ異常検出テーブルへの外部キー"},{"name":"通知送信済み","type":"boolean","required":true,"description":"通知が送信されたかどうか"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"}]}];
+window.AIVIC_PRESET_SEED = {"ユーザー":[{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"情報システム部","役職":"システム管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"システム","更新者":"鈴木花子"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.takeshi","メールアドレス":"suzuki.takeshi@company.jp","部門":"セキュリティ監査チーム","役職":"シニア分析者","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:00","作成日時":"2022-04-10 14:20:00","更新日時":"2024-12-20 16:45:00","作成者":"system","更新者":"佐藤花子"},{"ユーザーID":"550e8400-e29b-41d4-a716-446655440000","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"セキュリティ運用部","役職":"セキュリティアナリスト","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 08:32:45","作成日時":"2023-04-10 09:15:00","更新日時":"2024-12-20 14:22:30","作成者":"admin_system","更新者":"鈴木花子"},{"ユーザーID":"rec-001-backup-ops-2024","ユーザー名":"yamamoto.recovery","メールアドレス":"yamamoto.hiroshi@company.jp","部門":"インフラ運用部","役職":"バックアップ運用チームリーダー","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2023-04-10 09:15:00","更新日時":"2025-01-10 11:20:00","作成者":"system","更新者":"山本浩司"},{"ユーザーID":"rec-001-2024-audit-001","ユーザー名":"suzuki_hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"経営企画室","役職":"部長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:15:00","更新日時":"2025-01-10 14:45:00","作成者":"システム","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"yamada.hanako","メールアドレス":"yamada.hanako@company.jp","部門":"営業部","役職":"新入社員","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:30:00","作成日時":"2025-01-06 09:00:00","更新日時":"2025-01-15 14:30:00","作成者":"佐藤次郎","更新者":"システム"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2024-09-15 14:32:00","作成日時":"2022-04-01 09:00:00","更新日時":"2024-10-01 10:15:00","作成者":"system","更新者":"yamamoto.taro"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2025-01-15 16:45:30","作成日時":"2020-04-01 09:00:00","更新日時":"2025-01-20 10:30:00","作成者":"システム","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業企画部","役職":"部長","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2023-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"system","更新者":"suzuki.hanako"},{"ユーザーID":"rec-001","ユーザー名":"audit_yamada_2025","メールアドレス":"yamada.taro@auditfirm-abc.co.jp","部門":"外部監査部門","役職":"公認会計士","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-22T14:30:00+09:00","作成日時":"2025-01-10T09:15:00+09:00","更新日時":"2025-01-22T14:30:00+09:00","作成者":"内部監査室_佐藤花子","更新者":"システム"}],"バックアップジョブ":[{"ジョブID":"rec-001","ジョブ名":"本番DB毎日深夜フルバックアップ","説明":"本番環境のPostgreSQLデータベース全体に対する毎日深夜のフルバックアップ。システム停止時間を避けるため午前2時に実行。","バックアップ対象":"prod-db-primary-01","バックアップタイプ":"フル","スケジュール種別":"日次","スケジュール詳細":"毎日 02:00","保持期間日数":30,"ステータス":"有効","最終実行日時":"2025-01-15T02:00:45+09:00","最終実行結果":"成功","次回予定実行日時":"2025-01-16T02:00:00+09:00","通知先メールアドレス":"dba-team@company.jp","作成日時":"2024-04-10T10:30:00+09:00","作成者":"rec-user-0042","更新日時":"2024-12-20T14:15:30+09:00","更新者":"rec-user-0089"},{"ジョブID":"rec-001","ジョブ名":"営業システム週次差分バックアップ","説明":"営業管理システムの毎週日曜日深夜に実行される差分バックアップ。前回フルバックアップ以降の変更分のみを対象とする。","バックアップ対象":"営業管理システムDB","バックアップタイプ":"差分","スケジュール種別":"週次","スケジュール詳細":"毎週日曜日 23:30","保持期間日数":90,"ステータス":"有効","最終実行日時":"2025-01-12 23:35:42","最終実行結果":"成功","次回予定実行日時":"2025-01-19 23:30:00","通知先メールアドレス":"backup-admin@sales-system.jp","作成日時":"2024-06-15 10:22:18","作成者":"rec-u001","更新日時":"2024-11-28 14:45:03","更新者":"rec-u002"},{"ジョブID":"rec-001","ジョブ名":"月末決算前重要データ保全バックアップ","説明":"月末決算処理前に会計システムと顧客マスタデータの完全バックアップを実施。決算期間中のデータ損失リスク軽減を目的とする。","バックアップ対象":"会計システムDB・顧客マスタDB","バックアップタイプ":"フル","スケジュール種別":"月次","スケジュール詳細":"毎月25日 23:00","保持期間日数":90,"ステータス":"有効","最終実行日時":"2025-01-25 23:15:32","最終実行結果":"成功","次回予定実行日時":"2025-02-25 23:00:00","通知先メールアドレス":"backup-admin@company.jp","作成日時":"2024-06-10 14:30:00","作成者":"rec-u001","更新日時":"2024-12-20 09:45:00","更新者":"rec-u002"},{"ジョブID":"rec-001","ジョブ名":"開発環境DB日次増分バックアップ","説明":"開発環境PostgreSQLデータベースの日次増分バックアップ。本番リリース前の動作検証用DBの保護を目的とする。","バックアップ対象":"dev-postgres-01","バックアップタイプ":"増分","スケジュール種別":"日次","スケジュール詳細":"毎日午前2時30分（0 2 30 * * *）","保持期間日数":30,"ステータス":"有効","最終実行日時":"2025-01-15 02:31:45","最終実行結果":"成功","次回予定実行日時":"2025-01-16 02:30:00","通知先メールアドレス":"dev-team@company.jp","作成日時":"2024-06-10 14:22:00","作成者":"rec-user-0042","更新日時":"2025-01-10 09:15:30","更新者":"rec-user-0089"},{"ジョブID":"rec-001","ジョブ名":"顧客情報サーバー月次フルバックアップ","説明":"顧客情報サーバーの全データを対象とした月次のフルバックアップジョブ。毎月末日の深夜に実行し、顧客マスタ、取引履歴、契約情報を完全にバックアップする。","バックアップ対象":"顧客情報サーバー(CRM-DB-01)","バックアップタイプ":"フル","スケジュール種別":"月次","スケジュール詳細":"毎月末日 23:30実行","保持期間日数":90,"ステータス":"有効","最終実行日時":"2024-12-31 23:45:32","最終実行結果":"成功","次回予定実行日時":"2025-01-31 23:30:00","通知先メールアドレス":"backup-admin@company.jp","作成日時":"2024-04-15 09:20:00","作成者":"rec-u-0042","更新日時":"2024-11-20 14:35:15","更新者":"rec-u-0058"},{"ジョブID":"rec-001","ジョブ名":"ファイルサーバー定期バックアップ","説明":"本社ファイルサーバーの全データを対象とした週次バックアップジョブ。毎週日曜日の深夜に自動実行し、重要なドキュメントと共有ファイルの保護を実施する。","バックアップ対象":"ファイルサーバー01（NAS-FS001）","バックアップタイプ":"フル","スケジュール種別":"週次","スケジュール詳細":"毎週日曜日 23:30","保持期間日数":90,"ステータス":"有効","最終実行日時":"2025-01-12T23:45:30Z","最終実行結果":"成功","次回予定実行日時":"2025-01-19T23:30:00Z","通知先メールアドレス":"backup-admin@company.jp","作成日時":"2024-04-15T09:20:00Z","作成者":"rec-u001","更新日時":"2024-12-20T14:10:30Z","更新者":"rec-u002"},{"ジョブID":"rec-001","ジョブ名":"緊急時対応用月初フルバックアップ","説明":"本番環境の全システムデータを対象とした月初のフルバックアップ。緊急時の復旧用として毎月1日に実行。","バックアップ対象":"本番DBサーバー(prod-db-01)","バックアップタイプ":"フル","スケジュール種別":"月次","スケジュール詳細":"毎月1日 02:00","保持期間日数":90,"ステータス":"有効","最終実行日時":"2025-01-01T02:15:33+09:00","最終実行結果":"成功","次回予定実行日時":"2025-02-01T02:00:00+09:00","通知先メールアドレス":"backup-admin@company.jp","作成日時":"2024-06-15T10:30:00+09:00","作成者":"rec-u-0042","更新日時":"2024-12-20T14:45:22+09:00","更新者":"rec-u-0015"},{"ジョブID":"rec-001","ジョブ名":"監査対応四半期アーカイブバックアップ","説明":"財務・監査対応用の四半期ごとのアーカイブバックアップ。決算期末から1営業日以内に実行し、7年間保持する。","バックアップ対象":"会計システムDB（accounting-prod-01）","バックアップタイプ":"フル","スケジュール種別":"四半期","スケジュール詳細":"3月31日、6月30日、9月30日、12月31日 23:30","保持期間日数":2555,"ステータス":"有効","最終実行日時":"2024-12-31T23:45:32+09:00","最終実行結果":"成功","次回予定実行日時":"2025-03-31T23:30:00+09:00","通知先メールアドレス":"audit-team@company.jp","作成日時":"2024-01-15T10:20:00+09:00","作成者":"rec-user-0042","更新日時":"2024-10-05T14:15:30+09:00","更新者":"rec-user-0058"},{"ジョブID":"rec-001","ジョブ名":"テスト環境DB差分バックアップ_日中定期","説明":"テスト環境のPostgreSQLデータベースに対する日中の定期差分バックアップ。業務時間内のデータ変更を捕捉し、災害復旧時の迅速なリカバリーを実現する。","バックアップ対象":"test-db-server-01","バックアップタイプ":"差分","スケジュール種別":"日次","スケジュール詳細":"0 12,15,18 * * 1-5","保持期間日数":30,"ステータス":"有効","最終実行日時":"2025-01-15T18:00:32+09:00","最終実行結果":"成功","次回予定実行日時":"2025-01-16T12:00:00+09:00","通知先メールアドレス":"backup-admin@company.jp","作成日時":"2024-11-20T09:30:00+09:00","作成者":"rec-u-0042","更新日時":"2024-12-10T14:15:00+09:00","更新者":"rec-u-0042"},{"ジョブID":"rec-001","ジョブ名":"本番DB災害復旧用毎時増分バックアップ","説明":"本番環境のデータベースサーバーを対象とした毎時の増分バックアップ。災害復旧時点での最新データを確保するため、毎時実行により RPO を最小化する。","バックアップ対象":"本番DB-Primary-Server-01","バックアップタイプ":"増分","スケジュール種別":"時次","スケジュール詳細":"0 * * * *","保持期間日数":30,"ステータス":"有効","最終実行日時":"2025-01-15 14:00:00","最終実行結果":"成功","次回予定実行日時":"2025-01-15 15:00:00","通知先メールアドレス":"dba-team@company.jp","作成日時":"2024-04-10 09:30:00","作成者":"rec-u-001","更新日時":"2025-01-10 16:45:00","更新者":"rec-u-002"}],"バックアップ実行履歴":[{"実行履歴ID":"rec-001","バックアップジョブID":"job-0847","実行開始日時":"2024-12-15 02:00:00","実行終了日時":"2024-12-15 02:45:30","実行ステータス":"成功","バックアップサイズ":536870912,"処理時間秒":2730,"エラーメッセージ":null,"警告メッセージ":null,"バックアップ保存先":"/backup/daily/2024-12-15/prod_db_full","復旧可能フラグ":true,"実行ユーザーID":"user-5621","作成日時":"2024-12-15 02:45:31","更新日時":"2024-12-15 02:45:31"},{"実行履歴ID":"rec-20250115-0847","バックアップジョブID":"job-night-db-001","実行開始日時":"2025-01-15T02:00:00+09:00","実行終了日時":"2025-01-15T02:47:33+09:00","実行ステータス":"失敗","バックアップサイズ":847293440,"処理時間秒":2853,"エラーメッセージ":"ディスク容量不足エラー: バックアップ保存先 /backup/storage の残容量が不足しています。必要容量: 2.5GB、利用可能容量: 1.2GB。バックアップは不完全な状態で中断されました。","警告メッセージ":"バックアップ処理中に複数の警告が発生しました。ログファイルサイズが予想を上回りました。古いバックアップの削除を検討してください。","バックアップ保存先":"/backup/storage/db-prod-backup","復旧可能フラグ":false,"実行ユーザーID":"user-system-001","作成日時":"2025-01-15T02:47:35+09:00","更新日時":"2025-01-15T09:30:22+09:00"},{"実行履歴ID":"rec-20250215-001","バックアップジョブID":"job-20250101-vip-cust","実行開始日時":"2025-02-15T02:00:00+09:00","実行終了日時":"2025-02-15T03:47:32+09:00","実行ステータス":"警告","バックアップサイズ":1342177280,"処理時間秒":6452,"エラーメッセージ":null,"警告メッセージ":"対象ファイルの一部(約15%)の圧縮に失敗しました。ファイルサイズ: 201326592バイト。ロック中のファイルが存在する可能性があります。バックアップは完了していますが、ストレージ効率が低下しています。","バックアップ保存先":"/backup/storage/vip-customer-db/2025-02-15","復旧可能フラグ":true,"実行ユーザーID":"user-20240415-yamada","作成日時":"2025-02-15T03:47:45+09:00","更新日時":"2025-02-15T03:47:45+09:00"},{"実行履歴ID":"rec-001","バックアップジョブID":"rec-job-2024-monthly-001","実行開始日時":"2024-11-01T22:00:00+09:00","実行終了日時":"2024-11-02T06:45:30+09:00","実行ステータス":"警告","バックアップサイズ":2684354560,"処理時間秒":31530,"エラーメッセージ":null,"警告メッセージ":"処理時間が標準閾値(28800秒)を2730秒超過しました。ディスクI/Oが高負荷状態でした。","バックアップ保存先":"/backup/monthly/2024-11/full_backup_20241101.tar.gz","復旧可能フラグ":true,"実行ユーザーID":"rec-user-0847","作成日時":"2024-11-02T06:46:15+09:00","更新日時":"2024-11-02T07:30:00+09:00"},{"実行履歴ID":"rec-20250215-001","バックアップジョブID":"rec-job-20250215-042","実行開始日時":"2025-02-15T14:30:00+09:00","実行終了日時":"2025-02-15T14:45:23+09:00","実行ステータス":"キャンセル","バックアップサイズ":2684354560,"処理時間秒":923,"エラーメッセージ":null,"警告メッセージ":"バックアップ実行中にユーザーによってキャンセルされました。部分的なバックアップデータが保存されています。","バックアップ保存先":"/mnt/backup/storage/db_backup_20250215_143000","復旧可能フラグ":false,"実行ユーザーID":"rec-user-20240101-156","作成日時":"2025-02-15T14:45:30+09:00","更新日時":"2025-02-15T14:45:30+09:00"},{"実行履歴ID":"rec-001-20250115-ext-backup-fail","バックアップジョブID":"job-002-daily-external-storage","実行開始日時":"2025-01-15T02:30:00+09:00","実行終了日時":"2025-01-15T02:35:47+09:00","実行ステータス":"失敗","バックアップサイズ":0,"処理時間秒":347,"エラーメッセージ":"外部ストレージ接続エラー: NAS(192.168.1.100)への接続がタイムアウト。ネットワーク接続を確認してください。","警告メッセージ":"リトライ予定あり。次回実行予定時刻: 2025-01-15T03:00:00","バックアップ保存先":"\\\\nas-server\\backup\\daily\\2025-01-15","復旧可能フラグ":false,"実行ユーザーID":"user-045-yamada-hanako","作成日時":"2025-01-15T02:35:47+09:00","更新日時":"2025-01-15T02:35:47+09:00"},{"実行履歴ID":"rec-001","バックアップジョブID":"rec-job-0847","実行開始日時":"2024-12-15 02:30:00","実行終了日時":"2024-12-15 02:47:35","実行ステータス":"成功","バックアップサイズ":2147483648,"処理時間秒":1055,"エラーメッセージ":null,"警告メッセージ":null,"バックアップ保存先":"/backup/incremental/2024-12-15","復旧可能フラグ":true,"実行ユーザーID":"rec-user-0521","作成日時":"2024-12-15 02:47:36","更新日時":"2024-12-15 02:47:36"},{"実行履歴ID":"rec-001-2025-0847","バックアップジョブID":"job-dr-drill-001","実行開始日時":"2025-01-15T02:00:00+09:00","実行終了日時":"2025-01-15T03:45:30+09:00","実行ステータス":"成功","バックアップサイズ":2147483648,"処理時間秒":6330,"エラーメッセージ":null,"警告メッセージ":"バックアップ実行中にディスクI/Oが一時的に上昇しましたが、処理は正常に完了しました。","バックアップ保存先":"/mnt/backup/dr-drill/2025-01-15/prod-backup-20250115","復旧可能フラグ":true,"実行ユーザーID":"user-admin-yamada","作成日時":"2025-01-15T03:46:00+09:00","更新日時":"2025-01-15T10:30:00+09:00"},{"実行履歴ID":"rec-001","バックアップジョブID":"rec-002","実行開始日時":"2024-11-15T02:30:00+09:00","実行終了日時":"2024-11-15T02:35:42+09:00","実行ステータス":"失敗","バックアップサイズ":0,"処理時間秒":342,"エラーメッセージ":"バックアップ保存先 /mnt/backup/archive へのアクセス権限がありません。ディレクトリの所有者は root:backup-admin であり、現在のプロセスは backup-service ユーザーで実行されています。Permission denied (errno: 13)","警告メッセージ":"セキュリティポリシー違反を検出しました。バックアップ保存先のディレクトリパーミッションが 0700 に設定されており、バックアップサービスユーザーへの読み取り/書き込み権限が付与されていません。セキュリティ管理チームへの報告が必要です。","バックアップ保存先":"/mnt/backup/archive","復旧可能フラグ":false,"実行ユーザーID":"rec-003","作成日時":"2024-11-15T02:35:42+09:00","更新日時":"2024-11-15T02:35:42+09:00"},{"実行履歴ID":"rec-001","バックアップジョブID":"rec-job-2847","実行開始日時":"2024-11-15T02:00:00+09:00","実行終了日時":"2024-11-15T02:45:30+09:00","実行ステータス":"成功","バックアップサイズ":536870912,"処理時間秒":2730,"エラーメッセージ":null,"警告メッセージ":null,"バックアップ保存先":"s3://company-backup-prod/daily/2024-11-15/","復旧可能フラグ":true,"実行ユーザーID":"rec-user-5923","作成日時":"2024-11-15T02:46:00+09:00","更新日時":"2024-11-15T02:46:00+09:00"}],"バックアップ異常検出":[{"異常検出ID":"rec-001","バックアップ実行履歴ID":"rec-002","バックアップジョブID":"rec-003","異常タイプ":"タイムアウト","重大度":"WARNING","エラーメッセージ":"バックアップ処理がネットワーク遅延により制限時間内に完了できませんでした。接続タイムアウト: 1800秒を超過しました。","検出日時":"2024-11-15 02:35:42","対応状況":"解決済み","対応者ID":"rec-004","対応日時":"2024-11-15 02:47:18","対応内容":"自動復旧処理により2024-11-15 02:40:00に再実行を開始し、2024-11-15 02:47:00に正常に完了。ネットワーク遅延は一時的なものと判断され、再試行で成功。","自動復旧実行":true,"復旧結果":"成功","作成日時":"2024-11-15 02:35:42","更新日時":"2024-11-15 02:47:18"},{"異常検出ID":"rec-20250115-001","バックアップ実行履歴ID":"rec-20250115-hist-042","バックアップジョブID":"rec-job-prod-db-daily-001","異常タイプ":"容量不足","重大度":"CRITICAL","エラーメッセージ":"ストレージ使用率が98%に達しました。バックアップ処理を中断しました。利用可能な容量: 2.1GB、必要容量: 15.8GB","検出日時":"2025-01-15 14:32:47","対応状況":"解決済み","対応者ID":"rec-user-ops-yamada-001","対応日時":"2025-01-15 14:58:22","対応内容":"NASの古いバックアップファイル（2024年11月分）を別のアーカイブストレージに移行し、20GB の容量を解放。その後、バックアップジョブを再実行して正常に完了を確認しました。","自動復旧実行":false,"復旧結果":"手動対応","作成日時":"2025-01-15 14:32:47","更新日時":"2025-01-15 14:58:22"},{"異常検出ID":"rec-001-ad-20250115-7842","バックアップ実行履歴ID":"rec-001-bh-20250115-3521","バックアップジョブID":"rec-001-bj-20250110-9156","異常タイプ":"データ検証失敗","重大度":"CRITICAL","エラーメッセージ":"バックアップデータの整合性チェックで不一致を検出しました。ソースデータベースのチェックサム値がバックアップファイルのチェックサム値と一致しません。対象テーブル: customers、検出されたレコード数: 247件、差分データサイズ: 8.5MB","検出日時":"2025-01-15T14:32:18+09:00","対応状況":"保留中","対応者ID":"rec-001-user-佐藤花子","対応日時":null,"対応内容":null,"自動復旧実行":false,"復旧結果":null,"作成日時":"2025-01-15T14:32:18+09:00","更新日時":"2025-01-15T14:32:18+09:00"},{"異常検出ID":"rec-20250115-001","バックアップ実行履歴ID":"rec-20250115-bh-042","バックアップジョブID":"rec-job-critical-001","異常タイプ":"完全失敗","重大度":"CRITICAL","エラーメッセージ":"バックアップ対象ストレージへの接続が確立できません。ネットワークインターフェースのダウンを検出しました。リトライ回数上限に達しました。","検出日時":"2025-01-15 03:47:23","対応状況":"解決済み","対応者ID":"rec-user-admin-007","対応日時":"2025-01-15 05:12:44","対応内容":"ネットワーク管理チームと連携し、ストレージ接続の物理的な接続確認を実施。ネットワークスイッチのポート再起動により接続を復旧。その後、完全バックアップを手動実行し、データ整合性検証を完了。","自動復旧実行":true,"復旧結果":"失敗","作成日時":"2025-01-15 03:47:23","更新日時":"2025-01-15 05:12:44"},{"異常検出ID":"rec-20250215-001","バックアップ実行履歴ID":"rec-20250215-exec-042","バックアップジョブID":"rec-job-daily-prod-001","異常タイプ":"ディスクI/Oエラー","重大度":"WARNING","エラーメッセージ":"バックアップ処理中にディスクI/Oエラーが発生しました。ストレージデバイス/dev/sda3からのデータ読み込みに失敗しました。エラーコード: EIO-5432。影響を受けたファイル数: 1,247個。","検出日時":"2025-02-15 03:47:23","対応状況":"解決済み","対応者ID":"rec-user-佐藤次郎","対応日時":"2025-02-15 04:15:00","対応内容":"ディスクの物理的な問題を確認し、不良セクタのスキャンを実行。自動復旧機能により1,247個のファイルのうち1,189個（95.3%）が正常に復旧された。残り58個のファイルは別のバックアップポイントから復旧予定。ストレージベンダーへの交換依頼を発行。","自動復旧実行":true,"復旧結果":"部分成功","作成日時":"2025-02-15 03:47:23","更新日時":"2025-02-15 04:15:00"},{"異常検出ID":"rec-001","バックアップ実行履歴ID":"rec-002","バックアップジョブID":"rec-003","異常タイプ":"リソース枯渇","重大度":"CRITICAL","エラーメッセージ":"スケジュール競合によりCPU使用率が98%に達しました。同時実行バックアップジョブ数が上限の5を超過しています。メモリ使用率も92%となり、システムリソースが枯渇しています。","検出日時":"2024-11-15 14:32:47","対応状況":"解決済み","対応者ID":"rec-004","対応日時":"2024-11-15 15:18:23","対応内容":"バックアップスケジュールを再構成し、日次バックアップを22:00と06:00の2時間帯に分散。差分バックアップの並列実行数を5から3に制限。システムリソース監視アラート閾値を引き上げ、競合検知ロジックを実装しました。","自動復旧実行":false,"復旧結果":"手動対応","作成日時":"2024-11-15 14:32:47","更新日時":"2024-11-15 15:18:23"},{"異常検出ID":"rec-001","バックアップ実行履歴ID":"rec-042","バックアップジョブID":"rec-015","異常タイプ":"ネットワークエラー","重大度":"WARNING","エラーメッセージ":"外部ストレージへの接続が予期せず切断されました。転送中のデータ: 2.3GB / 5.8GB。再接続を試行しています。","検出日時":"2024-11-15 14:32:47","対応状況":"解決済み","対応者ID":"rec-089","対応日時":"2024-11-15 14:35:22","対応内容":"ネットワーク接続を確認し、自動復旧機能により再接続を実行。部分的に転送済みのデータを検証し、残りのデータを再度転送。最終的に全データの転送を完了確認。","自動復旧実行":true,"復旧結果":"部分成功","作成日時":"2024-11-15 14:32:47","更新日時":"2024-11-15 14:35:22"},{"異常検出ID":"rec-20250215-001","バックアップ実行履歴ID":"rec-20250214-backup-exec-042","バックアップジョブID":"rec-backup-job-daily-encryption-001","異常タイプ":"データ検証失敗","重大度":"CRITICAL","エラーメッセージ":"バックアップデータの暗号化検証に失敗しました。AES-256暗号化ハッシュ値が一致しません。対象データセット: customer_db_2025-02-14。検証エラーコード: ENC-VERIFY-5042","検出日時":"2025-02-14T23:47:33+09:00","対応状況":"解決済み","対応者ID":"rec-user-security-yamamoto","対応日時":"2025-02-15T09:22:15+09:00","対応内容":"セキュリティチーム山本が原因を特定。暗号化キー管理サーバーのタイムスキュが検証失敗の原因であることを確認。NTPサーバー同期を実施し、バックアップの再実行を指示。再実行後、暗号化検証に成功。暗号化キーローテーション予定を前倒しして実施予定。","自動復旧実行":true,"復旧結果":"成功","作成日時":"2025-02-14T23:47:33+09:00","更新日時":"2025-02-15T09:22:15+09:00"},{"異常検出ID":"rec-20250115-001","バックアップ実行履歴ID":"rec-20250115-exec-042","バックアップジョブID":"rec-job-emergency-db-001","異常タイプ":"容量不足","重大度":"WARNING","エラーメッセージ":"バックアップ実行中にメモリ使用率が89%に達しました。システムメモリ容量が逼迫しており、バックアップ処理の継続に支障が生じる可能性があります。現在のメモリ使用量: 28.4GB / 32GB","検出日時":"2025-01-15 03:47:23","対応状況":"無視","対応者ID":null,"対応日時":null,"対応内容":null,"自動復旧実行":true,"復旧結果":"部分成功","作成日時":"2025-01-15 03:47:23","更新日時":"2025-01-15 03:52:18"},{"異常検出ID":"rec-001","バックアップ実行履歴ID":"rec-002","バックアップジョブID":"rec-003","異常タイプ":"性能低下","重大度":"WARNING","エラーメッセージ":"複数バックアップジョブの同時実行により、ディスクI/O使用率が95%に達しました。バックアップ完了時間が予定より2時間30分遅延しています。","検出日時":"2024-11-15T14:32:00+09:00","対応状況":"解決済み","対応者ID":"rec-004","対応日時":"2024-11-15T15:45:00+09:00","対応内容":"営業日中の定期バックアップジョブの優先度をLOWに調整し、夜間帯（22:00～06:00）への実行スケジュール変更を実施。同時実行数を最大3ジョブに制限する設定を追加。","自動復旧実行":false,"復旧結果":"部分成功","作成日時":"2024-11-15T14:32:00+09:00","更新日時":"2024-11-15T15:45:00+09:00"}],"バックアップ失敗診断":[{"診断ID":"rec-20250115-001","バックアップ実行履歴ID":"rec-20250114-bkh-089","バックアップジョブID":"rec-job-night-db-001","失敗原因分類":"ストレージ不足","失敗原因詳細":"バックアップ対象データベース（本番DB-01）の夜間フルバックアップ実行中、/backup/storage領域の容量が満杯に達しました。エラーメッセージ：「No space left on device」。バックアップサイズ：約850GB、利用可能容量：12GB。バックアップは進捗率73%で中断されました。","推奨対応内容":"1) 緊急対応として/backup/storage領域を1TB以上拡張してください。2) 既存の古いバックアップファイル（2024年1月以前）を別途アーカイブストレージに移行してください。3) 拡張完了後、本日23:00に夜間バックアップを再実行してください。4) 今後のストレージ逼迫を防ぐため、バックアップ保持期間を現在の90日から60日に短縮し、月次レビュー体制を構築してください。","診断ステータス":"対応完了","診断実施者ID":"rec-user-002","対応実施者ID":"rec-user-005","対応完了日時":"2025-01-15 14:30:00","作成日時":"2025-01-15 08:45:00","更新日時":"2025-01-15 14:30:00","作成者ID":"rec-user-002"},{"診断ID":"rec-diag-20250115-001","バックアップ実行履歴ID":"rec-exec-20250114-042","バックアップジョブID":"rec-job-db-prod-daily","失敗原因分類":"ネットワーク障害","失敗原因詳細":"バックアップ対象サーバー(192.168.10.45)への接続がタイムアウトしました。ネットワーク管理者による調査の結果、対象サーバーのネットワークインターフェースが物理的に切断されていたことが判明しました。エラーメッセージ: Connection timeout after 300 seconds waiting for response from backup target server.","推奨対応内容":"ネットワーク管理者にサーバーのネットワーク接続状態を確認・復旧してもらい、接続確認後に当日分のバックアップを再実行してください。対象サーバーのping疎通確認およびネットワークインターフェースのリンク状態確認を実施してください。","診断ステータス":"対応完了","診断実施者ID":"rec-user-yamada-hanako","対応実施者ID":"rec-user-suzuki-jiro","対応完了日時":"2025-01-14T16:45:00+09:00","作成日時":"2025-01-14T10:30:00+09:00","更新日時":"2025-01-14T16:45:00+09:00","作成者ID":"rec-user-yamada-hanako"},{"診断ID":"rec-001","バックアップ実行履歴ID":"rec-002","バックアップジョブID":"rec-003","失敗原因分類":"権限不足","失敗原因詳細":"バックアップユーザー(backup_user_prod)が暗号化ボリューム(/dev/mapper/encrypted_vol_01)へのアクセス権限を保有していません。エラーメッセージ: Permission denied - Unable to access encrypted volume. Required: root or disk group membership. Current user privileges: standard user","推奨対応内容":"バックアップユーザーをdiskグループに追加し、暗号化ボリュームへの読み取り権限を付与してください。実行コマンド: usermod -a -G disk backup_user_prod。その後、バックアップジョブを再実行してください。","診断ステータス":"対応完了","診断実施者ID":"rec-004","対応実施者ID":"rec-005","対応完了日時":"2024-11-22T14:30:00+09:00","作成日時":"2024-11-20T09:15:00+09:00","更新日時":"2024-11-22T14:30:00+09:00","作成者ID":"rec-004"},{"診断ID":"rec-001-diag-20250115-db-lock","バックアップ実行履歴ID":"rec-002-exec-20250114-snapshot","バックアップジョブID":"rec-003-job-prod-db-daily","失敗原因分類":"ロック競合","失敗原因詳細":"本番データベース(PostgreSQL 14.5)のスナップショット取得時に、長時間実行クエリによるテーブルロックが発生。バックアップ開始時刻の2024-01-14 02:15:00に、営業データベースの月次集計クエリが実行中であり、スナップショット取得に必要な排他ロック獲得がタイムアウト(30分)。エラーメッセージ: 'ERROR: could not obtain lock on relation \"sales_transactions\" after 1800 seconds'","推奨対応内容":"1. 月次集計クエリの実行スケジュールをバックアップ時間帯(毎日02:00-03:00)と重複しないよう03:30以降に変更。2. バックアップジョブのタイムアウト値を現在の30分から45分に延長。3. 長時間ロック検出アラートの設定を追加し、今後の同様事象を事前防止。4. 2024-01-15の定期バックアップを02:00に再実行予定。","診断ステータス":"対応完了","診断実施者ID":"rec-004-user-yamada-taro","対応実施者ID":"rec-005-user-suzuki-hanako","対応完了日時":"2025-01-15T15:30:00+09:00","作成日時":"2025-01-14T03:45:00+09:00","更新日時":"2025-01-15T15:30:00+09:00","作成者ID":"rec-004-user-yamada-taro"},{"診断ID":"rec-20250115-001","バックアップ実行履歴ID":"rec-20250115-exec-042","バックアップジョブID":"rec-job-storage-daily-001","失敗原因分類":"ストレージ故障","失敗原因詳細":"バックアップ先ストレージ(NAS-Primary-01)のディスクアレイにおいて、複数のHDD故障を検出。RAID5の冗長性が喪失し、データ書き込み不可状態に陥った。エラーメッセージ: Storage array degraded - Multiple drive failures detected on controller 0. Write operations blocked for data integrity.","推奨対応内容":"1. 代替ストレージ(NAS-Secondary-02)へのフェイルオーバー実施\n2. バックアップジョブの設定変更(プライマリ→セカンダリストレージへの切り替え)\n3. 故障ストレージの保守部門への報告とHDD交換手配\n4. フェイルオーバー後の全バックアップデータ検証実施","診断ステータス":"対応完了","診断実施者ID":"rec-user-001","対応実施者ID":"rec-user-003","対応完了日時":"2025-01-16 14:30:00","作成日時":"2025-01-15 09:45:00","更新日時":"2025-01-16 14:30:00","作成者ID":"rec-user-001"},{"診断ID":"rec-001-diag-20250115-api-auth","バックアップ実行履歴ID":"rec-001-exec-20250114-extapi","バックアップジョブID":"rec-001-job-external-backup-daily","失敗原因分類":"認証エラー","失敗原因詳細":"外部バックアップサービス(CloudVault Pro)のAPI認証に失敗しました。エラーメッセージ: 'Authentication failed: Invalid API key or expired credentials' (HTTP 401 Unauthorized)。バックアップジョブが2025年1月14日 03:45に実行された際、登録済みのAPIキーが無効化されていたことが原因です。サービス提供者側で2025年1月10日にセキュリティ更新によりAPIキーの再生成が要求されていました。","推奨対応内容":"1. CloudVault Pro管理画面にログインし、新しいAPIキーを生成してください。2. バックアップシステムの認証情報設定画面で、古いAPIキーを削除し新しいAPIキーに更新してください。3. テスト実行により認証接続が正常に確立されたことを確認してください。4. 失敗したバックアップジョブを再実行し、正常に完了することを確認してください。5. 今後のセキュリティ更新通知を確認するため、CloudVault Proのメール通知設定を確認してください。","診断ステータス":"対応完了","診断実施者ID":"rec-001-user-yamada-taro","対応実施者ID":"rec-001-user-suzuki-hanako","対応完了日時":"2025-01-15 14:30:00","作成日時":"2025-01-14 08:15:00","更新日時":"2025-01-15 14:30:00","作成者ID":"rec-001-user-yamada-taro"},{"診断ID":"rec-001-diag-20250115-001","バックアップ実行履歴ID":"rec-001-exec-20250114-042","バックアップジョブID":"rec-001-job-daily-db-prod-001","失敗原因分類":"ディスクIO競合","失敗原因詳細":"バックアップ実行中にデータベースメンテナンスジョブが同時実行され、ディスクI/Oが過負荷状態となりました。ディスク使用率が94%に達し、バックアッププロセスのタイムアウトが発生しました。エラーメッセージ: 'Backup process timeout after 3600 seconds. Disk I/O queue depth exceeded threshold (128/64)'。同時実行プロセス: インデックス再構築ジョブ、ログアーカイブ処理","推奨対応内容":"1. バックアップスケジュールを現在の夜間23:00から深夜02:00に変更し、メンテナンスウィンドウとの競合を回避する\n2. データベースメンテナンスジョブのスケジュールを木曜日に集約し、バックアップ実行日(月・水・金)との分離を実施\n3. バックアップ並列度を現在の8から4に削減し、ディスクI/O負荷を軽減\n4. ディスク容量を現在の2TBから3.5TBへ拡張し、I/O競合時の余裕を確保\n5. ディスク監視アラート閾値を現在の90%から75%に引き下げ","診断ステータス":"対応完了","診断実施者ID":"rec-001-user-20001","対応実施者ID":"rec-001-user-20003","対応完了日時":"2025-01-20T16:45:00+09:00","作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-20T16:45:00+09:00","作成者ID":"rec-001-user-20001"},{"診断ID":"rec-001-diag-20250115-fs001","バックアップ実行履歴ID":"rec-001-exec-20250114-bk789","バックアップジョブID":"rec-001-job-fs-daily-001","失敗原因分類":"ファイルシステム破損","失敗原因詳細":"バックアップ対象ファイルシステム(/mnt/data)でiノード破損を検出。エラーメッセージ: \"ext4_ext_check_overlap: overlapping extents in block group 512, inode 2097152\" ファイルシステムの整合性チェックで複数のブロック領域に不整合が確認されました。","推奨対応内容":"1. バックアップ対象ファイルシステムをアンマウント\n2. fsck -n コマンドで詳細診断を実行\n3. fsck -y コマンドでファイルシステム修復を実行\n4. マウント後、ファイルシステムの整合性を再確認\n5. 修復完了後、バックアップジョブを再実行","診断ステータス":"対応完了","診断実施者ID":"rec-001-user-yamada-taro","対応実施者ID":"rec-001-user-suzuki-hanako","対応完了日時":"2025-01-15T16:45:30+09:00","作成日時":"2025-01-14T23:15:00+09:00","更新日時":"2025-01-15T16:45:30+09:00","作成者ID":"rec-001-user-yamada-taro"},{"診断ID":"rec-20250115-diag-001","バックアップ実行履歴ID":"rec-20250114-exec-047","バックアップジョブID":"rec-job-db-prod-daily-001","失敗原因分類":"ストレージ不足","失敗原因詳細":"バックアップ先ストレージ容量が満杯（使用率98.7%）。保持期限超過の古いバックアップファイルが累積。2024年1月〜3月のバックアップデータ（合計約850GB）が削除ポリシー対象外として残存。エラーメッセージ: No space left on device (errno: 28)","推奨対応内容":"古いバックアップの削除ポリシーを適用し、2024年1月〜3月の保持期限超過バックアップ（約850GB）を段階的に削除。その後、ストレージ容量を20%以上確保するまで追加削除を実行。併せてバックアップ保持ポリシーを見直し、今後の保持期限を明確化（推奨：本番環境30日、開発環境7日）。","診断ステータス":"対応完了","診断実施者ID":"rec-user-20250115-001","対応実施者ID":"rec-user-20250116-002","対応完了日時":"2025-01-17T14:32:00+09:00","作成日時":"2025-01-15T09:45:00+09:00","更新日時":"2025-01-17T14:32:00+09:00","作成者ID":"rec-user-20250115-001"},{"診断ID":"rec-20250156","バックアップ実行履歴ID":"rec-20250089","バックアップジョブID":"rec-20240512","失敗原因分類":"ジョブ設定エラー","失敗原因詳細":"バックアップジョブの対象パス指定が誤っています。設定値: /backup/data/sales_2024 (実際の対象ディレクトリ: /data/sales/2024)。ジョブ実行時にパスが存在しないため、ファイルスキャンステップで失敗しました。エラーメッセージ: ERROR_PATH_NOT_FOUND (Code: 0x80070003)","推奨対応内容":"バックアップジョブ定義の対象パスを /data/sales/2024 に修正してください。修正後、ジョブスケジュールの再実行を推奨します。併せて、ジョブ定義の検証テストを実施し、パス存在確認を行ってから本運用に戻してください。","診断ステータス":"対応完了","診断実施者ID":"rec-20240315","対応実施者ID":"rec-20240287","対応完了日時":"2025-01-22T14:30:00+09:00","作成日時":"2025-01-20T09:15:00+09:00","更新日時":"2025-01-22T14:35:00+09:00","作成者ID":"rec-20240315"}],"バックアップログ":[{"ログID":"rec-20250115-001","バックアップ実行履歴ID":"rec-backup-exec-20250115-0847","ログレベル":"INFO","ログメッセージ":"バックアップ初期化処理が正常に完了しました。環境変数の確認、一時ディレクトリの作成、ロックファイルの生成が完了し、データ抽出ステップへ移行します。","処理ステップ":"初期化","エラーコード":null,"スタックトレース":null,"処理時間ミリ秒":1250,"タイムスタンプ":"2025-01-15 08:47:32","作成日時":"2025-01-15 08:47:33"},{"ログID":"rec-20250215-8473","バックアップ実行履歴ID":"rec-20250215-5621","ログレベル":"ERROR","ログメッセージ":"大規模テーブル『顧客取引履歴』からのデータ抽出処理がタイムアウトしました。設定タイムアウト値(1800秒)を超過し、抽出対象レコード数は約2,340万件です。","処理ステップ":"データ抽出","エラーコード":"DB_EXTRACTION_TIMEOUT_001","スタックトレース":"java.sql.SQLException: Query execution timeout exceeded\n  at com.backup.engine.DataExtractor.executeQuery(DataExtractor.java:287)\n  at com.backup.engine.DataExtractor.extractLargeTable(DataExtractor.java:156)\n  at com.backup.engine.BackupProcessor.processDataExtraction(BackupProcessor.java:542)\n  at com.backup.engine.BackupProcessor.run(BackupProcessor.java:89)\n  at java.lang.Thread.run(Thread.java:834)","処理時間ミリ秒":1800234,"タイムスタンプ":"2025-02-15 14:47:32.567","作成日時":"2025-02-15 14:47:33.891"},{"ログID":"rec-20250215-0847","バックアップ実行履歴ID":"rec-20250215-0001","ログレベル":"ERROR","ログメッセージ":"圧縮処理中に予期しないファイル形式エラーが発生しました。対象ファイル: backup_data_20250215.dat、エラー内容: 無効なZIPヘッダー署名","処理ステップ":"圧縮","エラーコード":"COMPRESSION_FORMAT_ERROR_0x0042","スタックトレース":"java.util.zip.ZipException: invalid CEN header (bad signature)\n\tat java.util.zip.ZipFile.read(ZipFile.java:220)\n\tat java.util.zip.ZipFile.access$1100(ZipFile.java:57)\n\tat java.util.zip.ZipFile$ZipFileInputStream.read(ZipFile.java:555)\n\tat com.backup.compression.ZipCompressionEngine.validateZipFormat(ZipCompressionEngine.java:187)\n\tat com.backup.compression.ZipCompressionEngine.compress(ZipCompressionEngine.java:156)\n\tat com.backup.processor.BackupProcessor.executeCompressionStep(BackupProcessor.java:423)\n\tat com.backup.processor.BackupProcessor.run(BackupProcessor.java:89)\n\tat java.lang.Thread.run(Thread.java:834)","処理時間ミリ秒":3847,"タイムスタンプ":"2025-02-15 14:32:19.547","作成日時":"2025-02-15 14:32:19.621"},{"ログID":"rec-20250215-001","バックアップ実行履歴ID":"rec-20250215-exec-042","ログレベル":"WARNING","ログメッセージ":"ネットワーク転送中に一時的な接続断が発生しました。自動リトライを実行します。(試行回数: 2/5)","処理ステップ":"転送","エラーコード":"NET_TIMEOUT_RETRY","スタックトレース":"java.net.SocketTimeoutException: Connection reset by peer\n  at java.net.SocketInputStream.read(SocketInputStream.java:209)\n  at com.backup.transfer.NetworkTransferManager.sendData(NetworkTransferManager.java:187)\n  at com.backup.transfer.S3Uploader.uploadChunk(S3Uploader.java:94)","処理時間ミリ秒":8750,"タイムスタンプ":"2025-02-15 14:32:47.523","作成日時":"2025-02-15 14:32:48.156"},{"ログID":"rec-20250115-0847","バックアップ実行履歴ID":"rec-20250115-0001","ログレベル":"ERROR","ログメッセージ":"バックアップファイルの整合性検証に失敗しました。チェックサム値が一致しません。期待値: a7f3e8c2d1b9, 実際の値: a7f3e8c2d1b8","処理ステップ":"検証","エラーコード":"BACKUP_INTEGRITY_MISMATCH_001","スタックトレース":"java.security.MessageDigest.isEqual(MessageDigest.java:342)\n\tat com.example.backup.validation.ChecksumValidator.validateIntegrity(ChecksumValidator.java:87)\n\tat com.example.backup.workflow.BackupExecutor.executeValidation(BackupExecutor.java:156)\n\tat com.example.backup.workflow.BackupExecutor.run(BackupExecutor.java:42)\n\tat java.lang.Thread.run(Thread.java:834)","処理時間ミリ秒":8432,"タイムスタンプ":"2025-01-15 14:47:23.521","作成日時":"2025-01-15 14:47:23.897"},{"ログID":"rec-20250115-00847","バックアップ実行履歴ID":"rec-backup-exec-2025-0115-003","ログレベル":"INFO","ログメッセージ":"リトライ2回目で転送処理が正常に完了しました。初回はネットワークタイムアウトにより失敗しましたが、自動復旧メカニズムにより復旧に成功しました。","処理ステップ":"転送","エラーコード":null,"スタックトレース":null,"処理時間ミリ秒":45230,"タイムスタンプ":"2025-01-15T14:32:18.000+09:00","作成日時":"2025-01-15T14:32:18.500+09:00"},{"ログID":"rec-20250215-0847","バックアップ実行履歴ID":"rec-20250215-0001","ログレベル":"ERROR","ログメッセージ":"圧縮処理中にディスク容量不足エラーが発生しました。利用可能な空き容量: 245MB、必要な容量: 1,850MB。圧縮対象ファイルサイズ: 4,320MB。処理を中止し、ロールバックを開始します。","処理ステップ":"圧縮","エラーコード":"DISK_SPACE_INSUFFICIENT","スタックトレース":"java.io.IOException: No space left on device\n  at java.io.FileOutputStream.writeBytes(FileOutputStream.java:263)\n  at java.io.FileOutputStream.write(FileOutputStream.java:211)\n  at com.backup.compression.GzipCompressor.compress(GzipCompressor.java:287)\n  at com.backup.process.BackupProcessor.executeCompressionStep(BackupProcessor.java:542)\n  at com.backup.process.BackupProcessor.run(BackupProcessor.java:156)\n  at java.lang.Thread.run(Thread.java:834)","処理時間ミリ秒":47382,"タイムスタンプ":"2025-02-15T08:47:23.000+09:00","作成日時":"2025-02-15T08:47:24.000+09:00"},{"ログID":"rec-20250215-8947","バックアップ実行履歴ID":"rec-20250215-5623","ログレベル":"ERROR","ログメッセージ":"暗号化処理中に秘密鍵へのアクセスに失敗しました。キーストア認証エラー: 秘密鍵ファイルの読み込み権限がありません。システム管理者に連絡してください。","処理ステップ":"暗号化","エラーコード":"ENC-KEY-0401","スタックトレース":"java.security.KeyStoreException: キーストア初期化失敗\n  at com.backup.encryption.KeyStoreManager.loadPrivateKey(KeyStoreManager.java:156)\n  at com.backup.encryption.EncryptionService.encryptBackupFile(EncryptionService.java:89)\n  at com.backup.process.BackupExecutor.executeEncryption(BackupExecutor.java:234)\n  at com.backup.process.BackupExecutor.run(BackupExecutor.java:45)\nCaused by: java.io.IOException: /opt/backup/keys/master.key (Permission denied)\n  at java.io.FileInputStream.open(FileInputStream.java:195)","処理時間ミリ秒":2847,"タイムスタンプ":"2025-02-15T14:32:18.000+09:00","作成日時":"2025-02-15T14:32:19.000+09:00"},{"ログID":"rec-20250215-8742","バックアップ実行履歴ID":"rec-backup-exec-20250215-0456","ログレベル":"ERROR","ログメッセージ":"復旧用バックアップの検証ステップで破損ファイルを検出しました。ファイル名: backup_2025021500_db_segment_003.tar.gz のチェックサム値が不一致です。期待値: a7f3e2c9d1b4e8f6, 実際値: a7f3e2c9d1b4e8f7","処理ステップ":"検証","エラーコード":"BACKUP_VALIDATION_CHECKSUM_MISMATCH","スタックトレース":"java.io.IOException: チェックサム検証エラー\n\tat com.backup.validator.ChecksumValidator.validate(ChecksumValidator.java:156)\n\tat com.backup.validator.BackupValidator.validateSegment(BackupValidator.java:89)\n\tat com.backup.validator.BackupValidator.executeValidation(BackupValidator.java:42)\n\tat com.backup.core.BackupExecutor.run(BackupExecutor.java:234)","処理時間ミリ秒":8540,"タイムスタンプ":"2025-02-15T14:23:47.000+09:00","作成日時":"2025-02-15T14:23:48.123+09:00"},{"ログID":"rec-20250215-001","バックアップ実行履歴ID":"rec-20250215-exec-042","ログレベル":"WARNING","ログメッセージ":"バックアップ処理が予定時間(120分)を超過しています。現在の経過時間は145分です。転送ステップでのネットワーク遅延が原因と考えられます。","処理ステップ":"転送","エラーコード":"BACKUP_TIMEOUT_WARNING","スタックトレース":null,"処理時間ミリ秒":8700000,"タイムスタンプ":"2025-02-15 14:35:22","作成日時":"2025-02-15 14:35:22"}],"復旧ジョブ":[{"復旧ジョブID":"rec-001","ジョブ名":"本番環境DB定期日次復旧_20250115","説明":"本番環境PostgreSQLデータベースの日次バックアップから復旧。毎日午前2時に自動実行される定期復旧ジョブ。","バックアップジョブID":"bkp-2847","復旧対象システム":"prod-db-server-01.internal","復旧ポイント":"2025-01-14T23:00:00+09:00","ステータス":"成功","スケジュール種別":"定期","優先度":1,"予定開始日時":"2025-01-15T02:00:00+09:00","実際開始日時":"2025-01-15T02:01:23+09:00","完了日時":"2025-01-15T02:47:56+09:00","実行時間秒":2793,"復旧データサイズバイト":536870912000,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2024-12-20T14:30:00+09:00","作成者":"usr-1205","更新日時":"2025-01-15T02:48:15+09:00","更新者":"usr-1205"},{"復旧ジョブID":"rec-001","ジョブ名":"本番DB障害緊急復旧_20250115","説明":"2025年1月15日14時30分に発生した本番PostgreSQLサーバーのディスク容量不足による障害に対応。直前のバックアップポイント(同日13時00分)から復旧を実施。","バックアップジョブID":"bkp-047","復旧対象システム":"prod-db-primary-01.example.com","復旧ポイント":"2025-01-15T13:00:00+09:00","ステータス":"成功","スケジュール種別":"手動","優先度":1,"予定開始日時":"2025-01-15T14:45:00+09:00","実際開始日時":"2025-01-15T14:47:32+09:00","完了日時":"2025-01-15T15:23:18+09:00","実行時間秒":2146,"復旧データサイズバイト":536870912000,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2025-01-15T14:42:00+09:00","作成者":"usr-0289","更新日時":"2025-01-15T15:23:18+09:00","更新者":"usr-0289"},{"復旧ジョブID":"rec-001","ジョブ名":"本番DB_2025年1月月次テスト復旧","説明":"開発環境でのシステム動作検証およびデータ分析テスト用に、本番環境の2025年1月末時点のデータベースを復旧する。個人情報はマスキング済みバックアップを使用。","バックアップジョブID":"rec-backup-0047","復旧対象システム":"dev-db-server-01.internal","復旧ポイント":"2025-01-31T23:59:59+09:00","ステータス":"成功","スケジュール種別":"定期","優先度":3,"予定開始日時":"2025-02-03T02:00:00+09:00","実際開始日時":"2025-02-03T02:05:32+09:00","完了日時":"2025-02-03T03:47:18+09:00","実行時間秒":6406,"復旧データサイズバイト":847293456,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2025-02-01T10:30:00+09:00","作成者":"rec-user-0156","更新日時":"2025-02-03T03:50:12+09:00","更新者":"rec-user-0156"},{"復旧ジョブID":"rec-001-2024-1127-audit","ジョブ名":"2024年11月月次決算監査用バックアップ復旧検証","説明":"2024年11月30日の月次決算完了後、監査部門による帳簿照合用の復旧ポイントからのデータ復旧。決算データの整合性確認および監査証跡の検証を目的とする。","バックアップジョブID":"bak-2024-1130-monthend","復旧対象システム":"監査検証用サーバー(audit-verify-01.internal)","復旧ポイント":"2024-11-30T23:59:59+09:00","ステータス":"成功","スケジュール種別":"手動","優先度":8,"予定開始日時":"2024-12-02T09:00:00+09:00","実際開始日時":"2024-12-02T09:15:32+09:00","完了日時":"2024-12-02T11:47:18+09:00","実行時間秒":9526,"復旧データサイズバイト":847362891,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2024-12-01T16:45:22+09:00","作成者":"usr-20241201-yamada","更新日時":"2024-12-02T12:03:41+09:00","更新者":"usr-20241202-suzuki"},{"復旧ジョブID":"rec-001","ジョブ名":"2025年度DR訓練_本番環境復旧","説明":"災害復旧訓練として、本番環境のデータベースサーバーを前日のバックアップから復旧対象環境へ復旧する。データ整合性確認と業務継続性検証を実施する。","バックアップジョブID":"rec-bk-0847","復旧対象システム":"dr-db-server-02.example.com","復旧ポイント":"2025-01-14T23:00:00+09:00","ステータス":"成功","スケジュール種別":"手動","優先度":1,"予定開始日時":"2025-01-15T09:00:00+09:00","実際開始日時":"2025-01-15T09:05:30+09:00","完了日時":"2025-01-15T10:42:15+09:00","実行時間秒":5765,"復旧データサイズバイト":536870912000,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2025-01-10T14:30:00+09:00","作成者":"rec-usr-0156","更新日時":"2025-01-15T10:45:00+09:00","更新者":"rec-usr-0156"},{"復旧ジョブID":"rec-001","ジョブ名":"営業部2024年11月15日誤削除データ復旧","説明":"営業部の顧客管理システムで誤削除された11月分の顧客契約データ約2,500件を2024年11月14日23:59時点のバックアップから復旧。復旧対象はCSVエクスポートデータおよびデータベースレコード。","バックアップジョブID":"rec-backup-047","復旧対象システム":"sales-db-prod-01","復旧ポイント":"2024-11-14T23:59:00+09:00","ステータス":"成功","スケジュール種別":"手動","優先度":1,"予定開始日時":"2024-11-15T10:30:00+09:00","実際開始日時":"2024-11-15T10:32:15+09:00","完了日時":"2024-11-15T11:18:45+09:00","実行時間秒":2790,"復旧データサイズバイト":157286400,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2024-11-15T10:15:00+09:00","作成者":"rec-user-012","更新日時":"2024-11-15T11:20:00+09:00","更新者":"rec-user-012"},{"復旧ジョブID":"rec-001","ジョブ名":"本番システムA マイグレーション復旧_2025Q1","説明":"既存オンプレミス環境から新クラウド環境への本格移行に伴い、2024年12月15日時点のバックアップデータを新環境に復旧する。本番稼働前の最終検証を兼ねる。","バックアップジョブID":"rec-backup-042","復旧対象システム":"prod-system-a-new.cloud.internal","復旧ポイント":"2024-12-15T23:30:00+09:00","ステータス":"成功","スケジュール種別":"手動","優先度":1,"予定開始日時":"2025-01-08T02:00:00+09:00","実際開始日時":"2025-01-08T02:05:33+09:00","完了日時":"2025-01-08T05:42:18+09:00","実行時間秒":13225,"復旧データサイズバイト":2147483648,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2024-12-20T14:30:00+09:00","作成者":"rec-user-015","更新日時":"2025-01-08T06:15:00+09:00","更新者":"rec-user-015"},{"復旧ジョブID":"rec-001","ジョブ名":"本番DB_ディスク故障_代替ストレージ復旧","説明":"2024年11月15日に発生したディスク故障に対応し、バックアップから代替ストレージへデータを復旧するジョブ。RAID構成の物理ディスク3台同時故障により実施。","バックアップジョブID":"bak-2024-1115-001","復旧対象システム":"prod-db-server-02.example.com","復旧ポイント":"2024-11-15T23:00:00+09:00","ステータス":"成功","スケジュール種別":"イベント駆動","優先度":1,"予定開始日時":"2024-11-16T02:00:00+09:00","実際開始日時":"2024-11-16T02:15:00+09:00","完了日時":"2024-11-16T06:45:00+09:00","実行時間秒":16200,"復旧データサイズバイト":2748779069440,"エラーメッセージ":null,"再試行回数":1,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2024-11-16T01:30:00+09:00","作成者":"usr-2024-0001","更新日時":"2024-11-16T06:50:00+09:00","更新者":"usr-2024-0002"},{"復旧ジョブID":"rec-001","ジョブ名":"金融規制対応定期復旧テスト_2025Q1","説明":"金融庁の規制要件に基づく四半期ごとの定期復旧テスト。本番環境からのバックアップを検証環境へ復旧し、データ整合性とRTO/RPOの達成状況を確認する。","バックアップジョブID":"bkp-087","復旧対象システム":"検証環境-DB-Server-02","復旧ポイント":"2025-01-15T02:00:00Z","ステータス":"成功","スケジュール種別":"定期","優先度":1,"予定開始日時":"2025-01-20T22:00:00Z","実際開始日時":"2025-01-20T22:05:30Z","完了日時":"2025-01-21T01:42:15Z","実行時間秒":13305,"復旧データサイズバイト":1099511627776,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"成功","作成日時":"2025-01-10T09:30:00Z","作成者":"usr-0234","更新日時":"2025-01-21T02:15:00Z","更新者":"usr-0156"},{"復旧ジョブID":"rec-001","ジョブ名":"本番ERP システム 2024-12-15 時点復旧（優先度1）","説明":"12月15日 14:30 の勘定系データ破損に対応。複数復旧ポイント並行処理における最優先ジョブ。検証完了後に本番切り替え予定。","バックアップジョブID":"bkp-2024-12-15-143000","復旧対象システム":"prod-erp-01.example.jp","復旧ポイント":"2024-12-15 14:30:00","ステータス":"実行中","スケジュール種別":"イベント駆動","優先度":1,"予定開始日時":"2024-12-15 15:00:00","実際開始日時":"2024-12-15 15:02:30","完了日時":null,"実行時間秒":null,"復旧データサイズバイト":null,"エラーメッセージ":null,"再試行回数":0,"最大再試行回数":3,"検証実施":true,"検証ステータス":"未実施","作成日時":"2024-12-15 14:45:00","作成者":"usr-001","更新日時":"2024-12-15 15:02:30","更新者":"usr-002"}],"復旧実行履歴":[{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-2024-0847","バックアップ実行履歴ID":"rec-backup-2025-0156","実行開始日時":"2025-01-15T09:30:00+09:00","実行終了日時":"2025-01-15T09:47:23+09:00","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"prod_db.sales_transactions","復旧先":"prod_db.sales_transactions_restored","復旧データサイズ":2147483648,"エラーメッセージ":null,"実行ユーザーID":"rec-user-佐藤花子","作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-15T09:47:23+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-0847","バックアップ実行履歴ID":"rec-backup-2024-12-18","実行開始日時":"2024-12-19 09:15:00","実行終了日時":"2024-12-19 09:42:30","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"/fileserver/share/営業部/2024年度提案資料","復旧先":"/fileserver/share/営業部/2024年度提案資料_復旧","復旧データサイズ":2147483648,"エラーメッセージ":null,"実行ユーザーID":"rec-user-5623","作成日時":"2024-12-19 09:15:00","更新日時":"2024-12-19 09:42:30"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-047","バックアップ実行履歴ID":"rec-backup-283","実行開始日時":"2024-11-15T09:30:00+09:00","実行終了日時":"2024-11-15T10:47:33+09:00","実行ステータス":"中断","進捗率":67,"復旧対象リソース":"/backup/database/sales_db_20241114","復旧先":"/data/production/sales_db","復旧データサイズ":5368709120,"エラーメッセージ":"ネットワーク接続がタイムアウトしました。復旧処理は中断されました。ストレージサーバーへの通信が途絶えました。","実行ユーザーID":"rec-user-156","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T10:47:33+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-047","バックアップ実行履歴ID":"rec-backup-283","実行開始日時":"2024-11-15T09:30:00+09:00","実行終了日時":"2024-11-15T10:45:00+09:00","実行ステータス":"失敗","進捗率":68,"復旧対象リソース":"/backup/database/sales_db_20241114.bak","復旧先":"/data/production/sales_db","復旧データサイズ":536870912,"エラーメッセージ":"復旧先ディスク容量不足エラー: 必要容量 1.2GB に対して利用可能容量は 0.5GB です。復旧先のディスク容量を確保してから再実行してください。","実行ユーザーID":"rec-user-156","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T10:45:00+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-2024-0847","バックアップ実行履歴ID":"rec-backup-2025-0156","実行開始日時":"2025-01-15T09:30:00+09:00","実行終了日時":"2025-01-15T11:45:23+09:00","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"/prod/database/sales_db/2025-01-15","復旧先":"/stg/database/sales_db_test/2025-01-15","復旧データサイズ":536870912,"エラーメッセージ":"","実行ユーザーID":"rec-user-佐藤花子","作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-15T11:45:23+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-2024-11-15-001","バックアップ実行履歴ID":"rec-backup-2024-11-10-002","実行開始日時":"2024-11-15T14:30:00+09:00","実行終了日時":"2024-11-15T18:45:00+09:00","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"/mnt/data/production/database","復旧先":"/mnt/data/production/database","復旧データサイズ":1847293952,"エラーメッセージ":null,"実行ユーザーID":"rec-user-佐藤次郎","作成日時":"2024-11-15T14:30:00+09:00","更新日時":"2024-11-15T18:45:30+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-2024-0847","バックアップ実行履歴ID":"rec-backup-2024-1523","実行開始日時":"2024-11-15T14:32:00+09:00","実行終了日時":"2024-11-15T14:47:23+09:00","実行ステータス":"失敗","進捗率":35,"復旧対象リソース":"/data/sales/2024Q4/report.xlsx","復旧先":"/data/sales/recovery/2024Q4/report.xlsx","復旧データサイズ":2457600,"エラーメッセージ":"権限不足エラー: ユーザー 山田太郎 は復旧先ディレクトリ /data/sales/recovery に対する書き込み権限がありません。システム管理者に権限昇格を依頼してください。","実行ユーザーID":"rec-user-yamada-2024","作成日時":"2024-11-15T14:32:00+09:00","更新日時":"2024-11-15T14:47:23+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-2024-0847","バックアップ実行履歴ID":"rec-backup-2024-1203","実行開始日時":"2024-12-15T09:30:00+09:00","実行終了日時":"2024-12-15T14:45:30+09:00","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"/data/sales/2024Q4_transaction_logs.tar.gz","復旧先":"/restore/sales/2024Q4_transaction_logs","復旧データサイズ":547823616,"エラーメッセージ":null,"実行ユーザーID":"user-佐藤花子","作成日時":"2024-12-15T09:30:00+09:00","更新日時":"2024-12-15T14:45:30+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-0847","バックアップ実行履歴ID":"rec-backup-2156","実行開始日時":"2024-11-15T09:30:00+09:00","実行終了日時":"2024-11-15T10:45:30+09:00","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"/data/sales/2024Q3/invoices.xlsx","復旧先":"/data/sales/2024Q3/invoices_restored_20241115.xlsx","復旧データサイズ":52428800,"エラーメッセージ":null,"実行ユーザーID":"rec-user-0523","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T10:45:30+09:00"},{"復旧実行履歴ID":"rec-001","復旧ジョブID":"rec-job-2024-11-001","バックアップ実行履歴ID":"rec-backup-2024-10-15","実行開始日時":"2024-11-20T09:30:00+09:00","実行終了日時":"2024-11-20T11:45:00+09:00","実行ステータス":"成功","進捗率":100,"復旧対象リソース":"/accounting/monthly_ledger/2024_09","復旧先":"/audit/recovery/2024_09_月次監査","復旧データサイズ":2147483648,"エラーメッセージ":null,"実行ユーザーID":"rec-user-佐藤花子","作成日時":"2024-11-20T09:30:00+09:00","更新日時":"2024-11-20T11:45:00+09:00"}],"復旧検証結果":[{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"成功","検証タイプ":"整合性チェック","検証開始日時":"2024-11-15 02:30:00","検証完了日時":"2024-11-15 03:45:00","検証対象レコード数":2850000,"検証成功レコード数":2850000,"検証失敗レコード数":0,"検証結果詳細":"日次バックアップの整合性チェックが完了しました。全レコードについてチェックサム検証、参照整合性検証、データ型検証が実施され、すべての項目で異常は検出されませんでした。バックアップデータの整合性は確認されています。","検証判定":true,"作成日時":"2024-11-15 03:45:30","更新日時":"2024-11-15 03:45:30","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"警告","検証タイプ":"データ量検証","検証開始日時":"2024-11-15T09:30:00+09:00","検証完了日時":"2024-11-15T09:45:23+09:00","検証対象レコード数":125000,"検証成功レコード数":124850,"検証失敗レコード数":0,"検証結果詳細":"復旧データレコード数124850件に対し、元バックアップ125000件との間に150件の差異を検出。削除済み顧客レコードの復旧時点での状態差異と考えられます。詳細確認が必要です。","検証判定":false,"作成日時":"2024-11-15T09:45:23+09:00","更新日時":"2024-11-15T10:15:00+09:00","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"警告","検証タイプ":"サンプルデータ検証","検証開始日時":"2024-11-20T09:30:00+09:00","検証完了日時":"2024-11-20T10:15:00+09:00","検証対象レコード数":5000,"検証成功レコード数":4987,"検証失敗レコード数":13,"検証結果詳細":"月次決算データの復旧検証において、サンプル抽出した13件のレコードで金額不整合を検出しました。具体的には、売上計上日が2024年10月31日の請求書ID INV-202410-0847等において、復旧データの請求金額が ¥1,250,000 に対し、本番環境バックアップの参照値が ¥1,250,500 となっており、差異額 ¥500 の不一致が確認されました。原因は復旧プロセス中の小数点以下の丸め処理に起因する可能性があります。当該レコードの詳細検証が必要です。","検証判定":false,"作成日時":"2024-11-20T10:16:00+09:00","更新日時":"2024-11-20T10:16:00+09:00","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"成功","検証タイプ":"整合性チェック","検証開始日時":"2024-11-15 14:30:00","検証完了日時":"2024-11-15 16:45:00","検証対象レコード数":2847500,"検証成功レコード数":2847500,"検証失敗レコード数":0,"検証結果詳細":"全レコードの整合性チェックが完了しました。復旧データと本番環境のバックアップ間で完全な一致を確認。テーブル構造、インデックス、制約条件すべて正常。","検証判定":true,"作成日時":"2024-11-15 16:45:30","更新日時":"2024-11-15 16:45:30","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"失敗","検証タイプ":"整合性チェック","検証開始日時":"2024-11-15T09:30:00+09:00","検証完了日時":"2024-11-15T09:45:23+09:00","検証対象レコード数":2847,"検証成功レコード数":2831,"検証失敗レコード数":16,"検証結果詳細":"外部キー制約違反が検出されました。取引先ID(rec-045)を参照する営業担当者テーブルのレコード16件が、復旧対象の取引先テーブルに存在しません。該当する取引先IDは以下の通りです: rec-045, rec-067, rec-089, rec-112, rec-134, rec-156, rec-178, rec-201, rec-223, rec-245, rec-267, rec-289, rec-301, rec-323, rec-345, rec-367。これらのレコードは2024年3月から7月の間に削除されたと推測されます。","検証判定":false,"作成日時":"2024-11-15T09:45:24+09:00","更新日時":"2024-11-15T09:45:24+09:00","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"成功","検証タイプ":"整合性チェック","検証開始日時":"2024-11-15T09:30:00+09:00","検証完了日時":"2024-11-15T12:45:00+09:00","検証対象レコード数":2850000,"検証成功レコード数":2850000,"検証失敗レコード数":0,"検証結果詳細":"災害復旧訓練における全件検証が正常に完了しました。顧客マスタ、受注データ、在庫情報の整合性確認を実施。チェックサム検証、外部キー整合性、データ型妥当性の全項目で異常なし。復旧データは本番環境への適用に適切です。","検証判定":true,"作成日時":"2024-11-15T12:45:30+09:00","更新日時":"2024-11-15T12:45:30+09:00","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"失敗","検証タイプ":"整合性チェック","検証開始日時":"2024-11-15T09:30:00+09:00","検証完了日時":"2024-11-15T10:45:00+09:00","検証対象レコード数":125000,"検証成功レコード数":124156,"検証失敗レコード数":844,"検証結果詳細":"差分バックアップからの復旧処理において、顧客マスタテーブルの844件のレコード欠損を検出しました。特に2024年11月12日から11月14日に追加されたレコードの一部が復旧データに含まれていません。差分バックアップの取得タイミングと復旧対象期間のズレが原因と考えられます。詳細なレコードIDリストは別途ログファイルを参照してください。","検証判定":false,"作成日時":"2024-11-15T10:45:30+09:00","更新日時":"2024-11-15T10:45:30+09:00","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001-vrfy-20250115-0847","復旧実行履歴ID":"rec-001-exec-20250115-0823","バックアップジョブID":"rec-001-bkup-20250114-2200","検証ステータス":"実行中","検証タイプ":"整合性チェック","検証開始日時":"2025-01-15 08:47:32","検証完了日時":null,"検証対象レコード数":2847500,"検証成功レコード数":1923450,"検証失敗レコード数":0,"検証結果詳細":"旧環境バックアップからの復旧データについて整合性チェックを実行中。現在進捗率62%。顧客マスタ、受注履歴、請求データの順序で検証を進行。現時点で不整合は検出されていません。","検証判定":null,"作成日時":"2025-01-15 08:47:32","更新日時":"2025-01-15 09:23:18","作成者ID":"rec-001-user-佐藤花子"},{"復旧検証結果ID":"rec-001","復旧実行履歴ID":"rec-002","バックアップジョブID":"rec-003","検証ステータス":"成功","検証タイプ":"整合性チェック","検証開始日時":"2025-03-28 14:30:00","検証完了日時":"2025-03-28 16:45:30","検証対象レコード数":2847500,"検証成功レコード数":2847500,"検証失敗レコード数":0,"検証結果詳細":"会計年度末バックアップの重要マスタ（顧客マスタ、商品マスタ、仕訳データ）について整合性チェックを実行しました。全レコードのデータ型、制約条件、参照整合性を確認し、異常は検出されませんでした。復旧データは本番環境への適用に適切な状態です。","検証判定":true,"作成日時":"2025-03-28 16:50:00","更新日時":"2025-03-28 16:50:00","作成者ID":"rec-004"},{"復旧検証結果ID":"rec-001-2025-0847","復旧実行履歴ID":"rec-002-2025-0156","バックアップジョブID":"rec-003-2024-1203","検証ステータス":"失敗","検証タイプ":"整合性チェック","検証開始日時":"2025-01-15 02:30:00","検証完了日時":"2025-01-15 04:22:15","検証対象レコード数":2850000,"検証成功レコード数":2847523,"検証失敗レコード数":2477,"検証結果詳細":"顧客マスタテーブルにおいて2,477件のレコードでチェックサム値の不一致を検出。特に住所フィールドの文字化け(UTF-8エンコーディングエラー)が1,892件、電話番号フィールドのNULL値の不正な変換が585件確認された。復旧元バックアップの2025-01-14 23:00時点のダンプファイルに既に破損が存在する可能性が高い。詳細ログはログID:LOG-20250115-048762に記録。","検証判定":false,"作成日時":"2025-01-15 04:25:33","更新日時":"2025-01-15 08:12:47","作成者ID":"rec-004-user-2891"}],"復旧テスト実行記録":[{"復旧テスト実行記録ID":"rec-001","復旧ジョブID":"rec-job-2024-12","テスト実行日時":"2024-12-15T09:00:00+09:00","テスト開始時刻":"2024-12-15T09:00:00+09:00","テスト終了時刻":"2024-12-15T10:45:30+09:00","実行時間秒":6330,"テスト結果ステータス":"成功","復旧成功フラグ":true,"データ整合性確認結果":"正常","RTO達成フラグ":true,"テスト実行者ID":"rec-user-001","テスト環境":"本番","テスト対象バックアップID":"rec-backup-20241201","検出された問題":"特に問題は検出されませんでした。全てのシステムが正常に復旧され、データベースの整合性も確認されました。","改善提案":"現在の復旧手順は適切に機能しており、大きな改善は不要と判断します。ただし、復旧時間をさらに短縮するため、並列復旧プロセスの導入を検討する価値があります。","備考":"月次定期バックアップの復旧テストとして実施。2024年12月1日のバックアップから本番環境への復旧を実行。RTO目標の1時間以内に復旧完了（実績105分45秒）。次回テストは2025年1月15日予定。","作成日時":"2024-12-15T10:50:00+09:00","更新日時":"2024-12-15T10:50:00+09:00"},{"復旧テスト実行記録ID":"rec-20250215-001","復旧ジョブID":"job-emergency-backup-001","テスト実行日時":"2025-02-15T09:30:00+09:00","テスト開始時刻":"2025-02-15T09:30:00+09:00","テスト終了時刻":"2025-02-15T11:45:30+09:00","実行時間秒":8250,"テスト結果ステータス":"部分成功","復旧成功フラグ":true,"データ整合性確認結果":"異常","RTO達成フラグ":false,"テスト実行者ID":"user-yamada-hanako-001","テスト環境":"ステージング環境","テスト対象バックアップID":"backup-emergency-20250214-full","検出された問題":"データベース復旧時に約2,150件のトランザクションログが欠落していることが判明。復旧完了までの時間が2時間15分となり、RTO目標値の90分を大幅に超過。特に決済テーブルのシーケンス番号に不整合が発生し、手動修正が必要となった。","改善提案":"1) 増分バックアップの取得頻度を現在の4時間から1時間に短縮する。2) 復旧手順の自動化スクリプトを導入し、マニュアルステップを削減する。3) ホットスタンバイ環境の構築を検討し、フェイルオーバー時間を30分以下に短縮する。4) トランザクションログアーカイブの冗長化により、ログ欠落のリスクを軽減する。","備考":"本テストはシステム全体の緊急時対応能力を検証するため、金融決済システムを対象に実施。結果を踏まえてRTO/RPO改善の本格的なプロジェクトを立ち上げる予定。関係部門への報告会は2月20日に実施予定。","作成日時":"2025-02-15T12:00:00+09:00","更新日時":"2025-02-15T16:30:00+09:00"},{"復旧テスト実行記録ID":"rec-001-recovery-test-20250115","復旧ジョブID":"rec-job-legacy-migration-2024","テスト実行日時":"2025-01-15T09:30:00+09:00","テスト開始時刻":"2025-01-15T09:30:00+09:00","テスト終了時刻":"2025-01-15T11:45:30+09:00","実行時間秒":8190,"テスト結果ステータス":"部分成功","復旧成功フラグ":true,"データ整合性確認結果":"異常","RTO達成フラグ":true,"テスト実行者ID":"user-yamada-hanako-20240401","テスト環境":"テスト環境","テスト対象バックアップID":"backup-legacy-20241220-full","検出された問題":"旧システムバックアップからの復旧時に、顧客マスタテーブルの約2.3%のレコード（847件中19件）でデータ型の不整合が発生。具体的には、旧システムの契約日時カラムが新システムのUTC形式と異なるJST固定形式で保存されており、タイムゾーン情報の欠落により復旧後のデータが正確でない状態を確認。また、取引履歴テーブルの一部レコード（12件）で外部キー参照の整合性が失われていることが判明。","改善提案":"復旧手順に旧システム形式からの変換ロジックを事前に組み込む必要がある。具体的には、(1)復旧前の検証ステップでスキーマ差異を自動検出し、(2)タイムゾーン変換用のマッピングテーブルを準備し、(3)外部キー整合性チェック用のバッチ処理を復旧後に実行する。さらに、本番移行前に大規模データセット（全顧客データ）での検証テストを追加実施することを推奨。","備考":"このテストは2025年1月の本番システム移行に先立つ最終確認として実施。旧レガシーシステムからのデータ移行リスクが顕在化したため、システム部門と協議の上、復旧手順の見直しスケジュールを2025年1月20日までに完了することで合意。復旧テスト後の改善対応状況は別途進捗管理表にて追跡予定。","作成日時":"2025-01-15T11:50:00+09:00","更新日時":"2025-01-15T14:20:00+09:00"},{"復旧テスト実行記録ID":"rec-20250215-001","復旧ジョブID":"job-20250210-045","テスト実行日時":"2025-02-15T09:00:00+09:00","テスト開始時刻":"2025-02-15T09:00:00+09:00","テスト終了時刻":"2025-02-15T11:45:30+09:00","実行時間秒":9930,"テスト結果ステータス":"部分成功","復旧成功フラグ":false,"データ整合性確認結果":"異常","RTO達成フラグ":false,"テスト実行者ID":"usr-20240501-082","テスト環境":"本番同等環境","テスト対象バックアップID":"bak-20250214-156","検出された問題":"メインデータベースの復旧は完了し、正常に起動確認できたが、キャッシュレイヤー（Redis）の復旧に予定より25分の遅延が発生。これに伴い、ユーザー認証サービスのレスポンス時間が平常時の3倍以上に悪化。また、ファイルストレージサービスの復旧プロセス中にメタデータの不整合を検出し、手動による修復作業が必要となった。","改善提案":"1) キャッシュレイヤーの復旧スクリプトの最適化と並列処理化を実施し、復旧時間を15分以内に短縮する。2) バックアップ取得時にメタデータの検証ロジックを強化し、復旧前の事前チェック項目に追加する。3) 認証サービスのフォールバック機構を実装し、キャッシュ遅延時の代替経路を確保する。4) 定期的なバックアップ整合性検証を月1回から週1回に増加させる。","備考":"本訓練は2025年度第1回の災害復旧訓練として実施。参加者は情報システム部門スタッフ8名。RTO目標は2時間30分であったが、実績は2時間45分30秒となり、15分30秒のオーバーが発生。今後の改善対応を経営層に報告予定。","作成日時":"2025-02-15T13:20:00+09:00","更新日時":"2025-02-15T13:20:00+09:00"},{"復旧テスト実行記録ID":"rec-001","復旧ジョブID":"job-047","テスト実行日時":"2024-11-15 09:00:00","テスト開始時刻":"2024-11-15 09:15:30","テスト終了時刻":"2024-11-15 09:47:45","実行時間秒":1935,"テスト結果ステータス":"成功","復旧成功フラグ":true,"データ整合性確認結果":"正常","RTO達成フラグ":true,"テスト実行者ID":"user-089","テスト環境":"ステージング環境","テスト対象バックアップID":"bak-2024-11-14-full","検出された問題":"なし","改善提案":"なし","備考":"新しい復旧手順の初回検証テスト。自動フェイルオーバー機能が正常に動作し、全システムが予定通り復旧した。RTO目標値45分に対して実際の復旧時間は32分15秒で達成。本番環境への導入を推奨する。","作成日時":"2024-11-15 10:00:00","更新日時":"2024-11-15 10:00:00"},{"復旧テスト実行記録ID":"rec-001-20250115-001","復旧ジョブID":"job-002-q1-2025","テスト実行日時":"2025-01-15T09:00:00+09:00","テスト開始時刻":"2025-01-15T09:00:00+09:00","テスト終了時刻":"2025-01-15T10:47:00+09:00","実行時間秒":6420,"テスト結果ステータス":"成功","復旧成功フラグ":true,"データ整合性確認結果":"正常","RTO達成フラグ":true,"テスト実行者ID":"usr-045-yamada","テスト環境":"ステージング環境","テスト対象バックアップID":"bak-2025-01-14-full","検出された問題":"なし。全ての復旧手順が正常に完了し、RTO目標の90分以内での復旧を達成した。","改善提案":"現在の復旧手順は最適化されており、特に改善の必要はない。ただし、ネットワーク遅延時の代替手順をドキュメント化することで、さらなる堅牢性の向上が期待できる。","備考":"四半期ごとのコンプライアンス要件対応テスト（Q1 2025）。金融規制要件への対応確認完了。全ステークホルダーへの報告予定。","作成日時":"2025-01-15T11:00:00+09:00","更新日時":"2025-01-15T11:00:00+09:00"},{"復旧テスト実行記録ID":"rec-001","復旧ジョブID":"rec-job-0847","テスト実行日時":"2024-11-15T09:30:00+09:00","テスト開始時刻":"2024-11-15T09:30:00+09:00","テスト終了時刻":"2024-11-15T11:45:00+09:00","実行時間秒":7500,"テスト結果ステータス":"失敗","復旧成功フラグ":false,"データ整合性確認結果":"異常","RTO達成フラグ":false,"テスト実行者ID":"user-0234","テスト環境":"ステージング","テスト対象バックアップID":"backup-20241115-001","検出された問題":"セキュリティパッチ適用後、復旧スクリプト内のデータベース接続設定が旧バージョンのまま残存していたため、リカバリ手順の第3ステップでデータベース同期処理がタイムアウト。また、暗号化キーの更新手順が漏れており、復旧後のデータアクセス権限設定に不整合が発生。トランザクションログの再生処理中に予期しないエラーが発生し、復旧時間が目標の120分を大幅に超過して210分に達した。","改善提案":"1) 復旧スクリプトのセキュリティパッチ適用時に、依存関係のある設定ファイルも同時に更新する自動検証プロセスを導入する。2) リカバリ手順ドキュメントに暗号化キーの更新ステップを明記し、チェックリストに追加する。3) 本番環境への適用前に、ステージング環境での復旧テストを必須化し、パッチ適用後の検証期間を2週間確保する。4) データベース接続タイムアウト値を現在の30秒から60秒に拡張する。","備考":"本テストはセキュリティパッチKB-2024-11-001適用後の初回検証。同様の問題が本番環境で発生する前に検出できたため、パッチの本番環境への展開は延期し、修正版の作成を依頼した。次回テストは修正版パッチ適用後の2024年11月22日に実施予定。","作成日時":"2024-11-15T11:50:00+09:00","更新日時":"2024-11-15T14:20:00+09:00"},{"復旧テスト実行記録ID":"rec-20250215-001","復旧ジョブID":"job-20250210-045","テスト実行日時":"2025-02-15 09:30:00","テスト開始時刻":"2025-02-15 09:30:00","テスト終了時刻":"2025-02-15 11:45:00","実行時間秒":8100,"テスト結果ステータス":"成功","復旧成功フラグ":true,"データ整合性確認結果":"正常","RTO達成フラグ":true,"テスト実行者ID":"usr-20240501-082","テスト環境":"ステージング環境","テスト対象バックアップID":"bkp-20250214-156","検出された問題":"初期テスト実施時にバックアップメタデータの読み込みに若干の遅延が発生（約45秒）。新システムのキャッシュ機構が起動時に全インデックスをロードするため。2回目以降の復旧テストでは遅延なし。","改善提案":"新バックアップシステムの初期起動時キャッシュプリロード処理を最適化することで、初回実行時間をさらに短縮可能。また、従来システムからの移行ドキュメントに初期遅延について明記し、運用チームの認識統一を図ることを推奨。","備考":"ベンダーA社の従来バックアップシステムからベンダーB社新システムへの切り替えに伴う互換性検証テスト。従来手順との互換性は完全に確保されており、既存の復旧手順書の修正は最小限で対応可能。本番環境への移行予定日は2025年3月1日。","作成日時":"2025-02-15 12:00:00","更新日時":"2025-02-15 14:30:00"},{"復旧テスト実行記録ID":"rec-20250218-001","復旧ジョブID":"rec-job-20250210-015","テスト実行日時":"2025-02-18T14:30:00+09:00","テスト開始時刻":"2025-02-18T14:30:00+09:00","テスト終了時刻":"2025-02-18T15:47:30+09:00","実行時間秒":4650,"テスト結果ステータス":"成功","復旧成功フラグ":true,"データ整合性確認結果":"正常","RTO達成フラグ":false,"テスト実行者ID":"rec-user-20240501-042","テスト環境":"ステージング環境","テスト対象バックアップID":"rec-backup-20250217-008","検出された問題":"顧客の営業データセット（約850GB）の復旧処理において、ストレージI/O競合により復旧時間が予定の77分から78分50秒に延伸。RTO上限の80分に対して残り1分10秒の余裕となった。ネットワーク帯域幅の一時的な競合が原因と推定される。","改善提案":"1) 復旧時の優先度制御を強化し、他のジョブとのI/O競合を回避する仕組みを導入。2) ストレージ側のキャッシュ戦略を最適化し、大容量データセット復旧時の性能を向上させる。3) 事前にネットワーク帯域幅を予約する機構の実装を検討。","備考":"顧客（株式会社ABC商事）からの特別要求による復旧テスト。本番環境での復旧時間短縮のため、ディスク配置の最適化やRAID構成の見直しを次期スプリントで検討予定。","作成日時":"2025-02-18T15:52:15+09:00","更新日時":"2025-02-18T16:15:30+09:00"},{"復旧テスト実行記録ID":"rec-20250215-001","復旧ジョブID":"job-20250210-045","テスト実行日時":"2025-02-15T09:00:00+09:00","テスト開始時刻":"2025-02-15T09:15:32+09:00","テスト終了時刻":"2025-02-15T10:47:18+09:00","実行時間秒":5326,"テスト結果ステータス":"成功","復旧成功フラグ":true,"データ整合性確認結果":"正常","RTO達成フラグ":true,"テスト実行者ID":"usr-20240501-082","テスト環境":"ステージング環境","テスト対象バックアップID":"bkp-20250214-156","検出された問題":"なし。定期メンテナンス後の全機能テストを実施。バックアップからの復旧、データベース同期、アプリケーション起動、ヘルスチェック全て正常に完了。復旧時間は目標値の88分以内に収まり、RTO達成を確認。","改善提案":"1. キャッシュウォーミング処理の事前実行により復旧後の初期応答時間を3〜5秒短縮可能。2. ストレージI/O最適化設定の微調整で並行復旧スループットを約8%向上可能。3. 復旧検証スクリプトの並列実行化により検証時間を短縮可能。","備考":"定期メンテナンス（2025年2月10日実施）後の初回総合テスト。全システムコンポーネント正常動作確認済み。本番環境への切り替え前提条件をクリア。次回テスト予定日：2025年3月15日。","作成日時":"2025-02-15T11:05:00+09:00","更新日時":"2025-02-15T11:05:00+09:00"}],"RTO_RPO設定":[{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":120,"RPO分":1440,"優先度":"高","有効フラグ":true,"備考":"本番環境データベースの日次バックアップ。毎日午前2時に実行。RPO24時間以内を維持し、システム障害時の迅速な復旧を実現。","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":120,"RPO分":60,"優先度":"高","有効フラグ":true,"備考":"重要顧客情報システムの定時バックアップ。毎時間00分に実行。RPO1時間以内を厳密に維持する必要あり。","作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":1440,"RPO分":10080,"優先度":"低","有効フラグ":true,"備考":"開発環境の週次バックアップ。毎週日曜日02:00に実行。RPO7日間で十分な環境。","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-12-10T14:20:00+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"復旧","RTO分":15,"RPO分":5,"優先度":"高","有効フラグ":true,"備考":"決算関連データベース（会計システム）の即時復旧対応。月次決算期間中は特に優先度を高く設定。RPO5分以内で差分バックアップを実施し、RTO15分以内での復旧を実現。","作成日時":"2024-10-15 09:30:00","更新日時":"2025-01-08 14:22:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":120,"RPO分":60,"優先度":"中","有効フラグ":true,"備考":"メールサーバー本体の毎時バックアップ。営業時間中は30分間隔での差分バックアップを推奨。","作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":120,"RPO分":240,"優先度":"中","有効フラグ":true,"備考":"営業部ファイルサーバーの差分バックアップ。毎日午前2時と午後2時に実行。重要な顧客データを含むため、RPO4時間以内を維持する必要がある。","作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":60,"RPO分":15,"優先度":"高","有効フラグ":true,"備考":"本社データセンター障害時の遠隔地レプリケーション。大阪センターへのリアルタイム同期。RPO15分以内を厳守し、RTO1時間以内での復旧を目標とする。","作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:30+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":1440,"RPO分":43200,"優先度":"低","有効フラグ":true,"備考":"テスト環境の月次バックアップ。毎月第1日曜日の02:00に実行。復旧目標時間は24時間以内、復旧地点目標は30日間。","作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":30,"RPO分":15,"優先度":"高","有効フラグ":true,"備考":"会計システム日次バックアップ。営業時間内での復旧を想定し、RTO30分以内に設定。RPO15分により最大15分間のデータ損失を許容。毎日午前2時に自動実行。","作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-10 14:45:00","作成者":"rec-003","更新者":"rec-004"},{"RTO_RPO設定ID":"rec-001","ジョブID":"rec-002","ジョブタイプ":"バックアップ","RTO分":1440,"RPO分":525600,"優先度":"低","有効フラグ":true,"備考":"アーカイブデータの年次バックアップ。毎年1月1日に実行。RPOは365日間に設定。","作成日時":"2024-10-15 09:30:00","更新日時":"2025-01-08 14:15:00","作成者":"rec-003","更新者":"rec-004"}],"RTO_RPO乖離分析":[{"乖離分析ID":"rec-20250115-001","バックアップジョブID":"job-prod-db-daily-001","分析対象期間開始日":"2024-12-01T00:00:00+09:00","分析対象期間終了日":"2025-01-15T23:59:59+09:00","設定RTO分":60,"実績RTO分":145,"RTO乖離率":142,"設定RPO分":24,"実績RPO分":38,"RPO乖離率":58,"RTO達成率":12,"RPO達成率":28,"乖離原因分類":"ストレージ制約、ネットワーク遅延、リソース不足","改善推奨事項":"1.バックアップストレージの容量拡張（現在の使用率92%）\n2.ネットワークバンド幅の増強（ボトルネック確認済み）\n3.バックアップ並列処理数の最適化\n4.差分バックアップ戦略への切り替え検討\n5.バックアップサーバーのCPU/メモリ増強","分析ステータス":"完了","作成日時":"2025-01-16T09:30:00+09:00","更新日時":"2025-01-17T14:45:00+09:00","作成者":"山田花子","更新者":"鈴木次郎"},{"乖離分析ID":"rec-20250115-0847","バックアップジョブID":"job-cloud-migration-002","分析対象期間開始日":"2024-12-01T00:00:00Z","分析対象期間終了日":"2025-01-15T23:59:59Z","設定RTO分":60,"実績RTO分":58,"RTO乖離率":-3,"設定RPO分":15,"実績RPO分":42,"RPO乖離率":180,"RTO達成率":96,"RPO達成率":38,"乖離原因分類":"クラウドストレージレイテンシ、ネットワーク帯域幅制約、レプリケーション遅延","改善推奨事項":"1. クラウドストレージのリージョン最適化（現在のシンガポール→東京リージョンへの変更検討）\n2. 専用ネットワーク接続（AWS Direct Connect または Azure ExpressRoute）の導入\n3. バックアップ差分転送の圧縮率向上（現在の65%→80%以上を目標）\n4. レプリケーション並列数の増加（4並列→8並列への拡張）\n5. ストレージ層の段階的バックアップ戦略の見直し","分析ステータス":"完了","作成日時":"2025-01-16T09:30:00Z","更新日時":"2025-01-16T14:45:00Z","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-20250115-001","バックアップジョブID":"job-backup-db-prod-001","分析対象期間開始日":"2024-12-01T00:00:00+09:00","分析対象期間終了日":"2025-01-14T23:59:59+09:00","設定RTO分":120,"実績RTO分":285,"RTO乖離率":138,"設定RPO分":60,"実績RPO分":156,"RPO乖離率":160,"RTO達成率":42,"RPO達成率":38,"乖離原因分類":"ネットワーク帯域幅制約","改善推奨事項":"本分析期間において、バックアップジョブの復旧時間が設定RTOを大幅に超過しており、主要原因はネットワーク帯域幅の制約にあります。推奨改善策として以下を実施してください：(1)バックアップネットワークの帯域幅を現在の1Gbpsから10Gbpsへの増強、(2)増分バックアップの実装による転送データ量の削減、(3)バックアップウィンドウの夜間帯への移行による他業務との競合回避、(4)バックアップデータの圧縮率を70%から85%への最適化。これらの対応により、RTO達成率を現在の42%から90%以上への改善が期待できます。","分析ステータス":"完了","作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-15T14:45:00+09:00","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-20250115-001","バックアップジョブID":"job-2024Q4-backup","分析対象期間開始日":"2024-10-01T00:00:00Z","分析対象期間終了日":"2024-12-31T23:59:59Z","設定RTO分":120,"実績RTO分":285,"RTO乖離率":138,"設定RPO分":60,"実績RPO分":145,"RPO乖離率":142,"RTO達成率":42,"RPO達成率":38,"乖離原因分類":"ストレージ制約、リソース不足、ネットワーク遅延の複合要因","改善推奨事項":"四半期決算期の大量データ処理による負荷集中が主要原因と判明。推奨事項として以下を提案します：(1)バックアップジョブのスケジューリング最適化により決算処理ピーク時間帯を回避、(2)ストレージ容量の段階的拡張（現在の1.5倍を目標）、(3)バックアップサーバーのCPU・メモリリソース増強、(4)ネットワーク帯域幅の確保。特に11月中旬から12月上旬の決算集計期間における専用バックアップウィンドウの設定を急務とします。","分析ステータス":"完了","作成日時":"2025-01-10T09:30:00Z","更新日時":"2025-01-15T14:45:00Z","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-20250115-dr-001","バックアップジョブID":"job-dr-replication-002","分析対象期間開始日":"2024-12-01T00:00:00Z","分析対象期間終了日":"2025-01-15T23:59:59Z","設定RTO分":60,"実績RTO分":145,"RTO乖離率":142,"設定RPO分":15,"実績RPO分":38,"RPO乖離率":153,"RTO達成率":42,"RPO達成率":35,"乖離原因分類":"ネットワーク遅延、ストレージI/O制約、WAN帯域幅不足","改善推奨事項":"1. DR拠点間のWAN回線帯域幅を現在の100Mbpsから500Mbpsへ増強する。2. レプリケーション対象データベースの圧縮率を80%から90%に最適化。3. ストレージ側のIOPS制限を現在の5000IOPsから15000IOPsに拡張。4. レプリケーション スケジュールをピーク時間帯外（夜間23:00-04:00）に変更し、昼間の業務トラフィックとの競合を回避。5. レプリケーション エラーの自動リトライロジックを実装し、一時的なネットワーク障害への耐性を強化。","分析ステータス":"完了","作成日時":"2025-01-16T09:30:00Z","更新日時":"2025-01-17T14:45:00Z","作成者":"山田太郎","更新者":"鈴木花子"},{"乖離分析ID":"rec-20250115-rpo-001","バックアップジョブID":"job-backup-db-prod-001","分析対象期間開始日":"2024-11-01T00:00:00Z","分析対象期間終了日":"2025-01-15T23:59:59Z","設定RTO分":120,"実績RTO分":95,"RTO乖離率":-21,"設定RPO分":60,"実績RPO分":38,"RPO乖離率":-37,"RTO達成率":98,"RPO達成率":96,"乖離原因分類":"バックアップウィンドウ拡大によるRPO改善","改善推奨事項":"バックアップウィンドウを1時間から1.5時間に拡大した結果、RPOが60分から38分に改善されました。現在の設定値は実績に対して余裕度が高いため、設定RPOを45分に引き下げることで、より効率的なリソース配分が可能です。また、ネットワーク帯域幅の最適化により、さらに10分程度のRPO短縮が見込めます。","分析ステータス":"完了","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-15T14:45:00Z","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-20250115-001","バックアップジョブID":"job-backup-db-prod-001","分析対象期間開始日":"2024-12-01T00:00:00Z","分析対象期間終了日":"2025-01-15T23:59:59Z","設定RTO分":60,"実績RTO分":145,"RTO乖離率":142,"設定RPO分":30,"実績RPO分":87,"RPO乖離率":190,"RTO達成率":35,"RPO達成率":28,"乖離原因分類":"ストレージ制約、ネットワーク遅延","改善推奨事項":"1. ストレージ容量の段階的な増設（現在の使用率78%から60%以下への低減）\n2. バックアップ保持ポリシーの最適化（古いスナップショットの自動削除ルール導入）\n3. 差分バックアップ頻度の見直し（現在の日次から4時間ごとへの短縮検討）\n4. ネットワーク帯域幅の増強（10Gbpsから25Gbpsへの段階的アップグレード）\n5. 重要度別のバックアップスケジューリング分散","分析ステータス":"完了","作成日時":"2025-01-16T09:30:00Z","更新日時":"2025-01-17T14:15:00Z","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-001","バックアップジョブID":"job-2024-0847","分析対象期間開始日":"2024-10-01T00:00:00Z","分析対象期間終了日":"2024-12-31T23:59:59Z","設定RTO分":240,"実績RTO分":312,"RTO乖離率":30,"設定RPO分":60,"実績RPO分":87,"RPO乖離率":45,"RTO達成率":68,"RPO達成率":72,"乖離原因分類":"ストレージ制約、ネットワーク遅延","改善推奨事項":"1. バックアップストレージの容量拡張（現在の1.5倍推奨）\n2. ネットワーク帯域幅の増強（10Gbps→25Gbpsへのアップグレード）\n3. 増分バックアップスケジュールの最適化（現在の4時間間隔から2時間間隔への短縮）\n4. バックアップサーバーのCPU/メモリリソース追加割り当て\n5. 専用バックアップネットワークセグメントの構築","分析ステータス":"完了","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-22T14:45:00Z","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-001","バックアップジョブID":"job-2024-db-prod-001","分析対象期間開始日":"2024-10-01T00:00:00Z","分析対象期間終了日":"2024-12-31T23:59:59Z","設定RTO分":60,"実績RTO分":145,"RTO乖離率":142,"設定RPO分":15,"実績RPO分":18,"RPO乖離率":20,"RTO達成率":38,"RPO達成率":72,"乖離原因分類":"リソース不足","改善推奨事項":"現在のバックアップ基盤のCPUとメモリが常時80%以上の使用率で推移しており、復旧処理時の性能低下が顕著です。以下の改善を推奨します：（1）バックアップサーバーのスペック増強（CPU 8コア→16コア、メモリ64GB→128GB）、（2）バックアップストレージのI/O性能向上（RAID5→RAID6への移行）、（3）復旧処理の並列化による効率化、（4）ピーク時間帯のバックアップジョブ分散スケジューリング。これらの施策により、RTO達成率を現在の38%から90%以上への改善が見込まれます。","分析ステータス":"完了","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-20T14:45:00Z","作成者":"山田花子","更新者":"佐藤次郎"},{"乖離分析ID":"rec-001","バックアップジョブID":"job-2024-0847","分析対象期間開始日":"2024-10-01T00:00:00Z","分析対象期間終了日":"2024-12-31T23:59:59Z","設定RTO分":120,"実績RTO分":187,"RTO乖離率":56,"設定RPO分":60,"実績RPO分":94,"RPO乖離率":57,"RTO達成率":68,"RPO達成率":71,"乖離原因分類":"ネットワーク遅延、リソース不足、拠点間通信帯域制約","改善推奨事項":"東京・大阪拠点間の専用回線帯域幅を現在の100Mbpsから1Gbpsへ増強。バックアップサーバーのメモリ搭載量を64GBから128GBへ増設。レプリケーション並列度を現在の4から8へ増加。優先度の低いバックアップジョブをオフピーク時間帯へシフト。","分析ステータス":"完了","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-22T14:15:00Z","作成者":"山田花子","更新者":"佐藤次郎"}],"レポート生成履歴":[{"レポート生成履歴ID":"rec-20250115-001","レポート種別":"バックアップ実行レポート","生成開始日時":"2025-01-15T02:00:00+09:00","生成完了日時":"2025-01-15T02:18:45+09:00","生成ステータス":"完了","対象期間開始日":"2024-12-15T00:00:00+09:00","対象期間終了日":"2025-01-14T23:59:59+09:00","レポートファイルパス":"/reports/backup/2025/01/monthly_backup_20250115_001.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"rec-user-system","スケジュール実行フラグ":true,"エラーメッセージ":null,"処理時間秒":1125,"作成日時":"2025-01-15T02:00:00+09:00","更新日時":"2025-01-15T02:18:45+09:00"},{"レポート生成履歴ID":"rec-20250115-0847","レポート種別":"緊急復旧実行レポート","生成開始日時":"2025-01-15T08:47:23+09:00","生成完了日時":"2025-01-15T08:52:18+09:00","生成ステータス":"完了","対象期間開始日":"2025-01-15T07:30:00+09:00","対象期間終了日":"2025-01-15T08:45:00+09:00","レポートファイルパス":"/reports/emergency/recovery_20250115_084723.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"usr-佐藤健一","スケジュール実行フラグ":false,"エラーメッセージ":null,"処理時間秒":295,"作成日時":"2025-01-15T08:47:23+09:00","更新日時":"2025-01-15T08:52:18+09:00"},{"レポート生成履歴ID":"rec-20250115-0847","レポート種別":"RTO_RPO乖離分析レポート","生成開始日時":"2025-01-15T00:05:00+09:00","生成完了日時":"2025-01-15T00:18:32+09:00","生成ステータス":"完了","対象期間開始日":"2024-10-01T00:00:00+09:00","対象期間終了日":"2024-12-31T23:59:59+09:00","レポートファイルパス":"/reports/2025Q1/RTO_RPO_Analysis_20250115_001.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"rec-user-0042","スケジュール実行フラグ":true,"エラーメッセージ":null,"処理時間秒":812,"作成日時":"2025-01-15T00:05:00+09:00","更新日時":"2025-01-15T00:18:32+09:00"},{"レポート生成履歴ID":"rec-20250218-bak-001","レポート種別":"バックアップ実行レポート","生成開始日時":"2025-02-18T09:30:00+09:00","生成完了日時":"2025-02-18T09:45:23+09:00","生成ステータス":"失敗","対象期間開始日":"2025-02-11T00:00:00+09:00","対象期間終了日":"2025-02-17T23:59:59+09:00","レポートファイルパス":"","レポートフォーマット":"PDF","生成対象ユーザーID":"rec-user-0847","スケジュール実行フラグ":true,"エラーメッセージ":"バックアップストレージへの接続タイムアウト。対象サーバー：backup-storage-02。接続試行回数：3回。最終エラー時刻：2025-02-18 09:43:15。ネットワーク診断結果：ファイアウォール設定確認待ち。","処理時間秒":923,"作成日時":"2025-02-18T09:30:00+09:00","更新日時":"2025-02-18T09:45:23+09:00"},{"レポート生成履歴ID":"rec-20250215-001","レポート種別":"復旧実行レポート","生成開始日時":"2025-02-15 09:30:00","生成完了日時":"2025-02-15 09:47:23","生成ステータス":"完了","対象期間開始日":"2025-02-01 00:00:00","対象期間終了日":"2025-02-14 23:59:59","レポートファイルパス":"/reports/recovery/2025/02/recovery_report_20250215_001.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"user-rec-0847","スケジュール実行フラグ":false,"エラーメッセージ":null,"処理時間秒":1043,"作成日時":"2025-02-15 09:30:00","更新日時":"2025-02-15 09:47:23"},{"レポート生成履歴ID":"rec-20250115-001","レポート種別":"ストレージ容量分析レポート","生成開始日時":"2025-01-15T02:00:00+09:00","生成完了日時":"2025-01-15T02:14:32+09:00","生成ステータス":"完了","対象期間開始日":"2025-01-01T00:00:00+09:00","対象期間終了日":"2025-01-14T23:59:59+09:00","レポートファイルパス":"/reports/storage_analysis/2025/01/storage_analysis_20250115_admin.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"rec-user-admin-0042","スケジュール実行フラグ":true,"エラーメッセージ":null,"処理時間秒":872,"作成日時":"2025-01-15T02:00:00+09:00","更新日時":"2025-01-15T02:14:32+09:00"},{"レポート生成履歴ID":"rec-20250215-0847","レポート種別":"バックアップ対象外データ検出レポート","生成開始日時":"2025-02-15T08:47:32+09:00","生成完了日時":"2025-02-15T09:12:48+09:00","生成ステータス":"完了（警告）","対象期間開始日":"2025-02-01T00:00:00+09:00","対象期間終了日":"2025-02-14T23:59:59+09:00","レポートファイルパス":"/reports/backup-exclusion/2025/02/rec-20250215-0847_backup-exclusion-report.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"rec-user-2024-0156","スケジュール実行フラグ":false,"エラーメッセージ":"警告: 対象期間内に未分類データが152件検出されました。監査要件に基づくレポート作成を推奨します。","処理時間秒":1316,"作成日時":"2025-02-15T08:47:32+09:00","更新日時":"2025-02-15T09:12:48+09:00"},{"レポート生成履歴ID":"rec-20250115-0847","レポート種別":"復旧所要時間予測レポート","生成開始日時":"2025-01-15T08:30:00+09:00","生成完了日時":"2025-01-15T08:47:23+09:00","生成ステータス":"完了","対象期間開始日":"2024-10-01T00:00:00+09:00","対象期間終了日":"2024-12-31T23:59:59+09:00","レポートファイルパス":"/reports/2025Q1/recovery_time_forecast_20250115.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"rec-user-20240601","スケジュール実行フラグ":true,"エラーメッセージ":null,"処理時間秒":813,"作成日時":"2025-01-15T08:30:00+09:00","更新日時":"2025-01-15T08:47:23+09:00"},{"レポート生成履歴ID":"rec-001","レポート種別":"バックアップ実行レポート","生成開始日時":"2024-11-15T14:30:00+09:00","生成完了日時":"2024-11-15T14:45:30+09:00","生成ステータス":"失敗","対象期間開始日":"2024-11-01T00:00:00+09:00","対象期間終了日":"2024-11-15T23:59:59+09:00","レポートファイルパス":"/reports/backup/2024/11/report_20241115_143000.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"user-0847","スケジュール実行フラグ":true,"エラーメッセージ":"レポート生成処理がタイムアウトしました。処理時間が制限値900秒を超過しました。対象データ量が想定以上であるか、システムリソースが逼迫している可能性があります。","処理時間秒":915,"作成日時":"2024-11-15T14:30:00+09:00","更新日時":"2024-11-15T14:45:30+09:00"},{"レポート生成履歴ID":"rec-20250115-001","レポート種別":"バックアップ実行レポート","生成開始日時":"2025-01-15T09:30:00+09:00","生成完了日時":"2025-01-15T09:47:23+09:00","生成ステータス":"完了","対象期間開始日":"2024-01-01T00:00:00+09:00","対象期間終了日":"2024-12-31T23:59:59+09:00","レポートファイルパス":"/reports/compliance/backup_audit_2024_20250115.pdf","レポートフォーマット":"PDF","生成対象ユーザーID":"usr-20240401-0847","スケジュール実行フラグ":false,"エラーメッセージ":null,"処理時間秒":1043,"作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-15T09:47:23+09:00"}],"ユーザー権限":[{"権限ID":"rec-001","ユーザーID":"rec-usr-0042","権限コード":"BACKUP_CREATE","権限名":"全バックアップ作成","説明":"システム全体のバックアップ作成を実行する権限。データベース、ファイルシステム、アプリケーション設定を対象とした完全バックアップおよび差分バックアップの作成が可能。","有効フラグ":true,"付与日時":"2024-04-15 09:30:00","失効日時":"2025-04-14 23:59:59","作成日時":"2024-04-15 09:30:00","更新日時":"2024-04-15 09:30:00","作成者":"佐藤次郎"},{"権限ID":"rec-001","ユーザーID":"rec-0042","権限コード":"BACKUP_DELETE","権限名":"バックアップ削除","説明":"データベースバックアップファイルの削除操作を実行する権限。不要になったバックアップの削除やストレージ容量の管理を目的とする。","有効フラグ":true,"付与日時":"2024-04-15 09:30:00","失効日時":"2025-04-14 23:59:59","作成日時":"2024-04-15 09:30:00","更新日時":"2024-04-15 09:30:00","作成者":"山田花子"},{"権限ID":"rec-001","ユーザーID":"usr-0847","権限コード":"RECOVERY_EXECUTE","権限名":"システム復旧実行権限","説明":"バックアップからのシステム復旧処理を実行する権限。本権限保有者は復旧対象システムの選択、復旧ポイントの指定、復旧実行の承認が可能です。","有効フラグ":true,"付与日時":"2024-10-15 09:30:00","失効日時":"2025-10-14 23:59:59","作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"山田花子"},{"権限ID":"rec-001","ユーザーID":"user-2847","権限コード":"REPORT_VIEW","権限名":"監査レポート閲覧","説明":"バックアップ実行履歴、リカバリ操作ログ、システム監視レポートなど監査部門が必要とする全レポートの閲覧権限。データ抽出・ダウンロードは含まない。","有効フラグ":true,"付与日時":"2024-10-15 09:30:00","失効日時":"2025-10-14 23:59:59","作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"山田花子"},{"権限ID":"rec-001","ユーザーID":"usr-2847","権限コード":"RECOVERY_REQUEST","権限名":"データ復旧リクエスト申請","説明":"自身のバックアップデータに対して復旧リクエストを申請できる権限。管理者による承認後に復旧処理が実行されます。","有効フラグ":true,"付与日時":"2024-11-15T09:30:00+09:00","失効日時":"2025-11-14T23:59:59+09:00","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T09:30:00+09:00","作成者":"佐藤花子"},{"権限ID":"rec-001","ユーザーID":"rec-user-2024-0847","権限コード":"BACKUP_VIEW","権限名":"バックアップ閲覧","説明":"新入社員研修期間中のバックアップデータ閲覧権限。システム管理者の監督下での試験的付与。","有効フラグ":true,"付与日時":"2024-04-01T09:30:00+09:00","失効日時":"2024-06-30T23:59:59+09:00","作成日時":"2024-03-29T14:15:32+09:00","更新日時":"2024-03-29T14:15:32+09:00","作成者":"山田花子"},{"権限ID":"rec-20250115-001","ユーザーID":"rec-vendor-0847","権限コード":"SYSTEM_MONITOR","権限名":"システム監視権限","説明":"外部ベンダー（株式会社テックサポート）によるシステムヘルスチェック、ログ監視、パフォーマンス分析のための一時的な閲覧権限。本番環境への変更権限は含まない。","有効フラグ":true,"付与日時":"2025-01-15T09:30:00+09:00","失効日時":"2025-04-15T23:59:59+09:00","作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-15T09:30:00+09:00","作成者":"山田花子"},{"権限ID":"rec-001","ユーザーID":"rec-0042","権限コード":"BACKUP_MANAGE_DEPT","権限名":"部門内バックアップ管理","説明":"所属部門内のバックアップ作成、削除、スケジュール管理を行うことができます。他部門のバックアップへのアクセスはできません。","有効フラグ":true,"付与日時":"2024-04-01T09:30:00+09:00","失効日時":"2025-03-31T23:59:59+09:00","作成日時":"2024-03-28T14:15:32+09:00","更新日時":"2024-03-28T14:15:32+09:00","作成者":"鈴木花子"},{"権限ID":"rec-001","ユーザーID":"rec-002","権限コード":"AUDIT_LOG_VIEW","権限名":"監査ログ確認権限","説明":"システムの全権限変更履歴、ユーザーアクセスログ、バックアップ・リカバリー操作ログを閲覧・エクスポート可能。セキュリティ監査とコンプライアンス対応に必要な権限。","有効フラグ":true,"付与日時":"2024-10-15T09:30:00+09:00","失効日時":"2025-10-14T23:59:59+09:00","作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2024-10-15T09:30:00+09:00","作成者":"佐藤次郎"},{"権限ID":"rec-20250115-001","ユーザーID":"rec-usr-20220401-042","権限コード":"BACKUP_CREATE","権限名":"バックアップ作成権限","説明":"データベースおよびシステムのバックアップ作成操作を実行できる権限。本権限は2025年3月31日をもって失効予定。","有効フラグ":true,"付与日時":"2023-04-01T09:00:00+09:00","失効日時":"2025-03-31T23:59:59+09:00","作成日時":"2025-01-15T14:30:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者":"佐藤花子"}],"操作履歴":[{"操作履歴ID":"rec-001","ユーザーID":"rec-u-0042","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-0156","操作内容":"定期バックアップジョブ「営業DB_日次バックアップ」を実行。対象: PostgreSQL営業データベース、バックアップ方式: 完全バックアップ、保持世代数: 30世代","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15 02:00:00","実行終了日時":"2024-11-15 02:47:33","実行時間秒":2853,"IPアドレス":"192.168.10.50","セッションID":"sess-20241115-0847f2b9","作成日時":"2024-11-15 02:47:35"},{"操作履歴ID":"rec-001","ユーザーID":"usr-0847","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"job-5632","操作内容":"2025年1月15日のシステム障害に伴う緊急復旧ジョブの実行。本番環境DBサーバーを2025年1月14日23:45のポイントインタイムリカバリで復元。初回実行時にネットワークタイムアウトが発生したため、リトライ実行。","操作ステータス":"失敗","エラーメッセージ":"復旧ジョブ実行中にネットワーク接続エラーが発生しました。対象リソース: db-prod-001、エラーコード: ERR_NETWORK_TIMEOUT_5001、詳細: ストレージサーバーへの接続がタイムアウト（180秒以上応答なし）","実行開始日時":"2025-01-15T14:32:18+09:00","実行終了日時":"2025-01-15T14:35:47+09:00","実行時間秒":209,"IPアドレス":"192.168.10.45","セッションID":"sess-20250115-kjf8x2m9","作成日時":"2025-01-15T14:35:47+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"rec-u-042","操作種別":"設定変更","対象リソースタイプ":"バックアップ保持期間設定","対象リソースID":"rec-cfg-089","操作内容":"本番環境DBサーバー（prod-db-01）のバックアップ保持期間を30日から90日に変更。変更理由：監査要件対応のため長期保持が必要。変更前：30日、変更後：90日","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15T09:30:00+09:00","実行終了日時":"2024-11-15T09:30:45+09:00","実行時間秒":45,"IPアドレス":"192.168.10.25","セッションID":"sess-20241115-a7f3e2d1","作成日時":"2024-11-15T09:30:45+09:00"},{"操作履歴ID":"rec-20250215-001","ユーザーID":"usr-20240601-042","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"job-20250214-789","操作内容":"2025年2月14日に誤削除された営業部門の顧客マスターデータ（約15,000件）を2025年2月13日の自動バックアップポイントから復旧。復旧対象テーブル：customers、復旧範囲：全レコード、検証完了後に本番環境へ反映。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15T09:30:00+09:00","実行終了日時":"2025-02-15T09:47:23+09:00","実行時間秒":1043,"IPアドレス":"192.168.1.156","セッションID":"sess-20250215-a7f3e9c2","作成日時":"2025-02-15T09:47:24+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"設定変更","対象リソースタイプ":"RTO_RPO設定","対象リソースID":"rec-003","操作内容":"本社基幹システムのRTO目標値を4時間から2時間に、RPO目標値を1時間から30分に厳格化。バックアップ実行頻度を6時間ごとから2時間ごとに変更し、復旧テスト要件を月1回から週1回に強化。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15T09:30:00+09:00","実行終了日時":"2024-11-15T09:32:45+09:00","実行時間秒":165,"IPアドレス":"192.168.1.105","セッションID":"sess-20241115-a7f2d9e1","作成日時":"2024-11-15T09:32:45+09:00"},{"操作履歴ID":"rec-20250215-001","ユーザーID":"rec-user-0847","操作種別":"ジョブ削除","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-5623","操作内容":"スケジュール済みバックアップジョブ「営業部門データ日次バックアップ」を管理画面から手動削除。理由：ジョブスケジュール見直しに伴う統合","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15 09:23:45","実行終了日時":"2025-02-15 09:24:12","実行時間秒":27,"IPアドレス":"192.168.1.105","セッションID":"sess-a7f2c9d1e4b6","作成日時":"2025-02-15 09:24:13"},{"操作履歴ID":"rec-20250215-0847","ユーザーID":"rec-user-0342","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-job-5821","操作内容":"営業部門のファイルサーバー復旧ジョブを実行。対象データ量: 2.3TB。復旧対象期間: 2025年2月10日～2月14日。復旧先: 専用復旧サーバー。実行中にネットワーク接続が一時的に途絶えたため、2回目の再試行により部分的に復旧完了。","操作ステータス":"部分成功","エラーメッセージ":"ネットワーク接続タイムアウトエラー: 復旧ジョブ実行中（14:32:45）に対象ストレージへの接続が失われました。自動リトライにより回復しましたが、復旧対象データの約87%のみ復旧完了。残り13%（約300GB）は手動再実行が必要です。","実行開始日時":"2025-02-15 14:28:10","実行終了日時":"2025-02-15 16:45:33","実行時間秒":8563,"IPアドレス":"192.168.10.145","セッションID":"sess-8f2d4c91-7e3a-4b56-9c2e-1a5d3f8c2b7e","作成日時":"2025-02-15 16:45:35"},{"操作履歴ID":"rec-20250215-847392","ユーザーID":"rec-user-5634","操作種別":"自動クリーンアップ実行","対象リソースタイプ":"バックアップストレージ","対象リソースID":"rec-storage-2891","操作内容":"バックアップストレージ容量が95%に達したため、古いバックアップデータの自動削除を試行。対象: 2024年1月〜3月のバックアップファイル（計850GB）。しかし、削除対象ファイルの一部がロック状態にあり、削除に失敗。","操作ステータス":"失敗","エラーメッセージ":"ストレージクリーンアップ処理でエラーが発生しました。詳細: ファイル '/backup/job_20240315_db_prod_001.bak' はロック中のため削除できません。復旧ジョブ rec-recovery-7124 で使用中です。","実行開始日時":"2025-02-15 03:45:00","実行終了日時":"2025-02-15 03:47:32","実行時間秒":152,"IPアドレス":"192.168.10.50","セッションID":"sess-auto-cleanup-20250215","作成日時":"2025-02-15 03:47:33"},{"操作履歴ID":"rec-20250115-0847","ユーザーID":"rec-user-0324","操作種別":"データ検証実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-backup-job-1847","操作内容":"監査対応のため2024年10月15日から2025年1月15日までの過去3ヶ月間に実行されたバックアップデータの整合性検証を実行。対象ジョブ: 営業システムDB定期バックアップ。検証項目: バックアップファイルサイズ確認、チェックサム検証、メタデータ整合性確認、復旧可能性テスト。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-15 08:47:32","実行終了日時":"2025-01-15 11:23:18","実行時間秒":9946,"IPアドレス":"192.168.10.45","セッションID":"sess-2025011508-a7f2c9e1","作成日時":"2025-01-15 11:23:45"},{"操作履歴ID":"rec-001","ユーザーID":"rec-user-0847","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-2401","操作内容":"新規導入システム（営業管理システムv2.0）の初回フルバックアップを実行。対象サーバー：SRV-SALES-01、SRV-SALES-02。バックアップ先：NAS-BACKUP-POOL-03。保持期間：90日間で設定。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15 09:30:00","実行終了日時":"2024-11-15 10:47:30","実行時間秒":4650,"IPアドレス":"192.168.10.125","セッションID":"sess-20241115-9d7f2c","作成日時":"2024-11-15 10:47:35"}],"通知設定":[{"通知設定ID":"rec-001","ユーザーID":"usr-0847","通知種別":"バックアップ成功","通知方法":"メール","通知先":"admin@company.jp","有効フラグ":true,"重要度フィルタ":"全て","対象ジョブID":"job-2024-daily-prod","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T09:30:00+09:00","作成者":"鈴木花子"},{"通知設定ID":"rec-001","ユーザーID":"user-0847","通知種別":"バックアップ失敗","通知方法":"メール","通知先":"db-admin@company.jp","有効フラグ":true,"重要度フィルタ":"エラーのみ","対象ジョブID":"job-2024-0512","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2025-01-08T14:22:00+09:00","作成者":"山田太郎"},{"通知設定ID":"rec-001","ユーザーID":"user-0847","通知種別":"復旧成功","通知方法":"Teams","通知先":"https://outlook.webhook.office.com/webhookb2/xxxxx","有効フラグ":true,"重要度フィルタ":"全て","対象ジョブID":"job-2024-drtest-001","作成日時":"2024-11-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"山田太郎"},{"通知設定ID":"rec-001","ユーザーID":"usr-0847","通知種別":"RTO_RPO乖離","通知方法":"Slack","通知先":"#運用チーム-アラート","有効フラグ":true,"重要度フィルタ":"警告以上","対象ジョブID":null,"作成日時":"2024-11-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"山田太郎"},{"通知設定ID":"rec-001","ユーザーID":"rec-u-0847","通知種別":"異常検出","通知方法":"Webhook","通知先":"https://security-alert.example.jp/webhook/backup-anomaly","有効フラグ":true,"重要度フィルタ":"エラーのみ","対象ジョブID":"rec-job-2024-salary-001","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-12-10T14:22:15+09:00","作成者":"山田花子"},{"通知設定ID":"rec-001","ユーザーID":"user-admin-group-001","通知種別":"復旧失敗","通知方法":"メール","通知先":"admin-team@company.example.com","有効フラグ":true,"重要度フィルタ":"エラーのみ","対象ジョブID":null,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者":"山田太郎"},{"通知設定ID":"rec-001","ユーザーID":"usr-0047","通知種別":"月次レポート完了","通知方法":"メール","通知先":"executive-team@company.jp","有効フラグ":true,"重要度フィルタ":"全て","対象ジョブID":null,"作成日時":"2024-10-15 09:30:00","更新日時":"2025-01-08 14:22:00","作成者":"佐藤花子"},{"通知設定ID":"rec-001","ユーザーID":"rec-u-0042","通知種別":"ストレージ容量逼迫警告","通知方法":"Slack","通知先":"#運用チーム-アラート","有効フラグ":true,"重要度フィルタ":"警告以上","対象ジョブID":null,"作成日時":"2024-11-15 09:30:00","更新日時":"2024-11-15 09:30:00","作成者":"田中太郎"},{"通知設定ID":"rec-001","ユーザーID":"usr-0847","通知種別":"復旧成功","通知方法":"メール","通知先":"bcp-team@company.jp","有効フラグ":true,"重要度フィルタ":"全て","対象ジョブID":"job-2024-dr-drill-001","作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"山田花子"},{"通知設定ID":"rec-001","ユーザーID":"usr-0847","通知種別":"バックアップウィンドウ超過","通知方法":"メール","通知先":"infrastructure-team@company.jp","有効フラグ":true,"重要度フィルタ":"エラーのみ","対象ジョブID":null,"作成日時":"2024-10-15 09:30:00","更新日時":"2025-01-22 14:15:00","作成者":"山田太郎"}],"通知送信履歴":[{"通知送信履歴ID":"rec-20250115-001","通知設定ID":"rec-20241201-setup-001","ユーザーID":"rec-user-tanaka-001","通知タイプ":"バックアップ成功","トリガーイベント":"backup-job-20250115-daily-001","送信先":"tanaka.taro@example.co.jp","送信チャネル":"メール","通知内容":"定期バックアップジョブが正常に完了しました。\n\nジョブ名: 日次バックアップ_本番DB\n実行日時: 2025年1月15日 02:30\n処理対象: 顧客データベース\nバックアップサイズ: 156.8GB\n所要時間: 47分23秒\n\n詳細はシステムダッシュボードをご確認ください。","送信日時":"2025-01-15T02:47:15+09:00","送信ステータス":"成功","ステータス詳細":"正常に送信されました","再試行回数":0,"最終再試行日時":null,"開封フラグ":true,"開封日時":"2025-01-15T08:23:42+09:00","作成日時":"2025-01-15T02:47:15+09:00","更新日時":"2025-01-15T08:23:42+09:00"},{"通知送信履歴ID":"rec-20250115-sms-001","通知設定ID":"rec-20250101-config-042","ユーザーID":"rec-user-20240601-tanaka","通知タイプ":"バックアップ失敗","トリガーイベント":"backup-job-20250115-night-db01","送信先":"09012345678","送信チャネル":"SMS","通知内容":"【緊急】本日02:30のデータベースバックアップジョブが失敗しました。ジョブID: backup-job-20250115-night-db01。エラー: ディスク容量不足。至急対応をお願いします。","送信日時":"2025-01-15T02:35:00+09:00","送信ステータス":"成功","ステータス詳細":"3回目の再試行で送信成功。初回・2回目は一時的なネットワーク遅延により失敗。","再試行回数":3,"最終再試行日時":"2025-01-15T02:47:22+09:00","開封フラグ":true,"開封日時":"2025-01-15T02:49:15+09:00","作成日時":"2025-01-15T02:35:00+09:00","更新日時":"2025-01-15T02:49:15+09:00"},{"通知送信履歴ID":"rec-20250115-db-recovery-slack-001","通知設定ID":"rec-notif-config-db-recovery-slack","ユーザーID":"rec-user-tanaka-taro","通知タイプ":"復旧完了","トリガーイベント":"復旧ジョブID: job-recovery-20250115-001","送信先":"https://hooks.slack.com/services/T1234567890/B1234567890/XXXXXXXXXXXXXXXXXXXX","送信チャネル":"Slack","通知内容":"【重要】本番環境データベース復旧完了のお知らせ\n\n復旧ジョブID: job-recovery-20250115-001\nデータベース名: production_main_db\n復旧開始日時: 2025-01-15 14:30:00\n復旧完了日時: 2025-01-15 15:45:30\n復旧対象期間: 2025-01-15 14:00:00 時点\n復旧データ量: 2.3TB\n検証結果: 正常\n\n詳細はダッシュボードでご確認ください。\n技術チーム一同","送信日時":"2025-01-15 15:46:15","送信ステータス":"成功","ステータス詳細":"Slack API呼び出し成功、メッセージID: ts-1705327575.001200","再試行回数":0,"最終再試行日時":null,"開封フラグ":true,"開封日時":"2025-01-15 15:48:42","作成日時":"2025-01-15 15:46:15","更新日時":"2025-01-15 15:48:42"},{"通知送信履歴ID":"rec-20250115-0847","通知設定ID":"rec-20241201-0523","ユーザーID":"rec-20240315-0012","通知タイプ":"ストレージ容量異常","トリガーイベント":"異常検出ID: alert-20250115-0843","送信先":"admin.tanaka@company.jp","送信チャネル":"メール","通知内容":"【重要】ストレージ容量異常が検出されました。現在のストレージ使用率が92%に達しています。早急な対応をお願いします。対象システム: バックアップサーバー01。詳細はシステム管理画面をご確認ください。","送信日時":"2025-01-15 08:47:23","送信ステータス":"保留中","ステータス詳細":"SMTP接続タイムアウト: メールサーバーからの応答がありません。次回再試行予定時刻: 2025-01-15 09:47:23","再試行回数":1,"最終再試行日時":"2025-01-15 09:17:45","開封フラグ":false,"開封日時":null,"作成日時":"2025-01-15 08:47:23","更新日時":"2025-01-15 09:17:45"},{"通知送信履歴ID":"rec-20250115-001","通知設定ID":"rec-config-0847","ユーザーID":"rec-user-5623","通知タイプ":"災害復旧テスト完了","トリガーイベント":"DRT-2025-01-15-002","送信先":"tanaka.taro@company.jp","送信チャネル":"メール","通知内容":"災害復旧テストが完了いたしました。テスト実施日時：2025年1月15日 14:30、復旧対象システム：営業管理システム、復旧所要時間：12分45秒、テスト結果：成功。詳細はシステム管理画面をご確認ください。","送信日時":"2025-01-15T14:35:22+09:00","送信ステータス":"成功","ステータス詳細":"メール送信完了。配信確認済み。","再試行回数":0,"最終再試行日時":null,"開封フラグ":true,"開封日時":"2025-01-15T14:42:15+09:00","作成日時":"2025-01-15T14:35:22+09:00","更新日時":"2025-01-15T14:42:15+09:00"},{"通知送信履歴ID":"rec-20250115-0847","通知設定ID":"rec-20240920-0312","ユーザーID":"rec-20240615-0521","通知タイプ":"バックアップウィンドウ超過警告","トリガーイベント":"BKJ-20250115-084532","送信先":"tanaka.taro@company.co.jp","送信チャネル":"メール","通知内容":"【警告】バックアップウィンドウ超過のお知らせ\n\nシステム名: 営業データベースサーバー\nバックアップジョブID: BKJ-20250115-084532\n予定時間: 04:00-06:00\n実際の完了時間: 06:47\n超過時間: 47分\n\nバックアップウィンドウを超過しました。ジョブの実行状況をご確認ください。\n詳細はシステム管理画面をご参照ください。","送信日時":"2025-01-15 06:48:30","送信ステータス":"成功","ステータス詳細":"正常に送信されました","再試行回数":0,"最終再試行日時":null,"開封フラグ":false,"開封日時":null,"作成日時":"2025-01-15 06:48:30","更新日時":"2025-01-15 06:48:30"},{"通知送信履歴ID":"rec-20250115-0847","通知設定ID":"rec-notif-config-0032","ユーザーID":"rec-user-0156","通知タイプ":"バックアップ成功","トリガーイベント":"backup-job-20250115-084512","送信先":"tanaka.taro@company.jp","送信チャネル":"メール","通知内容":"臨時バックアップが正常に完了しました。バックアップ名: 営業データベース_20250115_緊急、対象: 営業DB本体、バックアップサイズ: 45.2GB、所要時間: 12分34秒、完了日時: 2025年1月15日 08:45:12","送信日時":"2025-01-15 08:45:30","送信ステータス":"成功","ステータス詳細":"正常に送信されました","再試行回数":0,"最終再試行日時":null,"開封フラグ":true,"開封日時":"2025-01-15 08:47:15","作成日時":"2025-01-15 08:45:30","更新日時":"2025-01-15 08:47:15"},{"通知送信履歴ID":"rec-20250115-001","通知設定ID":"rec-20250101-setup-001","ユーザーID":"rec-user-admin-001","通知タイプ":"暗号化キー更新完了","トリガーイベント":"encryption-key-rotation-20250115-001","送信先":"tanaka.taro@example.com","送信チャネル":"メール","通知内容":"バックアップストレージの暗号化キー更新が完了いたしました。更新日時: 2025年1月15日 02:30 UTC、対象ストレージ: AWS S3 Backup Vault、新キーID: key-2025-001-a7f4。セキュリティ監査ログはシステム管理画面から確認できます。","送信日時":"2025-01-15 02:35:00","送信ステータス":"成功","ステータス詳細":"メール送信完了、配信確認済み","再試行回数":0,"最終再試行日時":null,"開封フラグ":true,"開封日時":"2025-01-15 09:12:00","作成日時":"2025-01-15 02:35:00","更新日時":"2025-01-15 09:12:00"},{"通知送信履歴ID":"rec-20250215-sms-001","通知設定ID":"rec-notif-config-0847","ユーザーID":"rec-user-tanaka-2024","通知タイプ":"バックアップ中断","トリガーイベント":"backup-job-20250215-1430","送信先":"09012345678","送信チャネル":"SMS","通知内容":"【重要】バックアップジョブが中断しました。ジョブID: backup-job-20250215-1430。システム障害により処理が停止しています。管理者に連絡してください。","送信日時":"2025-02-15 14:35:22","送信ステータス":"成功","ステータス詳細":"初回送信失敗後、2回の再試行により最終的に送信完了。初回エラー: SMS ゲートウェイ接続タイムアウト","再試行回数":2,"最終再試行日時":"2025-02-15 14:47:18","開封フラグ":false,"開封日時":null,"作成日時":"2025-02-15 14:35:22","更新日時":"2025-02-15 14:47:18"},{"通知送信履歴ID":"rec-20250115-0847","通知設定ID":"rec-20240601-0312","ユーザーID":"rec-20240315-0521","通知タイプ":"月次レポート送信","トリガーイベント":"月次バックアップ統計レポート生成ジョブID:job-202501-monthly-backup","送信先":"tanaka.taro@example.jp","送信チャネル":"メール","通知内容":"【月次バックアップ統計レポート】2025年1月度のバックアップ実行結果をお知らせします。実行回数:248回、成功:247回、失敗:1回、平均処理時間:3分42秒、保護データ容量:2.3TB。詳細はシステムダッシュボードよりご確認ください。","送信日時":"2025-01-15 09:00:00","送信ステータス":"成功","ステータス詳細":"正常に配信されました","再試行回数":0,"最終再試行日時":null,"開封フラグ":true,"開封日時":"2025-01-18 14:23:00","作成日時":"2025-01-15 09:00:00","更新日時":"2025-01-18 14:23:00"}],"アラート定義":[{"アラート定義ID":"rec-001","アラート名":"日次バックアップジョブタイムアウト検知","説明":"本番環境の日次バックアップジョブが予定完了時刻を超過した場合に発火するアラート。バックアップウィンドウ内での完了を保証し、RPO違反を防止する。","監視対象タイプ":"バックアップジョブ","条件タイプ":"タイムアウト","条件値":"{\"ジョブ名\": \"日次フルバックアップ_本番DB\", \"予定完了時刻\": \"06:00\", \"タイムアウト閾値分\": 30, \"実行時間上限分\": 120, \"対象環境\": \"本番\", \"実行スケジュール\": \"毎日 03:00\"}","重要度":"高","有効フラグ":true,"通知設定ID":"rec-102","作成日時":"2024-04-15 10:30:00","作成者":"rec-u-001","更新日時":"2025-01-20 14:45:00","更新者":"rec-u-003"},{"アラート定義ID":"rec-001","アラート名":"バックアップデータ容量警告","説明":"バックアップデータサイズが許容容量の90%を超えた場合に発火するアラート。ストレージ容量の枯渇を事前に検知し、追加容量の確保やデータの圧縮・削除を促す。","監視対象タイプ":"バックアップジョブ","条件タイプ":"閾値超過","条件値":"{\"metric\": \"backup_data_size\", \"threshold_type\": \"percentage\", \"threshold_value\": 90, \"comparison_operator\": \"greater_than\", \"evaluation_period_minutes\": 5, \"max_capacity_gb\": 5120}","重要度":"高","有効フラグ":true,"通知設定ID":"rec-002","作成日時":"2024-06-15T09:30:00+09:00","作成者":"rec-101","更新日時":"2025-01-20T14:15:00+09:00","更新者":"rec-102"},{"アラート定義ID":"rec-001","アラート名":"復旧ジョブ実行失敗アラート","説明":"復旧ジョブが失敗した場合に、システム管理者へ緊急通知するアラート定義。本番環境のデータ復旧失敗を即座に検知し、対応時間を最小化するために設定。","監視対象タイプ":"復旧ジョブ","条件タイプ":"失敗","条件値":"{\"jobStatus\": \"FAILED\", \"retryCount\": 0, \"executionTime\": {\"max\": 3600}, \"targetEnvironment\": [\"本番\", \"ステージング\"]}","重要度":"緊急","有効フラグ":true,"通知設定ID":"rec-002","作成日時":"2024-04-15T09:30:00+09:00","作成者":"rec-u001","更新日時":"2025-01-20T14:45:00+09:00","更新者":"rec-u002"},{"アラート定義ID":"rec-001","アラート名":"RPO超過アラート","説明":"バックアップジョブの最終成功時刻からの経過時間がRPO目標値（1時間）を超過した場合に発火するアラート。データ損失リスクが高まった状態を検知し、迅速な対応を促す。","監視対象タイプ":"バックアップジョブ","条件タイプ":"RPO超過","条件値":"{\"rpo_threshold_minutes\": 60, \"check_interval_minutes\": 15, \"target_systems\": [\"基幹業務DB\", \"顧客情報DB\"], \"exclude_maintenance_window\": true}","重要度":"高","有効フラグ":true,"通知設定ID":"rec-002","作成日時":"2024-08-15 09:30:00","作成者":"rec-user-001","更新日時":"2025-01-22 14:45:00","更新者":"rec-user-002"},{"アラート定義ID":"rec-001","アラート名":"RTO超過緊急アラート","説明":"復旧所要時間(RTO)が目標値を超過した場合に発火する緊急レベルのアラート。本番環境のシステム復旧が遅延している状況を即座に検知し、対応チームへ通知する。","監視対象タイプ":"RTO_RPO","条件タイプ":"閾値超過","条件値":"{\"metric\": \"actual_rto\", \"threshold_minutes\": 60, \"target_rto_minutes\": 60, \"comparison_operator\": \"greater_than\", \"environment\": \"production\", \"trigger_count\": 1}","重要度":"緊急","有効フラグ":true,"通知設定ID":"rec-notif-001","作成日時":"2024-04-15T09:30:00+09:00","作成者":"rec-user-001","更新日時":"2025-01-22T14:15:00+09:00","更新者":"rec-user-002"},{"アラート定義ID":"rec-001","アラート名":"バックアップ整合性検証失敗警告","説明":"バックアップデータの整合性検証に失敗した場合に発火するアラート。検証失敗はデータ破損の可能性を示すため、迅速な対応が必要。","監視対象タイプ":"バックアップジョブ","条件タイプ":"失敗","条件値":"{\"検証結果\": \"失敗\", \"チェックサム不一致\": true, \"ファイル破損検出\": true, \"検証対象\": \"全データセット\"}","重要度":"高","有効フラグ":true,"通知設定ID":"rec-002","作成日時":"2024-04-15T09:30:00+09:00","作成者":"rec-101","更新日時":"2025-01-20T14:45:00+09:00","更新者":"rec-102"},{"アラート定義ID":"rec-001","アラート名":"DR サイトレプリケーション遅延警告","説明":"ディザスタリカバリサイトへのデータレプリケーション遅延が許容範囲を超過した場合に発火するアラート。RPO（目標復旧時点）の維持を確保するため、遅延時間が 300 秒を超えた場合に通知する。","監視対象タイプ":"レプリケーションジョブ","条件タイプ":"閾値超過","条件値":"{\"メトリクス\": \"レプリケーション遅延時間\", \"単位\": \"秒\", \"警告閾値\": 300, \"緊急閾値\": 600, \"評価間隔\": 60, \"連続超過回数\": 2}","重要度":"高","有効フラグ":true,"通知設定ID":"rec-102","作成日時":"2024-06-15T09:30:00+09:00","作成者":"rec-u-001","更新日時":"2025-01-22T14:15:00+09:00","更新者":"rec-u-003"},{"アラート定義ID":"rec-001","アラート名":"月次フルバックアップ成功率低下アラート","説明":"月次フルバックアップジョブの成功率が95%未満に低下した場合に発火するアラート。バックアップの信頼性低下を早期に検知し、運用チームに通知する。","監視対象タイプ":"バックアップジョブ","条件タイプ":"閾値超過","条件値":"{\"metric\": \"success_rate\", \"period\": \"monthly\", \"backup_type\": \"full_backup\", \"threshold\": 95, \"operator\": \"less_than\", \"evaluation_window_days\": 1, \"sample_size_minimum\": 10}","重要度":"高","有効フラグ":true,"通知設定ID":"rec-101","作成日時":"2024-06-15 09:30:00","作成者":"rec-u001","更新日時":"2025-01-10 14:45:00","更新者":"rec-u002"},{"アラート定義ID":"rec-001","アラート名":"復旧テスト未実施30日経過アラート","説明":"復旧テストが30日以上実施されていない場合に、定期的なテスト実施をリマインドするアラート。業務継続計画(BCP)の有効性を維持するため、定期的な復旧テストの実施が必須である。","監視対象タイプ":"復旧ジョブ","条件タイプ":"タイムアウト","条件値":"{\"last_test_execution_days\": {\"operator\": \"greater_than_or_equal\", \"value\": 30}, \"test_status\": \"not_executed\", \"check_interval_days\": 7}","重要度":"中","有効フラグ":true,"通知設定ID":"rec-101","作成日時":"2024-06-15T09:30:00+09:00","作成者":"rec-u001","更新日時":"2025-01-20T14:15:00+09:00","更新者":"rec-u002"},{"アラート定義ID":"rec-001","アラート名":"バックアップストレージ容量不足警告","説明":"バックアップストレージの利用可能容量が10GB以下に低下した場合に緊急アラートを発火し、システム管理者に即座に通知する。ストレージ満杯によるバックアップ失敗を未然に防ぐ。","監視対象タイプ":"バックアップストレージ","条件タイプ":"閾値超過","条件値":"{\"metric\": \"available_capacity_gb\", \"operator\": \"less_than_or_equal\", \"threshold\": 10, \"duration_seconds\": 300, \"check_interval_seconds\": 60}","重要度":"緊急","有効フラグ":true,"通知設定ID":"rec-002","作成日時":"2024-06-15T09:30:00+09:00","作成者":"rec-101","更新日時":"2025-01-20T14:15:00+09:00","更新者":"rec-102"}],"アラート発火履歴":[{"アラート発火履歴ID":"rec-20250115-001","アラート定義ID":"rec-alert-def-0042","発火日時":"2025-01-15T02:47:33+09:00","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-backup-job-0156","アラートレベル":"CRITICAL","アラートメッセージ":"本社営業システムの日次バックアップジョブが実行開始から4時間を経過してもタイムアウトしました。予定完了時刻を120分超過しています。ジョブの強制停止が必要な可能性があります。","アラート状態":"解決","対応者ユーザーID":"rec-user-0087","対応日時":"2025-01-15T08:15:22+09:00","対応コメント":"02:47のアラート発火を確認。朝礼時に管理者に報告。該当ジョブを確認したところ、テーブルスキャン処理で大量のロックが発生していた。ジョブを強制停止し、DB統計情報を更新後に再実行。08:30に正常完了を確認した。","関連バックアップ実行履歴ID":"rec-backup-exec-3847","関連復旧実行履歴ID":null,"関連異常検出ID":"rec-anomaly-0215","通知送信済み":true,"作成日時":"2025-01-15T02:47:33+09:00","更新日時":"2025-01-15T08:15:22+09:00"},{"アラート発火履歴ID":"rec-001","アラート定義ID":"rec-101","発火日時":"2024-11-15T14:32:00+09:00","対象リソースタイプ":"ホスト","対象リソースID":"rec-501","アラートレベル":"WARNING","アラートメッセージ":"ホスト『prod-db-server-01』のディスク容量が不足しています。使用率: 87% (残容量: 13GB / 総容量: 100GB)","アラート状態":"解決","対応者ユーザーID":"rec-201","対応日時":"2024-11-15T16:45:00+09:00","対応コメント":"ディスク容量を100GBから200GBに拡張完了。使用率は現在43%に低下。今後の容量監視継続。","関連バックアップ実行履歴ID":null,"関連復旧実行履歴ID":null,"関連異常検出ID":null,"通知送信済み":true,"作成日時":"2024-11-15T14:32:00+09:00","更新日時":"2024-11-15T16:45:00+09:00"},{"アラート発火履歴ID":"rec-20250215-alert-001","アラート定義ID":"rec-alert-def-recovery-failure","発火日時":"2025-02-15T14:32:47+09:00","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-recovery-job-20250215-789","アラートレベル":"CRITICAL","アラートメッセージ":"復旧ジョブ「本社サーバー群_定時復旧_20250215」がタイムアウトにより失敗しました。対象: ホストグループ「本社_重要業務系」、復旧対象データ量: 2.3TB、経過時間: 6時間32分。ストレージ接続エラーが検出されました。","アラート状態":"対応中","対応者ユーザーID":"rec-user-20250215-yamada","対応日時":"2025-02-15T14:58:12+09:00","対応コメント":"ストレージ側のネットワーク遅延を確認中。NW機器のログを調査予定。復旧ジョブの再実行は原因特定後に実施予定。","関連バックアップ実行履歴ID":"rec-backup-exec-20250214-456","関連復旧実行履歴ID":"rec-recovery-exec-20250215-789","関連異常検出ID":"rec-anomaly-detect-20250215-storage-001","通知送信済み":true,"作成日時":"2025-02-15T14:32:47+09:00","更新日時":"2025-02-15T14:58:12+09:00"},{"アラート発火履歴ID":"rec-001","アラート定義ID":"rec-102","発火日時":"2024-11-15T02:30:00+09:00","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-5847","アラートレベル":"WARNING","アラートメッセージ":"バックアップジョブ『日次フルバックアップ_本番DB01』がバックアップウィンドウ(3時間)を45分超過しています。実行時間: 3時間45分","アラート状態":"解決","対応者ユーザーID":"rec-8921","対応日時":"2024-11-15T03:15:00+09:00","対応コメント":"バックアップジョブが正常に完了しました。ネットワーク遅延による遅延と判断され、システムにより自動解決されました。","関連バックアップ実行履歴ID":"rec-12547","関連復旧実行履歴ID":null,"関連異常検出ID":null,"通知送信済み":true,"作成日時":"2024-11-15T02:30:15+09:00","更新日時":"2024-11-15T03:15:30+09:00"},{"アラート発火履歴ID":"rec-001","アラート定義ID":"rec-042","発火日時":"2024-11-15T14:32:45Z","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-089","アラートレベル":"CRITICAL","アラートメッセージ":"復旧ジョブ『本社DB_20241115_復旧』がネットワーク接続障害により失敗しました。対象ホスト: db-prod-01。エラーコード: NET_TIMEOUT_5001。復旧対象データ: 顧客マスター(約2.3GB)。","アラート状態":"解決","対応者ユーザーID":"rec-156","対応日時":"2024-11-15T15:18:22Z","対応コメント":"ネットワークチームに確認したところ、14:25頃にdb-prod-01とバックアップサーバー間のネットワークスイッチで一時的な接続断が発生していた。15:10に復旧確認後、復旧ジョブを再実行し15:17に正常完了。顧客マスターの復旧は完了し、データ整合性も確認済み。","関連バックアップ実行履歴ID":"rec-234","関連復旧実行履歴ID":"rec-235","関連異常検出ID":null,"通知送信済み":true,"作成日時":"2024-11-15T14:32:45Z","更新日時":"2024-11-15T15:18:22Z"},{"アラート発火履歴ID":"rec-20250115-alert-001","アラート定義ID":"rec-20240601-alertdef-008","発火日時":"2025-01-15T02:30:00+09:00","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-20241201-backup-job-042","アラートレベル":"WARNING","アラートメッセージ":"定期メンテナンス期間中のため、バックアップジョブ実行がスキップされました。予定されたメンテナンスです。","アラート状態":"無視","対応者ユーザーID":"rec-user-20240315-003","対応日時":"2025-01-15T02:35:00+09:00","対応コメント":"毎月第3水曜日の定期メンテナンス期間中の予定されたアラートのため、無視状態に変更しました。次回実行は2025-01-22を予定。","関連バックアップ実行履歴ID":"rec-20250115-backup-exec-001","関連復旧実行履歴ID":null,"関連異常検出ID":null,"通知送信済み":false,"作成日時":"2025-01-15T02:30:00+09:00","更新日時":"2025-01-15T02:35:00+09:00"},{"アラート発火履歴ID":"rec-001","アラート定義ID":"rec-042","発火日時":"2024-11-15T14:32:18+09:00","対象リソースタイプ":"ストレージシステム","対象リソースID":"rec-storage-007","アラートレベル":"INFO","アラートメッセージ":"ストレージシステム(SAN-01)の使用率が78%に達しました。容量監視の対象です。","アラート状態":"対応中","対応者ユーザーID":"rec-user-015","対応日時":"2024-11-15T15:10:45+09:00","対応コメント":"容量拡張の検討を開始しました。来週中に容量計画会議を実施予定です。","関連バックアップ実行履歴ID":null,"関連復旧実行履歴ID":null,"関連異常検出ID":"rec-anomaly-089","通知送信済み":true,"作成日時":"2024-11-15T14:32:18+09:00","更新日時":"2024-11-15T15:10:45+09:00"},{"アラート発火履歴ID":"rec-20250215-001","アラート定義ID":"rec-alert-def-0847","発火日時":"2025-02-15T03:45:22+09:00","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-host-backup-0512","アラートレベル":"CRITICAL","アラートメッセージ":"本社データセンター内の複数ホスト（ホスト001～005）で連鎖的なバックアップ失敗が発生しました。ストレージ接続エラーが原因と推定されます。影響対象：5ホスト、失敗件数：7ジョブ","アラート状態":"対応中","対応者ユーザーID":"rec-user-2341","対応日時":"2025-02-15T04:12:35+09:00","対応コメント":"インフラチーム（鈴木課長）に連絡済み。ストレージスイッチの再起動を実施中。ホスト002のバックアップは手動リトライで成功確認。ホスト001,003,004,005は再スケジュール予定。","関連バックアップ実行履歴ID":"rec-backup-exec-8924","関連復旧実行履歴ID":null,"関連異常検出ID":"rec-anomaly-detect-5671","通知送信済み":true,"作成日時":"2025-02-15T03:45:22+09:00","更新日時":"2025-02-15T04:12:35+09:00"},{"アラート発火履歴ID":"rec-20250115-alert-001","アラート定義ID":"rec-alert-def-rpo-violation","発火日時":"2025-01-15T14:32:00+09:00","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-backup-job-prod-db-001","アラートレベル":"WARNING","アラートメッセージ":"本番データベース(PROD-DB-001)のRPO違反が検出されました。前回の成功バックアップから18時間経過しており、設定されたRPO目標値(12時間)を超過しています。","アラート状態":"対応中","対応者ユーザーID":"rec-user-yamada-hanako","対応日時":"2025-01-15T15:10:00+09:00","対応コメント":"本件を確認しました。バックアップスケジュールの遅延が原因と判明。本日16:00までに追加バックアップを実行予定。","関連バックアップ実行履歴ID":"rec-backup-exec-20250115-001","関連復旧実行履歴ID":null,"関連異常検出ID":null,"通知送信済み":true,"作成日時":"2025-01-15T14:32:00+09:00","更新日時":"2025-01-15T15:10:00+09:00"},{"アラート発火履歴ID":"rec-20250215-alert-001","アラート定義ID":"rec-def-backup-validation-001","発火日時":"2025-02-15T14:32:47+09:00","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-backup-job-2025-0156","アラートレベル":"CRITICAL","アラートメッセージ":"バックアップデータ検証エラーが発生しました。東京支社ファイルサーバー(\\\\fs-tokyo-01)の2025-02-15 14:00実行バックアップにおいて、チェックサム検証で不整合が検出されました。対象容量: 2.3TB、検証失敗ファイル数: 847個。復旧可能性の確認が必要です。","アラート状態":"対応中","対応者ユーザーID":"rec-user-yamada-001","対応日時":"2025-02-15T15:18:22+09:00","対応コメント":"バックアップメディアの物理的な損傷の可能性を確認。予備バックアップからの復旧テストを実施予定。復旧可能性は高いと判断。本日中に復旧テスト完了予定。","関連バックアップ実行履歴ID":"rec-backup-exec-20250215-001","関連復旧実行履歴ID":null,"関連異常検出ID":"rec-anomaly-detect-20250215-001","通知送信済み":true,"作成日時":"2025-02-15T14:32:47+09:00","更新日時":"2025-02-15T15:18:22+09:00"}]};
+window.AIVIC_PAGE_SCREEN_ID = "scr-1788233859969";
+window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<nav style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg,var(--bg-sidebar,#0e1a31));border-bottom:1px solid var(--top-bar-border,var(--border,#2a3a5d));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--text,#e8eefc);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:1;border-bottom:2px solid var(--primary,#2b66ff);font-weight:600;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
+  <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
+    <header class="shell-header">
+      <div class="shell-logo">バックアップ・復旧管理・監視システム</div>
+      <nav class="shell-nav-top">
+        <button class="shell-nav-item aivic-active" data-aivic-nav="scr-1788233819944" onclick="window.location.href='./scr-1788233819944.html'">監視ダッシュボード</button>
+        <button class="shell-nav-item" data-aivic-nav="scr-1788233833884" onclick="window.location.href='./scr-1788233833884.html'">失敗診断</button>
+        <button class="shell-nav-item" data-aivic-nav="scr-1788233846880" onclick="window.location.href='./scr-1788233846880.html'">復旧管理</button>
+        <button class="shell-nav-item" data-aivic-nav="scr-1788233859969" onclick="window.location.href='./scr-1788233859969.html'">RTO/RPO分析</button>
+      </nav>
+      <div class="shell-user-area">
+        <div class="shell-user-avatar">U</div>
+        <div class="shell-user-name">ユーザー</div>
+        <a href="./login.html" class="shell-user-logout">ログアウト</a>
+      </div>
+    </header>
+    <div class="shell-body">
+      <main class="content-area">
+        <div data-aivic-panel="scr-1788233819944" style="display:none"></div>
+        <div data-aivic-panel="scr-1788233833884" style="display:none"></div>
+        <div data-aivic-panel="scr-1788233846880" style="display:none"></div>
+        <div data-aivic-panel="scr-1788233859969" style="display:block"><div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; background: var(--bg-main); color: var(--text); font-family: var(--font-family);">
+
+  <!-- 期間選択フィルター -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: flex-end; padding: 12px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+    <div>
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">開始日</label>
+      <input type="date" data-testid="period-start" style="width: 100%; padding: 8px 10px; background: var(--bg-main); border: 1px solid rgba(201, 195, 184, 0.6); border-radius: var(--radius-control); color: var(--text); font-size: 14px;" />
+    </div>
+    <div>
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">終了日</label>
+      <input type="date" data-testid="period-end" style="width: 100%; padding: 8px 10px; background: var(--bg-main); border: 1px solid rgba(201, 195, 184, 0.6); border-radius: var(--radius-control); color: var(--text); font-size: 14px;" />
+    </div>
+    <button data-testid="filter-apply" style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 500; cursor: pointer; transition: background 200ms;">適用</button>
+  </div>
+
+  <!-- 上段：RTO/RPO設定値確認パネル と 実績値表示エリア -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    
+    <!-- RTO/RPO設定値確認パネル -->
+    <div style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">RTO/RPO設定値</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">設定RTO</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--primary);" data-testid="config-rto">—</div>
+            <div style="font-size: 10px; color: var(--text-muted);">分</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">設定RPO</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--primary);" data-testid="config-rpo">—</div>
+            <div style="font-size: 10px; color: var(--text-muted);">分</div>
+          </div>
+        </div>
+        <div style="padding-top: 8px; border-top: 1px solid var(--border);">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">優先度</div>
+          <div style="font-size: 13px; font-weight: 500; color: var(--text);" data-testid="config-priority">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 実績値表示エリア -->
+    <div style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">実績値</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">実績RTO</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--text);" data-testid="actual-rto">—</div>
+            <div style="font-size: 10px; color: var(--text-muted);">分</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">実績RPO</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--text);" data-testid="actual-rpo">—</div>
+            <div style="font-size: 10px; color: var(--text-muted);">分</div>
+          </div>
+        </div>
+        <div style="padding-top: 8px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">RTO達成率</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--primary);" data-testid="rto-achievement">—%</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">RPO達成率</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--primary);" data-testid="rpo-achievement">—%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 中段：乖離率自動計算結果 と 目標達成状況サマリー -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    
+    <!-- 乖離率自動計算結果 -->
+    <div style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">乖離率</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">RTO乖離率</div>
+          <div style="font-size: 20px; font-weight: 700;" data-testid="rto-deviation">
+            <span style="color: var(--text);">—%</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 3px;">RPO乖離率</div>
+          <div style="font-size: 20px; font-weight: 700;" data-testid="rpo-deviation">
+            <span style="color: var(--text);">—%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 目標達成状況サマリー -->
+    <div style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">総合評価</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="padding: 10px; background: var(--bg-main); border-radius: var(--radius-control); border-left: 3px solid var(--primary);">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 2px;">評価</div>
+          <div style="font-size: 14px; font-weight: 600; color: var(--text);" data-testid="overall-status">—</div>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.4;" data-testid="overall-comment">
+          期間を選択して分析を開始してください
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 乖離分析グラフ（全幅） -->
+  <div style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+    <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">設定値 vs 実績値の推移</h3>
+    <canvas id="deviation-chart" data-testid="deviation-chart" style="width: 100%; height: 280px; display: block; border-radius: var(--radius-control);"></canvas>
+  </div>
+
+  <!-- 復旧テスト実行記録集計表 -->
+  <div style="padding: 16px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+    <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">復旧テスト実行記録</h3>
+    <div style="overflow-x: auto;">
+      <table data-testid="test-records-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: var(--bg-main); border-bottom: 1px solid var(--border);">
+            <th style="padding: 8px 10px; text-align: left; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">テスト実行日</th>
+            <th style="padding: 8px 10px; text-align: center; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">所要時間（分）</th>
+            <th style="padding: 8px 10px; text-align: center; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">RTO達成</th>
+            <th style="padding: 8px 10px; text-align: center; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">データ整合性</th>
+            <th style="padding: 8px 10px; text-align: center; font-weight: 600; color: var(--text);">テスト結果</th>
+          </tr>
+        </thead>
+        <tbody id="test-records-tbody" style="background: var(--bg-card);">
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td colspan="5" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">データを読み込み中...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- レポート生成セクション -->
+  <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: flex-end;">
+    
+    <!-- レポート出力形式選択 -->
+    <div style="padding: 12px; background: var(--bg-card); border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;">レポート出力形式</label>
+      <select data-testid="report-format" style="width: 100%; padding: 8px 10px; background: var(--bg-main); border: 1px solid rgba(201, 195, 184, 0.6); border-radius: var(--radius-control); color: var(--text); font-size: 13px; cursor: pointer;">
+        <option value="">選択してください</option>
+        <option value="pdf">PDF</option>
+        <option value="csv">CSV</option>
+        <option value="html">HTML</option>
+      </select>
+    </div>
+
+    <!-- レポート生成ボタン -->
+    <button data-testid="generate-report" style="padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer; transition: background 200ms; white-space: nowrap;">レポート生成</button>
+  </div>
+
+</div>
+
+<!-- レポート生成確認ダイアログ -->
+<div id="report-dialog" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: var(--radius-card); max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <h2 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">レポート生成</h2>
+    <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+      選択した形式でレポートを生成します。<br/>
+      生成中は少しお待ちください。
+    </p>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button id="report-cancel" style="padding: 8px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer;">キャンセル</button>
+      <button id="report-confirm" style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;">生成開始</button>
+    </div>
+  </div>
+</div>
+
+<!-- 処理中インジケーター -->
+<div id="processing-indicator" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 999; padding: 12px 16px; background: var(--primary); color: #fff; border-radius: var(--radius-card); font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+  <span>レポート生成中...</span>
+</div></div>
+      </main>
+    </div>
+  </div>
+
+  
+  
+<script>
+(function() {
+  var TABLE_DEFS = window.AIVIC_TABLES || [];
+  var PRESET_SEED = window.AIVIC_PRESET_SEED || {};
+  var SYSTEM_NAME = window.AIVIC_SYSTEM_NAME || "";
+  var APP_ID = window.AIVIC_APP_ID || "";
+  var API_URL = (window.AIVIC_API_URL && window.AIVIC_API_URL !== "REPLACE_WITH_API_URL")
+    ? window.AIVIC_API_URL : window.location.origin;
+
+  // 通知 helper ( SPA 版と同じ )
+  window.aivicNotify = (function() {
+    function ensureContainer() {
+      var c = document.getElementById("aivic-toast-container");
+      if (c) return c;
+      c = document.createElement("div");
+      c.id = "aivic-toast-container";
+      c.style.cssText = "position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:360px;";
+      document.body.appendChild(c);
+      return c;
+    }
+    function show(msg, type) {
+      var c = ensureContainer();
+      var el = document.createElement("div");
+      el.textContent = msg;
+      el.style.cssText = "padding:10px 16px;border-radius:8px;font-size:13px;line-height:1.4;pointer-events:auto;color:#fff;background:" + (type === "error" ? "#dc2626" : "#d97706");
+      c.appendChild(el);
+      setTimeout(function() {
+        el.style.transition = "opacity .3s";
+        el.style.opacity = "0";
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+      }, type === "error" ? 6000 : 4500);
+    }
+    return {
+      error: function(msg) { show("❌ " + msg, "error"); },
+      warn:  function(msg) { show("⚠️ " + msg, "warn"); },
+    };
+  })();
+
+  // CRUD API ( SPA 版と同じ )
+  window.aivicApi = (function() {
+    function dbErr(op) { window.aivicNotify.error("データベースエラー ( " + op + " ): APIサーバーに接続できません。"); }
+    function newId() { return typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(36).slice(2); }
+    function q(i) {
+      var t = TABLE_DEFS[i];
+      var dbP = (window.AIVIC_DB_TYPE && window.AIVIC_DB_TYPE !== "dynamodb") ? "&db=" + encodeURIComponent(window.AIVIC_DB_TYPE) : "";
+      return "?app=" + encodeURIComponent(APP_ID) + "&system=" + encodeURIComponent(SYSTEM_NAME) + "&table=" + encodeURIComponent(t ? t.tableName : "table" + i) + dbP;
+    }
+    return {
+      list: async function(tableIndex) {
+        if (!API_URL) return [];
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex)); var d = await r.json(); return Array.isArray(d) ? d : (d.items || []); }
+        catch(e) { dbErr("データ取得"); return []; }
+      },
+      save: async function(tableIndex, item) {
+        if (!API_URL) { dbErr("保存"); return null; }
+        var now = new Date().toISOString();
+        var rec = Object.assign({}, item, { id: item.id || newId(), createdAt: item.createdAt || now, updatedAt: now });
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex), { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(rec) }); return await r.json(); }
+        catch(e) { dbErr("保存"); return null; }
+      },
+      update: async function(tableIndex, id, changes) {
+        if (!API_URL) { dbErr("更新"); return null; }
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(Object.assign({}, changes, {updatedAt: new Date().toISOString()})) }); return await r.json(); }
+        catch(e) { dbErr("更新"); return null; }
+      },
+      delete: async function(tableIndex, id) {
+        if (!API_URL) { dbErr("削除"); return {deleted:false}; }
+        try { await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), {method:"DELETE"}); return {deleted:true}; }
+        catch(e) { dbErr("削除"); return {deleted:false}; }
+      },
+    };
+  })();
+
+  // showScreen はマルチページ構成ではページ遷移として動く。
+  var _aivicNavLastTime = 0;
+  var _aivicNavLastTarget = "";
+  var _aivicReady = false;
+  window.showScreen = function(screenId) {
+    if (!screenId) return;
+    if (screenId === window.AIVIC_PAGE_SCREEN_ID) return;
+    var targetPath = './' + encodeURIComponent(screenId) + '.html';
+    var currentName = (window.location.pathname.split('/').pop() || '');
+    if (currentName === (encodeURIComponent(screenId) + '.html') ||
+        currentName === (screenId + '.html')) {
+      return;
+    }
+    var now = Date.now();
+    if (_aivicNavLastTarget === targetPath && (now - _aivicNavLastTime) < 100) {
+      console.warn('[aivic] showScreen 連続呼び出し検知。 無限ループ防止のため抑制:', screenId);
+      return;
+    }
+    if (!_aivicReady) {
+      console.warn('[aivic] DOMContentLoaded 前の showScreen 呼び出し。 抑制:', screenId);
+      return;
+    }
+    _aivicNavLastTime = now;
+    _aivicNavLastTarget = targetPath;
+    window.location.href = targetPath;
+  };
+
+  function seedAllIfEmpty() {
+    if (!API_URL) return Promise.resolve();
+    return Promise.all(TABLE_DEFS.map(function(t, i) {
+      var preset = PRESET_SEED[t.tableName];
+      if (!Array.isArray(preset) || preset.length === 0) return Promise.resolve();
+      return window.aivicApi.list(i).then(function(existing) {
+        if (existing && existing.length > 0) return;
+        return Promise.all(preset.map(function(row) { return window.aivicApi.save(i, row); }));
+      }).catch(function() {});
+    }));
+  }
+
+  // ── 初期表示: このページ専用の panel に initFn を実行 ──
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() { _aivicReady = true; }, 1500);
+    var pageScreenId = window.AIVIC_PAGE_SCREEN_ID;
+    if (!pageScreenId) return;
+
+    // AI シェルが SPA 用の初期表示処理を持っていても、マルチページでは
+    // このファイルに割り当てられた画面だけを表示する。
+    document.querySelectorAll('[data-aivic-panel]').forEach(function(panel) {
+      var isCurrent = panel.getAttribute('data-aivic-panel') === pageScreenId;
+      panel.style.display = isCurrent ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('[data-aivic-nav]').forEach(function(btn) {
+      var isActive = btn.getAttribute("data-aivic-nav") === pageScreenId;
+      btn.classList.toggle("aivic-active", isActive);
+      btn.setAttribute("aria-current", isActive ? "page" : "false");
+    });
+
+    var container = document.querySelector('[data-aivic-panel="' + pageScreenId + '"]');
+    if (!container) return;
+
+    // content 要素の hidden 強制除去 ( 2026-05-24 Playwright 大量 fail 対応 )
+    var isModalLike = function(el) {
+      if (!el || !el.classList) return false;
+      var cn = String(el.className || "");
+      if (/\bmodal\b|\bdialog\b|\boverlay\b|\bpopup\b|\bdropdown\b|\btooltip\b/i.test(cn)) return true;
+      var role = el.getAttribute && el.getAttribute("role");
+      if (role === "dialog" || role === "alertdialog" || role === "tooltip" || role === "menu") return true;
+      if (el.hasAttribute && (el.hasAttribute("data-modal") || el.hasAttribute("data-dropdown") || el.hasAttribute("data-popup") || el.hasAttribute("data-aivic-overlay"))) return true;
+      // 【2026-06-25】 class/role が無くても inline で画面を覆う overlay ( position:fixed ) は modal 扱いにして、
+      //  content 強制可視化が誤ってダイアログをロード時に表示してしまわないようにする。
+      if (el.style && el.style.position === "fixed") return true;
+      return false;
+    };
+    var unhideContentElements = function(root) {
+      var all = root.querySelectorAll('.hidden, [hidden], [style*="display:none"], [style*="display: none"]');
+      for (var k = 0; k < all.length; k++) {
+        var el = all[k];
+        if (isModalLike(el)) continue;
+        var p = el.parentElement;
+        var insideModal = false;
+        while (p && p !== root) {
+          if (isModalLike(p)) { insideModal = true; break; }
+          p = p.parentElement;
+        }
+        if (insideModal) continue;
+        el.classList.remove('hidden');
+        el.removeAttribute('hidden');
+        if (el.style && el.style.display === 'none') el.style.display = '';
+      }
+    };
+    try { unhideContentElements(container); } catch (e) { console.warn('[aivic] unhideContent failed:', e); }
+
+    var initJsSource = window.AIVIC_PAGE_INIT_JS;
+    if (!initJsSource) {
+      seedAllIfEmpty();
+      return;
+    }
+    var initFn = null;
+    try {
+      initFn = (new Function("return (" + initJsSource + ")"))();
+    } catch (e) {
+      console.error("[aivic] initJs compile error:", pageScreenId, e);
+      return;
+    }
+    if (typeof initFn !== "function") return;
+
+    seedAllIfEmpty().then(function() {
+      return Promise.all(TABLE_DEFS.map(function(t, i) {
+        return window.aivicApi.list(i)
+          .then(function(records) { return Object.assign({}, t, { records: records }); })
+          .catch(function() { return Object.assign({}, t, { records: [] }); });
+      }));
+    }).then(function(tables) {
+      try { initFn(container, API_URL, tables); } catch (e) { console.error("[aivic] initFn error:", pageScreenId, e); }
+      _aivicReady = true;
+    });
+  });
+
+  // 【2026-06-27 強化・必ず閉じられる保証】 モーダル/ダイアログを確実に閉じる安全網。
+  //  旧版は Esc のみ + セレクタ .overlay が class="modal-overlay" にマッチせず ( クラストークンが別 )
+  //  閉じられなかった ( ユーザー報告 2026-06-27: ダイアログが閉じない ) 。 ① Esc ② オーバーレイ背景クリック
+  //  ③ 閉じる系ボタン の 3 経路で閉じる。 セレクタは複合クラスも拾うよう [class*="overlay"] を含む。
+  //  閉じ方は「開クラス ( active/open/show 等 ) があれば外す ( 再オープン可 ) 、 無ければ inline display:none」。
+  //  modal-header 等の sub-part を誤って隠さないため [class*="modal"] は使わない。
+  var AIVIC_OVERLAY_SELECTOR = '[class*="overlay"],[data-aivic-overlay],[data-modal],[role="dialog"],[role="alertdialog"]';
+  var aivicCloseOverlay = function(el) {
+    if (!el || !el.classList) return;
+    var openClasses = ["active", "open", "show", "visible", "is-open", "is-active", "show-modal"];
+    var removed = false;
+    for (var c = 0; c < openClasses.length; c++) {
+      if (el.classList.contains(openClasses[c])) { el.classList.remove(openClasses[c]); removed = true; }
+    }
+    if (!removed && el.style) el.style.display = "none";
+  };
+  document.addEventListener("keydown", function(e) {
+    if (e.key !== "Escape" && e.keyCode !== 27) return;
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  });
+  document.addEventListener("click", function(e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.closest) {
+      var closer = t.closest('.modal-close,[data-modal-close],[data-close],[data-dismiss]');
+      if (closer) {
+        var oc = closer.closest(AIVIC_OVERLAY_SELECTOR);
+        if (oc) { aivicCloseOverlay(oc); return; }
+      }
+    }
+    // 背景 ( オーバーレイ要素そのもの ) を直接クリックした時のみ閉じる ( モーダル本体クリックでは閉じない ) 。
+    if (t.matches && t.matches(AIVIC_OVERLAY_SELECTOR) && t === e.target) {
+      aivicCloseOverlay(t);
+    }
+  });
+  // 【2026-06-28 強化・ロード時に必ず閉じる】 生成 AI が overlay を初期 display:none にし忘れた場合でも、
+  //  ロード直後にダイアログが画面を覆って操作不能になる事故 ( ユーザー報告 2026-06-28: ダイアログが常に表示され
+  //  閉じられない ) を防ぐ。 認識可能な overlay/dialog セレクタに該当する要素はロード時に必ず閉じる
+  //  ( 開クラス除去 or display:none ) 。 真にロード時表示すべき業務コンテンツは overlay セレクタに該当しないため
+  //  影響しない ( パネルコンテナは data-aivic-panel で別管理 ) 。
+  var aivicHideOverlaysOnLoad = function() {
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", aivicHideOverlaysOnLoad);
+  } else {
+    aivicHideOverlaysOnLoad();
+  }
+})();
+
+</script>
+</body>
+</html>

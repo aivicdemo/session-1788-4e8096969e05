@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>セキュリティインシデント対応・監査ログ分析システム | 公共施設予約</title>
+  <style>
+:root {
+  --primary: #2c3e50;
+  --primary-hover: #1a252f;
+  --bg-main: #f4f3f0;
+  --bg-card: #ebe8e3;
+  --bg-sidebar: #e8e5df;
+  --border: #d4cfc5;
+  --text: #1a1815;
+  --text-muted: #6b6560;
+  --top-bar-bg: #3a4a5e;
+  --top-bar-border: #2c3e50;
+  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --radius-card: 4px;
+  --radius-control: 3px;
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --border-width: 1px;
+  --control-height: 36px;
+  --space-unit: 8px;
+  --motion-duration: 0.2s;
+  --surface-texture: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.01) 2px,
+      rgba(0, 0, 0, 0.01) 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.008) 3px,
+      rgba(0, 0, 0, 0.008) 6px
+    );
+  --surface-texture-size: 100% 100%;
+  --surface-texture-position: 0 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  color: var(--text);
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.top-bar {
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 calc(var(--space-unit) * 2);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 3);
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.logo-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+.nav-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  padding: calc(var(--space-unit) * 0.5);
+  display: none;
+}
+
+.nav-toggle:hover {
+  opacity: 0.8;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user-name {
+  font-size: 13px;
+  color: #fff;
+}
+
+.logout-link {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color var(--motion-duration);
+}
+
+.logout-link:hover {
+  color: #fff;
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--bg-sidebar);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+  border-right: var(--border-width) solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+  transition: transform var(--motion-duration);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-section {
+  padding: calc(var(--space-unit) * 2) 0;
+}
+
+.sidebar-section:first-child {
+  padding-top: calc(var(--space-unit) * 1.5);
+}
+
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 1);
+}
+
+.nav-item {
+  display: block;
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  font-size: 13px;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--motion-duration);
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.nav-item.aivic-active {
+  background-color: rgba(44, 62, 80, 0.1);
+  border-left-color: var(--primary);
+  font-weight: 500;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+}
+
+[data-aivic-panel] {
+  display: block;
+}
+
+.panel-container {
+  padding: calc(var(--space-unit) * 3);
+  max-width: 100%;
+}
+
+.card {
+  background: var(--bg-card);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+  letter-spacing: 0.3px;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.stat-box {
+  background: var(--bg-main);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 1.5);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.severity-critical {
+  color: #d32f2f;
+}
+
+.severity-high {
+  color: #f57c00;
+}
+
+.severity-medium {
+  color: #fbc02d;
+}
+
+.severity-low {
+  color: #388e3c;
+}
+
+.badge {
+  display: inline-block;
+  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
+  border-radius: var(--radius-control);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.badge-critical {
+  background: rgba(211, 47, 47, 0.15);
+  color: #d32f2f;
+}
+
+.badge-high {
+  background: rgba(245, 124, 0, 0.15);
+  color: #f57c00;
+}
+
+.badge-medium {
+  background: rgba(251, 192, 45, 0.15);
+  color: #f9a825;
+}
+
+.badge-low {
+  background: rgba(56, 142, 60, 0.15);
+  color: #388e3c;
+}
+
+.badge-status-pending {
+  background: rgba(158, 158, 158, 0.15);
+  color: #616161;
+}
+
+.badge-status-inprogress {
+  background: rgba(25, 103, 210, 0.15);
+  color: #1967d2;
+}
+
+.badge-status-completed {
+  background: rgba(56, 142, 60, 0.15);
+  color: #388e3c;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+thead {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+th {
+  text-align: left;
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
+
+td {
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+tbody tr {
+  transition: background-color var(--motion-duration);
+  cursor: pointer;
+}
+
+tbody tr:hover {
+  background-color: rgba(44, 62, 80, 0.04);
+}
+
+.button {
+  display: inline-block;
+  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 2);
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-control);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--motion-duration);
+  letter-spacing: 0.2px;
+}
+
+.button:hover {
+  background: var(--primary-hover);
+}
+
+.button-secondary {
+  background: var(--bg-card);
+  color: var(--text);
+  border: var(--border-width) solid var(--border);
+}
+
+.button-secondary:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.button-small {
+  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
+  font-size: 11px;
+}
+
+.input-group {
+  display: flex;
+  gap: calc(var(--space-unit) * 1);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.input-field {
+  flex: 1;
+  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  font-family: var(--font-family);
+  font-size: 12px;
+  background: var(--bg-main);
+  color: var(--text);
+  transition: border-color var(--motion-duration);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.select-field {
+  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  font-family: var(--font-family);
+  font-size: 12px;
+  background: var(--bg-main);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--motion-duration);
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.filter-bar {
+  display: flex;
+  gap: calc(var(--space-unit) * 1);
+  margin-bottom: calc(var(--space-unit) * 2);
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 0.5);
+  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background-color var(--motion-duration);
+}
+
+.filter-chip:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.timeline {
+  position: relative;
+  padding-left: calc(var(--space-unit) * 3);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: calc(var(--space-unit) * 2);
+  padding-bottom: calc(var(--space-unit) * 1.5);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: calc(var(--space-unit) * -2.5);
+  top: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--bg-card);
+}
+
+.timeline-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.timeline-content {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.alert {
+  background: rgba(211, 47, 47, 0.1);
+  border: var(--border-width) solid rgba(211, 47, 47, 0.3);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 2);
+  font-size: 12px;
+  color: #c62828;
+}
+
+.alert-title {
+  font-weight: 600;
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: calc(var(--space-unit) * 0.5);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width var(--motion-duration);
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+}
+
+.three-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+}
+
+@media (max-width: 1400px) {
+  .three-column {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .two-column,
+  .three-column {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-toggle {
+    display: block;
+  }
+  
+  .sidebar {
+    position: absolute;
+    left: 0;
+    top: 56px;
+    height: calc(100vh - 56px);
+    z-index: 100;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-2col,
+  .grid-3col {
+    grid-template-columns: 1fr;
+  }
+  
+  .top-bar-left {
+    gap: calc(var(--space-unit) * 1);
+  }
+  
+  .logo {
+    font-size: 12px;
+  }
+  
+  table {
+    font-size: 11px;
+  }
+  
+  th, td {
+    padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1);
+  }
+}
+  </style>
+<script>
+window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
+window.AIVIC_APP_ID = "session-1788160285336";
+window.AIVIC_APPLICATION_NAME = "公共施設予約";
+window.AIVIC_SYSTEM_NAME = "セキュリティインシデント対応・監査ログ分析システム";
+window.AIVIC_TABLES = [{"tableName":"脆弱性","purpose":"セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性の情報を一元管理し、リスク評価、対応状況の追跡、監査ログとの関連付けを行うためのマスタテーブル","columns":[{"name":"脆弱性ID","type":"uuid","required":true,"description":"脆弱性を一意に識別するプライマリキー"},{"name":"脆弱性名","type":"varchar(100)","required":true,"description":"脆弱性の名称またはタイトル"},{"name":"説明","type":"text","required":false,"description":"脆弱性の詳細な説明と技術的背景"},{"name":"CVE識別子","type":"varchar(100)","required":false,"description":"CVE番号などの外部脆弱性識別子"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"脆弱性の重要度（Critical/High/Medium/Low等）"},{"name":"CVSS スコア","type":"integer","required":false,"description":"CVSS脆弱性スコア（0-100）"},{"name":"影響を受けるシステム","type":"varchar(100)","required":false,"description":"脆弱性が存在するシステムまたはコンポーネント名"},{"name":"検出日時","type":"timestamp","required":true,"description":"脆弱性が検出された日時"},{"name":"対応状況","type":"varchar(100)","required":true,"description":"対応状況（未対応/対応中/対応完了/受け入れ等）"},{"name":"対応期限","type":"timestamp","required":false,"description":"脆弱性への対応期限"},{"name":"対応内容","type":"text","required":false,"description":"実施した対応内容の詳細"},{"name":"対応完了日時","type":"timestamp","required":false,"description":"脆弱性対応が完了した日時"},{"name":"担当者","type":"varchar(100)","required":false,"description":"脆弱性対応の担当者"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者","type":"uuid","required":true,"description":"レコード最終更新者のユーザーID"}]},{"tableName":"脆弱性スキャン結果","purpose":"セキュリティインシデント対応・監査ログ分析システムにおいて、スキャン実行ごとの脆弱性検出結果を記録し、脆弱性の追跡、リスク評価、対応状況の管理を支援する。","columns":[{"name":"スキャン結果ID","type":"uuid","required":true,"description":"脆弱性スキャン結果の一意識別子"},{"name":"脆弱性ID","type":"uuid","required":true,"description":"検出された脆弱性マスタへの外部キー参照"},{"name":"スキャン実行日時","type":"timestamp","required":true,"description":"脆弱性スキャンが実行された日時"},{"name":"対象リソース","type":"varchar(100)","required":true,"description":"スキャン対象となったシステム、ホスト、またはアプリケーション名"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"検出された脆弱性の重要度（Critical/High/Medium/Low等）"},{"name":"検出状態","type":"varchar(100)","required":true,"description":"脆弱性の現在の状態（検出/確認/対応中/解決/誤検知等）"},{"name":"詳細情報","type":"text","required":false,"description":"脆弱性の詳細な説明、影響範囲、技術的詳細"},{"name":"推奨対応","type":"text","required":false,"description":"脆弱性に対する推奨される対応方法やパッチ情報"},{"name":"対応期限","type":"timestamp","required":false,"description":"脆弱性の対応が必要な期限日時"},{"name":"対応担当者ID","type":"uuid","required":false,"description":"ユーザーテーブルへの外部キー参照、対応を担当するユーザー"},{"name":"作成日時","type":"timestamp","required":true,"description":"スキャン結果レコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"スキャン結果レコードが最後に更新された日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"ユーザーテーブルへの外部キー参照、スキャン結果を作成したユーザー"}]},{"tableName":"脆弱性対応チケット","purpose":"セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性に対する対応状況を追跡・管理し、対応履歴と責任者を記録するためのチケット管理テーブル","columns":[{"name":"チケットID","type":"uuid","required":true,"description":"脆弱性対応チケットの一意識別子"},{"name":"脆弱性ID","type":"uuid","required":true,"description":"関連する脆弱性テーブルへの外部キー"},{"name":"スキャン結果ID","type":"uuid","required":false,"description":"脆弱性スキャン結果テーブルへの外部キー"},{"name":"チケットタイトル","type":"varchar(100)","required":true,"description":"対応チケットの簡潔なタイトル"},{"name":"説明","type":"text","required":false,"description":"脆弱性対応の詳細説明と対応内容"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"チケットの現在のステータス（未対応、対応中、対応完了、却下等）"},{"name":"優先度","type":"varchar(100)","required":true,"description":"対応の優先度レベル（高、中、低等）"},{"name":"割当者ID","type":"uuid","required":false,"description":"ユーザーテーブルへの外部キー、対応を担当するユーザー"},{"name":"期限日","type":"timestamp","required":false,"description":"脆弱性対応の期限日時"},{"name":"対応完了日","type":"timestamp","required":false,"description":"脆弱性対応が完了した日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"チケット作成日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"ユーザーテーブルへの外部キー、チケット作成者"},{"name":"更新日時","type":"timestamp","required":true,"description":"チケット最終更新日時"},{"name":"更新者ID","type":"uuid","required":true,"description":"ユーザーテーブルへの外部キー、最終更新者"}]},{"tableName":"影響範囲分析","purpose":"セキュリティインシデント発生時に脆弱性やインシデントの影響を受けるユーザー、システム、資産を特定・追跡し、対応優先度の判定と被害範囲の可視化を支援する","columns":[{"name":"影響範囲分析ID","type":"uuid","required":true,"description":"影響範囲分析レコードの一意識別子"},{"name":"脆弱性ID","type":"uuid","required":true,"description":"関連する脆弱性への外部キー参照"},{"name":"脆弱性スキャン結果ID","type":"uuid","required":false,"description":"関連するスキャン結果への外部キー参照"},{"name":"脆弱性対応チケットID","type":"uuid","required":false,"description":"関連する対応チケットへの外部キー参照"},{"name":"影響を受けるユーザー数","type":"integer","required":true,"description":"この脆弱性により影響を受けるユーザーの総数"},{"name":"影響を受けるシステム数","type":"integer","required":true,"description":"この脆弱性により影響を受けるシステムの総数"},{"name":"影響度レベル","type":"varchar(100)","required":true,"description":"影響範囲の深刻度レベル（例：Critical、High、Medium、Low）"},{"name":"影響範囲説明","type":"text","required":false,"description":"影響範囲の詳細説明と分析結果"},{"name":"対応優先度","type":"varchar(100)","required":true,"description":"影響範囲に基づく対応優先度（例：P1、P2、P3、P4）"},{"name":"分析状態","type":"varchar(100)","required":true,"description":"分析の進行状態（例：未実施、進行中、完了、再分析待ち）"},{"name":"分析完了日時","type":"timestamp","required":false,"description":"影響範囲分析が完了した日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"分析を実施したユーザーまたはシステム"},{"name":"更新者","type":"varchar(100)","required":false,"description":"レコードを最後に更新したユーザーまたはシステム"}]},{"tableName":"システム資産","purpose":"組織内のIT資産(サーバー、ネットワークデバイス、ソフトウェア等)を一元管理し、脆弱性スキャンや監査ログの対象資産を特定するためのマスタテーブル","columns":[{"name":"資産ID","type":"uuid","required":true,"description":"システム資産の一意識別子"},{"name":"資産名","type":"varchar(100)","required":true,"description":"資産の名称(例:WEBサーバー01、ファイアウォール等)"},{"name":"資産タイプ","type":"varchar(100)","required":true,"description":"資産の種類(サーバー、ネットワークデバイス、ワークステーション、ソフトウェア等)"},{"name":"IPアドレス","type":"varchar(100)","required":false,"description":"資産のIPアドレス(ネットワーク接続資産の場合)"},{"name":"ホスト名","type":"varchar(100)","required":false,"description":"資産のホスト名またはFQDN"},{"name":"OSタイプ","type":"varchar(100)","required":false,"description":"オペレーティングシステムの種類(Windows、Linux等)"},{"name":"OSバージョン","type":"varchar(100)","required":false,"description":"オペレーティングシステムのバージョン"},{"name":"所有部門","type":"varchar(100)","required":true,"description":"資産を管理する部門名"},{"name":"責任者","type":"varchar(100)","required":false,"description":"資産の管理責任者名"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"資産の重要度(Critical、High、Medium、Low等)"},{"name":"スキャン対象フラグ","type":"boolean","required":true,"description":"脆弱性スキャンの対象とするかどうか"},{"name":"監査対象フラグ","type":"boolean","required":true,"description":"監査ログ収集の対象とするかどうか"},{"name":"稼働状態","type":"varchar(100)","required":true,"description":"資産の稼働状態(稼働中、停止中、廃止等)"},{"name":"導入日","type":"timestamp","required":false,"description":"資産の導入日"},{"name":"廃止予定日","type":"timestamp","required":false,"description":"資産の廃止予定日"},{"name":"備考","type":"text","required":false,"description":"その他の備考情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者","type":"varchar(100)","required":true,"description":"レコード最終更新者のユーザーID"}]},{"tableName":"権限設定","purpose":"ユーザーの役割に基づいたシステムアクセス権限と操作権限を管理し、セキュリティインシデント対応・監査ログ分析システムへのアクセス制御を実施する","columns":[{"name":"権限設定ID","type":"uuid","required":true,"description":"権限設定の一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"権限が割り当てられるユーザーの識別子"},{"name":"役割","type":"varchar(100)","required":true,"description":"ユーザーに割り当てられた役割（管理者、セキュリティアナリスト、監査担当者等）"},{"name":"監査ログ閲覧権限","type":"boolean","required":true,"description":"監査ログの閲覧が許可されているかどうか"},{"name":"脆弱性管理権限","type":"boolean","required":true,"description":"脆弱性情報の管理・編集が許可されているかどうか"},{"name":"インシデント対応権限","type":"boolean","required":true,"description":"セキュリティインシデント対応チケットの作成・編集が許可されているかどうか"},{"name":"レポート生成権限","type":"boolean","required":true,"description":"セキュリティレポートの生成が許可されているかどうか"},{"name":"システム資産管理権限","type":"boolean","required":true,"description":"システム資産情報の管理が許可されているかどうか"},{"name":"権限削除権限","type":"boolean","required":true,"description":"他ユーザーの権限削除が許可されているかどうか"},{"name":"有効フラグ","type":"boolean","required":true,"description":"権限設定が有効かどうか"},{"name":"作成日時","type":"timestamp","required":true,"description":"権限設定が作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"権限設定が最後に更新された日時"},{"name":"作成者","type":"uuid","required":true,"description":"権限設定を作成したユーザーの識別子"},{"name":"更新者","type":"uuid","required":true,"description":"権限設定を最後に更新したユーザーの識別子"},{"name":"備考","type":"text","required":false,"description":"権限設定に関する補足情報"}]},{"tableName":"脆弱性マスタ","purpose":"脆弱性の基本情報を一元管理し、スキャン結果や対応チケットで参照される脆弱性の定義情報を保持するマスタテーブル","columns":[{"name":"脆弱性ID","type":"uuid","required":true,"description":"脆弱性を一意に識別するプライマリキー"},{"name":"CVE_ID","type":"varchar(100)","required":true,"description":"CVE識別子（例：CVE-2024-1234）"},{"name":"脆弱性名","type":"varchar(100)","required":true,"description":"脆弱性の名称"},{"name":"説明","type":"text","required":true,"description":"脆弱性の詳細説明"},{"name":"CVSS_スコア","type":"integer","required":true,"description":"CVSS v3.1スコア（0-100）"},{"name":"深刻度","type":"varchar(100)","required":true,"description":"深刻度レベル（Critical/High/Medium/Low）"},{"name":"攻撃ベクトル","type":"varchar(100)","required":false,"description":"攻撃ベクトル（Network/Adjacent/Local/Physical）"},{"name":"影響範囲","type":"varchar(100)","required":false,"description":"影響範囲（Unchanged/Changed）"},{"name":"公開日","type":"timestamp","required":false,"description":"脆弱性が公開された日時"},{"name":"参考URL","type":"text","required":false,"description":"脆弱性に関する参考情報のURL"},{"name":"対応優先度","type":"varchar(100)","required":true,"description":"組織内での対応優先度（P1/P2/P3/P4）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"脆弱性の状態（Active/Deprecated/Resolved）"},{"name":"作成日時","type":"timestamp","required":true,"description":"マスタレコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"マスタレコード最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"マスタレコード作成者のユーザーID"}]}];
+window.AIVIC_PRESET_SEED = {"脆弱性":[{"脆弱性ID":"rec-001","脆弱性名":"認証画面のSQLインジェクション脆弱性","説明":"Webアプリケーションのログイン画面のユーザーID入力フィールドにおいて、入力値が適切にサニタイズされていないため、SQLインジェクション攻撃が可能な状態にある。攻撃者は特殊文字を組み合わせることで、認証を回避したり、データベースから機密情報を抽出したりする可能性がある。","CVE識別子":"CVE-2024-12345","重要度レベル":"Critical","CVSSスコア":92,"影響を受けるシステム":"社員ポータルシステム v2.1.0","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"ログイン認証機構のデータベースクエリ部分をパラメータ化クエリに変更。入力値のバリデーション強化を実施。SQLインジェクション対策としてプリペアドステートメント導入。本番環境への適用前にペネトレーションテストを実施し、脆弱性が解決されたことを確認。","対応完了日時":"2024-12-08T16:45:00+09:00","担当者":"鈴木健一","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-12-08T17:30:00+09:00","作成者":"a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6","更新者":"x9y8z7w6-v5u4-t3s2-r1q0-p9o8n7m6l5k4"},{"脆弱性ID":"rec-001","脆弱性名":"PostgreSQL権限昇格脆弱性（CVE-2024-1234）","説明":"本番環境で使用しているPostgreSQL 14.xにおいて、認証済みユーザーが不正な手段でスーパーユーザー権限を取得可能な脆弱性が確認されました。特定のSQL関数呼び出しシーケンスを利用することで、ローカルユーザーが管理者権限へ昇格可能です。","CVE識別子":"CVE-2024-1234","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"本番環境データベースサーバー（db-prod-01）","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"PostgreSQL 14.8へのセキュリティアップデート適用。2024年11月20日23:00～23:45の計画メンテナンス時間帯にパッチ適用を実施。適用後、全接続テストおよび権限昇格脆弱性の再検査を実施し、問題がないことを確認。","対応完了日時":"2024-11-20T23:50:00+09:00","担当者":"山田太郎","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-11-20T23:55:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"ファイアウォール管理インターフェースのリモートコード実行脆弱性","説明":"Palo Alto Networks PAN-OS 10.1.x～10.2.xの管理インターフェースにおいて、認証されていない攻撃者が細工されたHTTPリクエストを送信することで、任意のコマンドを実行可能な脆弱性。管理ポート8443を通じたアクセスが可能な場合、ファイアウォール全体を制御される危険性がある。","CVE識別子":"CVE-2024-21893","重要度レベル":"Critical","CVSSスコア":95,"影響を受けるシステム":"Palo Alto Networks PAN-OS（本社ファイアウォール機器 FW-001）","検出日時":"2024-11-15 09:30:00","対応状況":"対応完了","対応期限":"2024-11-17 18:00:00","対応内容":"2024年11月15日にセキュリティアラートを受信。同日中にPAN-OS 10.2.8へのセキュリティパッチ適用を実施。管理インターフェースへのアクセス制限を強化し、特定のIPアドレスからのみアクセス可能に設定。脆弱性スキャンツールで検証し、脆弱性が解消されたことを確認。","対応完了日時":"2024-11-15 17:45:00","担当者":"山田太郎","作成日時":"2024-11-15 09:35:00","更新日時":"2024-11-15 17:50:00","作成者":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","更新者":"f9e8d7c6-b5a4-3210-9876-fedcba543210"},{"脆弱性ID":"rec-001","脆弱性名":"APIゲートウェイのTLS設定不備","説明":"本番環境のAPIゲートウェイにおいて、TLSプロトコルバージョンが1.2以上に統一されておらず、脆弱な暗号スイート（RC4、DES等）が有効化されたままになっている。これにより中間者攻撃（MITM）による通信内容の盗聴や改ざんのリスクが存在する。特に顧客の個人情報やクレジットカード情報を扱うAPIエンドポイントが影響を受ける可能性が高い。","CVE識別子":"CVE-2023-45678","重要度レベル":"Critical","CVSSスコア":87,"影響を受けるシステム":"APIゲートウェイ（nginx 1.18.0）","検出日時":"2024-10-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-11-15T23:59:59+09:00","対応内容":"TLSプロトコルバージョンを1.2以上に統一し、脆弱な暗号スイート（RC4、DES、3DES等）を無効化。nginx設定ファイルのssl_protocolsをTLSv1.2 TLSv1.3に、ssl_ciphersを強力な暗号スイートのみに限定。設定変更後、外部脆弱性診断ツール（Qualys SSL Labs）による再検証を実施し、A+評価を取得。","対応完了日時":"2024-11-08T16:45:00+09:00","担当者":"佐藤花子","作成日時":"2024-10-15T10:00:00+09:00","更新日時":"2024-11-08T17:15:00+09:00","作成者":"550e8400-e29b-41d4-a716-446655440001","更新者":"550e8400-e29b-41d4-a716-446655440002"},{"脆弱性ID":"rec-001","脆弱性名":"クラウドストレージのパブリックアクセス設定ミス","説明":"AWS S3バケットのアクセス制御リスト(ACL)が誤ってパブリック設定されており、認証なしでバケット内の全オブジェクトにアクセス可能な状態になっていました。これにより、顧客データを含む機密情報が外部に露出するリスクが存在していました。","CVE識別子":"CVE-2024-12345","重要度レベル":"Critical","CVSSスコア":87,"影響を受けるシステム":"AWS S3バケット(prod-customer-data-bucket)","検出日時":"2024-09-15T10:30:00+09:00","対応状況":"対応完了","対応期限":"2024-10-15T23:59:59+09:00","対応内容":"S3バケットのアクセス制御を以下の通り修正しました。(1)パブリックアクセスブロック設定を有効化、(2)バケットポリシーを最小権限の原則に基づいて再構成、(3)IAMロールによるアクセス制限を実装、(4)CloudTrailログを有効化して監査ログを記録開始。","対応完了日時":"2024-09-28T16:45:00+09:00","担当者":"鈴木花子","作成日時":"2024-09-15T11:00:00+09:00","更新日時":"2024-09-28T17:15:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"脆弱性ID":"rec-001","脆弱性名":"レガシー基幹システムにおけるSQL インジェクション脆弱性","説明":"1990年代に開発された基幹システムの顧客管理モジュールにおいて、ユーザー入力値が適切にサニタイズされていないため、SQL インジェクション攻撃が可能な状態が存在します。データベースへの不正アクセスやデータ改ざんのリスクがあります。","CVE識別子":"CVE-2024-12345","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"基幹システム_顧客管理モジュール_v2.1.0","検出日時":"2024-08-15T09:30:00+09:00","対応状況":"受け入れ","対応期限":"2025-06-30T23:59:59+09:00","対応内容":"本脆弱性は2025年7月のシステム廃止に伴い、修正対応を実施せず段階的廃止計画に従い対応する。2025年3月末までに新システムへの完全移行を完了し、4月1日にシステムを停止する予定。移行期間中は外部ネットワークからのアクセスを遮断し、リスク軽減措置を実施。","対応完了日時":null,"担当者":"山田花子","作成日時":"2024-08-15T10:45:00+09:00","更新日時":"2024-09-22T14:20:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"脆弱性ID":"rec-001","脆弱性名":"log4j リモートコード実行脆弱性","説明":"Apache Log4j 2.x系における JNDI インジェクション経由のリモートコード実行脆弱性。ログ出力時に特殊な文字列パターンが処理される場合、攻撃者が任意のコードを実行可能となる。開発環境で使用しているバージョン 2.14.1 は対象バージョンに含まれる。","CVE識別子":"CVE-2021-44228","重要度レベル":"Critical","CVSSスコア":98,"影響を受けるシステム":"開発環境APIサーバー（log4j-core 2.14.1）","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-01T17:00:00+09:00","対応内容":"log4j-core を 2.17.1 にアップグレード。依存関係の確認を実施し、他の関連ライブラリの互換性検証を完了。開発環境における動作確認テストを実施し、既存機能への影響がないことを確認。本番環境への展開予定は2024年12月中旬。","対応完了日時":"2024-11-28T16:45:00+09:00","担当者":"山田花子","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-11-28T17:15:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"Cisco Catalyst 9000シリーズ認証バイパス脆弱性","説明":"Ciscoネットワークスイッチのファームウェアに存在する認証バイパス脆弱性。特定の条件下でSSH接続時の認証機構が不正に回避される可能性がある。攻撃者が管理インターフェースへの無認可アクセスを取得し、スイッチの設定変更やトラフィック盗聴が可能になるリスクがある。","CVE識別子":"CVE-2024-20892","重要度レベル":"High","CVSSスコア":82,"影響を受けるシステム":"Cisco Catalyst 9300-48T","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2025-01-31T23:59:59+09:00","対応内容":"ファームウェアバージョン17.12.04aへのアップグレードを実施。2024年12月20日の定期メンテナンス時間帯に本番環境3台、ステージング環境2台のスイッチを順次更新。アップグレード前後で機能テストと疎通確認を実施し、問題なく完了。","対応完了日時":"2024-12-20T18:45:00+09:00","担当者":"山田太郎","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-12-20T19:30:00+09:00","作成者":"rec-user-0045","更新者":"rec-user-0045"},{"脆弱性ID":"rec-001","脆弱性名":"Webサーバー SSL/TLS設定不備による暗号化強度不足","説明":"本番環境のWebサーバーにおいて、TLS 1.2以下の脆弱なプロトコルバージョンが有効化されており、また128ビット以下の弱い暗号スイート（RC4、DES等）がサポートされている状態が確認されました。これにより、中間者攻撃やダウングレード攻撃のリスクが存在します。","CVE識別子":"CVE-2024-1234","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"本社データセンター Webサーバー群（Apache 2.4.41）","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"TLS 1.3およびTLS 1.2のみを有効化し、TLS 1.1以下を無効化。暗号スイートをAES-GCM、ChaCha20-Poly1305等の強力なものに限定。SSLLabs診断でA+評価を取得。","対応完了日時":"2024-12-08T16:45:00+09:00","担当者":"佐藤健一","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-12-08T17:15:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"顧客向けモバイルアプリケーションのバッファオーバーフロー脆弱性","説明":"ユーザー入力値の検証が不十分であることにより、メモリバッファを超えたデータが書き込まれる脆弱性。特に画像ファイルのメタデータ処理時に発生し、リモートコード実行につながる可能性がある。","CVE識別子":"CVE-2024-45821","重要度レベル":"Critical","CVSSスコア":92,"影響を受けるシステム":"顧客向けモバイルアプリケーション v3.2.0～v3.2.5","検出日時":"2024-11-15T14:32:00+09:00","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"入力値の厳密な検証処理を追加し、バッファサイズチェック機能を実装。画像メタデータ処理ライブラリをv2.8.3に更新。本番環境への展開前に脆弱性スキャンおよび侵入テストを実施し、問題がないことを確認。","対応完了日時":"2024-12-08T10:15:00+09:00","担当者":"佐藤花子","作成日時":"2024-11-15T15:00:00+09:00","更新日時":"2024-12-08T11:30:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0089"}],"脆弱性スキャン結果":[{"スキャン結果ID":"rec-20250115-auth-001","脆弱性ID":"vuln-cve-2024-9847","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"prod-web-server-01.example.jp","重要度レベル":"Critical","検出状態":"検出","詳細情報":"本番Webサーバーの認証モジュールにセッショントークン検証の不備が発見されました。攻撃者が改ざんされたJWTトークンを使用することで、認証を回避して管理画面へのアクセスが可能となります。影響範囲は全ユーザーアカウントおよび顧客データベースへのアクセス権限に及びます。脆弱性スコアは9.8（CVSS v3.1）です。","推奨対応":"1. 緊急パッチの適用（バージョン3.2.5以上への更新）2. JWT署名検証ロジックの強化 3. セッションタイムアウト設定の短縮（現在30分→15分に変更） 4. 全ユーザーセッションの強制ログアウト実施 5. WAFルール追加による不正トークン検出","対応期限":"2025-01-17T17:00:00+09:00","対応担当者ID":"user-003","作成日時":"2025-01-15T10:15:00+09:00","更新日時":"2025-01-15T10:15:00+09:00","作成者ID":"user-001"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"vuln-sqli-db-001","スキャン実行日時":"2025-01-10T14:30:00+09:00","対象リソース":"dev-db-server-01","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"開発環境のPostgreSQLデータベースに対するSQL injection脆弱性が検出されました。ユーザー認証機能の検索クエリパラメータが適切にサニタイズされていないため、攻撃者が悪意のあるSQLコマンドを注入可能な状態です。影響範囲は顧客情報テーブル、注文履歴テーブル、および決済情報テーブルへのアクセスが該当します。","推奨対応":"1. プリペアドステートメント（パラメータ化クエリ）の導入\n2. 入力値の厳格なバリデーション実装\n3. データベースユーザーの権限を最小限に制限\n4. Web Application Firewall（WAF）ルールの追加設定\n5. 対応完了後の脆弱性再スキャン実施","対応期限":"2025-01-24T17:00:00+09:00","対応担当者ID":"user-dev-team-001","作成日時":"2025-01-10T15:45:00+09:00","更新日時":"2025-01-15T09:20:00+09:00","作成者ID":"user-security-001"},{"スキャン結果ID":"rec-20250115-vulnscan-001","脆弱性ID":"rec-cve-2024-1234","スキャン実行日時":"2025-01-15T14:30:00+09:00","対象リソース":"web-server-prod-01","重要度レベル":"High","検出状態":"解決","詳細情報":"Apache Struts2におけるリモートコード実行脆弱性（CVE-2024-1234）。対象サーバーのApache Struts 2.3.15.1に存在する脆弱性で、特定のアクションに対する入力検証不備により、攻撃者が任意のコード実行が可能な状態でした。2024年12月のセキュリティパッチ適用により、当該バージョンは2.3.15.2にアップグレードされ、脆弱性は解決されました。","推奨対応":"Apache Struts 2.3.15.2以上へのアップグレード（既に実施済み）。本番環境全サーバーのバージョン確認とパッチの一括適用を推奨。定期的な脆弱性スキャンの継続実施。","対応期限":"2024-12-31T23:59:59+09:00","対応担当者ID":"rec-user-yamada-001","作成日時":"2025-01-15T14:35:22+09:00","更新日時":"2025-01-15T14:35:22+09:00","作成者ID":"rec-user-suzuki-002"},{"スキャン結果ID":"rec-20250115-cv-001","脆弱性ID":"rec-vuln-crypto-001","スキャン実行日時":"2025-01-10T14:30:00+09:00","対象リソース":"顧客管理システムv2.3.1","重要度レベル":"High","検出状態":"確認","詳細情報":"クライアント向けアプリケーションの通信暗号化において、TLS 1.0/1.1が有効化されたままになっており、また個人情報の保存時に平文暗号化が使用されています。外部セキュリティ監査にて指摘されました。影響範囲は顧客の個人情報（氏名、住所、電話番号、メールアドレス）約15,000件が該当します。技術的には、APIエンドポイント（/api/v1/customer）とローカルストレージの両方で脆弱性が確認されています。","推奨対応":"1. TLS 1.2以上への強制アップグレード（サーバー側設定変更）。2. 個人情報の暗号化アルゴリズムをAES-256-GCMに変更。3. 暗号化キーの安全な管理体制の構築（HSM導入検討）。4. 依存ライブラリ（OpenSSL 1.1.1以上）への更新。パッチはベンダーより2025年1月15日にリリース予定です。","対応期限":"2025-02-28T23:59:59+09:00","対応担当者ID":"rec-user-002","作成日時":"2025-01-10T15:45:00+09:00","更新日時":"2025-01-12T10:20:00+09:00","作成者ID":"rec-user-001"},{"スキャン結果ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-2024-0532","スキャン実行日時":"2025-01-15T02:30:00+09:00","対象リソース":"基幹業務システム_勤怠管理モジュール","重要度レベル":"High","検出状態":"誤検知","詳細情報":"脆弱性スキャンツール（Qualys）により、HTTPヘッダーにおけるX-Frame-Optionsの未設定が検出されました。検出内容：対象リソースのHTTPレスポンスヘッダにX-Frame-Optionsディレクティブが存在しないため、クリックジャッキング攻撃の対象となる可能性があると判定されました。ただし、本システムは1990年代に開発されたレガシーシステムであり、HTTPヘッダー制御機能が実装されていない仕様となっています。また、本システムはエアギャップネットワークに隔離されており、外部からのアクセスは物理的に遮断されているため、実際の攻撃リスクは存在しません。","推奨対応":"通常のシステムではX-Frame-Optionsヘッダを「DENY」または「SAMEORIGIN」に設定することが推奨されます。ただし、本レガシーシステムについては、ネットワーク隔離による保護が有効であるため、スキャン結果を誤検知として登録し、脆弱性管理対象から除外することを推奨します。将来的なシステム更新時に対応を検討してください。","対応期限":"2025-02-15T17:00:00+09:00","対応担当者ID":"rec-user-2024-1156","作成日時":"2025-01-15T10:45:00+09:00","更新日時":"2025-01-20T14:22:00+09:00","作成者ID":"rec-user-2024-0892"},{"スキャン結果ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-2025-0156","スキャン実行日時":"2025-01-15T08:47:23+09:00","対象リソース":"本番環境-APIサーバークラスタ","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"OpenSSL 3.0系において、楕円曲線暗号処理の実装に脆弱性が存在。特定の条件下でメモリ領域外アクセスが発生し、リモートからの任意コード実行が可能。本番環境の依存ライブラリに含まれるOpenSSL 3.0.7が該当。影響範囲はすべてのAPIエンドポイント。CVE-2025-XXXX。","推奨対応":"1. 直ちにOpenSSLを3.0.13以上にアップデート 2. 緊急パッチ適用後、全APIエンドポイントの動作確認実施 3. ロードバランサーでの段階的ローリング更新を推奨 4. 更新前に本番前環境での検証必須 5. 更新完了後、セキュリティスキャン再実行","対応期限":"2025-01-17T18:00:00+09:00","対応担当者ID":"rec-user-2024-0312","作成日時":"2025-01-15T09:02:15+09:00","更新日時":"2025-01-15T14:33:47+09:00","作成者ID":"rec-user-2024-0156"},{"スキャン結果ID":"rec-20250115-xss-001","脆弱性ID":"rec-vuln-xss-reflected-001","スキャン実行日時":"2025-01-10T14:30:00+09:00","対象リソース":"ステージング環境_顧客管理システム","重要度レベル":"High","検出状態":"解決","詳細情報":"検索フォームの入力値がHTMLエスケープされないまま検索結果ページに反映されるReflected XSS脆弱性を検出。攻撃者が細工されたURLをユーザーに送信することで、ユーザーのセッションクッキーを窃取したり、マルウェアを配信することが可能。対象パラメータ: search_query、vulnerable_parameter_name。影響範囲: 顧客管理システムの全ユーザー。","推奨対応":"入力値に対する厳密なHTMLエスケープ処理の実装。具体的にはPHP側でhtmlspecialchars()関数を使用するか、テンプレートエンジン(Twig等)の自動エスケープ機能を有効化。また、Content-Security-Policy (CSP)ヘッダーの設定を追加して、インラインスクリプト実行を禁止する。パッチバージョン: v2.3.5以上。","対応期限":"2025-01-20T17:00:00+09:00","対応担当者ID":"rec-user-yamada-001","作成日時":"2025-01-10T15:45:00+09:00","更新日時":"2025-01-15T16:20:00+09:00","作成者ID":"rec-user-suzuki-001"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"rec-vuln-20250110-042","スキャン実行日時":"2025-01-10T09:30:00+09:00","対象リソース":"本社営業システムWebサーバー-prod-01","重要度レベル":"Low","検出状態":"解決","詳細情報":"HTTPヘッダーにおいてX-Frame-Optionsが設定されていない状態が検出されました。クリックジャッキング攻撃のリスクが存在します。影響範囲は本社営業システムの全ページとなります。","推奨対応":"Webサーバー設定ファイル(nginx.conf または httpd.conf)にX-Frame-Options: DENYを追加してください。設定後、サーバーを再起動し、HTTPレスポンスヘッダーの確認を実施してください。","対応期限":"2025-02-10T23:59:59+09:00","対応担当者ID":"rec-user-20240401-015","作成日時":"2025-01-10T10:15:00+09:00","更新日時":"2025-01-15T14:45:00+09:00","作成者ID":"rec-user-20240315-008"},{"スキャン結果ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-sg-0042","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"prod-vpc-ap-northeast-1","重要度レベル":"Medium","検出状態":"確認","詳細情報":"クラウドインフラのセキュリティグループ設定において、本番環境のWebサーバーセキュリティグループ（sg-0a1b2c3d）のインバウンドルールで、0.0.0.0/0からのHTTP（80番ポート）アクセスが許可されています。また、管理用セキュリティグループ（sg-4e5f6g7h）でSSH（22番ポート）が制限なく開放されており、アクセス元IPアドレスの制限が不十分です。これにより、不正なアクセスやスキャン行為のリスクが存在します。","推奨対応":"1. Webサーバーセキュリティグループのインバウンドルールを修正し、CloudFrontディストリビューションまたはALBのセキュリティグループからのアクセスのみに限定してください。2. SSH接続は特定の管理ネットワークセグメント（例：192.168.1.0/24）からのアクセスのみに制限してください。3. セキュリティグループの設定を自動化ツール（Terraform、CloudFormation）で管理し、定期的な設定監査を実施してください。","対応期限":"2025-02-15T17:00:00+09:00","対応担当者ID":"rec-user-0156","作成日時":"2025-01-15T09:35:22+09:00","更新日時":"2025-01-15T14:22:45+09:00","作成者ID":"rec-user-0089"},{"スキャン結果ID":"rec-001","脆弱性ID":"vuln-042","スキャン実行日時":"2024-11-15T09:30:00+09:00","対象リソース":"本社Webサーバー01","重要度レベル":"Medium","検出状態":"対応中","詳細情報":"Apache Struts2 のバージョン2.5.20において、OGNL式インジェクション脆弱性が検出されました。攻撃者が細工されたリクエストを送信することで、サーバー上で任意のコードを実行される可能性があります。本社Webサーバー01、営業所Webサーバー02、データセンターWebサーバー03の3リソースで同一脆弱性が確認されています。","推奨対応":"Apache Struts2をバージョン2.5.32以上にアップグレードしてください。または、セキュリティパッチ CVE-2024-50379 を適用してください。アップグレード前に本番環境と同一構成のテスト環境で動作検証を実施してください。","対応期限":"2024-12-15T17:00:00+09:00","対応担当者ID":"user-156","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-11-22T14:45:00+09:00","作成者ID":"user-089"}],"脆弱性対応チケット":[{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-20250114-sql-001","スキャン結果ID":"rec-scan-20250114-critical-042","チケットタイトル":"【緊急】ユーザー認証APIのSQL Injection脆弱性対応","説明":"2025年1月14日の脆弱性スキャンにおいて、ユーザー認証API（/api/v1/auth/login）のクエリパラメータ処理部分にSQL Injection脆弱性が検出されました。攻撃者が不正なSQLコマンドを挿入し、データベースへの不正アクセスが可能な状態です。本番環境への影響が大きいため、即座に対応が必要です。対応内容：①パラメータ化クエリ（プリペアドステートメント）の導入、②入力値の厳密なバリデーション実装、③セキュリティテストの実施","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-20240401-yamada","期限日":"2025-01-17T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-14T09:30:00+09:00","作成者ID":"rec-user-20240315-suzuki","更新日時":"2025-01-15T14:20:00+09:00","更新者ID":"rec-user-20240401-yamada"},{"チケットID":"rec-20250156","脆弱性ID":"rec-20250089","スキャン結果ID":"rec-20250042","チケットタイトル":"本番環境の認証バイパス脆弱性修正","説明":"セッション検証ロジックの不備により、特定のパラメータを操作することで認証を回避可能な脆弱性が検出されました。ユーザー認証時のトークン検証処理を強化し、セッションタイムアウト機能の実装が必要です。対応内容：JWTトークンの署名検証強化、セッション有効期限チェック追加、レート制限の導入。","ステータス":"対応中","優先度":"高","割当者ID":"rec-00234","期限日":"2025-02-14T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-20T09:30:00+09:00","作成者ID":"rec-00156","更新日時":"2025-01-28T14:15:00+09:00","更新者ID":"rec-00234"},{"チケットID":"rec-001-vul-ticket-2024-11-15-001","脆弱性ID":"rec-001-vul-2024-11-15-cv001","スキャン結果ID":"rec-001-scan-2024-11-10-001","チケットタイトル":"Log4j ライブラリバージョンアップ対応","説明":"定期セキュリティスキャンで、本番環境のLog4jライブラリが脆弱性を含む2.14.1バージョンで実行されていることが検出されました。CVE-2021-44228の影響を受ける可能性があるため、2.17.1以上への緊急アップデートが必要です。既存の依存関係との互換性を確認した上で、段階的なアップデートを実施してください。","ステータス":"対応中","優先度":"高","割当者ID":"rec-001-user-2024-yamada","期限日":"2024-12-15T18:00:00+09:00","対応完了日":null,"作成日時":"2024-11-15T09:30:00+09:00","作成者ID":"rec-001-user-2024-suzuki","更新日時":"2024-11-20T14:25:00+09:00","更新者ID":"rec-001-user-2024-yamada"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-2025-0312","チケットタイトル":"外部監査指摘: TLS 1.2以下の暗号化プロトコル廃止対応","説明":"2025年1月の外部セキュリティ監査で、本社システムのTLS 1.2以下の暗号化プロトコルが使用されていることが指摘されました。業界標準に準拠し、TLS 1.3への統一化と、AES-256-GCMなどの強力な暗号スイートの導入を実施する必要があります。対象システムは基幹業務システムA、Bおよびクライアント認証基盤です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-佐藤健一","期限日":"2025-03-31T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-山田花子","更新日時":"2025-02-10T14:20:00+09:00","更新者ID":"rec-user-佐藤健一"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-20250110-vuln-042","スキャン結果ID":"rec-20250108-scan-156","チケットタイトル":"本番環境における権限昇格脆弱性の調査・対応","説明":"2025年1月10日、従業員の鈴木花子氏より報告があった権限昇格脆弱性について、調査・対応を実施するチケットです。ユーザー管理機能のロール検証ロジックに不備があり、一般ユーザーが管理者権限を取得可能な状態が確認されました。本チケットでは、脆弱性の詳細調査、影響範囲の確認、修正プログラムの開発・テスト、本番環境への適用を実施します。対応完了後は、セキュリティ監査チームによる再検証を予定しています。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2847","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-1523","更新日時":"2025-01-22T14:45:00+09:00","更新者ID":"rec-user-2847"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-2025-0312","チケットタイトル":"OpenSSL脆弱性CVE-2024-XXXXX対応","説明":"定期セキュリティスキャンにより、本番環境のOpenSSLライブラリに中程度の脆弱性（CVSS 5.3）が検出されました。当該脆弱性は暗号化通信の完全性に影響を与える可能性があり、個人情報保護方針に基づくコンプライアンス要件により、2025年2月28日までの対応が必須となっています。対応内容としてOpenSSLを最新版にアップデートし、本番環境での動作確認を実施します。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-0524","期限日":"2025-02-28T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-0312","更新日時":"2025-01-22T14:15:00+09:00","更新者ID":"rec-user-0524"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"開発環境：ログファイルへの個人情報露出リスク対応","説明":"開発環境のアプリケーションログにユーザーのメールアドレスと電話番号が平文で出力されている問題が検出されました。本番環境への影響はありませんが、開発チーム内での情報漏洩リスク軽減のため、ログ出力時のマスキング処理を実装してください。具体的には、機密情報を含むログ行の自動マスキング機能の追加、およびログ保管ポリシーの見直しが必要です。","ステータス":"対応中","優先度":"低","割当者ID":"rec-004","期限日":"2025-02-28T17:00:00Z","対応完了日":null,"作成日時":"2024-12-10T09:30:00Z","作成者ID":"rec-005","更新日時":"2025-01-15T14:20:00Z","更新者ID":"rec-004"},{"チケットID":"rec-001-ticket-20250115-001","脆弱性ID":"rec-001-vuln-20250110-042","スキャン結果ID":"rec-001-scan-20250108-156","チケットタイトル":"CVE-2024-12345 Apache Struts 2 リモートコード実行脆弱性への対応","説明":"既知脆弱性データベースにおいてCVE-2024-12345が登録されました。Apache Struts 2 の特定バージョンにおけるリモートコード実行脆弱性です。本番環境のWebアプリケーションサーバー3台が対象となっており、セキュリティパッチの適用が必要です。パッチバージョン2.5.33以上への更新を予定しています。","ステータス":"対応中","優先度":"高","割当者ID":"rec-001-user-20240601-087","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-10T09:30:00+09:00","作成者ID":"rec-001-user-20240315-042","更新日時":"2025-01-15T14:20:00+09:00","更新者ID":"rec-001-user-20240601-087"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"ペネトレーションテスト発見：ユーザー権限昇格の認可制御欠陥","説明":"ペネトレーションテスト実施時に、一般ユーザーが管理者機能へのアクセス制御が不十分であることが判明しました。具体的には、APIエンドポイント /api/admin/users の認可チェックが不正に実装されており、認証済みユーザーであれば権限レベルに関わらず管理者機能にアクセス可能な状態です。本チケットでは、ロールベースアクセス制御（RBAC）の実装見直しと、すべての管理者APIエンドポイントへの適切な権限検証ロジックの追加を行う必要があります。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2024-12-20T09:30:00+09:00","作成者ID":"rec-005","更新日時":"2025-01-08T14:15:00+09:00","更新者ID":"rec-006"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2025-0847","スキャン結果ID":"rec-scan-20250110-042","チケットタイトル":"OpenSSL脆弱性CVE-2025-0847 全社システム一括パッチ適用","説明":"OpenSSLの重大な脆弱性（CVE-2025-0847）が公開されました。本チケットは全社のサーバー、ワークステーション、ネットワーク機器に対するセキュリティパッチの一括適用を管理するものです。対応対象は本社システム、支社システム、クラウド環境を含む全インフラです。段階的な適用スケジュール（本番環境は2025年1月31日までに完了）に従い、各チームが責任範囲のパッチ適用を実施してください。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-0847","期限日":"2025-01-31T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-0001","更新日時":"2025-01-20T14:15:00+09:00","更新者ID":"rec-user-0847"}],"影響範囲分析":[{"影響範囲分析ID":"rec-20250215-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-20250210-156","脆弱性対応チケットID":"rec-ticket-2025-00342","影響を受けるユーザー数":2840,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"本社および全国8拠点の基幹システム（ERP、会計、人事管理、在庫管理システム）に対する認証回避脆弱性が確認されました。攻撃者が正規の認証プロセスをバイパスして管理者権限で不正アクセスする可能性があります。特に営業、経理、人事部門の約2,840名のユーザーが影響を受け、機密財務情報、個人情報、取引先情報への不正アクセスリスクが極めて高い状態です。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-02-15 17:30:00","作成日時":"2025-02-10 09:15:00","更新日時":"2025-02-15 17:30:00","作成者":"山田太郎","更新者":"佐藤花子"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-2024-1203","脆弱性対応チケットID":"rec-ticket-2024-5621","影響を受けるユーザー数":2850000,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"顧客データベースサーバーのWebアプリケーション層で検出されたSQLインジェクション脆弱性により、認証なしで個人情報データベースへの直接アクセスが可能な状態が確認されました。影響範囲は国内全営業拠点の顧客管理システム12システムに及び、約285万件の顧客個人情報（氏名、住所、電話番号、メールアドレス、購買履歴）が流出リスクに晒されています。特に決済情報を含む拡張顧客データベースも同一サーバー上にあるため、金融情報の漏洩リスクも極めて高い状況です。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2024-12-15 14:30:00","作成日時":"2024-12-13 09:15:00","更新日時":"2024-12-15 14:30:00","作成者":"鈴木健一","更新者":"佐藤美咲"},{"影響範囲分析ID":"rec-20250215-001","脆弱性ID":"rec-vuln-2025-0847","脆弱性スキャン結果ID":"rec-scan-20250210-156","脆弱性対応チケットID":"rec-ticket-SEC-2025-03421","影響を受けるユーザー数":342,"影響を受けるシステム数":28,"影響度レベル":"Critical","影響範囲説明":"営業部門向けVPNクライアント(バージョン3.2.1以前)に認証回避を伴うリモートコード実行脆弱性が存在。営業部員が使用するノートパソコン342台およびタブレット端末28台が影響を受ける。攻撃者が悪意あるVPNサーバーに接続させることで、営業機密情報(顧客データベース、提案資料、営業成績データ)への不正アクセスが可能。特に外出中の営業担当者が公開WiFiを利用する場合、リスクが顕著。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-02-14 18:45:00","作成日時":"2025-02-10 09:30:00","更新日時":"2025-02-14 18:45:00","作成者":"佐藤花子","更新者":"鈴木健一"},{"影響範囲分析ID":"rec-001-ia-20250115-001","脆弱性ID":"rec-001-vuln-20250110-042","脆弱性スキャン結果ID":"rec-001-scan-20250108-156","脆弱性対応チケットID":"rec-001-ticket-20250110-089","影響を受けるユーザー数":487000,"影響を受けるシステム数":23,"影響度レベル":"Critical","影響範囲説明":"決済システムの暗号化通信層におけるSSL/TLSの脆弱な暗号スイート設定により、中間者攻撃による通信内容の盗聴が可能な状態。クレジットカード情報、銀行口座情報、取引認証トークンなどの機密情報が露出するリスクあり。本社データセンター、地域別決済処理サーバー、モバイルアプリAPI連携システムなど、金融取引に直結するシステムが広範に影響を受ける。特に夜間バッチ処理時間帯での自動振替処理において脆弱性が顕在化する傾向を確認。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15 14:32:00","作成日時":"2025-01-10 09:15:00","更新日時":"2025-01-15 14:32:00","作成者":"鈴木健一","更新者":"佐藤美咲"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-0847","脆弱性スキャン結果ID":"rec-scan-2024-1203","脆弱性対応チケットID":"rec-ticket-sec-0156","影響を受けるユーザー数":287,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"社内ファイルサーバー（FS-MAIN-01～FS-MAIN-12）のNTFS権限設定不備により、一般ユーザーが管理者権限で機密ファイルにアクセス可能な状態。特に営業部門、経理部門、人事部門の共有フォルダが対象。287名のドメインユーザーが影響を受け、個人情報、契約書、給与情報などの機密データへの不正アクセスリスクが極めて高い。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2024-12-15 14:30:00","作成日時":"2024-12-13 09:15:00","更新日時":"2024-12-15 14:30:00","作成者":"山田花子","更新者":"山田花子"},{"影響範囲分析ID":"rec-001-20250115-ka","脆弱性ID":"rec-vuln-20250110-001","脆弱性スキャン結果ID":"rec-scan-20250110-042","脆弱性対応チケットID":"rec-ticket-20250111-cv-0847","影響を受けるユーザー数":3847,"影響を受けるシステム数":23,"影響度レベル":"Critical","影響範囲説明":"クラウドストレージサービスの認証トークン漏洩脆弱性により、営業部門、企画部門、経営管理部門、情報システム部門の合計3,847名のユーザーが影響を受けます。特に営業部門の顧客情報データベース、企画部門の経営戦略資料、経営管理部門の財務情報システムなど、機密性の高い23個のシステムへの不正アクセスリスクが確認されました。攻撃者は最大60日間にわたってトークンを悪用できる可能性があります。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15T16:45:00+09:00","作成日時":"2025-01-11T09:30:00+09:00","更新日時":"2025-01-15T16:45:00+09:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-08742","脆弱性スキャン結果ID":"rec-scan-20250110-045","脆弱性対応チケットID":"rec-ticket-2025-00328","影響を受けるユーザー数":1850,"影響を受けるシステム数":12,"影響度レベル":"High","影響範囲説明":"Log4j ライブラリの既知の脆弱性（CVE-2024-50379）が本番環境の決済システム、顧客管理システム、レポート生成システムの3つのコアシステムで検出されました。同時に開発環境の統合テスト環境においても同一バージョンが確認されています。本番環境での影響は約1,850名の顧客データアクセス権限を持つユーザーおよび外部パートナー企業のシステム連携に及びます。開発環境での影響は限定的ですが、本番環境へのデプロイ前に対応が必須です。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15 14:30:00","作成日時":"2025-01-10 09:15:00","更新日時":"2025-01-15 14:30:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-001-ia-20250115-001","脆弱性ID":"rec-001-vuln-20250110-042","脆弱性スキャン結果ID":"rec-001-scan-20250108-156","脆弱性対応チケットID":"rec-001-ticket-20250112-0847","影響を受けるユーザー数":2340,"影響を受けるシステム数":18,"影響度レベル":"High","影響範囲説明":"外部委託先システム（株式会社データソリューション）との連携インターフェースにおいて、API認証トークンの検証不足が確認されました。この脆弱性により、当社の顧客管理システム、販売管理システム、請求管理システムなど18システムが影響を受けます。特に顧客情報約2,340件の閲覧・改ざんが可能な状態にあり、個人情報保護方針違反のリスクが高い状況です。委託先システムを経由した不正アクセスにより、当社内部システムへの侵入経路となる可能性があります。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15 16:45:00","作成日時":"2025-01-12 09:30:00","更新日時":"2025-01-15 16:45:00","作成者":"鈴木健一","更新者":"山田花子"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-0847","脆弱性スキャン結果ID":"rec-scan-2024-1203","脆弱性対応チケットID":"rec-ticket-20250115-042","影響を受けるユーザー数":1250,"影響を受けるシステム数":23,"影響度レベル":"High","影響範囲説明":"OpenSSL 1.1.1の脆弱性CVE-2024-50264により、本社データセンターの基幹システムサーバー群（23台）およびクラウド環境上の業務アプリケーションが影響を受ける。特に営業部門、経理部門、人事部門の従業員1,250名がアクセスするシステムが該当する。中間者攻撃により通信の暗号化が回避される可能性があり、顧客データおよび財務情報の漏洩リスクが存在する。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15T14:30:00+09:00","作成日時":"2025-01-13T09:15:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250215-001","脆弱性ID":"rec-vuln-2025-0047","脆弱性スキャン結果ID":"rec-scan-20250214-156","脆弱性対応チケットID":"rec-ticket-2025-8932","影響を受けるユーザー数":3847,"影響を受けるシステム数":127,"影響度レベル":"Critical","影響範囲説明":"OpenSSL 3.0系における暗号化通信プロトコルの実装欠陥により、認証を回避して任意のコマンド実行が可能になる脆弱性。社内システムでは営業管理システム、顧客情報管理システム、財務会計システムなど基幹業務システムの127台が影響を受ける。特に営業部門の3,847名のユーザーが直接的な影響を受け、顧客データの窃取および改ざんのリスクが極めて高い。ネットワークセグメント分析の結果、DMZ内の14台のWebサーバーが外部からのアクセス可能な状態にあり、即座の対応が必要。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-02-15 14:32:00","作成日時":"2025-02-14 22:18:00","更新日時":"2025-02-15 14:32:00","作成者":"山田花子","更新者":"山田花子"}],"システム資産":[{"資産ID":"rec-001","資産名":"本社DC基幹DB01","資産タイプ":"サーバー","IPアドレス":"192.168.10.50","ホスト名":"db-core-01.company.local","OSタイプ":"Linux","OSバージョン":"Red Hat Enterprise Linux 8.9","所有部門":"情報システム部","責任者":"山田太郎","重要度レベル":"Critical","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2022-04-15T09:00:00Z","廃止予定日":null,"備考":"本社データセンターに設置。営業・会計・人事システムの統合DBサーバー。冗長化構成(db-core-02と同期)。月次バックアップはNAS-01に保管。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2025-01-08T10:15:00Z","作成者":"admin-user","更新者":"佐藤花子"},{"資産ID":"rec-001","資産名":"ファイアウォール_営業部門_01","資産タイプ":"ネットワークデバイス","IPアドレス":"192.168.100.1","ホスト名":"fw-eigyo-01.corp.local","OSタイプ":"Palo Alto Networks PAN-OS","OSバージョン":"10.2.3","所有部門":"営業部門","責任者":"山田花子","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-04-15T09:00:00Z","廃止予定日":null,"備考":"営業部門ネットワーク境界防御用。VPN接続、URLフィルタリング、IPS機能を有効化。定期的なセキュリティパッチ適用を実施。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2024-12-20T10:15:00Z","作成者":"admin_suzuki","更新者":"admin_tanaka"},{"資産ID":"rec-001","資産名":"開発用アプリケーションサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.25","ホスト名":"dev-app-server01.example.local","OSタイプ":"Linux","OSバージョン":"Ubuntu 22.04 LTS","所有部門":"システム開発部","責任者":"佐藤次郎","重要度レベル":"Medium","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00Z","廃止予定日":null,"備考":"Node.js v18.x環境、開発チーム用マイクロサービスホスト、月次定期スキャン対象","作成日時":"2024-04-15T10:30:00Z","更新日時":"2025-01-20T14:45:00Z","作成者":"admin_yamada","更新者":"admin_suzuki"},{"資産ID":"rec-001","資産名":"会計ソフトウェア_SAP_Finance","資産タイプ":"ソフトウェア","IPアドレス":"192.168.10.45","ホスト名":"accounting-server.company.local","OSタイプ":"Windows","OSバージョン":"Windows Server 2022","所有部門":"経理部","責任者":"佐藤美咲","重要度レベル":"High","スキャン対象フラグ":false,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-04-01T00:00:00Z","廃止予定日":"2026-03-31T00:00:00Z","備考":"SAP Finance 4.7 Standard Edition、ライセンス数5ユーザー、年間保守契約済み、監査ログは365日保持","作成日時":"2024-01-15T09:30:00Z","更新日時":"2024-12-10T14:22:00Z","作成者":"tanaka_taro","更新者":"suzuki_hanako"},{"資産ID":"rec-001","資産名":"支店営業用ワークステーション01","資産タイプ":"ワークステーション","IPアドレス":"192.168.10.45","ホスト名":"ws-branch-sales-01.company.local","OSタイプ":"Windows","OSバージョン":"Windows 10 Pro","所有部門":"営業支店","責任者":"鈴木花子","重要度レベル":"Low","スキャン対象フラグ":false,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2022-04-15T09:00:00Z","廃止予定日":"2026-03-31T23:59:59Z","備考":"支店営業部門で使用。一括監査対象のワークステーション群に含まれる。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2024-12-20T10:15:00Z","作成者":"admin-tanaka","更新者":"admin-yamamoto"},{"資産ID":"rec-001","資産名":"VPN-GW-Cloud-01","資産タイプ":"ネットワークデバイス","IPアドレス":"203.0.113.45","ホスト名":"vpn-gateway-cloud.example.co.jp","OSタイプ":"Fortinet FortiOS","OSバージョン":"7.4.2","所有部門":"インフラストラクチャ部","責任者":"佐藤健一","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-03-15T09:00:00Z","廃止予定日":null,"備考":"AWS接続用VPNゲートウェイ。24時間常時監視対象。冗長構成でVPN-GW-Cloud-02と連携。月次セキュリティアップデート実施。","作成日時":"2024-03-10T14:30:00Z","更新日時":"2025-01-20T10:15:00Z","作成者":"admin_yamada","更新者":"admin_suzuki"},{"資産ID":"rec-001","資産名":"製造ライン01-PLC制御機","資産タイプ":"ネットワークデバイス","IPアドレス":"192.168.10.45","ホスト名":"plc-mfg-line01","OSタイプ":"独自OS","OSバージョン":"v3.2.1","所有部門":"製造部門","責任者":"鈴木健一","重要度レベル":"Critical","スキャン対象フラグ":false,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2015-06-15T09:00:00Z","廃止予定日":"2026-03-31T23:59:59Z","備考":"旧型PLC制御機器。生産ライン制御用の重要機器。脆弱性スキャン対象外だが監査ログは必須。定期メンテナンスは年2回実施。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2024-11-20T10:15:00Z","作成者":"admin-yamada","更新者":"admin-yamada"},{"資産ID":"rec-001","資産名":"HR部門メールサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.45","ホスト名":"mail-hr01.company.local","OSタイプ":"Linux","OSバージョン":"Rocky Linux 8.9","所有部門":"HR部門","責任者":"佐藤美咲","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-04-15T09:00:00Z","廃止予定日":null,"備考":"個人情報保護対応済み。GDPR/個保法準拠。SSL/TLS暗号化通信実装。定期バックアップ毎日実施。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2025-01-08T10:15:00Z","作成者":"admin_yamada","更新者":"admin_suzuki"},{"資産ID":"rec-001","資産名":"テスト環境コンテナレジストリ01","資産タイプ":"ソフトウェア","IPアドレス":"192.168.10.45","ホスト名":"registry-test.dev.internal","OSタイプ":"Linux","OSバージョン":"Ubuntu 22.04 LTS","所有部門":"開発チーム","責任者":"鈴木健太","重要度レベル":"Medium","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-03-15T09:00:00+09:00","廃止予定日":null,"備考":"Docker Registry v2.8.1を使用。テスト環境用のコンテナイメージ保管。ストレージ容量500GB。","作成日時":"2024-03-15T10:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"yamada_hanako","更新者":"suzuki_kenta"},{"資産ID":"rec-001","資産名":"レガシー勤怠管理システム","資産タイプ":"ソフトウェア","IPアドレス":"192.168.10.45","ホスト名":"legacy-kintai.company.local","OSタイプ":"Windows","OSバージョン":"Server 2012 R2","所有部門":"人事総務部","責任者":"山田花子","重要度レベル":"Low","スキャン対象フラグ":false,"監査対象フラグ":false,"稼働状態":"稼働中","導入日":"2015-04-01T00:00:00Z","廃止予定日":"2025-09-30T23:59:59Z","備考":"新勤怠管理システムへの移行中。2025年9月末での完全廃止予定。現在は並行運用中で、段階的にユーザーを新システムへ移行している。保守契約は2025年8月末で終了予定。","作成日時":"2024-01-15T09:30:00Z","更新日時":"2024-11-20T14:45:00Z","作成者":"admin_tanaka","更新者":"admin_suzuki"}],"権限設定":[{"権限設定ID":"rec-001","ユーザーID":"rec-u001","役割":"システム管理者","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":true,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-01T09:00:00","更新日時":"2025-01-15T14:30:00","作成者":"rec-u002","更新者":"rec-u002","備考":"システム管理者として全セキュリティ機能への完全なアクセス権を付与。2024年4月のシステム導入時に佐藤次郎により設定。2025年1月に権限レビュー完了し有効性を確認。"},{"権限設定ID":"rec-001","ユーザーID":"rec-0042","役割":"セキュリティアナリスト","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"rec-0001","更新者":"rec-0008","備考":"セキュリティアナリスト鈴木花子の権限設定。監査ログの定期確認と脆弱性スキャン結果の分析・管理を担当。2025年1月のセキュリティ強化に伴いレポート生成権限を追加。"},{"権限設定ID":"rec-001","ユーザーID":"rec-0847","役割":"インシデント対応チームリーダー","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-22T14:15:00+09:00","作成者":"rec-0021","更新者":"rec-0021","備考":"セキュリティインシデント対応チームのリーダーとして、インシデント対応チケットの作成・編集権限とセキュリティレポート生成権限を付与。監査ログの閲覧も必要に応じて許可。2025年1月の権限更新時に対応権限を確認・継続承認。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-0847","役割":"監査担当者","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-10 14:20:00","作成者":"rec-u-0001","更新者":"rec-u-0002","備考":"内部監査部門の佐藤美咲による監査業務用。監査ログ閲覧とレポート生成権限のみ付与。年間監査計画に基づき権限を設定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-0847","役割":"セキュリティスタッフ（新入社員）","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-01T09:30:00+09:00","更新日時":"2024-04-01T09:30:00+09:00","作成者":"rec-u-0001","更新者":"rec-u-0001","備考":"2024年度新入社員。研修期間中は監査ログ閲覧のみに限定。6ヶ月後に権限拡張予定。指導者：鈴木花子"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"システム資産管理専任者","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":true,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2024-04-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"IT資産台帳管理およびハードウェア・ソフトウェアライセンス管理業務専任。2024年度新規配置。"},{"権限設定ID":"rec-001","ユーザーID":"rec-0847","役割":"レポート生成専門者","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2024-04-15 09:30:00","作成者":"rec-0001","更新者":"rec-0001","備考":"経営層向けセキュリティレポート生成業務専任。月次・四半期・年次レポート作成権限のみ付与。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-0847","役割":"セキュリティ部門長","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":true,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:45:00","作成者":"rec-u-0001","更新者":"rec-u-0847","備考":"セキュリティ部門長昇格に伴い全権限を付与。権限削除権限は部門内の権限管理業務に必要。年1回の権限見直し対象。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"セキュリティアナリスト","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":false,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-31 14:45:00","作成者":"rec-003","更新者":"rec-004","備考":"2025年1月31日付で退職予定のため、全権限を無効化しました。最終出勤日までのアクセス遮断対応完了。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"外部監査人","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-11-15 09:30:00","更新日時":"2024-11-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"2024年11月15日～12月15日の定期監査実施に伴う一時的な監査ログ閲覧権限。監査終了後は自動削除予定。監査人：山田花子"}],"脆弱性マスタ":[{"脆弱性ID":"rec-001-cve-2021-44228","CVE_ID":"CVE-2021-44228","脆弱性名":"Apache Log4j RCE脆弱性（Log4Shell）","説明":"Apache Log4j 2.0から2.14.1までのバージョンに存在するリモートコード実行脆弱性。JNDI Injection機能の不適切な入力検証により、攻撃者が細工されたリクエストを送信することで任意のコードを実行される可能性がある。","CVSS_スコア":100,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2021-12-10T00:00:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2021-44228 https://logging.apache.org/log4j/2.x/security-fixes.html","対応優先度":"P1","ステータス":"Active","作成日時":"2024-01-15T09:30:00Z","更新日時":"2024-12-20T14:45:00Z","作成者":"rec-user-2024-001"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-21894","脆弱性名":"Windows カーネルの権限昇格脆弱性","説明":"Windows カーネルの入力値検証不備により、ローカルの認証済みユーザーが特殊に細工されたアプリケーションを実行することで、システム権限で任意のコードを実行される可能性があります。全社 PC への早急な対応が必要です。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Local","影響範囲":"Changed","公開日":"2024-03-12T09:00:00Z","参考URL":"https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-21894","対応優先度":"P1","ステータス":"Active","作成日時":"2024-03-13T14:30:00Z","更新日時":"2024-03-13T14:30:00Z","作成者":"rec-user-0042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-8765","脆弱性名":"社内WebアプリケーションフレームワークにおけるSQL インジェクション脆弱性","説明":"自社開発のWebアプリケーションフレームワーク v2.3.1において、ユーザー入力値が不適切にサニタイズされないまま、データベースクエリに直接埋め込まれる脆弱性が存在します。攻撃者は細工されたリクエストを送信することで、任意のSQLコマンドを実行され、機密情報の窃取やデータベースの改ざんが可能になります。","CVSS_スコア":87,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-11-15T09:30:00Z","参考URL":"https://security.example.co.jp/advisory/2024/11/sql-injection-framework-v231","対応優先度":"P1","ステータス":"Active","作成日時":"2024-11-15T10:45:00Z","更新日時":"2024-12-10T14:20:00Z","作成者":"rec-user-001"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-50258","脆弱性名":"OpenSSL 暗号化通信における入力値検証不備","説明":"OpenSSL 3.0.x から 3.2.x のバージョンにおいて、TLS通信時の暗号化処理で不正なメモリアクセスが発生する脆弱性。特定の条件下でバッファオーバーフローが引き起こされ、遠隔からの任意コード実行が可能となる。本番環境の金融取引システムおよびAPI通信に深刻な影響を与える可能性がある。","CVSS_スコア":92,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-10-15T09:30:00Z","参考URL":"https://www.openssl.org/news/secadv/20241015.txt","対応優先度":"P1","ステータス":"Resolved","作成日時":"2024-10-15T14:22:00Z","更新日時":"2024-11-08T16:45:00Z","作成者":"rec-user-0847"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-8765","脆弱性名":"IoTデバイス認証回避脆弱性","説明":"製造ラインで使用されるIoTセンサーデバイスのファームウェアにおいて、認証トークンの検証ロジックに欠陥が存在します。特定の条件下で認証をバイパスし、未認証のユーザーが管理インターフェースにアクセス可能となる脆弱性です。攻撃者がネットワークを通じてデバイスに接続することで、センサーデータの改ざんや製造プロセスの制御が可能になります。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-09-15T00:00:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-8765","対応優先度":"P1","ステータス":"Active","作成日時":"2024-09-20T09:30:00Z","更新日時":"2024-11-10T14:15:00Z","作成者":"rec-user-0042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-8765","脆弱性名":"クラウドストレージサービスの認可不備","説明":"クラウドストレージサービスのAPIエンドポイントにおいて、アクセストークンの検証ロジックに不備があり、他のユーザーのリソースに対して不正なアクセスが可能になる脆弱性。特定の条件下でトークン署名の検証がスキップされる可能性がある。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-03-15T10:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-8765","対応優先度":"P2","ステータス":"Deprecated","作成日時":"2024-03-16T09:00:00Z","更新日時":"2024-11-20T14:45:00Z","作成者":"rec-user-0042"},{"脆弱性ID":"rec-001-dns-dos-2024","CVE_ID":"CVE-2024-5678","脆弱性名":"BIND DNSサーバー キャッシュポイズニングによるサービス妨害","説明":"BIND 9.x系において、特定の条件下でDNSクエリ処理時にメモリ領域の不正アクセスが発生し、DNSサーバープロセスがクラッシュする脆弱性。リモート攻撃者が細工されたDNSパケットを送信することで、DNSサービスの継続的な停止を引き起こす可能性がある。","CVSS_スコア":73,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Unchanged","公開日":"2024-06-15T09:30:00Z","参考URL":"https://www.isc.org/bind/security/cve-2024-5678/","対応優先度":"P2","ステータス":"Active","作成日時":"2024-06-20T14:22:00Z","更新日時":"2024-12-10T10:45:00Z","作成者":"rec-user-佐藤花子"},{"脆弱性ID":"rec-001-vuln-2024-0847","CVE_ID":"CVE-2024-8471","脆弱性名":"モバイルアプリケーション暗号化キー管理不備","説明":"当社が提供するモバイル決済アプリケーション（バージョン2.1.0以前）において、暗号化キーがアプリケーション内のハードコードされた状態で保存されており、リバースエンジニアリングにより容易に抽出可能な状態にあります。これにより、攻撃者が暗号化通信を復号化し、ユーザーの機密情報にアクセスするおそれがあります。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-09-15T10:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-8471","対応優先度":"P1","ステータス":"Active","作成日時":"2024-09-16T08:45:00Z","更新日時":"2024-12-10T14:20:00Z","作成者":"rec-user-2024-0521"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2023-45892","脆弱性名":"レガシー販売管理システムの認証回避脆弱性","説明":"旧販売管理システムv2.1.0における認証ロジックの不備により、特殊な文字列をパラメータに含めることで、管理者認証を回避可能な脆弱性。セッション管理の実装不足が原因で、未認証ユーザーが管理画面へのアクセスを可能とする。","CVSS_スコア":87,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-03-15T09:30:00+09:00","参考URL":"https://jvn.jp/jp/JVN12345678/","対応優先度":"P1","ステータス":"Resolved","作成日時":"2024-03-16T14:22:00+09:00","更新日時":"2025-01-10T16:45:00+09:00","作成者":"rec-user-001"},{"脆弱性ID":"rec-001-vuln-sw-2024-0847","CVE_ID":"CVE-2024-28847","脆弱性名":"ネットワークスイッチ管理インターフェース認証回避","説明":"Cisco Catalyst 9000シリーズスイッチのWebベース管理インターフェースにおいて、特定のHTTPリクエストシーケンスを送信することで、認証メカニズムを回避し、管理者権限でのアクセスが可能になる脆弱性。ファームウェアバージョン17.0系から17.3系が影響を受ける。","CVSS_スコア":82,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-06-15T09:30:00+09:00","参考URL":"https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-2024-06-15-catalyst","対応優先度":"P2","ステータス":"Active","作成日時":"2024-06-20T14:22:00+09:00","更新日時":"2025-01-10T11:15:00+09:00","作成者":"rec-user-佐藤花子"}]};
+window.AIVIC_PAGE_SCREEN_ID = "scr-1788230891146";
+window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<nav style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg,var(--bg-sidebar,#0e1a31));border-bottom:1px solid var(--top-bar-border,var(--border,#2a3a5d));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--text,#e8eefc);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:1;border-bottom:2px solid var(--primary,#2b66ff);font-weight:600;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
+  <div class="shell" data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('collapsed')">☰</button>
+        <div class="logo">
+          <div>セキュリティ対応</div>
+          <div class="logo-sub">公共施設予約</div>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="user-avatar">U</div>
+        <div class="user-name">ユーザー</div>
+        <a href="./login.html" class="logout-link">ログアウト</a>
+      </div>
+    </div>
+
+    <div class="main-container">
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-label">メイン</div>
+          <a class="nav-item aivic-active" data-aivic-nav="scr-1788230867652" href="./scr-1788230867652.html">ダッシュボード</a>
+          <a class="nav-item" data-aivic-nav="scr-1788230891146" href="./scr-1788230891146.html">脆弱性管理</a>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">分析</div>
+          <a class="nav-item" data-aivic-nav="scr-audit-logs" onclick="showScreen('scr-audit-logs')">監査ログ</a>
+          <a class="nav-item" data-aivic-nav="scr-reports" onclick="showScreen('scr-reports')">レポート</a>
+        </div>
+      </div>
+
+      <main class="content-area">
+        <div data-aivic-panel="scr-1788230867652" style="display:none"></div>
+        <div data-aivic-panel="scr-1788230891146" style="display:block"><div style="display: flex; flex-direction: column; height: 100%; background: var(--bg-main); color: var(--text); font-family: var(--font-family);">
+  
+  <!-- Breadcrumb / Sub-header -->
+  <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 12px; color: var(--text-muted);">
+    公共施設予約 / セキュリティインシデント対応・監査ログ分析システム / 脆弱性対応管理画面
+  </div>
+
+  <!-- Main Content Area -->
+  <div style="display: flex; flex: 1; overflow: hidden; gap: 12px; padding: 12px;">
+    
+    <!-- Left Column: Ticket List & Filters -->
+    <div style="width: 280px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto;">
+      
+      <!-- Filter Card -->
+      <div class="card" style="padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">フィルタ</div>
+        
+        <div style="margin-bottom: 8px;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">ステータス</label>
+          <select data-testid="status-filter" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 12px; cursor: pointer;">
+            <option value="">すべて</option>
+            <option value="未対応">未対応</option>
+            <option value="対応中">対応中</option>
+            <option value="対応完了">対応完了</option>
+            <option value="却下">却下</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 8px;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">優先度</label>
+          <select data-testid="priority-filter" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 12px; cursor: pointer;">
+            <option value="">すべて</option>
+            <option value="高">高</option>
+            <option value="中">中</option>
+            <option value="低">低</option>
+          </select>
+        </div>
+
+        <button data-testid="filter-apply-button" style="width: 100%; padding: 6px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: background var(--motion-duration);">
+          適用
+        </button>
+      </div>
+
+      <!-- Ticket List -->
+      <div class="card" style="flex: 1; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow-y: auto;">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">チケット一覧</div>
+        <div id="ticket-list" style="display: flex; flex-direction: column; gap: 6px;">
+          <!-- Tickets will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Column: Ticket Detail & Status Update -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto;">
+      
+      <!-- Ticket Detail Card -->
+      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">チケット詳細</div>
+        
+        <div id="ticket-detail" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">チケットID</div>
+              <div id="detail-ticket-id" style="font-size: 13px; font-weight: 600; color: var(--text);"></div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">脆弱性ID</div>
+              <div id="detail-vuln-id" style="font-size: 13px; font-weight: 600; color: var(--text);"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">脆弱性名</div>
+            <div id="detail-vuln-name" style="font-size: 13px; font-weight: 600; color: var(--text);"></div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">説明</div>
+            <div id="detail-description" style="font-size: 12px; color: var(--text); line-height: 1.5; max-height: 80px; overflow-y: auto;"></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">ステータス</div>
+              <div id="detail-status" style="font-size: 13px; font-weight: 600; color: var(--text);"></div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">優先度</div>
+              <div id="detail-priority" style="font-size: 13px; font-weight: 600; color: var(--text);"></div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">割当者</div>
+              <div id="detail-assignee" style="font-size: 12px; color: var(--text);"></div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">期限日</div>
+              <div id="detail-due-date" style="font-size: 12px; color: var(--text);"></div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">作成日時</div>
+              <div id="detail-created-at" style="font-size: 12px; color: var(--text);"></div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">対応完了日</div>
+              <div id="detail-completed-at" style="font-size: 12px; color: var(--text);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ticket-detail-empty" style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 12px;">
+          チケットを選択してください
+        </div>
+      </div>
+
+      <!-- Status Update Card -->
+      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">対応状況更新</div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">新しいステータス</label>
+            <select id="status-select" data-testid="status-update-select" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 12px; cursor: pointer;">
+              <option value="">選択してください</option>
+              <option value="未対応">未対応</option>
+              <option value="対応中">対応中</option>
+              <option value="対応完了">対応完了</option>
+              <option value="却下">却下</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">割当者</label>
+            <select id="assignee-select" data-testid="assignee-select" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 12px; cursor: pointer;">
+              <option value="">選択してください</option>
+              <option value="user-001">田中太郎</option>
+              <option value="user-002">佐藤花子</option>
+              <option value="user-003">鈴木次郎</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">コメント</label>
+          <textarea id="comment-input" data-testid="comment-input" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 12px; font-family: var(--font-family); resize: vertical; min-height: 60px;" placeholder="対応内容やコメントを入力"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button id="update-status-button" data-testid="update-status-button" style="flex: 1; padding: 8px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: background var(--motion-duration);">
+            ステータス更新
+          </button>
+          <button id="cancel-update-button" data-testid="cancel-update-button" style="flex: 1; padding: 8px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: background var(--motion-duration);">
+            キャンセル
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline Card -->
+      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); max-height: 300px; overflow-y: auto;">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">対応状況履歴</div>
+        <div id="timeline-container" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Timeline entries will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Impact Analysis & Audit Logs -->
+    <div style="width: 300px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto;">
+      
+      <!-- Impact Analysis Card -->
+      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">影響範囲分析</div>
+        
+        <div id="impact-detail" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div style="padding: 8px; background: var(--bg-main); border-radius: var(--radius-control); border: 1px solid var(--border);">
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">影響ユーザー数</div>
+              <div id="impact-users" style="font-size: 16px; font-weight: 600; color: var(--primary);"></div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-main); border-radius: var(--radius-control); border: 1px solid var(--border);">
+              <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">影響システム数</div>
+              <div id="impact-systems" style="font-size: 16px; font-weight: 600; color: var(--primary);"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">影響度レベル</div>
+            <div id="impact-level" style="font-size: 12px; font-weight: 600; color: var(--text);"></div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">対応優先度</div>
+            <div id="impact-priority" style="font-size: 12px; font-weight: 600; color: var(--text);"></div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">分析状態</div>
+            <div id="impact-status" style="font-size: 12px; font-weight: 600; color: var(--text);"></div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 4px;">影響範囲説明</div>
+            <div id="impact-description" style="font-size: 11px; color: var(--text); line-height: 1.4; max-height: 80px; overflow-y: auto;"></div>
+          </div>
+        </div>
+
+        <div id="impact-empty" style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px;">
+          チケットを選択してください
+        </div>
+      </div>
+
+      <!-- Affected Assets Card -->
+      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); flex: 1; overflow-y: auto;">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">影響を受けるシステム資産</div>
+        
+        <div id="assets-list" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Assets will be populated here -->
+        </div>
+
+        <div id="assets-empty" style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px;">
+          資産情報なし
+        </div>
+      </div>
+
+      <!-- Audit Logs Card -->
+      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+        <div style="font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">関連監査ログ</div>
+        
+        <div id="audit-logs-detail" style="display: none;">
+          <div style="margin-bottom: 8px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">ログ件数</div>
+            <div id="audit-log-count" style="font-size: 13px; font-weight: 600; color: var(--text);"></div>
+          </div>
+
+          <div style="margin-bottom: 8px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">最新ログ日時</div>
+            <div id="audit-log-latest" style="font-size: 12px; color: var(--text);"></div>
+          </div>
+
+          <div style="margin-bottom: 8px;">
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">異常検知</div>
+            <div id="audit-log-anomaly" style="font-size: 12px; color: var(--text);"></div>
+          </div>
+
+          <button id="view-audit-logs-button" data-testid="view-audit-logs-button" style="width: 100%; padding: 6px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 11px; font-weight: 600; cursor: pointer; transition: background var(--motion-duration); margin-top: 8px;">
+            詳細表示
+          </button>
+        </div>
+
+        <div id="audit-logs-empty" style="text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px;">
+          チケットを選択してください
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div style="padding: 12px 16px; border-top: 1px solid var(--border); background: var(--bg-card); display: flex; justify-content: flex-end; gap: 8px;">
+    <button id="back-to-dashboard-button" data-testid="back-to-dashboard-button" style="padding: 8px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: background var(--motion-duration);">
+      ダッシュボードに戻る
+    </button>
+  </div>
+</div></div>
+      </main>
+    </div>
+  </div>
+
+  
+  
+<script>
+(function() {
+  var TABLE_DEFS = window.AIVIC_TABLES || [];
+  var PRESET_SEED = window.AIVIC_PRESET_SEED || {};
+  var SYSTEM_NAME = window.AIVIC_SYSTEM_NAME || "";
+  var APP_ID = window.AIVIC_APP_ID || "";
+  var API_URL = (window.AIVIC_API_URL && window.AIVIC_API_URL !== "REPLACE_WITH_API_URL")
+    ? window.AIVIC_API_URL : window.location.origin;
+
+  // 通知 helper ( SPA 版と同じ )
+  window.aivicNotify = (function() {
+    function ensureContainer() {
+      var c = document.getElementById("aivic-toast-container");
+      if (c) return c;
+      c = document.createElement("div");
+      c.id = "aivic-toast-container";
+      c.style.cssText = "position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:360px;";
+      document.body.appendChild(c);
+      return c;
+    }
+    function show(msg, type) {
+      var c = ensureContainer();
+      var el = document.createElement("div");
+      el.textContent = msg;
+      el.style.cssText = "padding:10px 16px;border-radius:8px;font-size:13px;line-height:1.4;pointer-events:auto;color:#fff;background:" + (type === "error" ? "#dc2626" : "#d97706");
+      c.appendChild(el);
+      setTimeout(function() {
+        el.style.transition = "opacity .3s";
+        el.style.opacity = "0";
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 320);
+      }, type === "error" ? 6000 : 4500);
+    }
+    return {
+      error: function(msg) { show("❌ " + msg, "error"); },
+      warn:  function(msg) { show("⚠️ " + msg, "warn"); },
+    };
+  })();
+
+  // CRUD API ( SPA 版と同じ )
+  window.aivicApi = (function() {
+    function dbErr(op) { window.aivicNotify.error("データベースエラー ( " + op + " ): APIサーバーに接続できません。"); }
+    function newId() { return typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(36).slice(2); }
+    function q(i) {
+      var t = TABLE_DEFS[i];
+      var dbP = (window.AIVIC_DB_TYPE && window.AIVIC_DB_TYPE !== "dynamodb") ? "&db=" + encodeURIComponent(window.AIVIC_DB_TYPE) : "";
+      return "?app=" + encodeURIComponent(APP_ID) + "&system=" + encodeURIComponent(SYSTEM_NAME) + "&table=" + encodeURIComponent(t ? t.tableName : "table" + i) + dbP;
+    }
+    return {
+      list: async function(tableIndex) {
+        if (!API_URL) return [];
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex)); var d = await r.json(); return Array.isArray(d) ? d : (d.items || []); }
+        catch(e) { dbErr("データ取得"); return []; }
+      },
+      save: async function(tableIndex, item) {
+        if (!API_URL) { dbErr("保存"); return null; }
+        var now = new Date().toISOString();
+        var rec = Object.assign({}, item, { id: item.id || newId(), createdAt: item.createdAt || now, updatedAt: now });
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + q(tableIndex), { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(rec) }); return await r.json(); }
+        catch(e) { dbErr("保存"); return null; }
+      },
+      update: async function(tableIndex, id, changes) {
+        if (!API_URL) { dbErr("更新"); return null; }
+        try { var r = await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(Object.assign({}, changes, {updatedAt: new Date().toISOString()})) }); return await r.json(); }
+        catch(e) { dbErr("更新"); return null; }
+      },
+      delete: async function(tableIndex, id) {
+        if (!API_URL) { dbErr("削除"); return {deleted:false}; }
+        try { await fetch(API_URL + "/api/" + tableIndex + "/" + id + q(tableIndex), {method:"DELETE"}); return {deleted:true}; }
+        catch(e) { dbErr("削除"); return {deleted:false}; }
+      },
+    };
+  })();
+
+  // showScreen はマルチページ構成ではページ遷移として動く。
+  var _aivicNavLastTime = 0;
+  var _aivicNavLastTarget = "";
+  var _aivicReady = false;
+  window.showScreen = function(screenId) {
+    if (!screenId) return;
+    if (screenId === window.AIVIC_PAGE_SCREEN_ID) return;
+    var targetPath = './' + encodeURIComponent(screenId) + '.html';
+    var currentName = (window.location.pathname.split('/').pop() || '');
+    if (currentName === (encodeURIComponent(screenId) + '.html') ||
+        currentName === (screenId + '.html')) {
+      return;
+    }
+    var now = Date.now();
+    if (_aivicNavLastTarget === targetPath && (now - _aivicNavLastTime) < 100) {
+      console.warn('[aivic] showScreen 連続呼び出し検知。 無限ループ防止のため抑制:', screenId);
+      return;
+    }
+    if (!_aivicReady) {
+      console.warn('[aivic] DOMContentLoaded 前の showScreen 呼び出し。 抑制:', screenId);
+      return;
+    }
+    _aivicNavLastTime = now;
+    _aivicNavLastTarget = targetPath;
+    window.location.href = targetPath;
+  };
+
+  function seedAllIfEmpty() {
+    if (!API_URL) return Promise.resolve();
+    return Promise.all(TABLE_DEFS.map(function(t, i) {
+      var preset = PRESET_SEED[t.tableName];
+      if (!Array.isArray(preset) || preset.length === 0) return Promise.resolve();
+      return window.aivicApi.list(i).then(function(existing) {
+        if (existing && existing.length > 0) return;
+        return Promise.all(preset.map(function(row) { return window.aivicApi.save(i, row); }));
+      }).catch(function() {});
+    }));
+  }
+
+  // ── 初期表示: このページ専用の panel に initFn を実行 ──
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() { _aivicReady = true; }, 1500);
+    var pageScreenId = window.AIVIC_PAGE_SCREEN_ID;
+    if (!pageScreenId) return;
+
+    // AI シェルが SPA 用の初期表示処理を持っていても、マルチページでは
+    // このファイルに割り当てられた画面だけを表示する。
+    document.querySelectorAll('[data-aivic-panel]').forEach(function(panel) {
+      var isCurrent = panel.getAttribute('data-aivic-panel') === pageScreenId;
+      panel.style.display = isCurrent ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('[data-aivic-nav]').forEach(function(btn) {
+      var isActive = btn.getAttribute("data-aivic-nav") === pageScreenId;
+      btn.classList.toggle("aivic-active", isActive);
+      btn.setAttribute("aria-current", isActive ? "page" : "false");
+    });
+
+    var container = document.querySelector('[data-aivic-panel="' + pageScreenId + '"]');
+    if (!container) return;
+
+    // content 要素の hidden 強制除去 ( 2026-05-24 Playwright 大量 fail 対応 )
+    var isModalLike = function(el) {
+      if (!el || !el.classList) return false;
+      var cn = String(el.className || "");
+      if (/\bmodal\b|\bdialog\b|\boverlay\b|\bpopup\b|\bdropdown\b|\btooltip\b/i.test(cn)) return true;
+      var role = el.getAttribute && el.getAttribute("role");
+      if (role === "dialog" || role === "alertdialog" || role === "tooltip" || role === "menu") return true;
+      if (el.hasAttribute && (el.hasAttribute("data-modal") || el.hasAttribute("data-dropdown") || el.hasAttribute("data-popup") || el.hasAttribute("data-aivic-overlay"))) return true;
+      // 【2026-06-25】 class/role が無くても inline で画面を覆う overlay ( position:fixed ) は modal 扱いにして、
+      //  content 強制可視化が誤ってダイアログをロード時に表示してしまわないようにする。
+      if (el.style && el.style.position === "fixed") return true;
+      return false;
+    };
+    var unhideContentElements = function(root) {
+      var all = root.querySelectorAll('.hidden, [hidden], [style*="display:none"], [style*="display: none"]');
+      for (var k = 0; k < all.length; k++) {
+        var el = all[k];
+        if (isModalLike(el)) continue;
+        var p = el.parentElement;
+        var insideModal = false;
+        while (p && p !== root) {
+          if (isModalLike(p)) { insideModal = true; break; }
+          p = p.parentElement;
+        }
+        if (insideModal) continue;
+        el.classList.remove('hidden');
+        el.removeAttribute('hidden');
+        if (el.style && el.style.display === 'none') el.style.display = '';
+      }
+    };
+    try { unhideContentElements(container); } catch (e) { console.warn('[aivic] unhideContent failed:', e); }
+
+    var initJsSource = window.AIVIC_PAGE_INIT_JS;
+    if (!initJsSource) {
+      seedAllIfEmpty();
+      return;
+    }
+    var initFn = null;
+    try {
+      initFn = (new Function("return (" + initJsSource + ")"))();
+    } catch (e) {
+      console.error("[aivic] initJs compile error:", pageScreenId, e);
+      return;
+    }
+    if (typeof initFn !== "function") return;
+
+    seedAllIfEmpty().then(function() {
+      return Promise.all(TABLE_DEFS.map(function(t, i) {
+        return window.aivicApi.list(i)
+          .then(function(records) { return Object.assign({}, t, { records: records }); })
+          .catch(function() { return Object.assign({}, t, { records: [] }); });
+      }));
+    }).then(function(tables) {
+      try { initFn(container, API_URL, tables); } catch (e) { console.error("[aivic] initFn error:", pageScreenId, e); }
+      _aivicReady = true;
+    });
+  });
+
+  // 【2026-06-27 強化・必ず閉じられる保証】 モーダル/ダイアログを確実に閉じる安全網。
+  //  旧版は Esc のみ + セレクタ .overlay が class="modal-overlay" にマッチせず ( クラストークンが別 )
+  //  閉じられなかった ( ユーザー報告 2026-06-27: ダイアログが閉じない ) 。 ① Esc ② オーバーレイ背景クリック
+  //  ③ 閉じる系ボタン の 3 経路で閉じる。 セレクタは複合クラスも拾うよう [class*="overlay"] を含む。
+  //  閉じ方は「開クラス ( active/open/show 等 ) があれば外す ( 再オープン可 ) 、 無ければ inline display:none」。
+  //  modal-header 等の sub-part を誤って隠さないため [class*="modal"] は使わない。
+  var AIVIC_OVERLAY_SELECTOR = '[class*="overlay"],[data-aivic-overlay],[data-modal],[role="dialog"],[role="alertdialog"]';
+  var aivicCloseOverlay = function(el) {
+    if (!el || !el.classList) return;
+    var openClasses = ["active", "open", "show", "visible", "is-open", "is-active", "show-modal"];
+    var removed = false;
+    for (var c = 0; c < openClasses.length; c++) {
+      if (el.classList.contains(openClasses[c])) { el.classList.remove(openClasses[c]); removed = true; }
+    }
+    if (!removed && el.style) el.style.display = "none";
+  };
+  document.addEventListener("keydown", function(e) {
+    if (e.key !== "Escape" && e.keyCode !== 27) return;
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  });
+  document.addEventListener("click", function(e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.closest) {
+      var closer = t.closest('.modal-close,[data-modal-close],[data-close],[data-dismiss]');
+      if (closer) {
+        var oc = closer.closest(AIVIC_OVERLAY_SELECTOR);
+        if (oc) { aivicCloseOverlay(oc); return; }
+      }
+    }
+    // 背景 ( オーバーレイ要素そのもの ) を直接クリックした時のみ閉じる ( モーダル本体クリックでは閉じない ) 。
+    if (t.matches && t.matches(AIVIC_OVERLAY_SELECTOR) && t === e.target) {
+      aivicCloseOverlay(t);
+    }
+  });
+  // 【2026-06-28 強化・ロード時に必ず閉じる】 生成 AI が overlay を初期 display:none にし忘れた場合でも、
+  //  ロード直後にダイアログが画面を覆って操作不能になる事故 ( ユーザー報告 2026-06-28: ダイアログが常に表示され
+  //  閉じられない ) を防ぐ。 認識可能な overlay/dialog セレクタに該当する要素はロード時に必ず閉じる
+  //  ( 開クラス除去 or display:none ) 。 真にロード時表示すべき業務コンテンツは overlay セレクタに該当しないため
+  //  影響しない ( パネルコンテナは data-aivic-panel で別管理 ) 。
+  var aivicHideOverlaysOnLoad = function() {
+    var ov = document.querySelectorAll(AIVIC_OVERLAY_SELECTOR);
+    for (var i = 0; i < ov.length; i++) aivicCloseOverlay(ov[i]);
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", aivicHideOverlaysOnLoad);
+  } else {
+    aivicHideOverlaysOnLoad();
+  }
+})();
+
+</script>
+</body>
+</html>
