@@ -12,6 +12,7 @@ export interface RBACContext {
     reportGenerate: boolean;
     assetManage: boolean;
     permissionDelete: boolean;
+    bulkImport: boolean;
   };
 }
 
@@ -23,6 +24,7 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: true,
     assetManage: true,
     permissionDelete: true,
+    bulkImport: true,
   },
   operator: {
     auditLogView: true,
@@ -31,6 +33,7 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: true,
     assetManage: true,
     permissionDelete: false,
+    bulkImport: true,
   },
   viewer: {
     auditLogView: true,
@@ -39,48 +42,37 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: false,
     assetManage: false,
     permissionDelete: false,
+    bulkImport: false,
   },
 };
 
-export function extractRBACContext(event: APIGatewayProxyEvent): RBACContext | null {
-  const authHeader = event.headers['Authorization'] || event.headers['authorization'];
-  if (!authHeader) {
-    return null;
+export function extractRBACContext(event: APIGatewayProxyEvent): RBACContext {
+  const authHeader = event.headers?.Authorization || '';
+  const [scheme, token] = authHeader.split(' ');
+
+  if (scheme !== 'Bearer' || !token) {
+    throw new Error('Missing or invalid Authorization header');
   }
 
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    return null;
+  const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+  const role = (decoded.role || 'viewer') as Role;
+
+  if (!rolePermissions[role]) {
+    throw new Error(`Invalid role: ${role}`);
   }
 
-  try {
-    const token = parts[1];
-    const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
-    const role = (decoded.role || 'viewer') as Role;
-
-    return {
-      userId: decoded.userId || 'unknown',
-      role,
-      permissions: rolePermissions[role],
-    };
-  } catch {
-    return null;
-  }
+  return {
+    userId: decoded.userId || 'unknown',
+    role,
+    permissions: rolePermissions[role],
+  };
 }
 
 export function requirePermission(
-  context: RBACContext | null,
+  context: RBACContext,
   permission: keyof RBACContext['permissions']
-): boolean {
-  if (!context) {
-    return false;
+): void {
+  if (!context.permissions[permission]) {
+    throw new Error(`Forbidden: ${permission} not allowed for role ${context.role}`);
   }
-  return context.permissions[permission];
-}
-
-export function requireRole(context: RBACContext | null, ...roles: Role[]): boolean {
-  if (!context) {
-    return false;
-  }
-  return roles.includes(context.role);
 }
