@@ -3,78 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>施設管理者向け予約・料金管理</title>
+  <title>施設管理者向け予約・料金管理機能 | 公共施設予約</title>
   <style>
 :root {
   --primary: #2c3e50;
   --primary-hover: #1a252f;
   --bg-main: #f0ede8;
-  --bg-card: #e8e4dd;
-  --bg-sidebar: #ebe7e0;
-  --border: #d4cfc5;
-  --text: #1a1410;
-  --text-muted: #6b6560;
+  --bg-card: #e8e5e0;
+  --bg-sidebar: #ebe8e3;
   --top-bar-bg: #2c3e50;
   --top-bar-border: #1a252f;
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  --font-family-serif: "Georgia", "Noto Serif JP", serif;
+  --border: #c9c5bd;
+  --text: #1a1f26;
+  --text-muted: #6b7280;
+  --success: #3d7e4a;
+  --warning: #a67c52;
+  --error: #8b4545;
+  --info: #4a6fa5;
+  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
   --space-unit: 8px;
   --control-height: 40px;
   --radius-card: 4px;
   --radius-control: 3px;
   --border-width: 1px;
-  --shadow-card: 0 1px 3px rgba(26, 20, 16, 0.08), 0 2px 6px rgba(26, 20, 16, 0.04);
-  --shadow-card-hover: 0 2px 6px rgba(26, 20, 16, 0.12), 0 4px 12px rgba(26, 20, 16, 0.06);
-  --shadow-modal: 0 8px 24px rgba(26, 20, 16, 0.16);
-  --shadow-inset: inset 0 1px 2px rgba(26, 20, 16, 0.04);
-  --surface-texture: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(26, 20, 16, 0.01) 2px, rgba(26, 20, 16, 0.01) 4px), repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(26, 20, 16, 0.005) 1px, rgba(26, 20, 16, 0.005) 2px);
+  --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
+  --motion-duration: 200ms;
+  --surface-texture: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(172, 167, 154, 0.03) 2px,
+      rgba(172, 167, 154, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(172, 167, 154, 0.02) 2px,
+      rgba(172, 167, 154, 0.02) 4px
+    );
   --surface-texture-size: 100% 100%;
   --surface-texture-position: 0 0;
-  --motion-duration: 200ms;
-  --motion-easing: cubic-bezier(0.4, 0, 0.2, 1);
-  --motion-duration-slow: 300ms;
-  --status-success: #2e7d32;
-  --status-success-light: #e8f5e9;
-  --status-warning: #d97706;
-  --status-warning-light: #fef3c7;
-  --status-error: #c92a2a;
-  --status-error-light: #fee2e2;
-  --status-info: #1e40af;
-  --status-info-light: #dbeafe;
-  --accent-secondary: #7c6b63;
-  --accent-tertiary: #a89f97;
-  --divider: #e0dbd2;
-  --overlay-dark: rgba(26, 20, 16, 0.5);
-  --overlay-light: rgba(240, 237, 232, 0.8);
-  --focus-ring: 2px solid #2c3e50;
-  --focus-ring-offset: 2px;
-  --active-bg: rgba(44, 62, 80, 0.08);
-  --disabled-opacity: 0.5;
-  --input-bg: #ffffff;
-  --input-border: #d4cfc5;
-  --input-border-focus: #2c3e50;
-  --input-text: #1a1410;
-  --input-placeholder: #a89f97;
-  --table-header-bg: #e8e4dd;
-  --table-header-text: #1a1410;
-  --table-row-hover: rgba(44, 62, 80, 0.04);
-  --table-border: #d4cfc5;
-  --table-stripe-bg: rgba(44, 62, 80, 0.02);
-  --nav-item-hover: rgba(255, 255, 255, 0.1);
-  --nav-item-active-bg: rgba(255, 255, 255, 0.15);
-  --nav-item-active-text: #ffffff;
-  --nav-icon-color: rgba(255, 255, 255, 0.8);
-  --btn-primary-bg: #2c3e50;
-  --btn-primary-text: #ffffff;
-  --btn-primary-hover: #1a252f;
-  --btn-secondary-bg: #e8e4dd;
-  --btn-secondary-text: #1a1410;
-  --btn-secondary-hover: #ddd8cf;
-  --btn-ghost-text: #2c3e50;
-  --btn-ghost-hover-bg: rgba(44, 62, 80, 0.08);
-  --modal-overlay: rgba(26, 20, 16, 0.6);
-  --modal-bg: #ffffff;
-  --modal-border: #d4cfc5;
 }
 
 * {
@@ -84,13 +54,12 @@
 }
 
 html, body {
+  width: 100%;
   height: 100%;
   font-family: var(--font-family);
-  color: var(--text);
   background: var(--bg-main);
-  background-image: var(--surface-texture);
-  background-size: var(--surface-texture-size);
-  background-position: var(--surface-texture-position);
+  color: var(--text);
+  line-height: 1.5;
 }
 
 body {
@@ -98,154 +67,115 @@ body {
   flex-direction: column;
 }
 
-.shell-wrapper {
+[data-aivic-shell-pattern] {
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
 }
 
-.top-bar {
-  background: var(--top-bar-bg);
-  border-bottom: var(--border-width) solid var(--top-bar-border);
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+.shell-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
   height: 56px;
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 calc(var(--space-unit) * 3);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-card);
 }
 
-.top-bar-left {
+.shell-header-left {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 3);
+}
+
+.shell-logo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+
+.shell-logo-sub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+.shell-nav-top {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
+  list-style: none;
+}
+
+.shell-nav-item {
+  position: relative;
+}
+
+.shell-nav-link {
+  display: block;
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-duration) ease;
+  border-bottom: 2px solid transparent;
+}
+
+.shell-nav-link:hover {
+  color: #ffffff;
+}
+
+.shell-nav-link.aivic-active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+.shell-header-right {
   display: flex;
   align-items: center;
   gap: calc(var(--space-unit) * 2);
 }
 
-.logo {
-  font-family: var(--font-family-serif);
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
-
-.nav-toggle {
-  background: none;
-  border: none;
-  color: var(--nav-icon-color);
-  cursor: pointer;
-  font-size: 20px;
-  padding: calc(var(--space-unit) * 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color var(--motion-duration) var(--motion-easing);
-}
-
-.nav-toggle:hover {
-  color: #ffffff;
-}
-
-.top-bar-right {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 1.5);
-}
-
-.user-avatar {
+.shell-user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--btn-primary-bg);
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.user-name {
-  color: #ffffff;
-  font-size: 14px;
-}
-
-.logout-link {
-  color: var(--nav-icon-color);
-  text-decoration: none;
   font-size: 13px;
-  transition: color var(--motion-duration) var(--motion-easing);
-}
-
-.logout-link:hover {
+  font-weight: 600;
   color: #ffffff;
 }
 
-.main-container {
+.shell-user-name {
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.shell-logout {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color var(--motion-duration) ease;
+}
+
+.shell-logout:hover {
+  color: #ffffff;
+}
+
+.shell-body {
   display: flex;
   flex: 1;
   overflow: hidden;
-}
-
-.sidebar {
-  width: 240px;
-  background: var(--bg-sidebar);
-  border-right: var(--border-width) solid var(--border);
-  overflow-y: auto;
-  flex-shrink: 0;
-  transition: transform var(--motion-duration-slow) var(--motion-easing);
-}
-
-.sidebar.collapsed {
-  transform: translateX(-100%);
-  position: absolute;
-  left: 0;
-  top: 56px;
-  height: calc(100vh - 56px);
-  z-index: 100;
-  box-shadow: var(--shadow-modal);
-}
-
-.sidebar-section {
-  padding: calc(var(--space-unit) * 1.5) 0;
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.sidebar-section:first-child {
-  padding-top: calc(var(--space-unit) * 2);
-}
-
-.sidebar-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: 0 calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 1);
-  letter-spacing: 0.5px;
-}
-
-.nav-item {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-  color: var(--text);
-  text-decoration: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color var(--motion-duration) var(--motion-easing), color var(--motion-duration) var(--motion-easing);
-  display: block;
-  border-left: 3px solid transparent;
-}
-
-.nav-item:hover {
-  background-color: var(--active-bg);
-}
-
-.nav-item.aivic-active {
-  background-color: var(--active-bg);
-  color: var(--primary);
-  border-left-color: var(--primary);
-  font-weight: 500;
 }
 
 .content-area {
@@ -258,725 +188,685 @@ body {
 }
 
 [data-aivic-panel] {
-  display: contents;
-}
-
-.page-header {
-  padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 3);
-  border-bottom: var(--border-width) solid var(--border);
-  background: var(--input-bg);
+  padding: calc(var(--space-unit) * 3);
+  min-height: 100%;
 }
 
 .page-title {
-  font-family: var(--font-family-serif);
-  font-size: 24px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 2);
+  letter-spacing: 0.3px;
+}
+
+.page-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 2.5);
+  font-weight: 500;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+  margin-top: calc(var(--space-unit) * 2);
+}
+
+.card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+  box-shadow: var(--shadow-card);
+}
+
+.card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.card-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: calc(var(--space-unit) * 0.75);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.form-group {
+  margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: calc(var(--space-unit) * 0.5);
 }
 
-.page-subtitle {
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
   font-size: 13px;
-  color: var(--text-muted);
-}
-
-.page-content {
-  padding: calc(var(--space-unit) * 3);
-}
-
-.filter-bar {
-  background: var(--input-bg);
   border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 2.5);
-  display: flex;
-  gap: calc(var(--space-unit) * 2);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.filter-group {
-  display: flex;
-  gap: calc(var(--space-unit) * 1);
-  align-items: center;
-}
-
-.filter-label {
-  font-size: 13px;
-  font-weight: 500;
+  border-radius: var(--radius-control);
+  background: #ffffff;
   color: var(--text);
-}
-
-.filter-control {
-  height: var(--control-height);
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1);
-  border: var(--border-width) solid var(--input-border);
-  border-radius: var(--radius-control);
-  background: var(--input-bg);
-  color: var(--input-text);
-  font-size: 13px;
   font-family: var(--font-family);
-  transition: border-color var(--motion-duration) var(--motion-easing);
+  transition: border-color var(--motion-duration) ease;
 }
 
-.filter-control:focus {
+.form-input,
+.form-select {
+  height: var(--control-height);
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
   outline: none;
-  border-color: var(--input-border-focus);
-  box-shadow: 0 0 0 var(--focus-ring-offset) var(--focus-ring);
+  border-color: var(--primary);
 }
 
-.filter-control::placeholder {
-  color: var(--input-placeholder);
-}
-
-.toggle-group {
-  display: flex;
-  gap: 0;
-  background: var(--bg-card);
-  border-radius: var(--radius-control);
-  padding: 2px;
-}
-
-.toggle-btn {
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1.25);
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--motion-duration) var(--motion-easing);
-  border-radius: var(--radius-control);
-}
-
-.toggle-btn.active {
-  background: var(--input-bg);
-  color: var(--primary);
-  box-shadow: var(--shadow-card);
-}
-
-.button {
+.btn {
   height: var(--control-height);
   padding: 0 calc(var(--space-unit) * 2);
+  font-size: 13px;
+  font-weight: 600;
   border: none;
   border-radius: var(--radius-control);
-  font-size: 13px;
-  font-weight: 500;
-  font-family: var(--font-family);
   cursor: pointer;
-  transition: all var(--motion-duration) var(--motion-easing);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(var(--space-unit) * 0.75);
+  transition: all var(--motion-duration) ease;
+  font-family: var(--font-family);
 }
 
-.button-primary {
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
 }
 
-.button-primary:hover {
-  background: var(--btn-primary-hover);
-  box-shadow: var(--shadow-card-hover);
+.btn-primary:hover {
+  background: var(--primary-hover);
 }
 
-.button-primary:disabled {
-  opacity: var(--disabled-opacity);
-  cursor: not-allowed;
-}
-
-.button-secondary {
-  background: var(--btn-secondary-bg);
-  color: var(--btn-secondary-text);
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text);
   border: var(--border-width) solid var(--border);
 }
 
-.button-secondary:hover {
-  background: var(--btn-secondary-hover);
+.btn-secondary:hover {
+  background: #ffffff;
 }
 
-.button-secondary:disabled {
-  opacity: var(--disabled-opacity);
-  cursor: not-allowed;
-}
-
-.button-ghost {
-  background: transparent;
-  color: var(--btn-ghost-text);
-  border: var(--border-width) solid var(--border);
-}
-
-.button-ghost:hover {
-  background: var(--btn-ghost-hover-bg);
-}
-
-.button-danger {
-  background: var(--status-error);
+.btn-danger {
+  background: var(--error);
   color: #ffffff;
 }
 
-.button-danger:hover {
-  background: #a01f1f;
-  box-shadow: var(--shadow-card-hover);
+.btn-danger:hover {
+  background: #6b3333;
 }
 
-.button-success {
-  background: var(--status-success);
+.btn-success {
+  background: var(--success);
   color: #ffffff;
 }
 
-.button-success:hover {
-  background: #1e5a2e;
-  box-shadow: var(--shadow-card-hover);
+.btn-success:hover {
+  background: #2d6339;
 }
 
-.button-warning {
-  background: var(--status-warning);
-  color: #ffffff;
-}
-
-.button-warning:hover {
-  background: #b35c00;
-  box-shadow: var(--shadow-card-hover);
-}
-
-.button-small {
+.btn-sm {
   height: 32px;
   padding: 0 calc(var(--space-unit) * 1.5);
   font-size: 12px;
 }
 
-.button-group {
+.btn-group {
   display: flex;
   gap: calc(var(--space-unit) * 1);
+  margin-bottom: calc(var(--space-unit) * 1.5);
 }
 
-.table-wrapper {
-  background: var(--input-bg);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  margin-bottom: calc(var(--space-unit) * 2.5);
-}
-
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-}
-
-thead {
-  background: var(--table-header-bg);
-  border-bottom: var(--border-width) solid var(--table-border);
-}
-
-th {
-  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
-  text-align: left;
-  font-weight: 600;
-  color: var(--table-header-text);
-  font-family: var(--font-family-serif);
-  font-size: 12px;
-}
-
-td {
-  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
-  border-bottom: var(--border-width) solid var(--table-border);
-  color: var(--text);
-}
-
-tbody tr:hover {
-  background: var(--table-row-hover);
-}
-
-tbody tr:nth-child(even) {
-  background: var(--table-stripe-bg);
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 0.5);
-  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
-  border-radius: calc(var(--radius-control) * 2);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-success {
-  background: var(--status-success-light);
-  color: var(--status-success);
-}
-
-.status-warning {
-  background: var(--status-warning-light);
-  color: var(--status-warning);
-}
-
-.status-error {
-  background: var(--status-error-light);
-  color: var(--status-error);
-}
-
-.status-info {
-  background: var(--status-info-light);
-  color: var(--status-info);
-}
-
-.card {
-  background: var(--input-bg);
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  box-shadow: var(--shadow-card);
-  margin-bottom: calc(var(--space-unit) * 2.5);
-}
-
-.card-title {
-  font-family: var(--font-family-serif);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-  padding-bottom: calc(var(--space-unit) * 1);
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.card-content {
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--text);
-}
-
-.form-group {
+  overflow: hidden;
   margin-bottom: calc(var(--space-unit) * 2);
 }
 
-.form-label {
-  display: block;
+.table thead {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.table th {
+  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.table td {
+  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.table tbody tr:hover {
+  background: rgba(44, 62, 80, 0.02);
+}
+
+.badge {
+  display: inline-block;
+  padding: calc(var(--space-unit) * 0.4) calc(var(--space-unit) * 0.8);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background: rgba(61, 126, 74, 0.15);
+  color: var(--success);
+}
+
+.badge-warning {
+  background: rgba(166, 124, 82, 0.15);
+  color: var(--warning);
+}
+
+.badge-error {
+  background: rgba(139, 69, 69, 0.15);
+  color: var(--error);
+}
+
+.badge-info {
+  background: rgba(74, 111, 165, 0.15);
+  color: var(--info);
+}
+
+.filter-bar {
+  display: flex;
+  gap: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-select {
+  min-width: 140px;
+}
+
+.tab-group {
+  display: flex;
+  gap: 0;
+  margin-bottom: calc(var(--space-unit) * 2);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.tab-button {
+  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 2);
   font-size: 13px;
   font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--motion-duration) ease;
+}
+
+.tab-button:hover {
   color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.75);
 }
 
-.form-input, .form-select, .form-textarea {
-  width: 100%;
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.25);
-  border: var(--border-width) solid var(--input-border);
-  border-radius: var(--radius-control);
-  background: var(--input-bg);
-  color: var(--input-text);
-  font-size: 13px;
-  font-family: var(--font-family);
-  transition: border-color var(--motion-duration) var(--motion-easing);
+.tab-button.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--input-border-focus);
-  box-shadow: 0 0 0 var(--focus-ring-offset) var(--focus-ring);
-}
-
-.form-input::placeholder {
-  color: var(--input-placeholder);
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--modal-overlay);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn var(--motion-duration) var(--motion-easing);
-}
-
-.modal {
-  background: var(--modal-bg);
-  border: var(--border-width) solid var(--modal-border);
+.accordion {
+  border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-modal);
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  animation: slideUp var(--motion-duration) var(--motion-easing);
+  margin-bottom: calc(var(--space-unit) * 2);
+  background: #ffffff;
 }
 
-.modal-header {
-  padding: calc(var(--space-unit) * 2);
-  border-bottom: var(--border-width) solid var(--border);
+.accordion-header {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  background: var(--bg-card);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all var(--motion-duration) ease;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.modal-title {
-  font-family: var(--font-family-serif);
-  font-size: 16px;
+.accordion-header:hover {
+  background: #ebe9e4;
+}
+
+.accordion-content {
+  padding: calc(var(--space-unit) * 2);
+  display: none;
+}
+
+.accordion-content.active {
+  display: block;
+}
+
+.accordion-toggle {
+  font-size: 10px;
+  transition: transform var(--motion-duration) ease;
+}
+
+.accordion-toggle.active {
+  transform: rotate(180deg);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.summary-card {
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 1.5);
+  box-shadow: var(--shadow-card);
+}
+
+.summary-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: calc(var(--space-unit) * 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.summary-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: calc(var(--space-unit) * 0.5);
+}
+
+.status-row {
+  padding: calc(var(--space-unit) * 1);
+  margin-bottom: calc(var(--space-unit) * 1);
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-row.warning {
+  background: rgba(166, 124, 82, 0.08);
+  border-color: rgba(166, 124, 82, 0.3);
+}
+
+.status-label {
+  font-size: 12px;
   font-weight: 600;
   color: var(--text);
 }
 
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 20px;
+.status-value {
+  font-size: 12px;
   color: var(--text-muted);
-  cursor: pointer;
-  transition: color var(--motion-duration) var(--motion-easing);
 }
 
-.modal-close:hover {
-  color: var(--text);
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
 }
 
-.modal-body {
-  padding: calc(var(--space-unit) * 2);
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 12px rgba(28, 31, 38, 0.15);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: calc(var(--space-unit) * 3);
+}
+
+.modal-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
 .modal-footer {
-  padding: calc(var(--space-unit) * 2);
-  border-top: var(--border-width) solid var(--border);
   display: flex;
-  gap: calc(var(--space-unit) * 1);
+  gap: calc(var(--space-unit) * 1.5);
+  margin-top: calc(var(--space-unit) * 3);
   justify-content: flex-end;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.inline-form {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 1.5);
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.inline-form .form-group {
+  margin-bottom: calc(var(--space-unit) * 1);
 }
 
-.text-muted {
-  color: var(--text-muted);
-  font-size: 12px;
+.inline-form .form-label {
+  margin-bottom: calc(var(--space-unit) * 0.25);
 }
 
-.text-center {
-  text-align: center;
-}
-
-.mt-1 { margin-top: calc(var(--space-unit) * 1); }
-.mt-2 { margin-top: calc(var(--space-unit) * 2); }
-.mb-1 { margin-bottom: calc(var(--space-unit) * 1); }
-.mb-2 { margin-bottom: calc(var(--space-unit) * 2); }
-.gap-1 { gap: calc(var(--space-unit) * 1); }
-.gap-2 { gap: calc(var(--space-unit) * 2); }
-
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.flex-wrap { flex-wrap: wrap; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.justify-end { justify-content: flex-end; }
-
-@media (max-width: 768px) {
-  .sidebar {
-    position: absolute;
-    left: 0;
-    top: 56px;
-    height: calc(100vh - 56px);
-    z-index: 100;
-    transform: translateX(-100%);
+@media (max-width: 1024px) {
+  .grid-2,
+  .grid-3,
+  .summary-grid {
+    grid-template-columns: 1fr;
   }
-
-  .sidebar.collapsed {
-    transform: translateX(0);
+  
+  .shell-nav-top {
+    display: none;
   }
-
+  
   .filter-bar {
     flex-direction: column;
-    align-items: flex-start;
   }
-
-  .filter-group {
+  
+  .filter-input,
+  .filter-select {
     width: 100%;
-  }
-
-  .filter-control {
-    width: 100%;
-  }
-
-  .page-content {
-    padding: calc(var(--space-unit) * 2);
-  }
-
-  .page-header {
-    padding: calc(var(--space-unit) * 2);
   }
 }
   </style>
+  
 <script>
 window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
 window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "施設管理者向け予約・料金管理機能";
 window.AIVIC_TABLES = [{"tableName":"利用者","purpose":"公共施設オンライン予約・決済サービスの利用者情報を管理し、認証、予約、決済処理に必要な基本情報を保持する","columns":[{"name":"利用者ID","type":"uuid","required":true,"description":"利用者を一意に識別するプライマリキー"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ログイン認証および連絡用のメールアドレス、ユニーク制約あり"},{"name":"パスワードハッシュ","type":"varchar(100)","required":true,"description":"ログイン認証用のハッシュ化されたパスワード"},{"name":"氏名","type":"varchar(100)","required":true,"description":"利用者の氏名"},{"name":"電話番号","type":"varchar(100)","required":true,"description":"予約確認や施設からの連絡用電話番号"},{"name":"住所","type":"text","required":false,"description":"利用者の住所情報"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"利用者ステータス(有効/無効/休止中等)、予約可能判定に使用"},{"name":"作成日時","type":"timestamp","required":true,"description":"利用者登録日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"利用者情報最終更新日時"}]},{"tableName":"操作履歴","purpose":"ユーザーによるバックアップ・復旧システムの全操作を記録し、監査証跡とトラブルシューティングの基盤を提供する","columns":[{"name":"操作履歴ID","type":"uuid","required":true,"description":"操作履歴の一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"操作を実行したユーザーの識別子、ユーザーテーブルへの外部キー"},{"name":"操作種別","type":"varchar(100)","required":true,"description":"実行された操作の種類（バックアップ実行、復旧実行、設定変更、ジョブ削除等）"},{"name":"対象リソースタイプ","type":"varchar(100)","required":true,"description":"操作の対象となるリソースの種類（バックアップジョブ、復旧ジョブ、RTO_RPO設定等）"},{"name":"対象リソースID","type":"uuid","required":true,"description":"操作の対象となるリソースの識別子"},{"name":"操作内容","type":"text","required":false,"description":"操作の詳細な内容や変更内容の説明"},{"name":"操作ステータス","type":"varchar(100)","required":true,"description":"操作の実行結果（成功、失敗、部分成功等）"},{"name":"エラーメッセージ","type":"text","required":false,"description":"操作失敗時のエラーメッセージ"},{"name":"実行開始日時","type":"timestamp","required":true,"description":"操作の実行開始日時"},{"name":"実行終了日時","type":"timestamp","required":false,"description":"操作の実行終了日時"},{"name":"実行時間秒","type":"integer","required":false,"description":"操作の実行所要時間（秒単位）"},{"name":"IPアドレス","type":"varchar(100)","required":false,"description":"操作を実行したクライアントのIPアドレス"},{"name":"セッションID","type":"varchar(100)","required":false,"description":"操作を実行したセッションの識別子"},{"name":"作成日時","type":"timestamp","required":true,"description":"操作履歴レコードの作成日時"}]},{"tableName":"施設管理者","purpose":"施設の管理者情報を管理し、予約・料金管理機能の権限制御と監査証跡を実現するマスタテーブル","columns":[{"name":"施設管理者ID","type":"uuid","required":true,"description":"施設管理者を一意に識別するプライマリキー"},{"name":"施設ID","type":"uuid","required":true,"description":"管理対象の施設を識別する外部キー"},{"name":"利用者ID","type":"uuid","required":true,"description":"管理者権限を持つ利用者を識別する外部キー"},{"name":"管理者名","type":"varchar(100)","required":true,"description":"施設管理者の表示名"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"施設管理者の連絡先メールアドレス"},{"name":"電話番号","type":"varchar(100)","required":false,"description":"施設管理者の連絡先電話番号"},{"name":"権限レベル","type":"varchar(100)","required":true,"description":"管理者の権限レベル(FULL/RESERVATION/BILLING等)"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"管理者のステータス(ACTIVE/INACTIVE/SUSPENDED)"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"レコード作成者の利用者ID"},{"name":"更新者ID","type":"uuid","required":true,"description":"レコード最終更新者の利用者ID"}]},{"tableName":"団体","purpose":"施設管理者が団体利用者の予約・料金を一元管理するための団体マスタテーブル。団体情報、利用実績、請求情報を保持し、予約・料金計算・請求処理の基盤となる。","columns":[{"name":"団体ID","type":"uuid","required":true,"description":"団体を一意に識別するプライマリキー"},{"name":"団体名","type":"varchar(100)","required":true,"description":"団体の正式名称"},{"name":"団体名カナ","type":"varchar(100)","required":false,"description":"団体名のカナ表記、検索・ソート用"},{"name":"代表者名","type":"varchar(100)","required":false,"description":"団体の代表者または責任者の名前"},{"name":"代表者電話番号","type":"varchar(100)","required":false,"description":"団体代表者の連絡先電話番号"},{"name":"代表者メールアドレス","type":"varchar(100)","required":false,"description":"団体代表者のメールアドレス"},{"name":"住所","type":"text","required":false,"description":"団体の所在地住所"},{"name":"会員数","type":"integer","required":false,"description":"団体の現在の会員数、料金計算の基準となる"},{"name":"契約開始日","type":"timestamp","required":false,"description":"団体との契約開始日"},{"name":"契約終了日","type":"timestamp","required":false,"description":"団体との契約終了日、nullの場合は継続中"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"団体のステータス：有効/休止/解約"},{"name":"請求先","type":"varchar(100)","required":false,"description":"請求先の名称、代表者名と異なる場合に指定"},{"name":"請求先住所","type":"text","required":false,"description":"請求先の住所"},{"name":"請求先電話番号","type":"varchar(100)","required":false,"description":"請求先の電話番号"},{"name":"請求先メールアドレス","type":"varchar(100)","required":false,"description":"請求先のメールアドレス"},{"name":"割引率","type":"integer","required":false,"description":"団体に適用する割引率（パーセンテージ）"},{"name":"備考","type":"text","required":false,"description":"団体に関する特記事項や管理メモ"},{"name":"作成日時","type":"timestamp","required":true,"description":"団体レコードの作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"団体レコードの最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"団体レコードを作成した施設管理者のID"},{"name":"更新者ID","type":"uuid","required":true,"description":"団体レコードを最後に更新した施設管理者のID"}]},{"tableName":"予約申込","purpose":"施設管理者が利用者からの予約申込を管理し、料金計算・承認・キャンセル処理を行うためのトランザクションテーブル","columns":[{"name":"予約申込ID","type":"uuid","required":true,"description":"予約申込の一意識別子"},{"name":"利用者ID","type":"uuid","required":true,"description":"予約を申し込んだ利用者への外部キー参照"},{"name":"団体ID","type":"uuid","required":false,"description":"団体予約の場合の団体への外部キー参照"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"予約対象施設の管理者への外部キー参照"},{"name":"予約状態","type":"varchar(100)","required":true,"description":"予約の状態コード(申込中/承認済/キャンセル/完了等)"},{"name":"利用開始日時","type":"timestamp","required":true,"description":"施設利用の開始日時"},{"name":"利用終了日時","type":"timestamp","required":true,"description":"施設利用の終了日時"},{"name":"利用人数","type":"integer","required":true,"description":"予約時の利用予定人数"},{"name":"料金","type":"integer","required":true,"description":"計算された予約料金(円)"},{"name":"支払状態","type":"varchar(100)","required":true,"description":"支払い状態コード(未払/支払済/返金等)"},{"name":"備考","type":"text","required":false,"description":"予約に関する特記事項やリクエスト"},{"name":"作成日時","type":"timestamp","required":true,"description":"予約申込が作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"予約申込が最後に更新された日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"予約申込を作成した利用者への外部キー参照"}]},{"tableName":"予約承認基準","purpose":"施設管理者が設定する予約申込の自動承認ルールを管理し、利用者の予約申込が承認基準を満たすかを判定するための基準値を保持する","columns":[{"name":"承認基準ID","type":"uuid","required":true,"description":"予約承認基準の一意識別子"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"この承認基準を設定した施設管理者への外部キー"},{"name":"基準名","type":"varchar(100)","required":true,"description":"承認基準の名称（例：通常利用者向け、団体向け）"},{"name":"対象利用者区分","type":"varchar(100)","required":true,"description":"この基準が適用される利用者区分（個人、団体など）"},{"name":"最大予約日数","type":"integer","required":false,"description":"一度の予約で申し込める最大日数"},{"name":"最大同時予約件数","type":"integer","required":false,"description":"同時に保有できる予約の最大件数"},{"name":"予約可能日前日数","type":"integer","required":false,"description":"予約申込から利用開始までの最小日数"},{"name":"自動承認フラグ","type":"boolean","required":true,"description":"この基準を満たす予約申込を自動承認するかどうか"},{"name":"有効フラグ","type":"boolean","required":true,"description":"この承認基準が現在有効かどうか"},{"name":"作成日時","type":"timestamp","required":true,"description":"承認基準の作成日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"承認基準を作成した施設管理者のID"},{"name":"更新日時","type":"timestamp","required":true,"description":"承認基準の最終更新日時"},{"name":"更新者ID","type":"uuid","required":true,"description":"承認基準を最後に更新した施設管理者のID"}]},{"tableName":"料金ルール","purpose":"施設の利用料金体系を定義・管理し、予約申込時の料金計算に使用される料金パターンを一元管理する","columns":[{"name":"料金ルールID","type":"uuid","required":true,"description":"料金ルールの一意識別子"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"この料金ルールを管理する施設管理者への外部キー"},{"name":"ルール名","type":"varchar(100)","required":true,"description":"料金ルールの名称（例：通常料金、団体割引、ピーク時料金）"},{"name":"説明","type":"text","required":false,"description":"料金ルールの詳細説明"},{"name":"基本料金","type":"integer","required":true,"description":"このルールの基本料金（円）"},{"name":"単位時間","type":"integer","required":true,"description":"料金計算の単位時間（分）"},{"name":"適用開始日","type":"timestamp","required":true,"description":"このルールが適用開始される日時"},{"name":"適用終了日","type":"timestamp","required":false,"description":"このルールが適用終了される日時（NULLの場合は無期限）"},{"name":"最小利用時間","type":"integer","required":false,"description":"最小利用時間（分）"},{"name":"最大利用時間","type":"integer","required":false,"description":"最大利用時間（分、NULLの場合は無制限）"},{"name":"有効フラグ","type":"boolean","required":true,"description":"料金ルールが有効かどうか"},{"name":"作成日時","type":"timestamp","required":true,"description":"料金ルール作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"料金ルール最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"料金ルールを作成した施設管理者のID"}]},{"tableName":"割引マスタ","purpose":"施設管理者が定義・管理する割引ルールのマスタテーブル。予約申込時に料金計算に適用される割引条件（割引率、割引額、適用対象、有効期間等）を一元管理する。","columns":[{"name":"割引ID","type":"uuid","required":true,"description":"割引ルールを一意に識別するプライマリキー"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"この割引ルールを管理する施設管理者のID。外部キー：施設管理者テーブル"},{"name":"割引名","type":"varchar(100)","required":true,"description":"割引ルールの名称（例：早期割引、団体割引、シニア割引）"},{"name":"割引説明","type":"text","required":false,"description":"割引の詳細説明や適用条件の補足"},{"name":"割引タイプ","type":"varchar(100)","required":true,"description":"割引の種類（率引き、定額割引等）"},{"name":"割引値","type":"integer","required":true,"description":"割引率（%）または割引額（円）の数値"},{"name":"適用対象","type":"varchar(100)","required":true,"description":"割引の適用対象（全利用者、団体のみ、特定利用者等）"},{"name":"有効開始日","type":"timestamp","required":true,"description":"割引ルールの適用開始日時"},{"name":"有効終了日","type":"timestamp","required":false,"description":"割引ルールの適用終了日時。NULLの場合は無期限"},{"name":"最小適用金額","type":"integer","required":false,"description":"割引が適用される最小金額（円）"},{"name":"最大割引額","type":"integer","required":false,"description":"1回の予約で適用される最大割引額（円）"},{"name":"優先度","type":"integer","required":false,"description":"複数割引が適用可能な場合の優先順位。数値が小さいほど優先度が高い"},{"name":"有効フラグ","type":"boolean","required":true,"description":"割引ルールが有効かどうか。falseの場合は適用されない"},{"name":"作成日時","type":"timestamp","required":true,"description":"割引ルールが作成された日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"割引ルールを作成した施設管理者のID"},{"name":"更新日時","type":"timestamp","required":true,"description":"割引ルールが最後に更新された日時"},{"name":"更新者ID","type":"uuid","required":true,"description":"割引ルールを最後に更新した施設管理者のID"}]},{"tableName":"返金条件","purpose":"施設管理者が予約キャンセル時の返金ルールを定義・管理するためのマスタテーブル。キャンセル期限と返金率の対応関係を保持し、予約キャンセル処理時に参照される。","columns":[{"name":"返金条件ID","type":"uuid","required":true,"description":"返金条件を一意に識別するプライマリキー"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"この返金条件を管理する施設管理者への外部キー"},{"name":"条件名","type":"varchar(100)","required":true,"description":"返金条件の名称（例：標準返金ルール、グループ向けルール）"},{"name":"キャンセル期限日数","type":"integer","required":true,"description":"利用予定日の何日前までのキャンセルに適用するか（例：7日前、3日前）"},{"name":"返金率","type":"integer","required":true,"description":"返金対象となる料金の割合（0～100のパーセンテージ）"},{"name":"説明","type":"text","required":false,"description":"返金条件の詳細説明や適用対象の補足"},{"name":"有効フラグ","type":"boolean","required":true,"description":"この返金条件が現在有効かどうか"},{"name":"作成日時","type":"timestamp","required":true,"description":"返金条件が作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"返金条件が最後に更新された日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"返金条件を作成した施設管理者のID"}]},{"tableName":"利用料金計算結果","purpose":"予約申込に基づいて計算された利用料金の詳細結果を記録し、施設管理者が料金内訳を確認・管理するための履歴テーブル","columns":[{"name":"料金計算結果ID","type":"uuid","required":true,"description":"料金計算結果の一意識別子"},{"name":"予約申込ID","type":"uuid","required":true,"description":"対応する予約申込への外部キー"},{"name":"利用者ID","type":"uuid","required":true,"description":"利用者への外部キー"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"施設管理者への外部キー"},{"name":"基本料金","type":"integer","required":true,"description":"料金ルールに基づいて計算された基本料金（円）"},{"name":"割引額","type":"integer","required":false,"description":"割引マスタから適用された割引額（円）"},{"name":"割引率","type":"integer","required":false,"description":"適用された割引率（パーセンテージ）"},{"name":"税金","type":"integer","required":false,"description":"計算された税金額（円）"},{"name":"合計料金","type":"integer","required":true,"description":"基本料金から割引と税金を適用した最終合計料金（円）"},{"name":"計算日時","type":"timestamp","required":true,"description":"料金が計算された日時"},{"name":"計算ステータス","type":"varchar(100)","required":true,"description":"計算結果のステータス（成功/エラー/保留中など）"},{"name":"計算備考","type":"text","required":false,"description":"計算時の特記事項やエラーメッセージ"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"レコード作成者（施設管理者またはシステム）"}]},{"tableName":"収納状況","purpose":"施設管理者が予約に基づく利用料金の収納状況を追跡・管理し、未収金や返金処理の進捗を把握するためのテーブル","columns":[{"name":"収納状況ID","type":"uuid","required":true,"description":"収納状況レコードの一意識別子"},{"name":"予約申込ID","type":"uuid","required":true,"description":"関連する予約申込への外部キー"},{"name":"利用料金計算結果ID","type":"uuid","required":true,"description":"関連する利用料金計算結果への外部キー"},{"name":"請求金額","type":"integer","required":true,"description":"利用者に請求する金額（円）"},{"name":"収納済金額","type":"integer","required":true,"description":"実際に収納された金額（円）"},{"name":"未収金額","type":"integer","required":true,"description":"未だ収納されていない金額（円）"},{"name":"返金予定金額","type":"integer","required":false,"description":"返金条件に基づいて返金予定の金額（円）"},{"name":"返金済金額","type":"integer","required":false,"description":"実際に返金された金額（円）"},{"name":"収納状況ステータス","type":"varchar(100)","required":true,"description":"収納状況のステータス（未収納、部分収納、全額収納、返金待機、返金完了等）"},{"name":"最終収納日時","type":"timestamp","required":false,"description":"最後に収納が行われた日時"},{"name":"返金日時","type":"timestamp","required":false,"description":"返金が実行された日時"},{"name":"備考","type":"text","required":false,"description":"収納状況に関する追加情報やメモ"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"レコード作成者の施設管理者ID"}]},{"tableName":"利用実績","purpose":"施設の実際の利用状況を記録し、予約との照合、料金計算、利用統計の基礎データとなるトランザクションテーブル","columns":[{"name":"利用実績ID","type":"uuid","required":true,"description":"利用実績を一意に識別するプライマリキー"},{"name":"予約申込ID","type":"uuid","required":true,"description":"対応する予約申込への外部キー参照"},{"name":"利用者ID","type":"uuid","required":true,"description":"実際に利用した利用者への外部キー参照"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"当該施設を管理する施設管理者への外部キー参照"},{"name":"団体ID","type":"uuid","required":false,"description":"団体利用の場合の団体への外部キー参照"},{"name":"利用開始日時","type":"timestamp","required":true,"description":"実際の利用開始日時"},{"name":"利用終了日時","type":"timestamp","required":true,"description":"実際の利用終了日時"},{"name":"利用時間分","type":"integer","required":true,"description":"実際の利用時間を分単位で記録"},{"name":"利用人数","type":"integer","required":true,"description":"実際の利用人数"},{"name":"利用料金計算結果ID","type":"uuid","required":false,"description":"この利用実績に基づいて計算された料金結果への外部キー参照"},{"name":"実績ステータス","type":"varchar(100)","required":true,"description":"利用実績のステータス(完了、キャンセル、未確定等)"},{"name":"備考","type":"text","required":false,"description":"利用実績に関する追加情報や特記事項"},{"name":"作成日時","type":"timestamp","required":true,"description":"利用実績レコードの作成日時"},{"name":"作成者","type":"uuid","required":true,"description":"利用実績を作成した施設管理者のID"},{"name":"更新日時","type":"timestamp","required":true,"description":"利用実績レコードの最終更新日時"},{"name":"更新者","type":"uuid","required":false,"description":"利用実績を最後に更新した施設管理者のID"}]},{"tableName":"代行予約ログ","purpose":"施設管理者が利用者に代わって予約を作成・変更・キャンセルした操作履歴を記録し、監査証跡と代行権限の管理を実現する","columns":[{"name":"代行予約ログID","type":"uuid","required":true,"description":"代行予約ログの一意識別子"},{"name":"施設管理者ID","type":"uuid","required":true,"description":"代行操作を実行した施設管理者の識別子"},{"name":"利用者ID","type":"uuid","required":true,"description":"代行予約の対象となる利用者の識別子"},{"name":"予約申込ID","type":"uuid","required":true,"description":"代行操作の対象となる予約申込の識別子"},{"name":"操作種別","type":"varchar(100)","required":true,"description":"代行操作の種類(作成/変更/キャンセル等)"},{"name":"操作内容","type":"text","required":false,"description":"代行操作の詳細内容(変更前後の値等)"},{"name":"代行理由","type":"text","required":false,"description":"施設管理者が代行操作を実施した理由"},{"name":"操作日時","type":"timestamp","required":true,"description":"代行操作が実行された日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ログレコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ログレコードが最後に更新された日時"}]}];
-window.AIVIC_PRESET_SEED = {"利用者":[{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"田中太郎","電話番号":"090-1234-5678","住所":"東京都渋谷区道玄坂1-2-3","ステータス":"有効","作成日時":"2024-03-15T10:30:00+09:00","更新日時":"2025-01-20T14:45:30+09:00"},{"利用者ID":"rec-001","メールアドレス":"suzuki.hanako@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"鈴木花子","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3","ステータス":"有効","作成日時":"2024-11-15 14:30:00","更新日時":"2024-11-15 14:30:00"},{"利用者ID":"rec-001","メールアドレス":"suzuki.hanako@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"鈴木花子","電話番号":"090-1234-5678","住所":"東京都渋谷区道玄坂1-2-3 シティハイツ渋谷201号室","ステータス":"有効","作成日時":"2024-03-15 10:30:45","更新日時":"2025-01-22 14:15:30"},{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"田中太郎","電話番号":"090-1234-5678","住所":"東京都渋谷区道玄坂1-2-3 シティマンション101","ステータス":"休止中","作成日時":"2024-03-15 10:30:00","更新日時":"2024-12-20 14:45:00"},{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"田中太郎","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 シティマンション101","ステータス":"有効","作成日時":"2025-01-15 14:32:45","更新日時":"2025-01-15 14:32:45"},{"利用者ID":"rec-001","メールアドレス":"suzuki.hanako@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"鈴木花子","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 シティマンション101号室","ステータス":"休止中","作成日時":"2023-06-15 14:30:00","更新日時":"2024-12-20 09:15:00"},{"利用者ID":"rec-001","メールアドレス":"yamada.団体予約@example.co.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"山田花子","電話番号":"03-1234-5678","住所":"東京都渋谷区道玄坂1-2-3 渋谷ビジネスセンター5階","ステータス":"有効","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00"},{"利用者ID":"rec-001","メールアドレス":"yamada.taro.new@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","氏名":"山田太郎","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3","ステータス":"再認証待機中","作成日時":"2024-03-15 10:30:00","更新日時":"2025-01-22 14:45:30"},{"利用者ID":"rec-001","メールアドレス":"yamada.hanako@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"山田花子","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 グリーンマンション301号室","ステータス":"利用禁止中","作成日時":"2024-03-15 10:30:00","更新日時":"2025-01-20 14:45:00"},{"利用者ID":"rec-001","メールアドレス":"admin-test@facility-system.local","パスワードハッシュ":"$2b$12$8kN9pL2mQ5vR3tW6xY7zU.9aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0u","氏名":"施設太郎","電話番号":"090-1234-5678","住所":"東京都渋谷区道玄坂1-2-3 テストビル4階","ステータス":"有効","作成日時":"2024-01-15T09:30:00+09:00","更新日時":"2025-01-10T14:20:00+09:00"}],"操作履歴":[{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-003","操作内容":"日次バックアップジョブ「施設システム_日次_全量」を手動実行。対象：施設管理システムDB、ファイルサーバ。バックアップ完了、データサイズ：45.2GB","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15 09:30:00","実行終了日時":"2024-11-15 10:18:45","実行時間秒":2925,"IPアドレス":"192.168.1.105","セッションID":"sess-20241115093000-7f8a2b","作成日時":"2024-11-15 10:18:46"},{"操作履歴ID":"rec-20250215-0847","ユーザーID":"rec-user-0324","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-job-1156","操作内容":"2025年2月15日08:47に発生したシステム障害に対応し、東京リージョンのデータベースサーバー群を対象に復旧ジョブを実行。RTO_RPO設定に基づいて2024年2月14日23:30時点のバックアップから復旧を開始。復旧対象サーバーは全8台中6台が正常に復旧完了したが、サーバーDB-03とDB-07はストレージ接続エラーにより復旧失敗。","操作ステータス":"部分成功","エラーメッセージ":"サーバーDB-03: ストレージデバイス/dev/sdb接続タイムアウト。サーバーDB-07: マウントポイント/mnt/backup権限エラー（Permission denied）。","実行開始日時":"2025-02-15 08:47:12","実行終了日時":"2025-02-15 09:23:45","実行時間秒":2193,"IPアドレス":"192.168.10.45","セッションID":"sess-7a4c9e2f1b8d6","作成日時":"2025-02-15 09:23:47"},{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"設定変更","対象リソースタイプ":"RTO_RPO設定","対象リソースID":"rec-003","操作内容":"RTO値を-100秒に設定しようとした。RPO値は3600秒で指定。","操作ステータス":"失敗","エラーメッセージ":"バリデーションエラー: RTO値は0以上の正の整数で指定してください。入力値: -100","実行開始日時":"2024-11-15 14:32:45","実行終了日時":"2024-11-15 14:32:47","実行時間秒":2,"IPアドレス":"192.168.1.105","セッションID":"sess-a7f2d9e1b4c6","作成日時":"2024-11-15 14:32:47"},{"操作履歴ID":"rec-20250215-a7f3","ユーザーID":"rec-user-0842","操作種別":"復旧実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-5621","操作内容":"誤削除されたバックアップジョブ「営業DB_日次バックアップ」を復旧ジョブREC-20250214-001を使用して復元。スケジュール設定、フィルタ条件、保持期間設定を含む全設定を復元完了。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15 09:23:15","実行終了日時":"2025-02-15 09:24:42","実行時間秒":87,"IPアドレス":"192.168.10.45","セッションID":"sess_5a8c9e2b7d1f4c6a","作成日時":"2025-02-15 09:24:42"},{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"ジョブ削除","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-003","操作内容":"定期メンテナンス実施に伴い、本番環境の日次バックアップジョブ3件（営業DB、会計DB、顧客DB）を一括削除。削除対象ジョブID: job-20240115-001, job-20240115-002, job-20240115-003。削除前に最新バックアップを確認済み。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-16 02:30:00","実行終了日時":"2024-11-16 02:35:45","実行時間秒":345,"IPアドレス":"192.168.10.45","セッションID":"sess-a7f3b9e2c1d4","作成日時":"2024-11-16 02:35:46"},{"操作履歴ID":"rec-001","ユーザーID":"rec-u-047","操作種別":"設定変更","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-rj-082","操作内容":"復旧ジョブ『営業DB定期復旧』のスケジュール設定を変更。実行時刻を毎日午前2時から午前3時に変更、リトライ回数を3回から5回に増加、タイムアウト時間を1800秒から2400秒に延長","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15 14:32:18","実行終了日時":"2024-11-15 14:32:45","実行時間秒":27,"IPアドレス":"192.168.10.125","セッションID":"sess-8f7d4c9a-2e1b-4f6a-9c3d-7e2b1a4f6c9d","作成日時":"2024-11-15 14:32:45"},{"操作履歴ID":"rec-20250115-0847","ユーザーID":"usr-2024-0342","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"job-backup-2025-0156","操作内容":"営業部門向けファイルサーバーの定期バックアップを手動実行。対象: 192.168.10.50、バックアップ対象容量: 2.3TB、スケジュール: 日次22:00実行","操作ステータス":"失敗","エラーメッセージ":"ネットワーク接続タイムアウト: バックアップ対象ホスト(192.168.10.50)への接続が180秒間応答なし。ネットワークの遅延またはホストの一時的な停止が原因と推定。","実行開始日時":"2025-01-15T22:05:30+09:00","実行終了日時":"2025-01-15T22:08:15+09:00","実行時間秒":165,"IPアドレス":"10.20.30.145","セッションID":"sess-20250115-a7f9e2c1","作成日時":"2025-01-15T22:08:16+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"usr-0847","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"job-5432","操作内容":"営業データベース_日次バックアップ (2024年10月15日実行分) の検証・確認。フルバックアップ、圧縮率87%、暗号化AES-256適用済み","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-10-15T02:30:00+09:00","実行終了日時":"2024-10-15T02:47:35+09:00","実行時間秒":1055,"IPアドレス":"192.168.10.45","セッションID":"sess-a7f3e9c2b1d6","作成日時":"2024-10-15T02:47:36+09:00"},{"操作履歴ID":"rec-20250115-042857","ユーザーID":"usr-0847291f","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"job-backup-prod-db-001","操作内容":"本番環境PostgreSQLデータベース（容量約850GB）の日次フルバックアップを実行。バックアップ対象：顧客マスタテーブル、取引履歴テーブル、在庫管理テーブル。","操作ステータス":"失敗","エラーメッセージ":"ストレージ容量不足: バックアップ先ディスク（/backup/storage）の空き容量が不足しています。必要容量: 890GB、利用可能容量: 45GB。バックアップの途中で中断されました。","実行開始日時":"2025-01-15T02:30:00+09:00","実行終了日時":"2025-01-15T02:47:33+09:00","実行時間秒":1053,"IPアドレス":"192.168.10.45","セッションID":"sess-a7f2c9e1b4d6","作成日時":"2025-01-15T02:47:35+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"ジョブ削除","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-003","操作内容":"バックアップジョブ「日次全量バックアップ_営業DB」の削除を試行しましたが、操作実行ユーザーに削除権限がありません。","操作ステータス":"失敗","エラーメッセージ":"アクセス拒否: このリソースを削除する権限がありません。管理者権限が必要です。","実行開始日時":"2024-11-15 14:23:45","実行終了日時":"2024-11-15 14:23:47","実行時間秒":2,"IPアドレス":"192.168.1.105","セッションID":"sess-8f4c2e9d7a1b5","作成日時":"2024-11-15 14:23:47"}],"施設管理者":[{"施設管理者ID":"rec-001-fm-2024-001","施設ID":"rec-001-fac-2024-0847","利用者ID":"rec-001-usr-2024-5392","管理者名":"山田太郎","メールアドレス":"yamada.taro@commercial-mall.jp","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-22T14:15:00+09:00","作成者ID":"rec-001-usr-2024-0001","更新者ID":"rec-001-usr-2024-5392"},{"施設管理者ID":"rec-001","施設ID":"rec-f-001","利用者ID":"rec-u-045","管理者名":"佐藤由美","メールアドレス":"sato.yumi@tenniscourt-reserve.jp","電話番号":"090-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:45:00","作成者ID":"rec-u-001","更新者ID":"rec-u-001"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"山田花子","メールアドレス":"yamada.hanako@hotelchain.co.jp","電話番号":"03-1234-5678","権限レベル":"BILLING","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-22T14:45:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"施設管理者ID":"rec-001","施設ID":"rec-fac-042","利用者ID":"rec-usr-0156","管理者名":"佐藤美咲","メールアドレス":"sato.misaki@rentalspace-corp.jp","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"ACTIVE","作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:45:00","作成者ID":"rec-usr-0001","更新者ID":"rec-usr-0089"},{"施設管理者ID":"rec-001-fm-2025-0847","施設ID":"rec-001-fac-2024-0312","利用者ID":"rec-001-usr-2025-0156","管理者名":"鈴木美咲","メールアドレス":"suzuki.misaki@facility-mgmt.jp","電話番号":"090-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2025-01-15 09:30:00","更新日時":"2025-01-15 09:30:00","作成者ID":"rec-001-usr-2024-0001","更新者ID":"rec-001-usr-2024-0001"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"佐藤健一","メールアドレス":"sato.kenichi@example.com","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"SUSPENDED","作成日時":"2023-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"佐藤健一","メールアドレス":"sato.kenichi@parking-corp.jp","電話番号":"090-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2024-04-15T08:30:00+09:00","更新日時":"2025-01-10T18:45:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"鈴木美咲","メールアドレス":"misaki.suzuki@coworking-space.jp","電話番号":"090-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:22:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"施設管理者ID":"rec-001-blk-2024-001","施設ID":"rec-001-fac-2024-regional","利用者ID":"rec-001-usr-2024-0847","管理者名":"山田健太郎","メールアドレス":"yamada.kentaro@facility-management.jp","電話番号":"090-1234-5678","権限レベル":"AUDIT","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者ID":"rec-001-usr-2024-0001","更新者ID":"rec-001-usr-2024-0002"},{"施設管理者ID":"rec-001-mgr-7f2a9c","施設ID":"rec-001-fac-3b5e1d","利用者ID":"rec-001-usr-8k4m2p","管理者名":"鈴木健一","メールアドレス":"suzuki.kenichi@facility-mgmt.jp","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"SUSPENDED","作成日時":"2023-11-15T09:30:00+09:00","更新日時":"2024-12-10T14:22:00+09:00","作成者ID":"rec-001-usr-admin-001","更新者ID":"rec-001-usr-admin-002"}],"団体":[{"団体ID":"rec-001","団体名":"株式会社トヨタ自動車工業会","団体名カナ":"トヨタジドウシャコウギョウカイ","代表者名":"山田太郎","代表者電話番号":"052-123-4567","代表者メールアドレス":"yamada.taro@toyota-industry.jp","住所":"愛知県豊田市豊田町1番地","会員数":2850,"契約開始日":"2020-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"トヨタ自動車工業会 経理部","請求先住所":"愛知県名古屋市中区丸の内3-5-10","請求先電話番号":"052-987-6543","請求先メールアドレス":"billing@toyota-industry.jp","割引率":18,"備考":"大規模長期契約。年間会員数変動あり。毎年4月に契約更新。専任営業担当：佐藤花子","作成日時":"2020-03-15T09:30:00Z","更新日時":"2025-01-10T14:22:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-003"},{"団体ID":"rec-001","団体名":"東京都立山田高等学校","団体名カナ":"トウキョウトリツヤマダコウトウガッコウ","代表者名":"山田太郎","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada.taro@yamada-hs.tokyo.jp","住所":"東京都渋谷区代々木1-2-3","会員数":847,"契約開始日":"2024-04-01T00:00:00Z","契約終了日":"2025-03-31T23:59:59Z","ステータス":"有効","請求先":"東京都立山田高等学校 事務室","請求先住所":"東京都渋谷区代々木1-2-3","請求先電話番号":"03-1234-5679","請求先メールアドレス":"jimuroom@yamada-hs.tokyo.jp","割引率":15,"備考":"年間利用契約。修学旅行期間（7月下旬、12月中旬）は利用予定。教育団体割引適用。","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-20T14:15:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"東京都スポーツ協会 渋谷支部","団体名カナ":"トウキョウトスポーツキョウカイ シブヤシブ","代表者名":"鈴木健一","代表者電話番号":"03-XXXX-5432","代表者メールアドレス":"suzuki.kenichi@shibuya-sports.jp","住所":"東京都渋谷区道玄坂1-2-3 スポーツビル5階","会員数":287,"契約開始日":"2023-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"東京都スポーツ協会 本部","請求先住所":"東京都千代田区丸の内1-1-1 協会ビル10階","請求先電話番号":"03-XXXX-1111","請求先メールアドレス":"billing@tokyo-sports-assoc.jp","割引率":25,"備考":"定期利用団体。年間契約。スポーツ振興事業の一環として支部活動を支援。毎月第2・4金曜日に利用。","作成日時":"2023-03-15T10:30:00Z","更新日時":"2024-11-20T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"関西中小企業経営者協会","団体名カナ":"カンサイチュウショウキギョウケイエイシャキョウカイ","代表者名":"山田太郎","代表者電話番号":"06-1234-5678","代表者メールアドレス":"yamada@keieisha-assoc.jp","住所":"大阪府大阪市北区中之島3-3-23","会員数":127,"契約開始日":"2024-11-15T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"関西中小企業経営者協会 経理部","請求先住所":"大阪府大阪市北区中之島3-3-23","請求先電話番号":"06-1234-5679","請求先メールアドレス":"accounting@keieisha-assoc.jp","割引率":15,"備考":"新規加入。初期導入サポート実施済み。年間会費は会員数ベースで計算。","作成日時":"2024-11-14T10:30:00Z","更新日時":"2024-11-14T10:30:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-001"},{"団体ID":"rec-001","団体名":"関西スポーツ振興協会","団体名カナ":"カンサイスポーツシンコウキョウカイ","代表者名":"山田健一","代表者電話番号":"06-XXXX-5678","代表者メールアドレス":"yamada@kansai-sports.jp","住所":"大阪府大阪市北区中之島2-3-18","会員数":450,"契約開始日":"2019-04-01T00:00:00Z","契約終了日":null,"ステータス":"休止","請求先":"関西スポーツ振興協会 経理部","請求先住所":"大阪府大阪市北区中之島2-3-18","請求先電話番号":"06-XXXX-5679","請求先メールアドレス":"accounting@kansai-sports.jp","割引率":15,"備考":"2024年7月の施設改修工事に伴い一時休止。2025年3月末の改修完了予定に伴い、4月より運用再開予定。復帰時の会員数は500名見込み。長年の大口顧客のため復帰時の特別対応を検討中。","作成日時":"2019-03-15T10:30:00Z","更新日時":"2024-07-10T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"社団法人東京スポーツ振興会","団体名カナ":"シャダンホウジントウキョウスポーツシンコウカイ","代表者名":"山田太郎","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada@tokyo-sports.jp","住所":"東京都渋谷区道玄坂1-2-3 ビジネスビル5階","会員数":245,"契約開始日":"2022-04-01T00:00:00Z","契約終了日":"2024-03-31T23:59:59Z","ステータス":"解約","請求先":"社団法人東京スポーツ振興会 経理部","請求先住所":"東京都渋谷区道玄坂1-2-3 ビジネスビル5階","請求先電話番号":"03-1234-5679","請求先メールアドレス":"billing@tokyo-sports.jp","割引率":15,"備考":"2024年3月末で契約終了。会員数の減少に伴い更新せず。過去の実績参照用として保持。","作成日時":"2022-03-15T10:30:00Z","更新日時":"2024-03-31T16:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"一般社団法人日本スポーツ振興協会","団体名カナ":"ニッポンスポーツシンコウキョウカイ","代表者名":"山田太郎","代表者電話番号":"090-1234-5678","代表者メールアドレス":"yamada@sports-jp.org","住所":"東京都渋谷区道玄坂1-2-3 スポーツビル5階","会員数":450,"契約開始日":"2024-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"株式会社スポーツ企画事務所","請求先住所":"東京都千代田区丸の内1-5-1 ビジネスセンター10階","請求先電話番号":"03-1234-5678","請求先メールアドレス":"billing@sports-planning.co.jp","割引率":15,"備考":"経理部門が別会社に委託されているため請求先を分離。年間契約で月次請求。","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-12-01T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-org-20250115-001","団体名":"一般社団法人関東スポーツ振興会","団体名カナ":"カントウスポーツシンコウカイ","代表者名":"山田健一","代表者電話番号":"090-1234-5678","代表者メールアドレス":"yamada@kanto-sports.jp","住所":"東京都渋谷区道玄坂2-10-7","会員数":450,"契約開始日":"2025-02-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"一般社団法人関東スポーツ振興会","請求先住所":"東京都渋谷区道玄坂2-10-7","請求先電話番号":"03-5456-7890","請求先メールアドレス":"billing@kanto-sports.jp","割引率":0,"備考":"新規契約団体。会員数が400名以上のため割引率15～20%での交渉中。3月末までに最終決定予定。","作成日時":"2025-01-15T10:30:00Z","更新日時":"2025-01-15T10:30:00Z","作成者ID":"rec-admin-00042","更新者ID":"rec-admin-00042"},{"団体ID":"rec-001","団体名":"東京スポーツクラブ連盟","団体名カナ":"トウキョウスポーツクラブレンメイ","代表者名":"山田健一","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada@tokyosports.jp","住所":"東京都渋谷区道玄坂1-2-3 スポーツビル5階","会員数":287,"契約開始日":"2022-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"東京スポーツクラブ連盟 経理部","請求先住所":"東京都渋谷区道玄坂1-2-3 スポーツビル5階","請求先電話番号":"03-1234-5679","請求先メールアドレス":"accounting@tokyosports.jp","割引率":15,"備考":"2024年4月に契約更新。会員数が前年度比45名増加。定期的な利用実績あり。来年度も継続予定。","作成日時":"2022-03-20T09:30:00Z","更新日時":"2024-04-15T14:22:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"北海道スキー連盟青年部","団体名カナ":"ホッカイドウスキーレンメイセイネンブ","代表者名":"山田健一","代表者電話番号":"011-234-5678","代表者メールアドレス":"yamada.kenichi@ski-hokkaido.jp","住所":"北海道札幌市中央区大通西5丁目1番地","会員数":45,"契約開始日":"2024-11-01T00:00:00Z","契約終了日":"2025-03-31T23:59:59Z","ステータス":"有効","請求先":"北海道スキー連盟","請求先住所":"北海道札幌市中央区大通西5丁目1番地","請求先電話番号":"011-234-5600","請求先メールアドレス":"billing@ski-hokkaido.jp","割引率":15,"備考":"冬季シーズン限定利用。11月～3月の5ヶ月間。スキー技術研修会場として月2回程度の利用を予定。","作成日時":"2024-10-15T09:30:00Z","更新日時":"2024-10-20T14:15:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"}],"予約申込":[{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"承認済","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 17:00:00","利用人数":45,"料金":225000,"支払状態":"支払済","備考":"株式会社テクノロジーソリューション新入社員研修。プロジェクター2台、ホワイトボード3枚、会議用テーブル配置希望。昼食時間は12:00-13:00。","作成日時":"2024-10-20 14:30:00","更新日時":"2024-11-08 10:15:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"申込中","利用開始日時":"2024-12-15 14:00:00","利用終了日時":"2024-12-15 16:00:00","利用人数":2,"料金":4000,"支払状態":"未払","備考":"駐車場の利用希望です。可能でしたらお知らせください。","作成日時":"2024-12-10 10:30:00","更新日時":"2024-12-10 10:30:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"キャンセル","利用開始日時":"2025-03-15 10:00:00","利用終acquiredDateTime":"2025-03-15 17:00:00","利用人数":4,"料金":28000,"支払状態":"返金待","備考":"急な業務都合によりキャンセル申請。返金手続きをお願いします。","作成日時":"2025-02-20 14:30:00","更新日時":"2025-02-28 09:15:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"申込中","利用開始日時":"2025-03-15 14:00:00","利用終了日時":"2025-03-15 18:00:00","利用人数":8,"料金":24000,"支払状態":"未払","備考":"誕生日パーティーのため、会場入口に装飾用バルーンの持ち込みを希望します。また、テーブルを2つ並べて配置していただけると幸いです。ケーキ入刀用のナイフとお皿のご用意もお願いできますでしょうか。","作成日時":"2025-02-28 10:30:45","更新日時":"2025-02-28 10:30:45","作成者ID":"rec-002"},{"予約申込ID":"rec-20250115-002","利用者ID":"usr-20240601-045","団体ID":"grp-20250110-008","施設管理者ID":"adm-20240315-012","予約状態":"一部キャンセル","利用開始日時":"2025-02-15 10:00:00","利用終了日時":"2025-02-18 17:00:00","利用人数":25,"料金":180000,"支払状態":"支払済","備考":"2月15日(土)～18日(火)の3泊4日の団体研修予約。当初4日間の予約でしたが、2月17日(月)の1日分をキャンセル。キャンセル料は発生しないため、料金は3日分に調整済み。食事は朝食のみ別途手配。","作成日時":"2025-01-10 14:30:00","更新日時":"2025-01-14 09:15:00","作成者ID":"usr-20240601-045"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"承認済","利用開始日時":"2025-02-15 10:00:00","利用終了日時":"2025-02-15 18:00:00","利用人数":8,"料金":45000,"支払状態":"未払","備考":"プロジェクター使用希望。支払い期限は2025年1月25日まででしたが、現在未払い状態が続いています。","作成日時":"2025-01-10 14:30:00","更新日時":"2025-01-28 09:15:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-102","団体ID":null,"施設管理者ID":"rec-203","予約状態":"完了","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 17:00:00","利用人数":12,"料金":48000,"支払状態":"支払済","備考":"利用終了後の人数確認により利用人数が12名で確定。追加オプション（プロジェクター使用料3000円）を反映済み。","作成日時":"2024-11-10 14:30:00","更新日時":"2024-11-16 10:15:00","作成者ID":"rec-102"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"承認済","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 17:00:00","利用人数":45,"料金":135000,"支払状態":"支払済","備考":"当初50名での予約でしたが、キャンセル者が5名出たため45名に変更。料金を225000円から135000円に再計算済み。","作成日時":"2024-10-20 14:30:00","更新日時":"2024-11-08 10:15:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"キャンセル","利用開始日時":"2025-01-15 14:00:00","利用終了日時":"2025-01-15 18:00:00","利用人数":4,"料金":28000,"支払状態":"支払済","備考":"直前キャンセルのため手数料5600円が発生しました。利用予定日の2日前のキャンセルのため、キャンセル料金20%を適用いたしました。","作成日時":"2025-01-10 09:30:00","更新日時":"2025-01-13 16:45:00","作成者ID":"rec-002"},{"予約申込ID":"rec-20250115-001","利用者ID":"rec-user-00847","団体ID":null,"施設管理者ID":"rec-admin-00234","予約状態":"承認済","利用開始日時":"2025-02-15 10:00:00","利用終了日時":"2025-02-15 17:00:00","利用人数":8,"料金":68000,"支払状態":"支払済","備考":"初回申込時は利用人数6名で料金51000円でしたが、追加リクエストで利用人数を8名に変更。差額17000円を追加支払いいただきました。会議室利用、プロジェクター・ホワイトボード使用。","作成日時":"2025-01-10 14:30:00","更新日時":"2025-01-12 09:15:00","作成者ID":"rec-user-00847"}],"予約承認基準":[{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0847","基準名":"平日個人利用者向け標準ルール","対象利用者区分":"個人","最大予約日数":3,"最大同時予約件数":5,"予約可能日前日数":1,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","作成者ID":"rec-admin-2156","更新日時":"2025-01-22 14:15:00","更新者ID":"rec-admin-2156"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"週末個人利用者向け厳格ルール","対象利用者区分":"個人","最大予約日数":1,"最大同時予約件数":2,"予約可能日前日数":7,"自動承認フラグ":false,"有効フラグ":true,"作成日時":"2024-11-15T09:30:00+09:00","作成者ID":"rec-admin-0015","更新日時":"2025-01-08T14:45:00+09:00","更新者ID":"rec-admin-0015"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"団体向け事前予約","対象利用者区分":"団体","最大予約日数":7,"最大同時予約件数":3,"予約可能日前日数":14,"自動承認フラグ":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","作成者ID":"rec-admin-0001","更新日時":"2025-01-10 14:15:00","更新者ID":"rec-admin-0001"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"学校・教育機関向け団体割引","対象利用者区分":"団体（学校・教育機関）","最大予約日数":10,"最大同時予約件数":5,"予約可能日前日数":14,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","作成者ID":"rec-admin-0001","更新日時":"2025-01-22T14:15:00+09:00","更新者ID":"rec-admin-0001"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"企業研修向け長期予約","対象利用者区分":"団体","最大予約日数":30,"最大同時予約件数":3,"予約可能日前日数":14,"自動承認フラグ":false,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","作成者ID":"rec-admin-0015","更新日時":"2024-11-20T14:45:00+09:00","更新者ID":"rec-admin-0015"},{"承認基準ID":"rec-001","施設管理者ID":"mgr-0847","基準名":"リピート顧客向け優遇ルール","対象利用者区分":"リピート顧客","最大予約日数":5,"最大同時予約件数":3,"予約可能日前日数":1,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","作成者ID":"admin-0521","更新日時":"2025-01-22T14:15:00+09:00","更新者ID":"admin-0521"},{"承認基準ID":"rec-001","施設管理者ID":"rec-002","基準名":"新規利用者向け試行ルール","対象利用者区分":"個人","最大予約日数":1,"最大同時予約件数":1,"予約可能日前日数":7,"自動承認フラグ":false,"有効フラグ":true,"作成日時":"2024-11-15T09:30:00","作成者ID":"rec-003","更新日時":"2024-11-15T09:30:00","更新者ID":"rec-003"},{"承認基準ID":"rec-001","施設管理者ID":"rec-002","基準名":"季節限定イベント向け特別ルール","対象利用者区分":"団体","最大予約日数":2,"最大同時予約件数":1,"予約可能日前日数":7,"自動承認フラグ":false,"有効フラグ":true,"作成日時":"2024-10-15 09:30:00","作成者ID":"rec-003","更新日時":"2024-12-01 14:20:00","更新者ID":"rec-003"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"VIP会員向け優先予約ルール","対象利用者区分":"VIP会員","最大予約日数":14,"最大同時予約件数":5,"予約可能日前日数":3,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-06-15 09:30:00","作成者ID":"rec-admin-0018","更新日時":"2025-01-20 14:15:00","更新者ID":"rec-admin-0018"},{"承認基準ID":"rec-001","施設管理者ID":"rec-a001","基準名":"公共団体向け公益利用","対象利用者区分":"団体","最大予約日数":21,"最大同時予約件数":999,"予約可能日前日数":0,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","作成者ID":"rec-admin-001","更新日時":"2025-01-20 14:15:00","更新者ID":"rec-admin-001"}],"料金ルール":[{"料金ルールID":"rec-001","施設管理者ID":"rec-mgr-0042","ルール名":"平日通常料金","説明":"平日の通常営業時間帯（9:00～18:00）における標準的な料金ルール。1時間単位での計算となります。","基本料金":1000,"単位時間":60,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":60,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-0015"},{"料金ルールID":"rec-001","施設管理者ID":"rec-mgr-0847","ルール名":"休日・祝日割増料金","説明":"土曜日・日曜日・国民の祝日に適用される割増料金ルール。通常料金より30%増しの料金を設定。ゴールデンウィーク、お盆、年末年始などの繁忙期も対象。","基本料金":1300,"単位時間":60,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":60,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-1205"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"団体割引料金（10名以上）","説明":"10名以上の団体利用者向けの割引料金ルール。基本料金から20%割引を適用し、長時間利用での追加割引も対象となります。","基本料金":8000,"単位時間":60,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":120,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-11-20T14:45:00Z","作成者ID":"rec-admin-001"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-047","ルール名":"夜間早朝ピーク時料金","説明":"22:00～06:00の夜間・早朝時間帯における割増料金ルール。通常料金に対して30%の追加料金を適用します。","基本料金":1500,"単位時間":60,"適用開始日":"2024-04-01T00:00:00","適用終了日":null,"最小利用時間":30,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00","更新日時":"2024-03-20T14:45:00","作成者ID":"rec-admin-047"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"長時間利用向け段階料金（平日）","説明":"平日の長時間利用者向けの段階的割引ルール。最初の2時間は基本料金、以降30分ごとに段階的に割引率が上昇します。","基本料金":2000,"単位時間":30,"適用開始日":"2024-04-01T00:00:00","適用終了日":null,"最小利用時間":120,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T14:30:00","更新日時":"2024-09-20T10:15:00","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"新春キャンペーン割引料金","説明":"2025年1月1日から3月31日までの期間限定で、通常料金から20%割引を適用する特別キャンペーン料金です。新規利用者および既存利用者の両方が対象となります。","基本料金":800,"単位時間":60,"適用開始日":"2025-01-01T00:00:00","適用終了日":"2025-03-31T23:59:59","最小利用時間":60,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-12-10T14:30:00","更新日時":"2024-12-10T14:30:00","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-mgr-0042","ルール名":"法人契約月額固定料金","説明":"企業・団体向けの月額固定料金プラン。専用ラウンジの利用権、優先予約、請求書払い対応を含む。最低契約期間は3ヶ月。","基本料金":150000,"単位時間":1440,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":1440,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-12-10T14:20:00Z","作成者ID":"rec-admin-0015"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"ゴールデンウィーク・年末年始特別料金","説明":"ゴールデンウィーク（4月29日～5月5日）および年末年始（12月27日～1月5日）の繁忙期における特別料金ルール。通常料金から30%の割増料金を適用します。","基本料金":3000,"単位時間":60,"適用開始日":"2024-04-29T00:00:00Z","適用終了日":"2025-01-05T23:59:59Z","最小利用時間":120,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"学生・シニア向け優遇料金","説明":"18歳以上25歳以下の学生、および65歳以上のシニア層を対象とした割引料金ルール。通常料金より30%割引を適用します。","基本料金":700,"単位時間":30,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":60,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-20T14:15:00Z","作成者ID":"rec-admin-001"},{"料金ルールID":"rec-001","施設管理者ID":"rec-002","ルール名":"短時間利用制限ルール","説明":"30分以上2時間以内の短時間利用者向けの料金ルール。最小利用時間を30分に設定し、短すぎる利用を制限しながら、2時間以内の利用を促進する。","基本料金":800,"単位時間":30,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":30,"最大利用時間":120,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-003"}],"割引マスタ":[{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"早期割引","割引説明":"ご予約日から3ヶ月以上前のお申込みで、宿泊料金から10%割引いたします。他の割引との併用はできません。","割引タイプ":"率引き","割引値":10,"適用対象":"全利用者","有効開始日":"2024-01-15T00:00:00Z","有効終了日":null,"最小適用金額":15000,"最大割引額":50000,"優先度":2,"有効フラグ":true,"作成日時":"2023-12-20T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-11-10T14:15:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"団体割引10名以上","割引説明":"10名以上の団体予約を対象とした定額割引。学校団体、企業研修、サークル活動など、事前申込による団体利用に適用します。","割引タイプ":"定額割引","割引値":5000,"適用対象":"団体のみ","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":50000,"最大割引額":5000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-09-20T14:15:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"シニア会員割引","割引説明":"65歳以上のシニア会員を対象とした割引です。身分証明書による年齢確認が必要となります。他の割引との併用はできません。","割引タイプ":"率引き","割引値":15,"適用対象":"シニア会員（65歳以上）","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":5000,"最大割引額":3000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-12-10T14:45:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"平日利用割引","割引説明":"月曜日から金曜日の利用に対して適用される割引です。施設の平日の稼働率向上と需要平準化を目的としています。土日祝日は対象外となります。","割引タイプ":"率引き","割引値":15,"適用対象":"全利用者","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":5000,"最大割引額":3000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-11-20T14:15:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"リピーター割引","割引説明":"累積予約回数に応じた割引。10回以上20回未満で5%、20回以上50回未満で10%、50回以上で15%の割引を適用します。","割引タイプ":"率引き","割引値":5,"適用対象":"リピーター利用者","有効開始日":"2024-01-15T00:00:00Z","有効終了日":null,"最小適用金額":5000,"最大割引額":50000,"優先度":3,"有効フラグ":true,"作成日時":"2023-12-20T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-11-08T14:15:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-mgr-042","割引名":"冬季閑散期キャンペーン割引","割引説明":"1月〜2月の利用が少ない時期に、集客を促進するための割引キャンペーン。平日の利用をさらに促進するため、土日祝日は対象外。","割引タイプ":"率引き","割引値":20,"適用対象":"全利用者","有効開始日":"2025-01-06T00:00:00Z","有効終了日":"2025-02-28T23:59:59Z","最小適用金額":5000,"最大割引額":3000,"優先度":3,"有効フラグ":true,"作成日時":"2024-11-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-12-20T14:15:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-101","割引名":"障害者手帳割引","割引説明":"身体障害者手帳、療育手帳、精神障害者保健福祉手帳の保有者及び付き添い者1名を対象とした割引です。入館時に手帳の提示が必要となります。","割引タイプ":"率引き","割引値":50,"適用対象":"障害者手帳保有者及び付き添い者","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":1000,"最大割引額":5000,"優先度":1,"有効フラグ":true,"作成日時":"2024-03-15T09:30:00Z","作成者ID":"rec-201","更新日時":"2024-11-20T14:15:00Z","更新者ID":"rec-201"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-047","割引名":"学生団体教育利用割引","割引説明":"学校の授業や教育プログラムの一環として施設を利用する学生団体を対象とした割引。引率教員の同伴が必須。事前申請が必要。","割引タイプ":"率引き","割引値":25,"適用対象":"学生団体のみ","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":50000,"最大割引額":100000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-09-20T14:15:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-102","割引名":"新規利用者初回予約キャンペーン割引","割引説明":"初めてご利用いただく新規会員様を対象とした初回予約限定の割引キャンペーンです。ご予約時に自動適用されます。","割引タイプ":"率引き","割引値":15,"適用対象":"新規利用者のみ","有効開始日":"2024-04-01T00:00:00Z","有効終了日":"2025-03-31T23:59:59Z","最小適用金額":5000,"最大割引額":3000,"優先度":1,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-201","更新日時":"2024-03-15T10:30:00Z","更新者ID":"rec-201"}],"返金条件":[{"返金条件ID":"rec-001","施設管理者ID":"mgr-2024-001","条件名":"標準返金ルール","キャンセル期限日数":7,"返金率":100,"説明":"利用予定日の7日前までのキャンセルについては、キャンセル料金を一切差し引かず全額返金いたします。7日以内のキャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-04-15T09:30:00+09:00","作成者ID":"mgr-2024-001"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-0847","条件名":"短期キャンセル対応ルール","キャンセル期限日数":3,"返金率":80,"説明":"利用予定日の3日前までにキャンセルされた場合、支払済み料金の80%を返金します。当ルールは急な予定変更への対応を目的としており、すべての利用者に適用されます。","有効フラグ":true,"作成日時":"2024-06-15T09:30:00Z","更新日時":"2024-12-10T14:20:00Z","作成者ID":"mgr-0847"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-0847","条件名":"直前キャンセル規定","キャンセル期限日数":0,"返金率":0,"説明":"利用当日のキャンセルは返金対象外とします。前日までのキャンセルについては別途返金規定を適用してください。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:15:00+09:00","作成者ID":"mgr-0847"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-00152","条件名":"団体予約向け優遇返金ルール","キャンセル期限日数":14,"返金率":90,"説明":"10名以上の団体予約を対象とした優遇返金ルールです。利用予定日の14日前までのキャンセルであれば、支払済み料金の90%を返金いたします。14日以内のキャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T09:30:00+09:00","作成者ID":"mgr-00152"},{"返金条件ID":"rec-001","施設管理者ID":"admin-2024-001","条件名":"繁忙期返金ルール（ゴールデンウィーク・年末年始）","キャンセル期限日数":5,"返金率":50,"説明":"ゴールデンウィーク（4月29日～5月5日）および年末年始（12月25日～1月5日）の繁忙期に適用される返金条件です。利用予定日の5日前までのキャンセルに対して、支払済み料金の50%を返金いたします。5日以内のキャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-03-15T10:30:00+09:00","更新日時":"2024-12-01T14:45:00+09:00","作成者ID":"admin-2024-001"},{"返金条件ID":"rec-001","施設管理者ID":"adm-0847","条件名":"利用2日前以降キャンセル料発生ルール","キャンセル期限日数":2,"返金率":0,"説明":"利用予定日の2日前以降のキャンセルは返金対象外となります。キャンセル料として予約金全額をご負担いただきます。3日以上前のキャンセルは全額返金の対象となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-22T14:15:00+09:00","作成者ID":"adm-0847"},{"返金条件ID":"rec-001","施設管理者ID":"adm-0847","条件名":"教育機関・非営利団体向け特別返金ルール","キャンセル期限日数":10,"返金率":100,"説明":"学校、大学、公開講座などの教育機関および認定非営利団体が対象。利用予定日の10日前までにキャンセル申請があった場合、支払済み料金の全額を返金します。社会貢献活動支援の一環として設定。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-22T14:15:00+09:00","作成者ID":"adm-0847"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-012","条件名":"会員優遇返金ルール","キャンセル期限日数":1,"返金率":50,"説明":"会員限定の優遇返金ルールです。利用予定日の前日23:59までのキャンセルであれば、支払済み料金の50%を返金いたします。当日キャンセルおよび無連絡キャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者ID":"mgr-012"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-2024-001","条件名":"季節外れ時間帯利用促進ルール","キャンセル期限日数":3,"返金率":100,"説明":"平日の14時～18時および日曜日の10時～14時など利用が少ない季節外れの時間帯の利用を促進するため、利用予定日の3日前までのキャンセルであれば100%返金いたします。対象施設：テニスコート、バドミントンコート。","有効フラグ":true,"作成日時":"2024-10-15T09:30:00+09:00","更新日時":"2024-10-15T09:30:00+09:00","作成者ID":"mgr-2024-001"},{"返金条件ID":"rec-001","施設管理者ID":"admin-2024-0847","条件名":"長期予約向け段階的返金ルール","キャンセル期限日数":30,"返金率":80,"説明":"利用予定日の30日以上前のキャンセルに対して80%を返金。31日以上前は100%返金、15～29日前は50%返金、14日以内は返金なし。団体予約（10名以上）にも適用される標準ルール。","有効フラグ":true,"作成日時":"2024-06-15T09:30:00Z","更新日時":"2025-01-20T14:15:00Z","作成者ID":"admin-2024-0847"}],"利用料金計算結果":[{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":3000,"割引額":0,"割引率":0,"税金":300,"合計料金":3300,"計算日時":"2024-11-15 14:30:00","計算ステータス":"成功","計算備考":"通常料金。割引適用なし。","作成日時":"2024-11-15 14:30:15","更新日時":"2024-11-15 14:30:15","作成者ID":"rec-005"},{"料金計算結果ID":"rec-20250115-001","予約申込ID":"rec-20250110-042","利用者ID":"rec-user-2024-0156","施設管理者ID":"rec-admin-2024-0089","基本料金":150000,"割引額":15000,"割引率":10,"税金":13500,"合計料金":148500,"計算日時":"2025-01-15 09:30:45","計算ステータス":"成功","計算備考":"会員割引10%が適用されました。法人利用者向け年間契約割引の対象です。","作成日時":"2025-01-15 09:30:45","更新日時":"2025-01-15 09:30:45","作成者ID":"rec-system-auto"},{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":50000,"割引額":7500,"割引率":15,"税金":3825,"合計料金":46325,"計算日時":"2024-12-15 14:30:45","計算ステータス":"成功","計算備考":"年末キャンペーン割引15%を適用。対象期間：2024年12月1日～2024年12月31日。","作成日時":"2024-12-15 14:30:45","更新日時":"2024-12-15 14:30:45","作成者ID":"rec-005"},{"料金計算結果ID":"rec-20250115-001","予約申込ID":"rec-20250115-app-042","利用者ID":"rec-user-0856","施設管理者ID":"rec-admin-0312","基本料金":45000,"割引額":4500,"割引率":10,"税金":4050,"合計料金":44550,"計算日時":"2025-01-15T14:32:18+09:00","計算ステータス":"成功","計算備考":"複数施設同時予約割引（10%）が適用されました。対象施設：会議室A・会議室B・セミナールーム。基本料金45,000円から割引額4,500円を差引き、消費税10%を加算しました。","作成日時":"2025-01-15T14:32:18+09:00","更新日時":"2025-01-15T14:32:18+09:00","作成者ID":"rec-system-auto"},{"料金計算結果ID":"rec-20250115-001","予約申込ID":"rec-20240815-042","利用者ID":"rec-user-2024-0156","施設管理者ID":"rec-admin-2024-0089","基本料金":50000,"割引額":5000,"割引率":10,"税金":4050,"合計料金":49050,"計算日時":"2025-01-15 14:32:18","計算ステータス":"成功","計算備考":"2024年10月1日の税率改正（8%→10%）に伴う再計算。元の計算結果（税金額3600円）から修正。差分450円を利用者に返金予定。","作成日時":"2024-08-15 09:45:00","更新日時":"2025-01-15 14:32:18","作成者ID":"rec-admin-2024-0089"},{"料金計算結果ID":"rec-20250215-001","予約申込ID":"rec-20250210-app-042","利用者ID":"rec-user-2024-0156","施設管理者ID":"rec-admin-2024-0089","基本料金":45000,"割引額":0,"割引率":0,"税金":4500,"合計料金":49500,"計算日時":"2025-02-15 14:32:18","計算ステータス":"成功","計算備考":"予約キャンセル。キャンセル日時2025-02-15、利用予定日2025-02-20の5日前のため、基本料金の100%をキャンセル料金として適用。","作成日時":"2025-02-15 14:32:18","更新日時":"2025-02-15 14:32:18","作成者ID":"rec-admin-2024-0089"},{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":450000,"割引額":67500,"割引率":15,"税金":57750,"合計料金":440250,"計算日時":"2024-11-15 14:32:00","計算ステータス":"成功","計算備考":"長期利用割引（90日以上）が適用されました。基本料金450,000円に対して段階的割引率15%を適用。","作成日時":"2024-11-15 14:32:00","更新日時":"2024-11-15 14:32:00","作成者ID":"rec-005"},{"料金計算結果ID":"rec-047382","予約申込ID":"rec-012456","利用者ID":"rec-089234","施設管理者ID":"rec-005671","基本料金":15000,"割引額":1500,"割引率":10,"税金":1350,"合計料金":14850,"計算日時":"2025-01-15T14:32:18Z","計算ステータス":"成功","計算備考":"2025-01-14の初回計算でタイムアウトエラーが発生したため再処理。割引マスタIDマッチング完了、税率10%適用","作成日時":"2025-01-14T09:15:42Z","更新日時":"2025-01-15T14:32:18Z","作成者ID":"rec-000891"},{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":15000,"割引額":3000,"割引率":20,"税金":2400,"合計料金":14400,"計算日時":"2024-11-15T14:30:00+09:00","計算ステータス":"成功","計算備考":"学生向け特別割引（20%）を適用。学生証確認済み。","作成日時":"2024-11-15T14:30:00+09:00","更新日時":"2024-11-15T14:30:00+09:00","作成者ID":"rec-005"},{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":1250000,"割引額":125000,"割引率":10,"税金":112500,"合計料金":1237500,"計算日時":"2024-11-15 14:32:45","計算ステータス":"成功","計算備考":"消費税の端数調整を実施しました。消費税額計算時に発生した1円の端数は四捨五入により処理済み。","作成日時":"2024-11-15 14:32:45","更新日時":"2024-11-15 14:32:45","作成者ID":"rec-005"}],"収納状況":[{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":450000,"収納済金額":450000,"未収金額":0,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"全額収納","最終収納日時":"2025-01-15 14:32:00","返金日時":null,"備考":"新年会イベント開催に伴う会場利用料金。2024年12月20日に予約申込があり、2025年1月15日に全額銀行振込にて収納完了。","作成日時":"2024-12-20 10:15:00","更新日時":"2025-01-15 14:32:00","作成者":"rec-004"},{"収納状況ID":"rec-001","予約申込ID":"rec-102","利用料金計算結果ID":"rec-203","請求金額":150000,"収納済金額":100000,"未収金額":50000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"部分収納","最終収納日時":"2025-01-15 14:30:00","返金日時":null,"備考":"2025年1月10日に会議室レンタル料金150,000円のうち100,000円が入金されました。残金50,000円については1月25日までの入金予定となっています。利用者（鈴木花子様）より支払い遅延の連絡あり。","作成日時":"2025-01-10 09:15:00","更新日時":"2025-01-15 14:35:00","作成者":"rec-501"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":45000,"収納済金額":45000,"未収金額":0,"返金予定金額":13500,"返金済金額":0,"収納状況ステータス":"返金待機","最終収納日時":"2024-11-15 14:30:00","返金日時":null,"備考":"利用者が予約キャンセルを申請。キャンセル料率30%を適用し、返金予定金額13,500円。返金手続き中。","作成日時":"2024-11-15 14:35:00","更新日時":"2024-11-20 10:15:00","作成者":"rec-004"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":450000,"収納済金額":180000,"未収金額":270000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"部分収納","最終収納日時":"2025-01-15 14:30:00","返金日時":null,"備考":"修学旅行団体予約（50名）。第1回目45万円の40%を1月15日に入金。残金は2月28日、3月31日の2回分割予定。","作成日時":"2024-12-10 09:15:00","更新日時":"2025-01-15 14:35:00","作成者":"rec-004"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":45000,"収納済金額":45000,"未収金額":0,"返金予定金額":40500,"返金済金額":40500,"収納状況ステータス":"返金完了","最終収納日時":"2024-11-15 14:30:00","返金日時":"2024-11-22 10:15:00","備考":"利用者都合によるキャンセル。キャンセル料金4,500円を差し引き、残額40,500円を返金完了。返金方法：クレジットカード決済時の同一カードへ返金処理済み。","作成日時":"2024-11-15 14:35:00","更新日時":"2024-11-22 10:20:00","作成者":"rec-004"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":45000,"収納済金額":45000,"未収金額":0,"返金予定金額":45000,"返金済金額":45000,"収納状況ステータス":"返金完了","最終収納日時":"2024-11-15 14:30:00","返金日時":"2024-11-22 10:15:00","備考":"2024年11月14日の利用時に空調設備の故障が発生。利用者からの申告により確認。施設の責任による故障のため全額返金処理を実施。返金は銀行振込にて対応。","作成日時":"2024-11-15 15:00:00","更新日時":"2024-11-22 10:20:00","作成者":"rec-004"},{"収納状況ID":"rec-001-20250115-sh","予約申込ID":"rec-002-20241201-yy","利用料金計算結果ID":"rec-003-20241201-rk","請求金額":450000,"収納済金額":450000,"未収金額":0,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"全額収納","最終収納日時":"2025-01-15 09:30:00","返金日時":null,"備考":"12月分の定期収納。銀行振込により全額入金確認。来月の自動引落予定日は2月15日。","作成日時":"2024-12-01 14:20:00","更新日時":"2025-01-15 09:35:00","作成者":"rec-004-admin-suzuki"},{"収納状況ID":"rec-20250115-001","予約申込ID":"rec-20250110-042","利用料金計算結果ID":"rec-20250110-156","請求金額":45000,"収納済金額":0,"未収金額":45000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"未収納","最終収納日時":null,"返金日時":null,"備考":"クレジットカード決済エラー（カード限度額超過）により決済失敗。2025年1月15日に利用者・山田花子様へ再決済案内メール送付済み。再度決済試行予定。","作成日時":"2025-01-15 14:32:18","更新日時":"2025-01-15 14:32:18","作成者":"rec-admin-0087"},{"収納状況ID":"rec-20250147","予約申込ID":"rec-20250089","利用料金計算結果ID":"rec-20250156","請求金額":45000,"収納済金額":45000,"未収金額":0,"返金予定金額":8500,"返金済金額":0,"収納状況ステータス":"返金待機","最終収納日時":"2024-11-15 14:32:00","返金日時":null,"備考":"利用料金計算システムの不具合により過剰徴収。2024年11月12日の精査で8,500円の過剰請求が判明。返金手続き中。","作成日時":"2024-11-12 09:15:00","更新日時":"2025-01-08 10:45:00","作成者":"rec-00234"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":45000,"収納済金額":45000,"未収金額":0,"返金予定金額":40500,"返金済金額":0,"収納状況ステータス":"返金待機","最終収納日時":"2025-01-15 14:30:00","返金日時":null,"備考":"2025年1月20日の予約利用者が不在のため、キャンセル料10%を差し引いた金額を返金予定。返金手続きは2月中旬を予定。","作成日時":"2025-01-15 15:45:00","更新日時":"2025-01-21 09:20:00","作成者":"rec-004"}],"利用実績":[{"利用実績ID":"rec-001","予約申込ID":"res-042","利用者ID":"usr-156","施設管理者ID":"adm-008","団体ID":null,"利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 12:30:00","利用時間分":210,"利用人数":8,"利用料金計算結果ID":"fee-089","実績ステータス":"完了","備考":"予約通り利用。特に問題なし。","作成日時":"2024-11-15 12:45:00","作成者":"adm-008","更新日時":"2024-11-16 10:20:00","更新者":"adm-008"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"adm-0156","団体ID":null,"利用開始日時":"2024-11-15 14:00:00","利用終了日時":"2024-11-15 15:20:00","利用時間分":80,"利用人数":3,"利用料金計算結果ID":"fee-5623","実績ステータス":"完了","備考":"予約時間は16:00まででしたが、利用者の都合により15:20に早期終了しました。払戻手続き済み。","作成日時":"2024-11-15 15:35:00","作成者":"adm-0156","更新日時":"2024-11-15 16:10:00","更新者":"adm-0156"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"mgr-0156","団体ID":null,"利用開始日時":"2024-11-15 14:00:00","利用終了日時":"2024-11-15 16:45:00","利用時間分":165,"利用人数":4,"利用料金計算結果ID":"fee-5623","実績ステータス":"完了","備考":"予約時間2時間を45分超過。超過分は追加料金にて計算。利用者より事前連絡あり。","作成日時":"2024-11-15 17:30:00","作成者":"mgr-0156","更新日時":"2024-11-16 09:15:00","更新者":"mgr-0089"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":"rec-005","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 12:30:00","利用時間分":210,"利用人数":18,"利用料金計算結果ID":"rec-006","実績ステータス":"完了","備考":"予約時点では25名の予定でしたが、当日の欠席者が7名いたため18名での利用となりました。料金は実利用人数に基づいて調整済みです。","作成日時":"2024-11-15 13:15:00","作成者":"rec-004","更新日時":"2024-11-15 14:30:00","更新者":"rec-004"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":null,"利用開始日時":"2024-12-15 14:00:00","利用終了日時":null,"利用時間分":0,"利用人数":0,"利用料金計算結果ID":null,"実績ステータス":"キャンセル","備考":"当日朝8時に利用者より体調不良のため当日キャンセルの連絡あり。キャンセル料は発生しないことで利用者と合意。","作成日時":"2024-12-15 08:30:00","作成者":"rec-004","更新日時":"2024-12-15 08:35:00","更新者":"rec-004"},{"利用実績ID":"rec-001","予約申込ID":null,"利用者ID":"rec-002","施設管理者ID":"rec-003","団体ID":null,"利用開始日時":"2024-11-15 14:30:00","利用終了日時":"2024-11-15 16:45:00","利用時間分":135,"利用人数":3,"利用料金計算結果ID":"rec-004","実績ステータス":"完了","備考":"飛び込み利用。テニスコート利用。利用者は鈴木花子、同伴者2名。当日天候良好。","作成日時":"2024-11-15 17:05:00","作成者":"rec-003","更新日時":"2024-11-15 17:05:00","更新者":"rec-003"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"mgr-0156","団体ID":null,"利用開始日時":"2024-11-15 14:00:00","利用終了日時":null,"利用時間分":0,"利用人数":0,"利用料金計算結果ID":null,"実績ステータス":"未確定","備考":"予約時間に利用者が来場しませんでした。連絡なしの無断キャンセルです。施設管理者の確認待ちです。","作成日時":"2024-11-15 14:30:00","作成者":"mgr-0156","更新日時":"2024-11-15 14:30:00","更新者":"mgr-0156"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"adm-0156","団体ID":null,"利用開始日時":"2024-11-15T14:00:00+09:00","利用終了日時":"2024-11-15T16:30:00+09:00","利用時間分":150,"利用人数":1,"利用料金計算結果ID":"fee-5623","実績ステータス":"完了","備考":"午後の時間帯利用。利用者は佐藤花子。予約時間通り利用完了。特に問題なし。","作成日時":"2024-11-15T17:15:00+09:00","作成者":"adm-0156","更新日時":"2024-11-15T17:15:00+09:00","更新者":"adm-0156"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":"rec-005","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 12:30:00","利用時間分":210,"利用人数":28,"利用料金計算結果ID":"rec-006","実績ステータス":"完了","備考":"当初予約人数25名に対し、当日追加参加者3名が発生したため利用人数を28名に修正。料金は追加人数分を含めて再計算。","作成日時":"2024-11-15 13:15:00","作成者":"rec-007","更新日時":"2024-11-15 14:45:00","更新者":"rec-008"},{"利用実績ID":"rec-20250215-001","予約申込ID":"res-20250210-042","利用者ID":"usr-20240501-156","施設管理者ID":"mgr-20240101-008","団体ID":null,"利用開始日時":"2025-02-15 14:30:00","利用終了日時":"2025-02-15 17:15:00","利用時間分":165,"利用人数":8,"利用料金計算結果ID":"fee-20250215-089","実績ステータス":"完了","備考":"予約時間より15分延長利用。利用者からの延長申し出により対応。追加料金は別途精算済み。","作成日時":"2025-02-15 17:45:00","作成者":"mgr-20240101-008","更新日時":"2025-02-16 10:20:00","更新者":"mgr-20240101-003"}],"代行予約ログ":[{"代行予約ログID":"rec-001","施設管理者ID":"rec-a001","利用者ID":"rec-u042","予約申込ID":"rec-b156","操作種別":"作成","操作内容":"新規予約を作成しました。施設: テニスコート、日時: 2025年3月15日(土)14:00-16:00、コート番号: 2番、利用者数: 2名","代行理由":"利用者が電話で予約申込を希望されましたが、オンラインシステムの操作が不慣れなため、電話での詳細確認後に代行作成いたしました。","操作日時":"2025-03-10 10:30:45","作成日時":"2025-03-10 10:30:45","更新日時":"2025-03-10 10:30:45"},{"代行予約ログID":"rec-a7f2e1b9","施設管理者ID":"rec-m4c8d2k5","利用者ID":"rec-u9n3j6p2","予約申込ID":"rec-b1q5w8x3","操作種別":"変更","操作内容":"予約時間を14:00-15:00から16:30-17:30に変更。施設コード:テニスコート3番。","代行理由":"来館時に利用者が急な予定変更のため時間帯の変更を希望。利用者本人の申し出に基づき施設管理者が手続きを代行。","操作日時":"2024-11-15 14:25:00","作成日時":"2024-11-15 14:25:30","更新日時":"2024-11-15 14:25:30"},{"代行予約ログID":"rec-20250115-0847","施設管理者ID":"rec-admin-0312","利用者ID":"rec-user-5629","予約申込ID":"rec-booking-8741","操作種別":"キャンセル","操作内容":"予約ID: rec-booking-8741 のキャンセル処理を実行。対象施設: 〇〇温泉旅館、予約日: 2025年2月15日(土)、予約者: 山田花子、予約人数: 2名、キャンセル料: 無料(予約日の14日前のため)","代行理由":"利用者が電話にて予約キャンセルの申し出。やむを得ない事情により2月の宿泊がキャンセルできなくなったとのこと。電話対応時間: 14:30、対応者: 佐藤次郎","操作日時":"2025-01-15 14:35:00","作成日時":"2025-01-15 14:35:12","更新日時":"2025-01-15 14:35:12"},{"代行予約ログID":"rec-20250115-0847","施設管理者ID":"rec-admin-0523","利用者ID":"rec-user-1789","予約申込ID":"rec-booking-4521","操作種別":"変更","操作内容":"利用終了時間を14:00から16:00に変更。追加時間: 2時間。追加料金: 4,800円。","代行理由":"利用者が施設利用中に追加の時間延長を希望したため、フロントで対応。利用者の都合により当日の変更申し出があったため代行処理を実施。","操作日時":"2025-01-15 13:47:32","作成日時":"2025-01-15 13:48:05","更新日時":"2025-01-15 13:48:05"},{"代行予約ログID":"rec-20250115-001","施設管理者ID":"rec-admin-0847","利用者ID":"rec-user-5623","予約申込ID":"rec-booking-9284","操作種別":"作成","操作内容":"予約申込ID: rec-booking-9284, 施設: 東京都渋谷区フィットネスセンター, 利用日: 2025年1月18日, 時間帯: 14:00-15:00, サービス: ヨガクラス(初級), 利用料金: 2,500円, 支払方法: クレジットカード(登録済み)","代行理由":"利用者(田中美咲)より電話にて問い合わせがあり、予約システムのエラー画面が表示されて予約が完了できないとの報告を受けました。システム側で技術的な不具合が確認されたため、利用者の希望する日時での予約を代行作成いたしました。","操作日時":"2025-01-15 10:32:45","作成日時":"2025-01-15 10:32:45","更新日時":"2025-01-15 10:32:45"},{"代行予約ログID":"rec-001","施設管理者ID":"rec-002","利用者ID":"rec-003","予約申込ID":"rec-004","操作種別":"作成","操作内容":"新規予約を作成しました。施設:温泉浴場、日付:2025年2月15日、時間帯:14:00-16:00、利用者数:1名","代行理由":"ご利用者様(82歳)がスマートフォンの操作方法がわからないとのことで、窓口でのご相談を受けました。本人確認後、ご本人の希望通りに予約を作成いたしました。","操作日時":"2025-02-10 10:30:00","作成日時":"2025-02-10 10:30:15","更新日時":"2025-02-10 10:30:15"},{"代行予約ログID":"rec-20250115-0847","施設管理者ID":"rec-admin-0523","利用者ID":"rec-user-1289","予約申込ID":"rec-booking-5634","操作種別":"キャンセル","操作内容":"利用者による重複予約のため、2025年1月22日 14:00-15:30のテニスコート予約(予約申込ID: rec-booking-5634)をキャンセル。同一日時で別途予約申込ID rec-booking-5633が存在するため、こちらを優先保持。","代行理由":"利用者の佐藤花子様が同一日時・同一施設のテニスコート利用予約を重複して申し込まれていたため、利用者へ確認の上、重複分をキャンセル処理いたしました。","操作日時":"2025-01-15 09:47:23","作成日時":"2025-01-15 09:47:23","更新日時":"2025-01-15 09:47:23"},{"代行予約ログID":"rec-001","施設管理者ID":"rec-002","利用者ID":"rec-003","予約申込ID":"rec-004","操作種別":"キャンセル","操作内容":"予約ID: rec-004 | 予約者: 山田花子 | 予約日時: 2025年2月15日 14:00-16:00 | 施設: テニスコート A | キャンセル理由: 施設の臨時休館に伴う一括キャンセル処理 | 返金額: 3,000円","代行理由":"2月14日の暖房設備故障に伴う臨時休館のため、該当日の予約利用者全員に対して一括キャンセル処理を実施。利用者への事前通知済み。","操作日時":"2025-02-13T10:45:00","作成日時":"2025-02-13T10:45:00","更新日時":"2025-02-13T10:45:00"},{"代行予約ログID":"rec-001","施設管理者ID":"rec-002","利用者ID":"rec-003","予約申込ID":"rec-004","操作種別":"変更","操作内容":"予約日時を2025年2月15日14:00から2025年2月15日15:00に変更。利用時間を2時間から1時間に変更。利用人数を5名から4名に変更。","代行理由":"利用者が電話で誤入力を報告。実際の利用予定は15時開始で1時間、参加人数は4名とのこと。利用者本人の申し出に基づき訂正を実施。","操作日時":"2025-02-14 10:30:45","作成日時":"2025-02-14 10:31:12","更新日時":"2025-02-14 10:31:12"}]};
+window.AIVIC_PRESET_SEED = {"利用者":[{"利用者ID":"rec-001","メールアドレス":"satoh.takeshi@city.example.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"佐藤武志","電話番号":"09012345678","住所":"東京都渋谷区神宮前1-2-3","ステータス":"有効","作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00"},{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$K8X9mN2pL4qR5sT6uV7wW.8xY9zA0bC1dE2fG3hI4jK5lM6nO7pQ8","氏名":"田中太郎","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 シティハイツ渋谷201号室","ステータス":"有効","作成日時":"2024-04-15 10:30:45","更新日時":"2025-01-20 14:22:18"},{"利用者ID":"rec-001","メールアドレス":"yamada.kenshu@corp-training.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/tvO","氏名":"山田研修太郎","電話番号":"090-1234-5678","住所":"東京都千代田区丸の内1-1-1 ビジネスビル8階","ステータス":"有効","作成日時":"2024-04-15T10:30:00","更新日時":"2025-01-20T14:45:00"},{"利用者ID":"rec-001","メールアドレス":"suzuki.yuki@student.ac.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"鈴木勇気","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 学生寮A棟205号室","ステータス":"有効","作成日時":"2024-04-15 14:30:00","更新日時":"2025-01-10 09:15:00"},{"利用者ID":"rec-001","メールアドレス":"suzuki.hanako@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"鈴木花子","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 シティマンション渋谷402号室","ステータス":"休止中","作成日時":"2023-06-15 14:30:00","更新日時":"2024-08-20 09:15:00"},{"利用者ID":"rec-001","メールアドレス":"yamada.hanako.2024@gmail.com","パスワードハッシュ":"$2b$12$8vK9mL2pQ5rN3xJ7wF4eOuZ1cD6hB9sT4kM5nP8qR2vS3tU6wX9y","氏名":"山田花子","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 ハイツ渋谷101号室","ステータス":"有効","作成日時":"2024-03-15 14:32:00","更新日時":"2025-01-22 10:15:00"},{"利用者ID":"rec-001","メールアドレス":"suzuki.hanako@email.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","氏名":"鈴木花子","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 パークマンション101号室","ステータス":"利用制限中","作成日時":"2024-03-15 10:30:00","更新日時":"2025-01-20 14:15:00"},{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","氏名":"田中太郎","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 サンシャインマンション401号室","ステータス":"有効","作成日時":"2025-01-15 14:32:47","更新日時":"2025-01-15 14:32:47"},{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","氏名":"田中太郎","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 シティマンション渋谷501号","ステータス":"有効","作成日時":"2024-03-15 10:30:45","更新日時":"2025-01-20 14:22:18"},{"利用者ID":"rec-001","メールアドレス":"tanaka.taro@example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","氏名":"田中太郎","電話番号":"09012345678","住所":"東京都渋谷区道玄坂1-2-3 シティマンション505号室","ステータス":"無効","作成日時":"2024-03-15 10:30:45","更新日時":"2025-01-20 14:22:18"}],"操作履歴":[{"操作履歴ID":"rec-001","ユーザーID":"rec-002","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-003","操作内容":"日次バックアップジョブ「営業DB_日次_0200」の自動実行。対象データベース：営業管理システムDB（本番環境）。バックアップ方式：差分バックアップ。保持世代数：7世代。実行結果：正常に完了。バックアップサイズ：2.3GB。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-12-15 02:00:00","実行終了日時":"2024-12-15 02:18:45","実行時間秒":1125,"IPアドレス":"192.168.100.50","セッションID":"sess-20241215-admin-001","作成日時":"2024-12-15 02:18:45"},{"操作履歴ID":"rec-001-a7f2-4d89-9e1c-2b5d8f3a6c41","ユーザーID":"rec-002-b3e1-5c78-8d2a-1f9c4e2b7a53","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-003-c9d4-6a92-7e3f-5b8c1d6f9a24","操作内容":"予約データベース破損による緊急復旧。2024年1月15日23:45時点のバックアップから復旧を実行。復旧対象：予約テーブル、顧客情報テーブル。復旧後の整合性チェック実施。","操作ステータス":"部分成功","エラーメッセージ":"復旧ジョブID rec-004-e2b7-8f41-9c5a-3d1e6b8f2c59 の予約テーブル復旧は成功しましたが、顧客情報テーブルの復旧に失敗しました。理由：バックアップファイルの一部セクタが破損しており読み込み不可。影響範囲：2024年1月15日22:00～23:45のレコード約340件。","実行開始日時":"2024-01-16T09:30:15+09:00","実行終了日時":"2024-01-16T10:47:42+09:00","実行時間秒":4747,"IPアドレス":"192.168.1.105","セッションID":"sess-20240116-093015-7f2a9c3e","作成日時":"2024-01-16T10:47:42+09:00"},{"操作履歴ID":"rec-20250214-0847","ユーザーID":"usr-0001-yamada","操作種別":"設定変更","対象リソースタイプ":"RTO_RPO設定","対象リソースID":"res-rto-rpo-0042","操作内容":"料金プラン「プレミアム」への変更に伴い、RTO目標値を4時間から1時間に、RPO目標値を24時間から4時間に更新しました。対象システム：営業部門基幹システム。変更理由：ビジネス要件の厳格化に対応するため。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-14 08:47:23","実行終了日時":"2025-02-14 08:47:58","実行時間秒":35,"IPアドレス":"192.168.100.54","セッションID":"sess-20250214-0847-8f4c2e91","作成日時":"2025-02-14 08:47:58"},{"操作履歴ID":"rec-20250215-0847","ユーザーID":"usr-20240501-0312","操作種別":"ジョブ復旧実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"job-20250210-1523","操作内容":"誤削除されたバックアップジョブ「営業DB_日次バックアップ」の復旧を要求。削除前の設定情報から手動復旧を実施。RTO:4時間、RPO:1時間の設定を復元。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15 08:47:23","実行終了日時":"2025-02-15 08:49:15","実行時間秒":112,"IPアドレス":"192.168.1.45","セッションID":"sess-20250215-084723-a7f2","作成日時":"2025-02-15 08:49:15"},{"操作履歴ID":"rec-20250115-001","ユーザーID":"rec-user-0847","操作種別":"バックアップ実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-2024-night-001","操作内容":"夜間バックアップジョブ（営業データベース）の再試行実行。初回実行がタイムアウトエラーで失敗したため、翌朝に手動で再実行を指示。対象サイズ：約850GB、バックアップ先：NAS-backup-01","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-15T08:30:00+09:00","実行終了日時":"2025-01-15T11:45:30+09:00","実行時間秒":12030,"IPアドレス":"192.168.10.45","セッションID":"sess-admin-20250115-08-2847","作成日時":"2025-01-15T11:46:15+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"usr-0847","操作種別":"ジョブ一時停止","対象リソースタイプ":"復旧ジョブ","対象リソースID":"job-5623","操作内容":"東京支社のファイルサーバー復旧ジョブ(RTO:4時間)を一時停止。理由：本番環境の負荷が高いため、ピーク時間帯を避けて再開予定。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2024-11-15 14:32:18","実行終了日時":"2024-11-15 14:32:21","実行時間秒":3,"IPアドレス":"192.168.1.105","セッションID":"sess-9f4c2b8e","作成日時":"2024-11-15 14:32:21"},{"操作履歴ID":"rec-001-a7f3-4b2e-9c1d-5e8a2f6b","ユーザーID":"rec-002-c1e9-4d7a-8f2b-3a6c9e1d","操作種別":"検証実行","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-003-2b4f-5a8e-1c9d-7e3f6a2b","操作内容":"セキュリティ監査に伴う全バックアップジョブの定期検証を実行。対象: 本番環境データベース、ファイルサーバー、仮想マシンイメージの3ジョブ。復旧可能性及びデータ整合性の確認を実施。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-15T09:30:00+09:00","実行終了日時":"2025-01-15T11:45:30+09:00","実行時間秒":8070,"IPアドレス":"192.168.100.45","セッションID":"sess-8f2c-4a9e-1b3d-6c5f","作成日時":"2025-01-15T11:45:31+09:00"},{"操作履歴ID":"rec-20250215-8742","ユーザーID":"rec-user-5031","操作種別":"ジョブ削除","対象リソースタイプ":"バックアップジョブ","対象リソースID":"rec-job-12847","操作内容":"ストレージ容量が92%に達したため、自動削除ポリシーに基づき2024年11月15日に実行された営業システムの差分バックアップジョブ（保持期間満了）を自動削除しました。解放容量: 847GB","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15 03:45:22","実行終了日時":"2025-02-15 03:47:18","実行時間秒":116,"IPアドレス":"192.168.100.54","セッションID":"sess-auto-maintenance-2025021503","作成日時":"2025-02-15 03:47:19"},{"操作履歴ID":"rec-20250215-001","ユーザーID":"rec-user-0847","操作種別":"復旧実行","対象リソースタイプ":"復旧ジョブ","対象リソースID":"rec-job-2024-0156","操作内容":"災害復旧訓練（DRT）における本番環境テスト実行。対象システム：営業管理システム（SalesForce連携）。バックアップポイント：2025年2月14日23:00。復旧先環境：本番環境テスト用クラスタ（prod-test-cluster-02）。検証項目：データ整合性確認、アプリケーション起動確認、ユーザー認証機能確認。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-02-15T09:30:00+09:00","実行終了日時":"2025-02-15T10:47:30+09:00","実行時間秒":4650,"IPアドレス":"192.168.100.45","セッションID":"sess-20250215-a7f3e9d2","作成日時":"2025-02-15T10:47:35+09:00"},{"操作履歴ID":"rec-001","ユーザーID":"rec-u-0847","操作種別":"ログイン","対象リソースタイプ":"セッション","対象リソースID":"rec-s-5432","操作内容":"セッションタイムアウト（30分間操作なし）により自動ログアウト後、管理画面へ再ログイン。操作履歴テーブルから過去7日間のバックアップ実行履歴を検索・確認。","操作ステータス":"成功","エラーメッセージ":null,"実行開始日時":"2025-01-15 14:32:18","実行終了日時":"2025-01-15 14:32:45","実行時間秒":27,"IPアドレス":"192.168.1.105","セッションID":"sess-20250115-143218-8f9a2","作成日時":"2025-01-15 14:32:46"}],"施設管理者":[{"施設管理者ID":"rec-001","施設ID":"rec-f-001","利用者ID":"rec-u-001","管理者名":"山田太郎","メールアドレス":"yamada.taro@commercial-mall.jp","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"ACTIVE","作成日時":"2024-04-01T09:00:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者ID":"rec-u-sys","更新者ID":"rec-u-001"},{"施設管理者ID":"rec-001","施設ID":"rec-f-0042","利用者ID":"rec-u-0156","管理者名":"佐藤美咲","メールアドレス":"misaki.sato@tenant-facility.jp","電話番号":"090-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-12-20T14:15:00+09:00","作成者ID":"rec-u-0001","更新者ID":"rec-u-0001"},{"施設管理者ID":"rec-001","施設ID":"rec-102","利用者ID":"rec-501","管理者名":"山田太郎","メールアドレス":"yamada.taro@company.jp","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"ACTIVE","作成日時":"2024-04-01T09:30:00+09:00","更新日時":"2025-01-15T14:22:00+09:00","作成者ID":"rec-601","更新者ID":"rec-602"},{"施設管理者ID":"rec-001","施設ID":"rec-102","利用者ID":"rec-2847","管理者名":"佐藤美咲","メールアドレス":"sato.misaki@sportscenter-tokyo.jp","電話番号":"03-xxxx-5847","権限レベル":"BILLING","ステータス":"ACTIVE","作成日時":"2024-04-01T09:30:00+09:00","更新日時":"2025-01-15T14:22:00+09:00","作成者ID":"rec-1001","更新者ID":"rec-1005"},{"施設管理者ID":"rec-001","施設ID":"rec-042","利用者ID":"rec-156","管理者名":"山田花子","メールアドレス":"yamada.hanako@hotelreserve.jp","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者ID":"rec-201","更新者ID":"rec-156"},{"施設管理者ID":"rec-001","施設ID":"rec-102","利用者ID":"rec-501","管理者名":"佐藤健一","メールアドレス":"sato.kenichi@example.com","電話番号":"090-1234-5678","権限レベル":"FULL","ステータス":"SUSPENDED","作成日時":"2023-06-15 09:30:00","更新日時":"2025-01-20 14:45:00","作成者ID":"rec-601","更新者ID":"rec-602"},{"施設管理者ID":"rec-001","施設ID":"rec-042","利用者ID":"rec-156","管理者名":"佐藤美咲","メールアドレス":"sato.misaki@example.com","電話番号":"09012345678","権限レベル":"FULL","ステータス":"SUSPENDED","作成日時":"2024-03-15 09:30:00","更新日時":"2025-01-22 14:15:00","作成者ID":"rec-089","更新者ID":"rec-201"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"佐藤花子","メールアドレス":"sato.hanako@facility-training.jp","電話番号":"090-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T09:30:00+09:00","作成者ID":"rec-004","更新者ID":"rec-004"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"鈴木健一","メールアドレス":"suzuki.kenichi@outsource-mgmt.co.jp","電話番号":"03-1234-5678","権限レベル":"RESERVATION","ステータス":"ACTIVE","作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-10T14:22:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"施設管理者ID":"rec-001","施設ID":"rec-002","利用者ID":"rec-003","管理者名":"監査部門 統括管理者","メールアドレス":"audit-manager@company-facilities.jp","電話番号":"03-XXXX-5847","権限レベル":"AUDIT_REPORT","ステータス":"ACTIVE","作成日時":"2024-04-01T09:00:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"}],"団体":[{"団体ID":"rec-001","団体名":"株式会社ソフトウェアイノベーション","団体名カナ":"ソフトウェアイノベーション","代表者名":"山田太郎","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada.taro@softinnovation.co.jp","住所":"東京都千代田区丸の内1-2-3 ソフトウェアイノベーションビル5階","会員数":850,"契約開始日":"2022-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"株式会社ソフトウェアイノベーション経理部","請求先住所":"東京都千代田区丸の内1-2-3 ソフトウェアイノベーションビル8階","請求先電話番号":"03-1234-5679","請求先メールアドレス":"accounting@softinnovation.co.jp","割引率":15,"備考":"大規模企業向け長期契約。年間利用料金は会員数に基づき計算。2024年度は継続利用予定。福利厚生充実企業として評価高い。","作成日時":"2022-03-15T10:30:00Z","更新日時":"2024-11-20T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"東京都立山田高等学校","団体名カナ":"トウキョウトリツヤマダコウトウガッコウ","代表者名":"山田太郎","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada.taro@yamada-hs.tokyo.ed.jp","住所":"東京都渋谷区代々木1-2-3","会員数":1250,"契約開始日":"2024-04-01T00:00:00Z","契約終了日":"2025-03-31T23:59:59Z","ステータス":"有効","請求先":"東京都立山田高等学校 事務室","請求先住所":"東京都渋谷区代々木1-2-3","請求先電話番号":"03-1234-5679","請求先メールアドレス":"jimu@yamada-hs.tokyo.ed.jp","割引率":15,"備考":"教育機関向け年間契約。遠足・修学旅行時の団体利用。春期・夏期・冬期休暇期間での集中利用を想定。","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-28T14:20:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-001"},{"団体ID":"rec-001","団体名":"東京フィットネスクラブ渋谷","団体名カナ":"トウキョウフィットネスクラブシブヤ","代表者名":"山田太郎","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada.taro@tokyofitness.jp","住所":"東京都渋谷区道玄坂2-10-7","会員数":245,"契約開始日":"2023-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"東京フィットネスクラブ渋谷 経理部","請求先住所":"東京都渋谷区道玄坂2-10-7 3階","請求先電話番号":"03-1234-5679","請求先メールアドレス":"billing@tokyofitness.jp","割引率":8,"備考":"月次定期利用。毎週月・水・金に団体レッスン（ヨガ・ピラティス）を実施。年1回の契約更新。","作成日時":"2023-03-15T10:30:00Z","更新日時":"2025-01-20T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"桜町自治会","団体名カナ":"サクラマチジチカイ","代表者名":"山田太郎","代表者電話番号":"090-1234-5678","代表者メールアドレス":"yamada.taro@example.com","住所":"東京都渋谷区桜町3-2-1","会員数":45,"契約開始日":"2024-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"桜町自治会会計","請求先住所":"東京都渋谷区桜町3-2-1","請求先電話番号":"03-9876-5432","請求先メールアドレス":"kaikei@sakuramachi-jichikai.jp","割引率":15,"備考":"春の花見大会（4月）、夏祭り（8月）、秋の運動会（10月）、冬のクリスマス会（12月）など季節ごとのイベント利用。不定期利用のため都度相談。","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-12-20T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"株式会社ビジネスソリューション","団体名カナ":"カブシキガイシャビジネスソリューション","代表者名":"山田太郎","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada.taro@business-solution.jp","住所":"東京都渋谷区道玄坂1-2-3 ビジネスビル5階","会員数":450,"契約開始日":"2024-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"株式会社ビジネスソリューション 経理部","請求先住所":"東京都千代田区丸の内1-1-1 丸の内ビジネスセンター10階","請求先電話番号":"03-1234-5679","請求先メールアドレス":"billing@business-solution.jp","割引率":15,"備考":"複数部門での研修利用。営業部門・企画部門・技術部門の3部門が対象。請求先は経理部に一本化。年間研修計画に基づき月次で利用予定。","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-12-20T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"東京都立大学体育会バレーボール部","団体名カナ":"トウキョウトリツダイガクタイイクカイバレーボールブ","代表者名":"佐藤健一","代表者電話番号":"090-1234-5678","代表者メールアドレス":"sato.kenichi@example.com","住所":"東京都八王子市南大沢1-1 東京都立大学体育館内","会員数":45,"契約開始日":"2023-04-01T00:00:00Z","契約終了日":null,"ステータス":"休止","請求先":"東京都立大学体育会","請求先住所":"東京都八王子市南大沢1-1 東京都立大学学生支援センター","請求先電話番号":"042-677-1111","請求先メールアドレス":"taiikukai@example.com","割引率":15,"備考":"2024年9月より施設改修工事のため活動休止。2025年4月の再開を予定。契約は継続中。","作成日時":"2023-03-15T10:30:00Z","更新日時":"2024-09-01T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"社会福祉法人光明会","団体名カナ":"シャカイフクシホウジンコウミョウカイ","代表者名":"山田健一","代表者電話番号":"09012345678","代表者メールアドレス":"yamada@koumyoukai.jp","住所":"東京都渋谷区代々木2-1-1 光明ビル3階","会員数":145,"契約開始日":"2022-04-01T00:00:00Z","契約終了日":"2024-09-30T23:59:59Z","ステータス":"解約","請求先":"社会福祉法人光明会 経理部","請求先住所":"東京都渋谷区代々木2-1-1 光明ビル3階","請求先電話番号":"0334567890","請求先メールアドレス":"billing@koumyoukai.jp","割引率":15,"備考":"2024年9月末で解約。2024年度の請求は完了済み。今後の問い合わせは対応不要。","作成日時":"2022-03-15T10:30:00Z","更新日時":"2024-10-15T14:20:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"特定非営利活動法人みどり未来","団体名カナ":"トクテイヒエイリカツドウホウジンミドリミライ","代表者名":"鈴木由美","代表者電話番号":"090-1234-5678","代表者メールアドレス":"suzuki.yumi@midori-mirai.org","住所":"東京都渋谷区代々木1-2-3 グリーンビル3階","会員数":24,"契約開始日":"2025-01-15T10:00:00Z","契約終了日":null,"ステータス":"有効","請求先":null,"請求先住所":null,"請求先電話番号":null,"請求先メールアドレス":null,"割引率":0,"備考":"新規加入NPO法人。環境保全活動を主に行う。初期契約期間は1年間。","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-15T09:30:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-001"},{"団体ID":"rec-001","団体名":"株式会社グローバルテック東京支社","団体名カナ":"カブシキガイシャグローバルテックトウキョウシシャ","代表者名":"佐藤健一","代表者電話番号":"03-5678-9012","代表者メールアドレス":"satoh.kenichi@globaltech-tokyo.co.jp","住所":"東京都渋谷区道玄坂1-2-3 グローバルビル5階","会員数":245,"契約開始日":"2024-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"株式会社グローバルテック本部","請求先住所":"大阪府大阪市北区中之島2-3-18 グローバルタワー10階","請求先電話番号":"06-6123-4567","請求先メールアドレス":"billing@globaltech-hq.co.jp","割引率":12,"備考":"大規模団体契約。東京支社での利用。本部一括請求。四半期ごとの利用報告会議あり。","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-12-10T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"},{"団体ID":"rec-001","団体名":"全国スポーツ振興協会","団体名カナ":"ゼンコクスポーツシンコウキョウカイ","代表者名":"山田健一","代表者電話番号":"03-1234-5678","代表者メールアドレス":"yamada@sports-shinko.jp","住所":"東京都渋谷区道玄坂1-2-3 スポーツビル5階","会員数":2850,"契約開始日":"2019-04-01T00:00:00Z","契約終了日":null,"ステータス":"有効","請求先":"全国スポーツ振興協会 経理部","請求先住所":"東京都渋谷区道玄坂1-2-3 スポーツビル5階","請求先電話番号":"03-1234-5679","請求先メールアドレス":"billing@sports-shinko.jp","割引率":25,"備考":"2019年からの長期契約。会員数は毎年平均150名の増加傾向。優良顧客として25%の割引率を適用。2024年度の契約更新時に割引率据え置き。","作成日時":"2019-03-15T10:30:00Z","更新日時":"2024-12-20T14:45:00Z","作成者ID":"rec-admin-001","更新者ID":"rec-admin-002"}],"予約申込":[{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"申込中","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-15 17:00:00","利用人数":85,"料金":425000,"支払状態":"未払","備考":"株式会社ソルテック営業部の新入社員研修。プロジェクター3台、マイク5本、机椅子の配置変更希望。昼食は別途手配予定。","作成日時":"2024-10-20 14:30:00","更新日時":"2024-10-20 14:30:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"完了","利用開始日時":"2024-11-21T14:00:00","利用終了日時":"2024-11-21T15:00:00","利用人数":1,"料金":2500,"支払状態":"支払済","備考":"特になし","作成日時":"2024-11-20T10:30:00","更新日時":"2024-11-21T15:15:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"キャンセル","利用開始日時":"2025-03-15 10:00:00","利用終了日時":"2025-03-15 18:00:00","利用人数":120,"料金":480000,"支払状態":"返金","備考":"新年度準備の都合により団体研修会をキャンセル。参加予定者120名分の返金手続き中。返金予定日2025年2月28日。","作成日時":"2025-02-10 14:30:00","更新日時":"2025-02-20 09:15:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"申込中","利用開始日時":"2025-03-15 14:00:00","利用終了日時":"2025-03-15 18:00:00","利用人数":8,"料金":0,"支払状態":"未払","備考":"ウェディングフォトの撮影予定のため、控え室の追加利用と専用駐車スペース3台分の確保をお願いします。また、館内の照明調整が可能かご相談したいです。料金は別途見積もり後の確定をご希望します。","作成日時":"2025-02-20 10:30:00","更新日時":"2025-02-20 10:30:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"承認済","利用開始日時":"2024-11-15 09:00:00","利用終了日時":"2024-11-17 18:00:00","利用人数":25,"料金":450000,"支払状態":"未払","備考":"営業研修合宿での利用。プロジェクター・ホワイトボード・会議室3室の利用希望。駐車場は大型バス1台、普通車5台分必要。","作成日時":"2024-10-20 14:30:00","更新日時":"2024-11-01 10:15:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"キャンセル","利用開始日時":"2024-12-15T10:00:00","利用終了日時":"2024-12-15T18:00:00","利用人数":4,"料金":32000,"支払状態":"返金不可","備考":"利用3日前のキャンセルのため返金対象外。キャンセル期限を超過しての申請。","作成日時":"2024-12-10T14:30:00","更新日時":"2024-12-13T09:15:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"承認済","利用開始日時":"2025-01-15 14:00:00","利用終了日時":"2025-01-15 16:00:00","利用人数":2,"料金":5000,"支払状態":"支払済","備考":"当日急な利用のため、お手数ですが対応をお願いいたします。","作成日時":"2025-01-15 12:30:00","更新日時":"2025-01-15 12:45:00","作成者ID":"rec-002"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"承認済","利用開始日時":"2024-12-15 10:00:00","利用終了日時":"2024-12-15 18:00:00","利用人数":15,"料金":112500,"支払状態":"未払","備考":"初回申込時は12名でしたが、参加者が3名増加したため利用人数を15名に変更いたしました。料金の再計算をお願いします。","作成日時":"2024-11-20 14:30:00","更新日時":"2024-11-28 09:15:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":"rec-003","施設管理者ID":"rec-004","予約状態":"完了","利用開始日時":"2024-07-15 09:00:00","利用終了日時":"2024-07-19 18:00:00","利用人数":45,"料金":450000,"支払状態":"支払済","備考":"教育委員会主催の夏季研修プログラム。長期割引(15%割引)適用。駐車場30台分確保。弁当手配不要。","作成日時":"2024-05-20 14:30:00","更新日時":"2024-07-20 10:15:00","作成者ID":"rec-005"},{"予約申込ID":"rec-001","利用者ID":"rec-002","団体ID":null,"施設管理者ID":"rec-003","予約状態":"申込中","利用開始日時":"2024-12-15 10:00:00","利用終了日時":"2024-12-15 18:00:00","利用人数":25,"料金":75000,"支払状態":"未払","備考":"【重要】他の予約と時間帯が重複している可能性があります。確認中のため決定待ちです。利用者より急ぎの連絡あり。","作成日時":"2024-12-10 14:30:00","更新日時":"2024-12-12 09:15:00","作成者ID":"rec-004"}],"予約承認基準":[{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"個人利用者向け通常予約","対象利用者区分":"個人","最大予約日数":7,"最大同時予約件数":3,"予約可能日前日数":30,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","作成者ID":"rec-admin-0018","更新日時":"2025-01-10T14:20:00+09:00","更新者ID":"rec-admin-0018"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"団体利用者向け優遇ルール","対象利用者区分":"団体","最大予約日数":14,"最大同時予約件数":5,"予約可能日前日数":60,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","作成者ID":"rec-admin-0015","更新日時":"2025-01-10T14:20:00+09:00","更新者ID":"rec-admin-0015"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"プレミアム会員向け予約ルール","対象利用者区分":"プレミアム会員","最大予約日数":30,"最大同時予約件数":10,"予約可能日前日数":90,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00","作成者ID":"rec-admin-0018","更新日時":"2025-01-20T14:15:00","更新者ID":"rec-admin-0018"},{"承認基準ID":"rec-001","施設管理者ID":"rec-002","基準名":"当日予約専用ルール","対象利用者区分":"個人","最大予約日数":1,"最大同時予約件数":3,"予約可能日前日数":0,"自動承認フラグ":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","作成者ID":"rec-003","更新日時":"2024-12-10 14:20:00","更新者ID":"rec-003"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"教育機関・非営利団体向け社会貢献ルール","対象利用者区分":"団体","最大予約日数":7,"最大同時予約件数":2,"予約可能日前日数":30,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","作成者ID":"rec-admin-0015","更新日時":"2025-01-10T14:45:00+09:00","更新者ID":"rec-admin-0015"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-0042","基準名":"企業研修向け団体ルール","対象利用者区分":"団体","最大予約日数":5,"最大同時予約件数":1,"予約可能日前日数":90,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00","作成者ID":"rec-admin-0015","更新日時":"2025-01-20T14:15:00","更新者ID":"rec-admin-0015"},{"承認基準ID":"rec-001","施設管理者ID":"rec-admin-042","基準名":"シニア利用者向け配慮ルール","対象利用者区分":"シニア（65歳以上）","最大予約日数":3,"最大同時予約件数":2,"予約可能日前日数":14,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-10-15 09:30:00","作成者ID":"rec-admin-042","更新日時":"2025-01-08 14:15:00","更新者ID":"rec-admin-042"},{"承認基準ID":"rec-001","施設管理者ID":"rec-mgr-042","基準名":"キャンセル待ち登録用","対象利用者区分":"個人","最大予約日数":1,"最大同時予約件数":999,"予約可能日前日数":0,"自動承認フラグ":true,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","作成者ID":"rec-admin-018","更新日時":"2025-01-10 14:22:00","更新者ID":"rec-admin-018"}],"料金ルール":[{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"平日通常料金","説明":"月曜日から金曜日の営業時間帯（9時～21時）における標準的な時間単位料金。最小利用時間30分から対応。","基本料金":500,"単位時間":30,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":30,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-mgr-0042","ルール名":"土日祝日ピーク時間帯割増料金","説明":"土曜日、日曜日、国民の祝日の10時から18時までの時間帯に適用される割増料金。通常料金から30%の割増を適用します。","基本料金":1500,"単位時間":60,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":30,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T09:30:00Z","更新日時":"2024-03-15T09:30:00Z","作成者ID":"rec-admin-0018"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"10名以上団体割引料金","説明":"10名以上の団体利用を対象とした割引料金ルール。事前予約が必須。通常料金から20%の割引を適用します。","基本料金":8000,"単位時間":60,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":120,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-12-10T14:20:00Z","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"長時間利用定額パッケージ","説明":"8時間以上の連続利用を対象とした定額料金プラン。時間単位での追加料金は発生しません。","基本料金":8000,"単位時間":480,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":480,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"会員月額定額制プラン","説明":"会員顧客限定の月額定額制利用プラン。月間利用時間無制限で施設を利用できます。営業時間内であれば何度でも出入り可能です。","基本料金":15000,"単位時間":1440,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":0,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001"},{"料金ルールID":"rec-001","施設管理者ID":"rec-mgr-042","ルール名":"新春キャンペーン割引料金","説明":"2025年1月1日から2月28日までの新春キャンペーン期間中に適用される期間限定割引。通常料金から20%割引となります。","基本料金":800,"単位時間":60,"適用開始日":"2025-01-01T00:00:00","適用終了日":"2025-02-28T23:59:59","最小利用時間":60,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-12-10T14:30:00","更新日時":"2024-12-10T14:30:00","作成者ID":"rec-admin-015"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-047","ルール名":"早朝優待料金","説明":"毎日6時から9時までの早朝営業時間帯に適用される優待料金です。通勤・通学利用者向けの割引ルールとなります。","基本料金":300,"単位時間":30,"適用開始日":"2024-04-01T00:00:00Z","適用終了日":null,"最小利用時間":30,"最大利用時間":180,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-047"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"深夜営業割増料金","説明":"22時から翌6時までの深夜営業時間帯における割増料金。通常料金に対して50%の割増を適用します。","基本料金":1500,"単位時間":60,"適用開始日":"2024-04-01T00:00:00","適用終了日":null,"最小利用時間":30,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00","更新日時":"2024-03-15T10:30:00","作成者ID":"rec-admin-042"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"学生・シニア向け継続割引料金","説明":"大学生（学生証提示）および65歳以上のシニア層を対象とした継続利用向けの割引料金プラン。月4回以上の利用で適用される。","基本料金":800,"単位時間":60,"適用開始日":"2024-04-01T00:00:00","適用終了日":null,"最小利用時間":60,"最大利用時間":480,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00","更新日時":"2024-12-10T14:20:00","作成者ID":"rec-admin-001"},{"料金ルールID":"rec-001","施設管理者ID":"rec-admin-042","ルール名":"オフシーズン需要喚起割引","説明":"6月〜8月の夏季閑散期における利用促進を目的とした割引料金。通常料金から30%割引を適用し、最小利用時間を60分に設定することで気軽な利用を促進します。","基本料金":700,"単位時間":30,"適用開始日":"2024-06-01 00:00:00","適用終了日":"2024-08-31 23:59:59","最小利用時間":60,"最大利用時間":null,"有効フラグ":true,"作成日時":"2024-04-15 10:30:00","更新日時":"2024-05-20 14:15:00","作成者ID":"rec-admin-042"}],"割引マスタ":[{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"早期割引30","割引説明":"予約日から30日以上前のご予約に対して割引を適用いたします。対象施設の宿泊プランおよびレンタルサービスが対象となります。","割引タイプ":"率引き","割引値":15,"適用対象":"全利用者","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":10000,"最大割引額":50000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-11-20T14:15:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-mgr-042","割引名":"団体利用割引（10名以上）","割引説明":"10名以上の団体でのご利用の場合、1予約あたり一律3,000円の割引を適用いたします。同一日時での複数グループの予約は対象外となります。","割引タイプ":"定額割引","割引値":3000,"適用対象":"団体のみ","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":15000,"最大割引額":3000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-12-10T14:45:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"シニア割引","割引説明":"65歳以上のご高齢者を対象とした割引制度です。身分証明書での年齢確認が必要となります。他の割引との併用はできません。","割引タイプ":"率引き","割引値":15,"適用対象":"シニア利用者（65歳以上）","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":2000,"最大割引額":5000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-12-01T14:45:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-102","割引名":"平日割引","割引説明":"月曜日から金曜日の利用に対して適用される割引です。土日祝日は対象外となります。","割引タイプ":"率引き","割引値":15,"適用対象":"全利用者","有効開始日":"2024-04-01T00:00:00","有効終了日":null,"最小適用金額":5000,"最大割引額":3000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00","作成者ID":"rec-102","更新日時":"2024-03-15T10:30:00","更新者ID":"rec-102"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"会員継続利用割引","割引説明":"当施設の会員登録ユーザーが過去12ヶ月以内に3回以上の利用実績がある場合に適用される割引です。継続的なご利用に対する感謝の割引となります。","割引タイプ":"定額割引","割引値":1000,"適用対象":"会員ユーザーのみ","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":5000,"最大割引額":1000,"優先度":3,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-042","更新日時":"2024-12-20T14:15:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"冬季オフシーズン割引","割引説明":"11月〜2月の冬季期間における利用者の減少に対応し、施設利用を促進するための割引。全ての利用者が対象となります。","割引タイプ":"率引き","割引値":25,"適用対象":"全利用者","有効開始日":"2024-11-01T00:00:00Z","有効終了日":"2025-02-28T23:59:59Z","最小適用金額":5000,"最大割引額":8000,"優先度":3,"有効フラグ":true,"作成日時":"2024-10-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-10-20T14:45:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-102","割引名":"複数施設同時予約割引","割引説明":"2つ以上の異なる施設を同じ日に予約した場合、合計予約額から割引を適用します。施設の連携利用を促進するための割引制度です。","割引タイプ":"定額割引","割引値":3000,"適用対象":"複数施設予約者","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":15000,"最大割引額":5000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-201","更新日時":"2024-12-20T14:45:00Z","更新者ID":"rec-201"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"学生向け学割","割引説明":"有効な学生証を提示した学生を対象とした割引です。大学生、高専生、専門学校生が対象となります。","割引タイプ":"率引き","割引値":15,"適用対象":"学生のみ","有効開始日":"2024-04-01T00:00:00Z","有効終了日":"2025-03-31T23:59:59Z","最小適用金額":1000,"最大割引額":5000,"優先度":2,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-001","更新日時":"2024-03-20T14:15:00Z","更新者ID":"rec-admin-001"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"リピーター累積利用割引","割引説明":"過去12ヶ月間の累積利用回数に基づく割引。10回以上20回未満で1,000円、20回以上で2,000円の割引を適用します。","割引タイプ":"定額割引","割引値":1000,"適用対象":"リピーター顧客（累積利用回数10回以上）","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"最小適用金額":5000,"最大割引額":2000,"優先度":3,"有効フラグ":true,"作成日時":"2024-03-15T10:30:00Z","作成者ID":"rec-admin-042","更新日時":"2024-12-10T14:45:00Z","更新者ID":"rec-admin-042"},{"割引ID":"rec-001","施設管理者ID":"rec-admin-042","割引名":"新年キャンペーン割引","割引説明":"2025年1月1日から1月31日までの期間限定で、全ての利用者を対象とした新年特別割引です。予約金額に対して15%の割引を適用いたします。","割引タイプ":"率引き","割引値":15,"適用対象":"全利用者","有効開始日":"2025-01-01T00:00:00","有効終了日":"2025-01-31T23:59:59","最小適用金額":5000,"最大割引額":10000,"優先度":2,"有効フラグ":true,"作成日時":"2024-12-10T14:30:00","作成者ID":"rec-admin-042","更新日時":"2024-12-15T09:15:00","更新者ID":"rec-admin-042"}],"返金条件":[{"返金条件ID":"rec-001","施設管理者ID":"mgr-0847","条件名":"標準返金ルール","キャンセル期限日数":7,"返金率":100,"説明":"利用予定日の7日前までにキャンセルした場合、支払済み料金を全額返金いたします。7日以内のキャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-04-15T09:30:00+09:00","作成者ID":"mgr-0847"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-0847","条件名":"直前キャンセル対応ルール","キャンセル期限日数":3,"返金率":50,"説明":"利用予定日の3日前までのキャンセルについては、お支払い済みの料金の50%をご返金いたします。3日以内のキャンセルについては返金対象外となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:15:00+09:00","作成者ID":"mgr-0847"},{"返金条件ID":"rec-001","施設管理者ID":"adm-0847","条件名":"当日キャンセル無返金ルール","キャンセル期限日数":0,"返金率":0,"説明":"利用予定日当日のキャンセルは返金対象外となります。緊急時を除き、事前のキャンセル連絡をお願いします。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-12-20T14:15:00+09:00","作成者ID":"adm-0847"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-0847","条件名":"グループ・団体向け特別ルール","キャンセル期限日数":14,"返金率":100,"説明":"10名以上の団体・グループ利用者向けの特別キャンセルポリシーです。利用予定日の14日前までにキャンセル手続きを完了した場合、支払済み料金の全額を返金いたします。14日以内のキャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者ID":"mgr-0847"},{"返金条件ID":"rec-001","施設管理者ID":"admin-024","条件名":"繁忙期限定返金ルール","キャンセル期限日数":3,"返金率":30,"説明":"ハイシーズン（7月～8月、12月～1月）における返金ルール。利用予定日の3日前までのキャンセルに限り、キャンセル料を差し引いた30%を返金対象とします。3日以内のキャンセルは返金対象外となります。","有効フラグ":true,"作成日時":"2024-06-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者ID":"admin-024"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-2024-0847","条件名":"長期予約割引対象返金ルール","キャンセル期限日数":30,"返金率":100,"説明":"利用予定日の30日以上前にキャンセルした場合、支払済み料金を全額返金いたします。長期予約割引の対象となるご予約が対象です。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-10T14:22:00+09:00","作成者ID":"mgr-2024-0847"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-2024-001","条件名":"会員向け優遇ルール","キャンセル期限日数":10,"返金率":100,"説明":"当施設の会員様を対象とした優遇返金ルールです。利用予定日の10日前までのキャンセルであれば、お支払い済みの料金を全額返金いたします。会員登録番号の確認が必要となります。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者ID":"mgr-2024-001"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-2024-001","条件名":"キャンセル料金固定ルール","キャンセル期限日数":0,"返金率":10,"説明":"キャンセルのタイミングに関わらず、予約金の10%のみ返金いたします。施設運営費用および事務手数料として差し引かせていただきます。","有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-04-15T09:30:00+09:00","作成者ID":"usr-admin-2024-001"},{"返金条件ID":"rec-001","施設管理者ID":"mgr-042","条件名":"オフシーズン返金ルール","キャンセル期限日数":5,"返金率":80,"説明":"11月～3月のオフシーズン期間に適用される返金条件です。利用予定日の5日前までのキャンセルであれば、キャンセル料金を差し引いた80%を返金いたします。繁忙期を除く期間のため、柔軟なキャンセル対応が可能です。","有効フラグ":true,"作成日時":"2024-09-15T10:30:00+09:00","更新日時":"2024-11-01T14:20:00+09:00","作成者ID":"admin-018"}],"利用料金計算結果":[{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":15000,"割引額":0,"割引率":0,"税金":1500,"合計料金":16500,"計算日時":"2024-11-15 14:30:22","計算ステータス":"成功","計算備考":"通常料金。税率10%を適用。","作成日時":"2024-11-15 14:30:22","更新日時":"2024-11-15 14:30:22","作成者ID":"rec-005"},{"料金計算結果ID":"rec-20250115-001","予約申込ID":"rec-20250110-042","利用者ID":"rec-user-2024-0156","施設管理者ID":"rec-admin-2024-0089","基本料金":50000,"割引額":5000,"割引率":10,"税金":4500,"合計料金":49500,"計算日時":"2025-01-15 14:32:18","計算ステータス":"成功","計算備考":"早期予約割引（30日以上前の予約）が適用されました。割引対象期間：2025年2月15日。","作成日時":"2025-01-15 14:32:18","更新日時":"2025-01-15 14:32:18","作成者ID":"rec-system-auto"},{"料金計算結果ID":"rec-001-fee-calc-2024-11-15-001","予約申込ID":"rec-001-booking-2024-11-10-042","利用者ID":"rec-001-user-2023-05-18-156","施設管理者ID":"rec-001-admin-2022-03-22-089","基本料金":15000,"割引額":3000,"割引率":15,"税金":1440,"合計料金":13440,"計算日時":"2024-11-15 14:32:18","計算ステータス":"成功","計算備考":"会員ランク割引(プラチナ会員10%)と季節割引(冬季キャンペーン5%)を複合適用。割引額は基本料金の15%を適用。","作成日時":"2024-11-15 14:32:18","更新日時":"2024-11-15 14:32:18","作成者ID":"rec-001-system-auto-calc"},{"料金計算結果ID":"rec-20250115-001","予約申込ID":"res-20250110-042","利用者ID":"usr-20240523-018","施設管理者ID":"adm-20240301-005","基本料金":15000,"割引額":0,"割引率":0,"税金":1500,"合計料金":16500,"計算日時":"2025-01-15 14:32:47","計算ステータス":"成功","計算備考":"予約申込日から3日以内のキャンセルのため、基本料金の100%をキャンセル料金として計算。キャンセル申請日時: 2025-01-15 13:45:00","作成日時":"2025-01-15 14:32:47","更新日時":"2025-01-15 14:32:47","作成者ID":"adm-20240301-005"},{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":120000,"割引額":18000,"割引率":15,"税金":8820,"合計料金":110820,"計算日時":"2024-11-15 14:30:00","計算ステータス":"成功","計算備考":"グループ利用（15名以上）による団体割引15%を適用。消費税10%を計算。","作成日時":"2024-11-15 14:30:00","更新日時":"2024-11-15 14:30:00","作成者ID":"rec-005"},{"料金計算結果ID":"rec-20250215-001","予約申込ID":"rec-20250210-rsv-042","利用者ID":"rec-user-20240501-156","施設管理者ID":"rec-admin-20240101-008","基本料金":50000,"割引額":5000,"割引率":10,"税金":4050,"合計料金":49050,"計算日時":"2025-02-15 14:32:18","計算ステータス":"成功","計算備考":"税率変更に伴う再計算（旧税率8%→新税率10%）。2025年2月1日の税率変更前の予約につき修正対応。元の計算結果（税金3600円、合計料金47600円）から更新。","作成日時":"2025-02-15 14:32:18","更新日時":"2025-02-15 14:32:18","作成者ID":"rec-system-auto-001"},{"料金計算結果ID":"rec-20250215-004782","予約申込ID":"rec-20250210-001543","利用者ID":"rec-20240801-000892","施設管理者ID":"rec-20240601-000156","基本料金":0,"割引額":0,"割引率":0,"税金":0,"合計料金":0,"計算日時":"2025-02-15 14:32:18","計算ステータス":"エラー","計算備考":"データベース接続タイムアウトにより料金計算処理が中断しました。割引マスタ参照時にエラーが発生。再処理予定日時: 2025-02-15 15:00:00","作成日時":"2025-02-15 14:32:18","更新日時":"2025-02-15 14:32:18","作成者ID":"rec-20240101-000001"},{"料金計算結果ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","基本料金":450000,"割引額":45000,"割引率":10,"税金":40800,"合計料金":445800,"計算日時":"2024-11-15 14:30:22","計算ステータス":"成功","計算備考":"90日以上の長期利用により10%割引を適用。基本料金450,000円から割引額45,000円を控除後、消費税10%を計算。","作成日時":"2024-11-15 14:30:22","更新日時":"2024-11-15 14:30:22","作成者ID":"rec-005"},{"料金計算結果ID":"rec-20250115-001","予約申込ID":"rec-20250110-042","利用者ID":"rec-user-20240805-156","施設管理者ID":"rec-admin-20240601-089","基本料金":15000,"割引額":3000,"割引率":20,"税金":2400,"合計料金":14400,"計算日時":"2025-01-15 14:32:45","計算ステータス":"成功","計算備考":"クーポンコード『NEWYEAR2025』を適用。20%割引が適用されました。税率10%で計算。","作成日時":"2025-01-15 14:32:45","更新日時":"2025-01-15 14:32:45","作成者ID":"rec-system-001"},{"料金計算結果ID":"rec-20250115-7c4a","予約申込ID":"rsv-20250110-2b8f","利用者ID":"usr-20240515-9d3e","施設管理者ID":"adm-20240301-5k1m","基本料金":15000,"割引額":2000,"割引率":10,"税金":1300,"合計料金":14300,"計算日時":"2025-01-15 14:32:00","計算ステータス":"成功","計算備考":"施設管理者 山田花子により手動調整。グループ利用のため割引率を10%に修正。前回計算時の誤りを修正。","作成日時":"2025-01-15 14:32:00","更新日時":"2025-01-15 14:32:00","作成者ID":"adm-20240301-5k1m"}],"収納状況":[{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":450000,"収納済金額":450000,"未収金額":0,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"全額収納","最終収納日時":"2024-11-15 10:30:00","返金日時":null,"備考":"2024年12月21日のクリスマスイベント開催。参加者150名。事前入金にて全額決済完了。銀行振込にて受け取り。","作成日時":"2024-11-10 14:20:00","更新日時":"2024-11-15 10:30:00","作成者":"rec-004"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":45000,"収納済金額":30000,"未収金額":15000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"部分収納","最終収納日時":"2025-01-15 10:30:00","返金日時":null,"備考":"2025年1月10日に会議室A（8時間利用）の利用料金45,000円が確定。利用者（山田花子様）より2025年1月15日に30,000円の入金を確認。残金15,000円は2月末までの支払い予定との申告。催促予定日：2月15日","作成日時":"2025-01-10 14:20:00","更新日時":"2025-01-15 10:35:00","作成者":"rec-004"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":45000,"収納済金額":45000,"未収金額":0,"返金予定金額":45000,"返金済金額":45000,"収納状況ステータス":"返金完了","最終収納日時":"2024-11-15 14:30:00","返金日時":"2024-11-22 10:15:00","備考":"利用者都合によるキャンセル。キャンセル申請日2024-11-14、返金手数料なし。銀行振込にて返金処理完了。振込先：田中太郎名義の〇〇銀行〇〇支店普通預金口座。","作成日時":"2024-11-15 14:35:00","更新日時":"2024-11-22 10:20:00","作成者":"rec-004"},{"収納状況ID":"rec-20250156","予約申込ID":"rec-20250089","利用料金計算結果ID":"rec-20250142","請求金額":45000,"収納済金額":50000,"未収金額":0,"返金予定金額":5000,"返金済金額":0,"収納状況ステータス":"返金待機","最終収納日時":"2025-01-15 14:30:00","返金日時":null,"備考":"利用者が誤って多く振込。返金手続き中。振込元口座確認済み。返金予定日2025年1月22日。","作成日時":"2025-01-16 09:15:00","更新日時":"2025-01-16 09:15:00","作成者":"rec-00047"},{"収納状況ID":"rec-20250156","予約申込ID":"rec-20250089","利用料金計算結果ID":"rec-20250127","請求金額":450000,"収納済金額":280000,"未収金額":170000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"部分収納","最終収納日時":"2025-01-20 14:30:00","返金日時":null,"備考":"複数回利用の累積請求。第1回納期2024年12月15日に150,000円、第2回納期2025年1月15日に130,000円を収納済み。残金170,000円は2025年2月15日納期予定。利用者（田中太郎様）より分割納入の申請があり承認済み。","作成日時":"2024-12-10 09:15:00","更新日時":"2025-01-20 14:35:00","作成者":"rec-00042"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":15000,"収納済金額":15000,"未収金額":0,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"全額収納","最終収納日時":"2024-11-15 17:45:30","返金日時":null,"備考":"会議室A利用分。当日現金払いにて全額収納完了。領収書番号：RCP-20241115-0847","作成日時":"2024-11-15 17:45:30","更新日時":"2024-11-15 17:45:30","作成者":"rec-004"},{"収納状況ID":"rec-20250215-001","予約申込ID":"rec-20250101-app-042","利用料金計算結果ID":"rec-20250131-calc-015","請求金額":450000,"収納済金額":300000,"未収金額":150000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"部分収納","最終収納日時":"2025-02-10 14:30:00","返金日時":null,"備考":"2025年1月分の月末締め請求。初回納付金300,000円は2月10日に確認。残金150,000円は利用者（山田花子）より2月末までの納付予定との連絡あり。","作成日時":"2025-02-01 09:15:00","更新日時":"2025-02-10 14:35:00","作成者":"rec-admin-0087"},{"収納状況ID":"rec-001","予約申込ID":"rec-002","利用料金計算結果ID":"rec-003","請求金額":150000,"収納済金額":150000,"未収金額":0,"返金予定金額":45000,"返金済金額":45000,"収納状況ステータス":"返金完了","最終収納日時":"2024-11-15 14:30:00","返金日時":"2024-12-20 10:15:00","備考":"利用者都合による7日前キャンセル。キャンセル料30%を差し引き、返金額45,000円を確定。返金は指定銀行口座へ振込完了。","作成日時":"2024-11-15 14:35:00","更新日時":"2024-12-20 10:20:00","作成者":"rec-004"},{"収納状況ID":"rec-20250087","予約申込ID":"rec-20250045","利用料金計算結果ID":"rec-20250156","請求金額":385000,"収納済金額":0,"未収金額":385000,"返金予定金額":0,"返金済金額":0,"収納状況ステータス":"未収納","最終収納日時":null,"返金日時":null,"備考":"株式会社ソリューション営業部より2025年1月15日付で請求書を発行。支払期限は2025年2月15日。請求書番号INV-2025-001847。担当者：山田花子。請求書はメール送付済み。","作成日時":"2025-01-15 09:30:00","更新日時":"2025-01-15 09:30:00","作成者":"rec-admin-0012"},{"収納状況ID":"rec-001-shuunou-20250115","予約申込ID":"rec-002-yoyaku-20241220","利用料金計算結果ID":"rec-003-riyouryokin-20241220","請求金額":85000,"収納済金額":85000,"未収金額":0,"返金予定金額":12000,"返金済金額":12000,"収納状況ステータス":"返金完了","最終収納日時":"2024-12-21 14:30:00","返金日時":"2025-01-15 10:45:00","備考":"追加オプション（ウェルカムドリンク3名分12,000円）のキャンセルに伴う返金。利用者・山田花子からの返金要望により対応。銀行振込にて返金完了。","作成日時":"2024-12-20 09:15:00","更新日時":"2025-01-15 10:45:00","作成者":"rec-004-kanrisha-佐藤次郎"}],"利用実績":[{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"mgr-0156","団体ID":null,"利用開始日時":"2024-11-15T09:00:00+09:00","利用終了日時":"2024-11-15T12:30:00+09:00","利用時間分":210,"利用人数":4,"利用料金計算結果ID":"calc-5923","実績ステータス":"完了","備考":"予約通り利用完了。利用者は田中太郎、同行者3名。施設の清掃確認済み。","作成日時":"2024-11-15T13:15:00+09:00","作成者":"mgr-0156","更新日時":"2024-11-15T14:30:00+09:00","更新者":"mgr-0156"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"mgr-0156","団体ID":null,"利用開始日時":"2024-11-15 14:00:00","利用終了日時":"2024-11-15 15:20:00","利用時間分":80,"利用人数":4,"利用料金計算結果ID":"calc-5623","実績ステータス":"完了","備考":"予約時間は16:00まででしたが、利用者の都合により15:20に早期退出。差額返金対象。","作成日時":"2024-11-15 15:35:00","作成者":"mgr-0156","更新日時":"2024-11-15 16:10:00","更新者":"mgr-0156"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"adm-0156","団体ID":null,"利用開始日時":"2024-11-15 14:00:00","利用終了日時":"2024-11-15 16:35:00","利用時間分":155,"利用人数":4,"利用料金計算結果ID":"fee-5623","実績ステータス":"完了","備考":"予約時間は2時間でしたが、35分間の超過利用がありました。超過分は追加料金として計算済み。","作成日時":"2024-11-15 16:45:00","作成者":"adm-0156","更新日時":"2024-11-16 09:30:00","更新者":"adm-0089"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":"rec-005","利用開始日時":"2024-11-15 14:00:00","利用終了日時":"2024-11-15 16:30:00","利用時間分":150,"利用人数":28,"利用料金計算結果ID":"rec-006","実績ステータス":"完了","備考":"予約時点では団体40名の申込でしたが、当日の参加者は28名でした。急遽参加者が減少したため、料金は実績人数で再計算いたしました。","作成日時":"2024-11-15 17:00:00","作成者":"rec-007","更新日時":"2024-11-16 09:30:00","更新者":"rec-008"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":"rec-005","利用開始日時":"2024-11-15 10:00:00","利用終了日時":"2024-11-15 12:30:00","利用時間分":150,"利用人数":52,"利用料金計算結果ID":"rec-006","実績ステータス":"完了","備考":"予約人数50名に対して実際は52名の利用。超過人数2名分の追加料金を適用。学校行事の団体利用。","作成日時":"2024-11-15 13:45:00","作成者":"rec-004","更新日時":"2024-11-16 09:30:00","更新者":"rec-004"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":null,"利用開始日時":"2024-12-15 14:00:00","利用終了日時":null,"利用時間分":0,"利用人数":0,"利用料金計算結果ID":null,"実績ステータス":"未確定","備考":"利用者からのキャンセル連絡により、実際の利用は発生しませんでした。払戻手続きは別途対応予定。","作成日時":"2024-12-14 10:30:00","作成者":"rec-004","更新日時":"2024-12-15 09:45:00","更新者":"rec-004"},{"利用実績ID":"rec-001","予約申込ID":"rec-002","利用者ID":"rec-003","施設管理者ID":"rec-004","団体ID":null,"利用開始日時":"2024-11-15T14:00:00+09:00","利用終了日時":"2024-11-15T15:30:00+09:00","利用時間分":90,"利用人数":8,"利用料金計算結果ID":"rec-005","実績ステータス":"キャンセル","備考":"14時35分頃に空調設備の故障が発生。利用者の安全と快適性を考慮し、15時30分に利用を中断。施設管理者の判断により返金処理を実施。修理完了予定は11月17日。","作成日時":"2024-11-15T16:00:00+09:00","作成者":"rec-004","更新日時":"2024-11-15T16:45:00+09:00","更新者":"rec-006"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"adm-0156","団体ID":"grp-0512","利用開始日時":"2024-11-15T09:00:00+09:00","利用終了日時":"2024-11-15T11:30:00+09:00","利用時間分":150,"利用人数":1,"利用料金計算結果ID":"fee-3421","実績ステータス":"完了","備考":"団体予約の共用利用。予約申込ID res-0847 の分割記録（利用者1/3）。佐藤花子、山田次郎、鈴木美咲の3名による共用利用。本レコードは佐藤花子の実績分。","作成日時":"2024-11-15T12:45:00+09:00","作成者":"adm-0156","更新日時":"2024-11-15T14:20:00+09:00","更新者":"adm-0156"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2341","施設管理者ID":"mgr-0156","団体ID":"grp-0512","利用開始日時":"2024-11-15 10:00:00","利用終了日時":"2024-11-15 16:30:00","利用時間分":390,"利用人数":25,"利用料金計算結果ID":"fee-5623","実績ステータス":"完了","備考":"予定時間は15:00まででしたが、イベント進行の遅延により16:30まで延長利用。追加30分間の料金を別途請求いたします。","作成日時":"2024-11-15 17:15:00","作成者":"mgr-0156","更新日時":"2024-11-16 09:30:00","更新者":"mgr-0156"},{"利用実績ID":"rec-001","予約申込ID":"res-0847","利用者ID":"usr-2934","施設管理者ID":"adm-0156","団体ID":null,"利用開始日時":"2024-11-15T09:00:00+09:00","利用終了日時":"2024-11-15T12:30:00+09:00","利用時間分":210,"利用人数":5,"利用料金計算結果ID":"fee-5821","実績ステータス":"異議申し立て待ち","備考":"利用者より利用時間の計算に誤りがあるとの指摘あり。実際の利用は12:15までとの主張。施設管理者による確認待ち中。","作成日時":"2024-11-15T14:20:00+09:00","作成者":"adm-0156","更新日時":"2024-11-16T10:45:00+09:00","更新者":"adm-0156"}],"代行予約ログ":[{"代行予約ログID":"rec-001","施設管理者ID":"rec-a001","利用者ID":"rec-u0847","予約申込ID":"rec-b3521","操作種別":"作成","操作内容":"施設: 中央体育館、利用日: 2025-01-15、時間帯: 18:00-20:00、用途: バドミントン、利用者数: 4名、予約状態: 確定","代行理由":"利用者（佐藤美咲）より電話にて当日利用の急な申し込みがあり、電話対応で予約を代行作成いたしました。","操作日時":"2025-01-15 16:45:23","作成日時":"2025-01-15 16:45:23","更新日時":"2025-01-15 16:45:23"},{"代行予約ログID":"rec-20250115-001","施設管理者ID":"rec-admin-0847","利用者ID":"rec-user-5623","予約申込ID":"rec-booking-9284","操作種別":"変更","操作内容":"予約時間を変更しました。変更前: 2025-01-20 14:00-15:00、変更後: 2025-01-20 15:30-16:30","代行理由":"利用者(田中花子)が電話で予約時間を誤って入力したことに気づき、正しい時間帯への変更を希望されたため、施設管理者(佐藤健一)が訂正対応いたしました。","操作日時":"2025-01-15 10:23:45","作成日時":"2025-01-15 10:24:12","更新日時":"2025-01-15 10:24:12"},{"代行予約ログID":"rec-a7f3-2024-11-15-001","施設管理者ID":"rec-mgr-8592-0847","利用者ID":"rec-usr-5103-2461","予約申込ID":"rec-app-3847-6921","操作種別":"キャンセル","操作内容":"予約申込ID: rec-app-3847-6921の予約をキャンセル。対象施設: 横浜市民スポーツセンター、対象日時: 2024年11月16日 14:00〜15:30、対象サービス: テニスコート2番コート、キャンセル理由: 利用者の急な体調不良により施設管理者が代行キャンセル処理を実施。利用者(山田花子)に電話で連絡済み。キャンセル料は発生させない。","代行理由":"利用者が急性の体調不良(発熱39.2℃、咳症状)を訴えたため、利用者の健康と他の利用者への感染防止を考慮して代行キャンセルを実施。利用者本人からの電話による依頼を受けて対応。","操作日時":"2024-11-15 10:45:32","作成日時":"2024-11-15 10:45:33","更新日時":"2024-11-15 10:45:33"},{"代行予約ログID":"rec-001","施設管理者ID":"rec-a001","利用者ID":"rec-u015","予約申込ID":"rec-p042","操作種別":"変更","操作内容":"予約日時を2025年2月15日10:00から2025年2月22日14:00に変更。利用時間を2時間から3時間に延長。施設内の他予約との競合解消のため一括調整対象","代行理由":"施設メンテナンス実施に伴う予約日程の一括変更。対象利用者5名分の予約を統一的に調整する必要があったため、施設管理者が代行実施","操作日時":"2025-01-28T09:30:00+09:00","作成日時":"2025-01-28T09:30:15+09:00","更新日時":"2025-01-28T09:30:15+09:00"},{"代行予約ログID":"rec-001","施設管理者ID":"rec-a001","利用者ID":"rec-u0847","予約申込ID":"rec-b5234","操作種別":"作成","操作内容":"利用者: 鈴木花子、施設: 市民プール、日程: 2025-02-15 14:00-15:00、コース: 一般向け、人数: 2名、料金: 1,200円","代行理由":"利用者がスマートフォンの故障によりシステムにアクセスできないため、電話での依頼を受けて代行予約を作成","操作日時":"2025-02-10 10:30:00","作成日時":"2025-02-10 10:30:15","更新日時":"2025-02-10 10:30:15"},{"代行予約ログID":"rec-20250115-001","施設管理者ID":"rec-mgr-0847","利用者ID":"rec-user-5623","予約申込ID":"rec-app-9412","操作種別":"変更","操作内容":"予約時間を09:00-10:00から10:00-11:00に変更。利用者が予約申込時に誤った時間帯を選択していたため、正しい時間帯に修正。","代行理由":"利用者からの電話連絡により、予約時間の誤りが判明。利用者本人の同意を得たため、施設管理者が代行修正を実施した。","操作日時":"2025-01-15 14:32:00","作成日時":"2025-01-15 14:32:15","更新日時":"2025-01-15 14:32:15"},{"代行予約ログID":"rec-001","施設管理者ID":"rec-a47f","利用者ID":"rec-b82c","予約申込ID":"rec-c91d","操作種別":"変更","操作内容":"予約状態を「保留中」から「確定」に変更。変更前: 状態=保留中、変更後: 状態=確定。予約対象施設: 東京都渋谷区フィットネスセンター、利用日時: 2025年2月15日(土)14:00〜15:30、プール利用","代行理由":"利用者の支払い完了をシステムで確認。銀行振込により2025年2月10日に入金確認済み。利用者本人からの連絡を受け、予約を確定状態に変更する必要があるため代行操作を実施。","操作日時":"2025-02-11T10:35:22+09:00","作成日時":"2025-02-11T10:35:22+09:00","更新日時":"2025-02-11T10:35:22+09:00"},{"代行予約ログID":"rec-20250115-0847","施設管理者ID":"rec-admin-0324","利用者ID":"rec-user-5681","予約申込ID":"rec-booking-9127","操作種別":"キャンセル","操作内容":"予約日時: 2025年2月15日 14:00-16:00 → キャンセル。キャンセル理由: 施設メンテナンス日程変更に伴う一括キャンセル。払戻金額: 5,500円を利用者アカウントにクレジット済み。","代行理由":"当施設の定期メンテナンス日程が2月10日から2月20日に変更となったため、該当期間の予約を一括キャンセルする必要が生じました。利用者への事前通知は1月15日にメール送付済みです。","操作日時":"2025-01-15T09:30:00+09:00","作成日時":"2025-01-15T09:30:15+09:00","更新日時":"2025-01-15T09:30:15+09:00"},{"代行予約ログID":"rec-20250115-vip-001","施設管理者ID":"rec-admin-yamada-0847","利用者ID":"rec-user-suzuki-vip-2401","予約申込ID":"rec-booking-20250120-0532","操作種別":"作成","操作内容":"VIP顧客向け優遇予約を作成。施設: プレミアムゴルフクラブ赤坂、予約日時: 2025-01-25 08:00-12:00、プレイ人数: 4名、利用料金: 通常85,000円 → VIP割引適用 68,000円(20%割引)、キャディ付きプラン追加、専用ラウンジ利用権付与","代行理由":"鈴木健太郎氏(弊社VIP会員)からの特別リクエスト。昨年度の利用実績が高く、今回の大型商談成功を記念してのご利用。顧客満足度向上及び継続利用促進のため、施設長の指示により優遇条件での対応を決定。","操作日時":"2025-01-15 14:32:18","作成日時":"2025-01-15 14:32:18","更新日時":"2025-01-15 14:32:18"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788271093475";
-window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {\n  const reportTypeRadios = container.querySelectorAll('input[name=\"report-type\"]');\n  const exportFormatRadios = container.querySelectorAll('input[name=\"export-format\"]');\n  const startDateInput = container.querySelector('input[name=\"start-date\"]');\n  const endDateInput = container.querySelector('input[name=\"end-date\"]');\n  const groupFilterSelect = container.querySelector('select[name=\"group-filter\"]');\n  const userSearchInput = container.querySelector('input[name=\"user-search\"]');\n  const userFilterSelect = container.querySelector('select[name=\"user-filter\"]');\n  const previewButton = container.querySelector('[data-testid=\"preview-button\"]');\n  const downloadButton = container.querySelector('[data-testid=\"download-button\"]');\n  const resetButton = container.querySelector('[data-testid=\"reset-button\"]');\n  const previewArea = container.querySelector('#preview-area');\n  const historyTbody = container.querySelector('#history-tbody');\n  const previewModal = container.querySelector('#preview-modal');\n  const previewModalClose = container.querySelector('#preview-modal-close');\n  const previewModalContent = container.querySelector('#preview-modal-content');\n  const downloadProgressModal = container.querySelector('#download-progress-modal');\n\n  // テーブルインデックス\n  const operationHistoryIndex = tables.findIndex(t => t.tableName === '操作履歴') || 0;\n  const groupIndex = tables.findIndex(t => t.tableName === '団体') || 1;\n  const userIndex = tables.findIndex(t => t.tableName === '利用者') || 2;\n\n  // 初期日付設定（過去30日）\n  const today = new Date();\n  const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);\n  startDateInput.value = thirtyDaysAgo.toISOString().split('T')[0];\n  endDateInput.value = today.toISOString().split('T')[0];\n\n  // 団体リストを読み込む\n  async function loadGroups() {\n    const groups = await window.aivicApi.list(groupIndex);\n    if (groups && groups.length > 0) {\n      const options = groups.map(g => `<option value=\"${g.id}\">${g.団体名}</option>`).join('');\n      groupFilterSelect.innerHTML = '<option value=\"\">すべて</option>' + options;\n    }\n  }\n\n  // 利用者リストを読み込む\n  async function loadUsers() {\n    const users = await window.aivicApi.list(userIndex);\n    if (users && users.length > 0) {\n      window.usersCache = users;\n    }\n  }\n\n  // 利用者検索\n  userSearchInput.addEventListener('input', (e) => {\n    const query = e.target.value.toLowerCase();\n    if (!query) {\n      userFilterSelect.innerHTML = '<option value=\"\">検索結果がここに表示されます</option>';\n      return;\n    }\n    const filtered = (window.usersCache || []).filter(u => \n      u.氏名.toLowerCase().includes(query) || u.メールアドレス.toLowerCase().includes(query)\n    );\n    const options = filtered.map(u => `<option value=\"${u.id}\">${u.氏名} (${u.メールアドレス})</option>`).join('');\n    userFilterSelect.innerHTML = options || '<option value=\"\">該当する利用者がありません</option>';\n  });\n\n  // プレビューボタン\n  previewButton.addEventListener('click', async () => {\n    const reportType = container.querySelector('input[name=\"report-type\"]:checked').value;\n    const startDate = startDateInput.value;\n    const endDate = endDateInput.value;\n    const groups = Array.from(groupFilterSelect.selectedOptions).map(o => o.value).filter(v => v);\n    const users = Array.from(userFilterSelect.selectedOptions).map(o => o.value);\n\n    if (!startDate || !endDate) {\n      alert('期間を指定してください');\n      return;\n    }\n\n    // プレビュー内容を生成（ダミーデータ）\n    let previewHtml = '';\n    const reportTypeLabel = {\n      reservation: '予約一覧',\n      usage: '利用実績',\n      billing: '料金計算結果',\n      collection: '収納状況'\n    }[reportType];\n\n    previewHtml = `\n      <div style=\"font-family: var(--font-family); color: var(--text);\">\n        <div style=\"text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 16px;\">\n          <div style=\"font-size: 18px; font-weight: 600; margin-bottom: 8px;\">${reportTypeLabel}</div>\n          <div style=\"font-size: 13px; color: var(--text-muted);\">\n            期間: ${startDate} ～ ${endDate}\n          </div>\n        </div>\n        <table style=\"width: 100%; border-collapse: collapse; font-size: 13px;\">\n          <thead>\n            <tr style=\"background: var(--table-header-bg); border-bottom: 1px solid var(--border);\">\n              <th style=\"padding: 10px; text-align: left; color: var(--text); font-weight: 600;\">ID</th>\n              <th style=\"padding: 10px; text-align: left; color: var(--text); font-weight: 600;\">日時</th>\n              <th style=\"padding: 10px; text-align: left; color: var(--text); font-weight: 600;\">内容</th>\n              <th style=\"padding: 10px; text-align: right; color: var(--text); font-weight: 600;\">金額</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr style=\"border-bottom: 1px solid var(--border);\">\n              <td style=\"padding: 10px;\">RES-001</td>\n              <td style=\"padding: 10px;\">2024-01-15</td>\n              <td style=\"padding: 10px;\">サンプルデータ</td>\n              <td style=\"padding: 10px; text-align: right;\">¥5,000</td>\n            </tr>\n            <tr style=\"border-bottom: 1px solid var(--border); background: var(--table-stripe-bg);\">\n              <td style=\"padding: 10px;\">RES-002</td>\n              <td style=\"padding: 10px;\">2024-01-16</td>\n              <td style=\"padding: 10px;\">サンプルデータ</td>\n              <td style=\"padding: 10px; text-align: right;\">¥3,500</td>\n            </tr>\n          </tbody>\n        </table>\n        <div style=\"margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); text-align: right; font-weight: 600;\">\n          合計: ¥8,500\n        </div>\n      </div>\n    `;\n\n    previewModalContent.innerHTML = previewHtml;\n    previewModal.style.display = 'flex';\n  });\n\n  // プレビューモーダルを閉じる\n  previewModalClose.addEventListener('click', () => {\n    previewModal.style.display = 'none';\n  });\n  previewModal.addEventListener('click', (e) => {\n    if (e.target === previewModal) {\n      previewModal.style.display = 'none';\n    }\n  });\n\n  // ダウンロードボタン\n  downloadButton.addEventListener('click', async () => {\n    const reportType = container.querySelector('input[name=\"report-type\"]:checked').value;\n    const exportFormat = container.querySelector('input[name=\"export-format\"]:checked').value;\n    const startDate = startDateInput.value;\n    const endDate = endDateInput.value;\n\n    if (!startDate || !endDate) {\n      alert('期間を指定してください');\n      return;\n    }\n\n    // ダウンロード進捗を表示\n    downloadProgressModal.style.display = 'flex';\n    downloadButton.disabled = true;\n\n    // 進捗をシミュレート\n    let progress = 0;\n    const progressInterval = setInterval(() => {\n      progress += Math.random() * 30;\n      if (progress > 100) progress = 100;\n      container.querySelector('#progress-bar').style.width = progress + '%';\n      container.querySelector('#progress-text').textContent = Math.floor(progress) + '%';\n    }, 200);\n\n    // 操作履歴を記録\n    setTimeout(async () => {\n      clearInterval(progressInterval);\n      container.querySelector('#progress-bar').style.width = '100%';\n      container.querySelector('#progress-text').textContent = '100%';\n\n      // 操作履歴を保存\n      const historyRecord = {\n        操作種別: 'ダウンロード',\n        対象リソースタイプ: '帳票',\n        操作内容: `${reportType} を ${exportFormat} 形式でダウンロード`,\n        操作ステータス: '成功',\n        実行開始日時: new Date().toISOString(),\n        実行終了日時: new Date().toISOString()\n      };\n      await window.aivicApi.save(operationHistoryIndex, historyRecord);\n\n      // ダウンロード実行（ダミー）\n      const filename = `report_${reportType}_${new Date().getTime()}.${exportFormat === 'pdf' ? 'pdf' : exportFormat === 'excel' ? 'xlsx' : 'csv'}`;\n      const link = document.createElement('a');\n      link.href = 'data:text/plain,Sample Report Data';\n      link.download = filename;\n      link.click();\n\n      setTimeout(() => {\n        downloadProgressModal.style.display = 'none';\n        downloadButton.disabled = false;\n        loadOperationHistory();\n      }, 500);\n    }, 2000);\n  });\n\n  // リセットボタン\n  resetButton.addEventListener('click', () => {\n    const today = new Date();\n    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);\n    startDateInput.value = thirtyDaysAgo.toISOString().split('T')[0];\n    endDateInput.value = today.toISOString().split('T')[0];\n    groupFilterSelect.value = '';\n    userSearchInput.value = '';\n    userFilterSelect.innerHTML = '<option value=\"\">検索結果がここに表示されます</option>';\n    reportTypeRadios[0].checked = true;\n    exportFormatRadios[0].checked = true;\n    previewArea.innerHTML = '<div><div style=\"font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px;\">プレビュー</div><div style=\"color: var(--text-muted);\">「プレビュー」ボタンをクリックして帳票を表示します</div></div>';\n  });\n\n  // 操作履歴を読み込む\n  async function loadOperationHistory() {\n    const history = await window.aivicApi.list(operationHistoryIndex);\n    if (!history || history.length === 0) {\n      historyTbody.innerHTML = '<tr style=\"border-bottom: 1px solid var(--border); background: var(--table-stripe-bg);\"><td colspan=\"5\" style=\"padding: 20px 8px; text-align: center; color: var(--text-muted);\">履歴がありません</td></tr>';\n      return;\n    }\n\n    const recentHistory = history.slice(-10).reverse();\n    historyTbody.innerHTML = recentHistory.map((record, idx) => `\n      <tr style=\"border-bottom: 1px solid var(--border); ${idx % 2 === 0 ? 'background: var(--table-stripe-bg);' : ''}\">\n        <td style=\"padding: 10px 8px; white-space: nowrap;\">${new Date(record.実行開始日時).toLocaleString('ja-JP')}</td>\n        <td style=\"padding: 10px 8px; white-space: nowrap;\">${record.ユーザーID || 'システム'}</td>\n        <td style=\"padding: 10px 8px; white-space: nowrap;\">${record.操作内容 || '-'}</td>\n        <td style=\"padding: 10px 8px; white-space: nowrap;\">-</td>\n        <td style=\"padding: 10px 8px; white-space: nowrap;\">-</td>\n      </tr>\n    `).join('');\n  }\n\n  // 初期化\n  loadGroups();\n  loadUsers();\n  loadOperationHistory();\n\n  // Escキーでモーダルを閉じる\n  document.addEventListener('keydown', (e) => {\n    if (e.key === 'Escape') {\n      previewModal.style.display = 'none';\n      downloadProgressModal.style.display = 'none';\n    }\n  });\n}";
+window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <nav style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg,var(--bg-sidebar,#0e1a31));border-bottom:1px solid var(--top-bar-border,var(--border,#2a3a5d));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--text,#e8eefc);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788271057677.html" data-aivic-nav-system="itg-8" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:1;border-bottom:2px solid var(--primary,#2b66ff);font-weight:600;">施設管理者向け予約・料金管理機能</a><a href="./scr-1788270636243.html" data-aivic-nav-system="itg-7" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">公共施設オンライン予約・決済サービス</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
-  <div class="shell-wrapper" data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
-    <header class="top-bar">
-      <div class="top-bar-left">
-        <button class="nav-toggle" id="navToggle">☰</button>
-        <div class="logo">施設管理</div>
+  <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
+    <header class="shell-header">
+      <div class="shell-header-left">
+        <div class="shell-logo">
+          <div>予約・料金管理</div>
+          <div class="shell-logo-sub">公共施設予約</div>
+        </div>
+        <nav>
+          <ul class="shell-nav-top">
+            <li class="shell-nav-item">
+              <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788271057677" href="./scr-1788271057677.html">予約申込管理</a>
+            </li>
+            <li class="shell-nav-item">
+              <a class="shell-nav-link" data-aivic-nav="scr-1788271076575" href="./scr-1788271076575.html">料金・収納管理</a>
+            </li>
+            <li class="shell-nav-item">
+              <a class="shell-nav-link" data-aivic-nav="scr-1788271093475" href="./scr-1788271093475.html">帳票・ダウンロード</a>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <div class="top-bar-right">
-        <div class="user-avatar">U</div>
-        <div class="user-name">ユーザー</div>
-        <a href="./login.html" class="logout-link">ログアウト</a>
+      <div class="shell-header-right">
+        <div class="shell-user-avatar">U</div>
+        <div class="shell-user-name">ユーザー</div>
+        <a class="shell-logout" href="./login.html">ログアウト</a>
       </div>
     </header>
-
-    <div class="main-container">
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-section">
-          <div class="sidebar-label">業務</div>
-          <a class="nav-item aivic-active" data-aivic-nav="scr-1788271057677" href="./scr-1788271057677.html">予約申込管理</a>
-          <a class="nav-item" data-aivic-nav="scr-1788271076575" href="./scr-1788271076575.html">料金・収納管理</a>
-          <a class="nav-item" data-aivic-nav="scr-1788271093475" href="./scr-1788271093475.html">帳票・ダウンロード</a>
-        </div>
-      </aside>
-
+    <div class="shell-body">
       <main class="content-area">
         <div data-aivic-panel="scr-1788271057677" style="display:none"></div>
         <div data-aivic-panel="scr-1788271076575" style="display:none"></div>
-        <div data-aivic-panel="scr-1788271093475" style="display:block"><div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; height: 100%; padding: 20px; background: var(--bg-main); font-family: var(--font-family);">
+        <div data-aivic-panel="scr-1788271093475" style="display:block"><div style="display: flex; gap: 24px; height: 100%; background: var(--bg-main); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
   
-  <!-- 左側：フォーム領域 -->
-  <div style="display: flex; flex-direction: column; gap: 20px; overflow-y: auto;">
+  <!-- 左パネル: フィルタ条件 -->
+  <div style="flex: 0 0 40%; display: flex; flex-direction: column; gap: 20px; padding: 20px; background: var(--bg-card); border-radius: 4px; box-shadow: var(--shadow-card); overflow-y: auto; max-height: calc(100vh - 200px);">
     
-    <!-- 帳票種別選択 -->
-    <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
-      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">帳票種別</label>
-      <div style="display: flex; flex-direction: column; gap: 10px;">
+    <!-- 帳票種別 -->
+    <div>
+      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">帳票種別</label>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
-          <input type="radio" name="report-type" value="reservation" data-testid="report-type-reservation" style="accent-color: var(--primary);" checked />
-          <span>予約一覧</span>
+          <input type="radio" name="report-type" value="reservations" checked data-testid="report-type-reservations" style="accent-color: var(--primary);" />
+          予約一覧
         </label>
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
           <input type="radio" name="report-type" value="usage" data-testid="report-type-usage" style="accent-color: var(--primary);" />
-          <span>利用実績</span>
+          利用実績
         </label>
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
           <input type="radio" name="report-type" value="billing" data-testid="report-type-billing" style="accent-color: var(--primary);" />
-          <span>料金計算結果</span>
+          料金計算結果
         </label>
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
           <input type="radio" name="report-type" value="collection" data-testid="report-type-collection" style="accent-color: var(--primary);" />
-          <span>収納状況</span>
+          収納状況
         </label>
       </div>
     </div>
 
     <!-- 期間指定 -->
-    <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
-      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">期間指定</label>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div>
+      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">期間指定</label>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">開始日</label>
-          <input type="date" name="start-date" data-testid="start-date" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--input-bg); color: var(--text); font-size: 14px; box-sizing: border-box;" />
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">開始日</label>
+          <input type="date" id="start-date" data-testid="start-date" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-main); color: var(--text); font-size: 14px; box-sizing: border-box;" />
         </div>
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">終了日</label>
-          <input type="date" name="end-date" data-testid="end-date" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--input-bg); color: var(--text); font-size: 14px; box-sizing: border-box;" />
+          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">終了日</label>
+          <input type="date" id="end-date" data-testid="end-date" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-main); color: var(--text); font-size: 14px; box-sizing: border-box;" />
         </div>
       </div>
     </div>
 
     <!-- 団体による絞り込み -->
-    <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
-      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">団体</label>
-      <select name="group-filter" data-testid="group-filter" multiple style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--input-bg); color: var(--text); font-size: 14px; box-sizing: border-box; min-height: 80px;">
-        <option value="">すべて</option>
-        <option value="group-001">団体A</option>
-        <option value="group-002">団体B</option>
-        <option value="group-003">団体C</option>
+    <div>
+      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">団体</label>
+      <select id="group-filter" data-testid="group-filter" multiple style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-main); color: var(--text); font-size: 14px; box-sizing: border-box; min-height: 80px;">
+        <option value="">全団体</option>
+        <option value="group-001">サンプル団体A</option>
+        <option value="group-002">サンプル団体B</option>
+        <option value="group-003">サンプル団体C</option>
       </select>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Ctrl/Cmd + クリックで複数選択</div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ctrl/Cmd + クリックで複数選択</p>
     </div>
 
     <!-- 利用者による絞り込み -->
-    <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
-      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">利用者</label>
-      <input type="text" name="user-search" data-testid="user-search" placeholder="利用者名またはメールで検索" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--input-bg); color: var(--text); font-size: 14px; box-sizing: border-box; margin-bottom: 8px;" />
-      <select name="user-filter" data-testid="user-filter" multiple style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--input-bg); color: var(--text); font-size: 14px; box-sizing: border-box; min-height: 80px;">
-        <option value="">検索結果がここに表示されます</option>
+    <div>
+      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">利用者</label>
+      <input type="text" id="user-search" data-testid="user-search" placeholder="利用者名またはメールアドレス" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-main); color: var(--text); font-size: 14px; box-sizing: border-box; margin-bottom: 8px;" />
+      <select id="user-filter" data-testid="user-filter" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-main); color: var(--text); font-size: 14px; box-sizing: border-box;">
+        <option value="">全利用者</option>
+        <option value="user-001">田中太郎</option>
+        <option value="user-002">鈴木花子</option>
+        <option value="user-003">佐藤次郎</option>
       </select>
     </div>
 
-    <!-- 出力形式選択 -->
-    <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
-      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">出力形式</label>
-      <div style="display: flex; flex-direction: column; gap: 10px;">
+    <!-- 出力形式 -->
+    <div>
+      <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">出力形式</label>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
-          <input type="radio" name="export-format" value="pdf" data-testid="export-format-pdf" style="accent-color: var(--primary);" checked />
-          <span>PDF</span>
+          <input type="radio" name="export-format" value="csv" checked data-testid="export-format-csv" style="accent-color: var(--primary);" />
+          CSV
         </label>
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
-          <input type="radio" name="export-format" value="csv" data-testid="export-format-csv" style="accent-color: var(--primary);" />
-          <span>CSV</span>
+          <input type="radio" name="export-format" value="pdf" data-testid="export-format-pdf" style="accent-color: var(--primary);" />
+          PDF
         </label>
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text);">
           <input type="radio" name="export-format" value="excel" data-testid="export-format-excel" style="accent-color: var(--primary);" />
-          <span>Excel</span>
+          Excel
         </label>
       </div>
     </div>
 
-    <!-- ボタン群 -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 8px;">
-      <button data-testid="preview-button" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms; box-shadow: var(--shadow-card);">
+    <!-- ボタングループ -->
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+      <button id="preview-btn" data-testid="preview-button" style="width: 100%; padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 3px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms;">
         プレビュー
       </button>
-      <button data-testid="download-button" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms; box-shadow: var(--shadow-card);">
+      <button id="download-btn" data-testid="download-button" style="width: 100%; padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 3px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms;">
         ダウンロード
       </button>
-      <button data-testid="reset-button" style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms;">
+      <button id="reset-btn" data-testid="reset-button" style="width: 100%; padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 3px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 200ms;">
         リセット
       </button>
     </div>
-
   </div>
 
-  <!-- 右側：プレビュー領域 -->
-  <div style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
-    
-    <!-- プレビューパネル -->
-    <div style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); flex: 1; min-height: 300px; display: flex; align-items: center; justify-content: center;">
-      <div id="preview-area" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 14px; text-align: center;">
-        <div>
-          <div style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px;">プレビュー</div>
-          <div>「プレビュー」ボタンをクリックして帳票を表示します</div>
-        </div>
-      </div>
+  <!-- 右パネル: プレビューエリア -->
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
+    <div id="preview-area" style="flex: 1; background: var(--bg-card); border-radius: 4px; box-shadow: var(--shadow-card); padding: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 14px; min-height: 300px;">
+      プレビューボタンをクリックして帳票を表示します
     </div>
 
-    <!-- 操作履歴 -->
-    <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
-      <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">操作履歴（直近10件）</div>
+    <!-- 操作履歴テーブル -->
+    <div style="background: var(--bg-card); border-radius: 4px; box-shadow: var(--shadow-card); padding: 16px;">
+      <h3 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">操作履歴</h3>
       <div style="overflow-x: auto;">
-        <table data-testid="operation-history" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <table data-testid="operation-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
           <thead>
-            <tr style="background: var(--table-header-bg); border-bottom: 1px solid var(--border);">
-              <th style="padding: 10px 8px; text-align: left; color: var(--text); font-weight: 600; white-space: nowrap;">実行日時</th>
-              <th style="padding: 10px 8px; text-align: left; color: var(--text); font-weight: 600; white-space: nowrap;">ユーザー</th>
-              <th style="padding: 10px 8px; text-align: left; color: var(--text); font-weight: 600; white-space: nowrap;">帳票種別</th>
-              <th style="padding: 10px 8px; text-align: left; color: var(--text); font-weight: 600; white-space: nowrap;">出力形式</th>
-              <th style="padding: 10px 8px; text-align: left; color: var(--text); font-weight: 600; white-space: nowrap;">ファイルサイズ</th>
+            <tr style="background: var(--bg-main); border-bottom: 1px solid var(--border);">
+              <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">実行日時</th>
+              <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">ユーザー</th>
+              <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">帳票種別</th>
+              <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">出力形式</th>
+              <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600;">ステータス</th>
             </tr>
           </thead>
           <tbody id="history-tbody">
-            <tr style="border-bottom: 1px solid var(--border); background: var(--table-stripe-bg);">
-              <td colspan="5" style="padding: 20px 8px; text-align: center; color: var(--text-muted);">履歴がありません</td>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td colspan="5" style="padding: 12px; text-align: center; color: var(--text-muted);">履歴がありません</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-
   </div>
-
 </div>
 
 <!-- プレビューモーダル -->
-<div id="preview-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(26, 20, 16, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4); position: relative;">
-    <button id="preview-modal-close" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text); padding: 4px 8px;">×</button>
-    <div id="preview-modal-content" style="margin-top: 12px;">
+<div id="preview-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 4px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4); position: relative;">
+    <button id="preview-modal-close" data-testid="preview-modal-close" style="position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: transparent; border: none; color: var(--text); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+      ✕
+    </button>
+    <h2 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">帳票プレビュー</h2>
+    <div id="preview-content" style="max-height: 70vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 3px; padding: 12px; background: var(--bg-main);">
       <!-- プレビュー内容がここに挿入される -->
+    </div>
+    <div style="display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end;">
+      <button id="preview-modal-cancel" data-testid="preview-modal-cancel" style="padding: 8px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 3px; font-size: 14px; cursor: pointer;">
+        閉じる
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ダウンロード進捗モーダル -->
-<div id="download-progress-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(26, 20, 16, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); text-align: center;">
-    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">ファイルを生成中...</div>
-    <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-      <div id="progress-bar" style="height: 100%; background: var(--primary); width: 0%; transition: width 200ms;"></div>
-    </div>
-    <div style="font-size: 12px; color: var(--text-muted); margin-top: 12px;">
-      <span id="progress-text">0%</span>
-    </div>
-  </div>
+<!-- エラーメッセージバナー -->
+<div id="error-banner" style="display: none; position: fixed; top: 80px; right: 20px; background: var(--error); color: #fff; padding: 12px 16px; border-radius: 3px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 999;">
+  <span id="error-message"></span>
+</div>
+
+<!-- 成功メッセージバナー -->
+<div id="success-banner" style="display: none; position: fixed; top: 80px; right: 20px; background: var(--success); color: #fff; padding: 12px 16px; border-radius: 3px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 999;">
+  <span id="success-message"></span>
 </div></div>
       </main>
     </div>
   </div>
-
   
-  
-
-  <script>
-    document.getElementById('navToggle').addEventListener('click', function() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('collapsed');
-    });
-
-    window.showScreen = function(screenId) {
-      const panels = document.querySelectorAll('[data-aivic-panel]');
-      panels.forEach(panel => {
-        if (panel.getAttribute('data-aivic-panel') === screenId) {
-          panel.style.display = '';
-        } else {
-          panel.style.display = 'none';
-        }
-      });
-
-      const navItems = document.querySelectorAll('[data-aivic-nav]');
-      navItems.forEach(item => {
-        if (item.getAttribute('data-aivic-nav') === screenId) {
-          item.classList.add('aivic-active');
-        } else {
-          item.classList.remove('aivic-active');
-        }
-      });
-
-      const sidebar = document.getElementById('sidebar');
-      if (window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', function() {
-      window.showScreen('scr-1788271057677');
-    });
-  </script>
 <script>
 (function() {
   var TABLE_DEFS = window.AIVIC_TABLES || [];

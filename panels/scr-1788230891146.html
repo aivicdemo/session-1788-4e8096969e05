@@ -93,14 +93,15 @@ body {
 }
 
 .shell-logo {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.5px;
+  line-height: 1.3;
 }
 
 .shell-logo-sub {
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 2px;
 }
@@ -191,19 +192,27 @@ body {
   min-height: 100%;
 }
 
-.section-title {
-  font-size: 16px;
+.page-title {
+  font-size: 18px;
   font-weight: 600;
   color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 1);
   letter-spacing: 0.3px;
 }
 
-.section-subtitle {
+.page-subtitle {
   font-size: 12px;
   color: var(--text-muted);
-  margin-bottom: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 2.5);
   font-weight: 500;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+  margin-top: calc(var(--space-unit) * 2);
 }
 
 .card {
@@ -211,25 +220,55 @@ body {
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
   padding: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 2);
   box-shadow: var(--shadow-card);
 }
 
 .card-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1.5);
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
-.card-content {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.6;
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.card-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: calc(var(--space-unit) * 0.75);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
 .form-group {
-  margin-bottom: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 1.5);
 }
 
 .form-label {
@@ -237,13 +276,13 @@ body {
   font-size: 12px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.75);
+  margin-bottom: calc(var(--space-unit) * 0.5);
 }
 
 .form-input,
-.form-select {
+.form-select,
+.form-textarea {
   width: 100%;
-  height: var(--control-height);
   padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
   font-size: 13px;
   border: var(--border-width) solid var(--border);
@@ -254,8 +293,19 @@ body {
   transition: border-color var(--motion-duration) ease;
 }
 
+.form-input,
+.form-select {
+  height: var(--control-height);
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
 .form-input:focus,
-.form-select:focus {
+.form-select:focus,
+.form-textarea:focus {
   outline: none;
   border-color: var(--primary);
 }
@@ -297,6 +347,29 @@ body {
   font-size: 12px;
 }
 
+.btn-group {
+  display: flex;
+  gap: calc(var(--space-unit) * 1);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.filter-bar {
+  display: flex;
+  gap: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-select {
+  min-width: 140px;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -305,6 +378,7 @@ body {
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
   overflow: hidden;
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
 .table thead {
@@ -313,7 +387,7 @@ body {
 }
 
 .table th {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
   text-align: left;
   font-weight: 600;
   font-size: 12px;
@@ -321,7 +395,7 @@ body {
 }
 
 .table td {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
   border-top: var(--border-width) solid var(--border);
 }
 
@@ -332,7 +406,7 @@ body {
 
 .badge {
   display: inline-block;
-  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
+  padding: calc(var(--space-unit) * 0.4) calc(var(--space-unit) * 0.8);
   font-size: 11px;
   font-weight: 600;
   border-radius: 2px;
@@ -359,39 +433,30 @@ body {
   color: var(--info);
 }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.stat-box {
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
+.alert {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  text-align: center;
+  border-left: 4px solid;
+  margin-bottom: calc(var(--space-unit) * 2);
+  font-size: 13px;
 }
 
-.stat-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-bottom: calc(var(--space-unit) * 1);
+.alert-error {
+  background: rgba(139, 69, 69, 0.1);
+  border-left-color: var(--error);
+  color: var(--error);
 }
 
-.stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
+.alert-warning {
+  background: rgba(166, 124, 82, 0.1);
+  border-left-color: var(--warning);
+  color: var(--warning);
+}
+
+.alert-info {
+  background: rgba(74, 111, 165, 0.1);
+  border-left-color: var(--info);
+  color: var(--info);
 }
 
 .timeline {
@@ -401,7 +466,6 @@ body {
 
 .timeline-item {
   position: relative;
-  margin-bottom: calc(var(--space-unit) * 2);
   padding-bottom: calc(var(--space-unit) * 2);
   border-bottom: var(--border-width) solid var(--border);
 }
@@ -410,33 +474,214 @@ body {
   border-bottom: none;
 }
 
-.timeline-dot {
+.timeline-marker {
   position: absolute;
   left: calc(var(--space-unit) * -2.5);
-  top: 2px;
-  width: 12px;
-  height: 12px;
-  background: var(--primary);
+  top: 0;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid var(--bg-card);
+  background: var(--primary);
+  border: 2px solid var(--bg-main);
 }
 
 .timeline-time {
   font-size: 11px;
   color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.timeline-content {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.split-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.split-left {
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.split-right {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  background: #ffffff;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.list-item {
+  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  margin-bottom: calc(var(--space-unit) * 1);
+  cursor: pointer;
+  transition: all var(--motion-duration) ease;
+  background: #ffffff;
+}
+
+.list-item:hover {
+  background: var(--bg-card);
+  border-color: var(--primary);
+}
+
+.list-item.active {
+  background: var(--bg-card);
+  border-color: var(--primary);
   font-weight: 500;
 }
 
-.timeline-text {
+.list-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.list-item-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 12px rgba(28, 31, 38, 0.15);
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: calc(var(--space-unit) * 3);
+}
+
+.modal-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.modal-footer {
+  display: flex;
+  gap: calc(var(--space-unit) * 1.5);
+  margin-top: calc(var(--space-unit) * 3);
+  justify-content: flex-end;
+}
+
+.slide-panel {
+  position: fixed;
+  right: 0;
+  top: 56px;
+  bottom: 0;
+  width: 40%;
+  background: #ffffff;
+  border-left: var(--border-width) solid var(--border);
+  box-shadow: -2px 0 8px rgba(28, 31, 38, 0.12);
+  overflow-y: auto;
+  padding: calc(var(--space-unit) * 2.5);
+  transform: translateX(100%);
+  transition: transform var(--motion-duration) ease;
+  z-index: 500;
+}
+
+.slide-panel.active {
+  transform: translateX(0);
+}
+
+.slide-panel-close {
+  position: absolute;
+  top: calc(var(--space-unit) * 1.5);
+  right: calc(var(--space-unit) * 1.5);
+  width: 28px;
+  height: 28px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text);
+  transition: all var(--motion-duration) ease;
+}
+
+.slide-panel-close:hover {
+  background: var(--border);
+}
+
+.slide-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 2);
+  margin-right: calc(var(--space-unit) * 3);
+  padding-top: calc(var(--space-unit) * 0.5);
+}
+
+.slide-panel-section {
+  margin-bottom: calc(var(--space-unit) * 2.5);
+  padding-bottom: calc(var(--space-unit) * 2.5);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.slide-panel-section:last-child {
+  border-bottom: none;
+}
+
+.slide-panel-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: calc(var(--space-unit) * 0.75);
+}
+
+.slide-panel-value {
   font-size: 13px;
   color: var(--text);
-  margin-top: calc(var(--space-unit) * 0.5);
+  line-height: 1.6;
 }
 
 @media (max-width: 1024px) {
   .grid-2,
-  .grid-3 {
+  .grid-3,
+  .grid-4,
+  .split-panel {
     grid-template-columns: 1fr;
+  }
+  
+  .shell-nav-top {
+    display: none;
+  }
+  
+  .slide-panel {
+    width: 100%;
   }
 }
   </style>
@@ -447,7 +692,7 @@ window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "セキュリティインシデント対応・監査ログ分析システム";
 window.AIVIC_TABLES = [{"tableName":"脆弱性","purpose":"セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性の情報を一元管理し、リスク評価、対応状況の追跡、監査ログとの関連付けを行うためのマスタテーブル","columns":[{"name":"脆弱性ID","type":"uuid","required":true,"description":"脆弱性を一意に識別するプライマリキー"},{"name":"脆弱性名","type":"varchar(100)","required":true,"description":"脆弱性の名称またはタイトル"},{"name":"説明","type":"text","required":false,"description":"脆弱性の詳細な説明と技術的背景"},{"name":"CVE識別子","type":"varchar(100)","required":false,"description":"CVE番号などの外部脆弱性識別子"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"脆弱性の重要度（Critical/High/Medium/Low等）"},{"name":"CVSS スコア","type":"integer","required":false,"description":"CVSS脆弱性スコア（0-100）"},{"name":"影響を受けるシステム","type":"varchar(100)","required":false,"description":"脆弱性が存在するシステムまたはコンポーネント名"},{"name":"検出日時","type":"timestamp","required":true,"description":"脆弱性が検出された日時"},{"name":"対応状況","type":"varchar(100)","required":true,"description":"対応状況（未対応/対応中/対応完了/受け入れ等）"},{"name":"対応期限","type":"timestamp","required":false,"description":"脆弱性への対応期限"},{"name":"対応内容","type":"text","required":false,"description":"実施した対応内容の詳細"},{"name":"対応完了日時","type":"timestamp","required":false,"description":"脆弱性対応が完了した日時"},{"name":"担当者","type":"varchar(100)","required":false,"description":"脆弱性対応の担当者"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者","type":"uuid","required":true,"description":"レコード最終更新者のユーザーID"}]},{"tableName":"脆弱性スキャン結果","purpose":"セキュリティインシデント対応・監査ログ分析システムにおいて、スキャン実行ごとの脆弱性検出結果を記録し、脆弱性の追跡、リスク評価、対応状況の管理を支援する。","columns":[{"name":"スキャン結果ID","type":"uuid","required":true,"description":"脆弱性スキャン結果の一意識別子"},{"name":"脆弱性ID","type":"uuid","required":true,"description":"検出された脆弱性マスタへの外部キー参照"},{"name":"スキャン実行日時","type":"timestamp","required":true,"description":"脆弱性スキャンが実行された日時"},{"name":"対象リソース","type":"varchar(100)","required":true,"description":"スキャン対象となったシステム、ホスト、またはアプリケーション名"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"検出された脆弱性の重要度（Critical/High/Medium/Low等）"},{"name":"検出状態","type":"varchar(100)","required":true,"description":"脆弱性の現在の状態（検出/確認/対応中/解決/誤検知等）"},{"name":"詳細情報","type":"text","required":false,"description":"脆弱性の詳細な説明、影響範囲、技術的詳細"},{"name":"推奨対応","type":"text","required":false,"description":"脆弱性に対する推奨される対応方法やパッチ情報"},{"name":"対応期限","type":"timestamp","required":false,"description":"脆弱性の対応が必要な期限日時"},{"name":"対応担当者ID","type":"uuid","required":false,"description":"ユーザーテーブルへの外部キー参照、対応を担当するユーザー"},{"name":"作成日時","type":"timestamp","required":true,"description":"スキャン結果レコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"スキャン結果レコードが最後に更新された日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"ユーザーテーブルへの外部キー参照、スキャン結果を作成したユーザー"}]},{"tableName":"脆弱性対応チケット","purpose":"セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性に対する対応状況を追跡・管理し、対応履歴と責任者を記録するためのチケット管理テーブル","columns":[{"name":"チケットID","type":"uuid","required":true,"description":"脆弱性対応チケットの一意識別子"},{"name":"脆弱性ID","type":"uuid","required":true,"description":"関連する脆弱性テーブルへの外部キー"},{"name":"スキャン結果ID","type":"uuid","required":false,"description":"脆弱性スキャン結果テーブルへの外部キー"},{"name":"チケットタイトル","type":"varchar(100)","required":true,"description":"対応チケットの簡潔なタイトル"},{"name":"説明","type":"text","required":false,"description":"脆弱性対応の詳細説明と対応内容"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"チケットの現在のステータス（未対応、対応中、対応完了、却下等）"},{"name":"優先度","type":"varchar(100)","required":true,"description":"対応の優先度レベル（高、中、低等）"},{"name":"割当者ID","type":"uuid","required":false,"description":"ユーザーテーブルへの外部キー、対応を担当するユーザー"},{"name":"期限日","type":"timestamp","required":false,"description":"脆弱性対応の期限日時"},{"name":"対応完了日","type":"timestamp","required":false,"description":"脆弱性対応が完了した日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"チケット作成日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"ユーザーテーブルへの外部キー、チケット作成者"},{"name":"更新日時","type":"timestamp","required":true,"description":"チケット最終更新日時"},{"name":"更新者ID","type":"uuid","required":true,"description":"ユーザーテーブルへの外部キー、最終更新者"}]},{"tableName":"影響範囲分析","purpose":"セキュリティインシデント発生時に脆弱性やインシデントの影響を受けるユーザー、システム、資産を特定・追跡し、対応優先度の判定と被害範囲の可視化を支援する","columns":[{"name":"影響範囲分析ID","type":"uuid","required":true,"description":"影響範囲分析レコードの一意識別子"},{"name":"脆弱性ID","type":"uuid","required":true,"description":"関連する脆弱性への外部キー参照"},{"name":"脆弱性スキャン結果ID","type":"uuid","required":false,"description":"関連するスキャン結果への外部キー参照"},{"name":"脆弱性対応チケットID","type":"uuid","required":false,"description":"関連する対応チケットへの外部キー参照"},{"name":"影響を受けるユーザー数","type":"integer","required":true,"description":"この脆弱性により影響を受けるユーザーの総数"},{"name":"影響を受けるシステム数","type":"integer","required":true,"description":"この脆弱性により影響を受けるシステムの総数"},{"name":"影響度レベル","type":"varchar(100)","required":true,"description":"影響範囲の深刻度レベル（例：Critical、High、Medium、Low）"},{"name":"影響範囲説明","type":"text","required":false,"description":"影響範囲の詳細説明と分析結果"},{"name":"対応優先度","type":"varchar(100)","required":true,"description":"影響範囲に基づく対応優先度（例：P1、P2、P3、P4）"},{"name":"分析状態","type":"varchar(100)","required":true,"description":"分析の進行状態（例：未実施、進行中、完了、再分析待ち）"},{"name":"分析完了日時","type":"timestamp","required":false,"description":"影響範囲分析が完了した日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"分析を実施したユーザーまたはシステム"},{"name":"更新者","type":"varchar(100)","required":false,"description":"レコードを最後に更新したユーザーまたはシステム"}]},{"tableName":"システム資産","purpose":"組織内のIT資産(サーバー、ネットワークデバイス、ソフトウェア等)を一元管理し、脆弱性スキャンや監査ログの対象資産を特定するためのマスタテーブル","columns":[{"name":"資産ID","type":"uuid","required":true,"description":"システム資産の一意識別子"},{"name":"資産名","type":"varchar(100)","required":true,"description":"資産の名称(例:WEBサーバー01、ファイアウォール等)"},{"name":"資産タイプ","type":"varchar(100)","required":true,"description":"資産の種類(サーバー、ネットワークデバイス、ワークステーション、ソフトウェア等)"},{"name":"IPアドレス","type":"varchar(100)","required":false,"description":"資産のIPアドレス(ネットワーク接続資産の場合)"},{"name":"ホスト名","type":"varchar(100)","required":false,"description":"資産のホスト名またはFQDN"},{"name":"OSタイプ","type":"varchar(100)","required":false,"description":"オペレーティングシステムの種類(Windows、Linux等)"},{"name":"OSバージョン","type":"varchar(100)","required":false,"description":"オペレーティングシステムのバージョン"},{"name":"所有部門","type":"varchar(100)","required":true,"description":"資産を管理する部門名"},{"name":"責任者","type":"varchar(100)","required":false,"description":"資産の管理責任者名"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"資産の重要度(Critical、High、Medium、Low等)"},{"name":"スキャン対象フラグ","type":"boolean","required":true,"description":"脆弱性スキャンの対象とするかどうか"},{"name":"監査対象フラグ","type":"boolean","required":true,"description":"監査ログ収集の対象とするかどうか"},{"name":"稼働状態","type":"varchar(100)","required":true,"description":"資産の稼働状態(稼働中、停止中、廃止等)"},{"name":"導入日","type":"timestamp","required":false,"description":"資産の導入日"},{"name":"廃止予定日","type":"timestamp","required":false,"description":"資産の廃止予定日"},{"name":"備考","type":"text","required":false,"description":"その他の備考情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者","type":"varchar(100)","required":true,"description":"レコード最終更新者のユーザーID"}]},{"tableName":"権限設定","purpose":"ユーザーの役割に基づいたシステムアクセス権限と操作権限を管理し、セキュリティインシデント対応・監査ログ分析システムへのアクセス制御を実施する","columns":[{"name":"権限設定ID","type":"uuid","required":true,"description":"権限設定の一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"権限が割り当てられるユーザーの識別子"},{"name":"役割","type":"varchar(100)","required":true,"description":"ユーザーに割り当てられた役割（管理者、セキュリティアナリスト、監査担当者等）"},{"name":"監査ログ閲覧権限","type":"boolean","required":true,"description":"監査ログの閲覧が許可されているかどうか"},{"name":"脆弱性管理権限","type":"boolean","required":true,"description":"脆弱性情報の管理・編集が許可されているかどうか"},{"name":"インシデント対応権限","type":"boolean","required":true,"description":"セキュリティインシデント対応チケットの作成・編集が許可されているかどうか"},{"name":"レポート生成権限","type":"boolean","required":true,"description":"セキュリティレポートの生成が許可されているかどうか"},{"name":"システム資産管理権限","type":"boolean","required":true,"description":"システム資産情報の管理が許可されているかどうか"},{"name":"権限削除権限","type":"boolean","required":true,"description":"他ユーザーの権限削除が許可されているかどうか"},{"name":"有効フラグ","type":"boolean","required":true,"description":"権限設定が有効かどうか"},{"name":"作成日時","type":"timestamp","required":true,"description":"権限設定が作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"権限設定が最後に更新された日時"},{"name":"作成者","type":"uuid","required":true,"description":"権限設定を作成したユーザーの識別子"},{"name":"更新者","type":"uuid","required":true,"description":"権限設定を最後に更新したユーザーの識別子"},{"name":"備考","type":"text","required":false,"description":"権限設定に関する補足情報"}]},{"tableName":"脆弱性マスタ","purpose":"脆弱性の基本情報を一元管理し、スキャン結果や対応チケットで参照される脆弱性の定義情報を保持するマスタテーブル","columns":[{"name":"脆弱性ID","type":"uuid","required":true,"description":"脆弱性を一意に識別するプライマリキー"},{"name":"CVE_ID","type":"varchar(100)","required":true,"description":"CVE識別子（例：CVE-2024-1234）"},{"name":"脆弱性名","type":"varchar(100)","required":true,"description":"脆弱性の名称"},{"name":"説明","type":"text","required":true,"description":"脆弱性の詳細説明"},{"name":"CVSS_スコア","type":"integer","required":true,"description":"CVSS v3.1スコア（0-100）"},{"name":"深刻度","type":"varchar(100)","required":true,"description":"深刻度レベル（Critical/High/Medium/Low）"},{"name":"攻撃ベクトル","type":"varchar(100)","required":false,"description":"攻撃ベクトル（Network/Adjacent/Local/Physical）"},{"name":"影響範囲","type":"varchar(100)","required":false,"description":"影響範囲（Unchanged/Changed）"},{"name":"公開日","type":"timestamp","required":false,"description":"脆弱性が公開された日時"},{"name":"参考URL","type":"text","required":false,"description":"脆弱性に関する参考情報のURL"},{"name":"対応優先度","type":"varchar(100)","required":true,"description":"組織内での対応優先度（P1/P2/P3/P4）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"脆弱性の状態（Active/Deprecated/Resolved）"},{"name":"作成日時","type":"timestamp","required":true,"description":"マスタレコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"マスタレコード最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"マスタレコード作成者のユーザーID"}]}];
-window.AIVIC_PRESET_SEED = {"脆弱性":[{"脆弱性ID":"rec-001","脆弱性名":"SQL Injection脆弱性 - ユーザー認証機能","説明":"本番Webサーバーの会員ログイン画面において、ユーザー入力値が適切にサニタイズされないままSQL文に直接連結されている。攻撃者が特殊文字を含むペイロードを入力することで、データベースへの不正なクエリ実行が可能となり、顧客情報の流出やデータベースの改ざんが懸念される。","CVE識別子":"CVE-2024-12847","重要度レベル":"Critical","CVSSスコア":95,"影響を受けるシステム":"本番Webサーバー（prod-web-01）- 会員管理システム","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-11-16T17:00:00+09:00","対応内容":"ログイン画面のユーザー入力値に対してプリペアドステートメント（パラメータ化クエリ）を導入。入力値の厳密なバリデーション処理を追加実装。WAFルールを強化し、SQL Injection攻撃パターンの検知と遮断を設定。本番環境への適用後、セキュリティ診断を再実施して脆弱性が解消されたことを確認。","対応完了日時":"2024-11-16T15:45:00+09:00","担当者":"佐藤健一","作成日時":"2024-11-15T09:35:00+09:00","更新日時":"2024-11-16T15:50:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"ファイアウォールOS認証回避脆弱性","説明":"社内ファイアウォール（FortiGate 6000シリーズ）のOS認証メカニズムに存在する脆弱性。特定の条件下で管理者認証をバイパスされる可能性があり、攻撃者が不正にファイアウォール管理画面にアクセスできるリスクがある。CVSSスコアが8.6と高く、ネットワーク境界防御の根幹が脅かされる重大な問題である。","CVE識別子":"CVE-2024-21762","重要度レベル":"Critical","CVSSスコア":86,"影響を受けるシステム":"FortiGate 6000シリーズ（本社ネットワーク）","検出日時":"2024-11-15 09:30:00","対応状況":"対応中","対応期限":"2024-12-15 23:59:59","対応内容":"ベンダー提供パッチの検証テスト中。テスト環境での動作確認完了。本番環境への適用は2024年12月中旬の夜間メンテナンス時に予定。適用前に管理画面アクセス制限の強化を実施済み。","対応完了日時":null,"担当者":"鈴木健一","作成日時":"2024-11-15 10:45:00","更新日時":"2024-12-02 14:20:00","作成者":"rec-user-045","更新者":"rec-user-045"},{"脆弱性ID":"rec-001","脆弱性名":"log4j リモートコード実行脆弱性","説明":"顧客管理システムで使用されているApache Log4jライブラリに、JNDI インジェクションを通じたリモートコード実行が可能な脆弱性が存在します。特定の条件下でログ出力時に任意のコードが実行される可能性があります。","CVE識別子":"CVE-2021-44228","重要度レベル":"Critical","CVSSスコア":95,"影響を受けるシステム":"顧客管理システム（CMS-v3.2.1）","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"Log4jライブラリを2.17.1以上にアップデート予定。テスト環境での検証完了、本番環境への適用スケジュール調整中。","対応完了日時":null,"担当者":"鈴木健一","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-11-20T14:30:00+09:00","作成者":"rec-user-002","更新者":"rec-user-002"},{"脆弱性ID":"rec-001","脆弱性名":"営業支援ツールにおけるクロスサイトスクリプティング(XSS)脆弱性","説明":"営業支援ツールの顧客情報検索機能において、入力値が適切にサニタイズされていないため、攻撃者が悪意のあるJavaScriptコードを注入可能な状態にある。特に顧客名検索フィールドと備考欄において、反射型XSSの脆弱性が確認された。","CVE識別子":"CVE-2024-45678","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"営業支援ツール v3.2.1","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-20T17:00:00+09:00","対応内容":"顧客情報検索機能の入力値に対するHTMLエスケープ処理を実装。備考欄のテキスト入力に対して厳密なバリデーション及びサニタイズを追加。修正版v3.2.2をテスト環境で検証完了し、本番環境へのデプロイを待機中。","対応完了日時":null,"担当者":"山田次郎","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-12-10T14:45:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"ネットワークスイッチOSコマンドインジェクション脆弱性","説明":"Cisco Catalyst 9000シリーズのネットワークオペレーティングシステムにおいて、管理インターフェースの入力値検証が不十分であるため、認証済みの管理者が特殊文字を含むコマンドを入力することで、スイッチ上で任意のシステムコマンドが実行される可能性があります。本脆弱性により、システムの完全な制御、設定情報の抽出、ネットワークトラフィックの盗聴が可能となります。","CVE識別子":"CVE-2024-28941","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"Cisco Catalyst 9300-48P v17.3.1～v17.6.2","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"受け入れ","対応期限":"2025-02-28T23:59:59+09:00","対応内容":"メーカーパッチ提供予定は2025年3月末となるため、当面の間は管理インターフェースへのアクセスを信頼できるネットワークセグメントに限定し、アクセス制御リスト（ACL）で管理者IPアドレスのみを許可する。加えて、スイッチへの管理アクセスログを強化し、異常なコマンド実行の検知体制を構築する。定期的なセキュリティ監視を実施し、パッチ提供後は速やかに適用する。","対応完了日時":null,"担当者":"山田太郎","作成日時":"2024-11-15T10:45:00+09:00","更新日時":"2024-11-20T14:20:00+09:00","作成者":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","更新者":"f9e8d7c6-b5a4-3210-fedc-ba9876543210"},{"脆弱性ID":"rec-001","脆弱性名":"データベースサーバーの暗号化通信設定不備","説明":"本番環境のPostgreSQLサーバーがSSL/TLS暗号化通信に対応していない設定となっており、クライアント・サーバー間の通信が平文で行われている状態。これにより、ネットワーク上での通信内容の盗聴やデータベース認証情報の窃取が可能となる技術的リスクが存在する。","CVE識別子":"CVE-2024-1234","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"本番環境PostgreSQL 14.2（192.168.1.50）","検出日時":"2024-08-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-09-15T23:59:59+09:00","対応内容":"PostgreSQLサーバーのpostgresql.confファイルにおいてssl=onに設定変更、サーバー証明書（server.crt）および秘密鍵（server.key）を配置、クライアント接続文字列にsslmode=requireを指定。設定変更後、全クライアント接続テストを実施し、SSL/TLS 1.2以上での暗号化通信が確立されることを確認。","対応完了日時":"2024-09-08T16:45:00+09:00","担当者":"鈴木健一","作成日時":"2024-08-15T10:00:00+09:00","更新日時":"2024-09-08T17:30:00+09:00","作成者":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","更新者":"f1e2d3c4-b5a6-7890-1234-5678abcdef90"},{"脆弱性ID":"rec-001","脆弱性名":"VPN装置における認証後の権限昇格脆弱性","説明":"Cisco ASA VPN装置のWebUI管理画面において、認証済みユーザーが特定のパラメータを改ざんすることで、管理者権限に昇格可能な脆弱性が存在します。この脆弱性により、一般ユーザーが装置の設定変更やログの削除などの管理機能にアクセス可能になります。","CVE識別子":"CVE-2024-45782","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"Cisco ASA 5520 (ファームウェア 9.14.1以前)","検出日時":"2024-11-15T10:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"ファームウェアの更新パッチ(9.14.2)の適用予定。事前に本番環境でのテスト検証を12月5日までに完了し、12月10日の夜間メンテナンス窓で本番装置への適用を予定しています。","対応完了日時":null,"担当者":"鈴木健一","作成日時":"2024-11-15T14:45:00+09:00","更新日時":"2024-11-22T09:15:00+09:00","作成者":"a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6","更新者":"b2c3d4e5-f6g7-48h9-i0j1-k2l3m4n5o6p7"},{"脆弱性ID":"rec-001-vuln-20250115","脆弱性名":"クラウドストレージAPIキーのハードコード露出","説明":"開発環境のソースコードリポジトリにクラウドストレージサービスのAPIキーが平文で記述されており、バージョン管理履歴に残存している状態が確認されました。これにより、リポジトリへのアクセス権を持つ者がAPIキーを取得可能となり、クラウドストレージ内の機密データへの不正アクセスリスクが存在します。","CVE識別子":"CVE-2024-12847","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"CloudVault API v2.1.3","検出日時":"2025-01-08T14:32:00+09:00","対応状況":"対応完了","対応期限":"2025-01-22T23:59:59+09:00","対応内容":"1. 露出していたAPIキーを即座に無効化し新規キーを生成。2. Git履歴から当該キーを完全に削除するため、git-filter-branchを使用してリポジトリをクリーニング。3. 秘密管理ツール(HashiCorp Vault)にAPIキーを移行し、環境変数経由でのアクセスに変更。4. 開発チーム全員に対してシークレット管理のベストプラクティス研修を実施。5. pre-commitフックにて機密情報の検出ルールを追加。","対応完了日時":"2025-01-15T10:45:00+09:00","担当者":"鈴木健一","作成日時":"2025-01-08T15:10:00+09:00","更新日時":"2025-01-15T11:20:00+09:00","作成者":"rec-user-20240601-001","更新者":"rec-user-20240615-002"},{"脆弱性ID":"rec-001","脆弱性名":"Postfix バッファオーバーフロー脆弱性","説明":"Postfix 3.4系以前のバージョンにおいて、SMTPコマンド処理時のバッファ境界チェック不足により、認証済みユーザーがバッファオーバーフローを引き起こし、任意のコード実行が可能になる脆弱性。メールサーバーのプロセス権限で悪意あるコードが実行される可能性がある。","CVE識別子":"CVE-2024-21571","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"メールサーバー（Postfix 3.4.8）","検出日時":"2024-10-15T09:30:00Z","対応状況":"受け入れ","対応期限":"2025-03-31T23:59:59Z","対応内容":"ベンダー（Postfix プロジェクト）のサポート終了予定が2025年6月であり、アップグレード対象バージョンの安定性検証に時間を要するため、当面は監視強化と外部ネットワークからのSMTP接続制限により脆弱性の悪用リスクを低減する方針で対応を受け入れ。2025年3月末までに対応方針の最終決定を行う。","対応完了日時":null,"担当者":"山田太郎","作成日時":"2024-10-15T10:15:00Z","更新日時":"2024-11-08T14:22:00Z","作成者":"rec-user-0042","更新者":"rec-user-0087"},{"脆弱性ID":"rec-001","脆弱性名":"監視ツールのデフォルトパスワード問題","説明":"監視ツール『Prometheus Exporter』のデフォルト認証情報が変更されていない状態で本番環境に導入されており、攻撃者が容易に管理画面にアクセス可能な状態にある。これにより、システムリソース情報の窃取、監視設定の改ざん、サービス停止などの被害が発生する可能性がある。","CVE識別子":"CVE-2024-12345","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"監視ツール基盤（Prometheus Exporter v2.3.1）","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"本番環境の監視ツール全インスタンス（計8台）に対して、デフォルトパスワードから強力なランダムパスワード（16文字以上、大文字・小文字・数字・記号を含む）への変更を実施。変更後、全インスタンスの認証機能を確認し、デフォルト認証情報でのアクセスが拒否されることを検証。パスワードは組織のシークレット管理ツールに安全に保管。","対応完了日時":"2024-11-28T14:45:00+09:00","担当者":"鈴木健一","作成日時":"2024-11-15T09:35:00+09:00","更新日時":"2024-11-28T15:00:00+09:00","作成者":"a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6","更新者":"b2c3d4e5-f6g7-48h9-i0j1-k2l3m4n5o6p7"}],"脆弱性スキャン結果":[{"スキャン結果ID":"rec-20250115-auth-bypass-001","脆弱性ID":"vuln-cve-2024-45892","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"prod-web-server-01.example.jp","重要度レベル":"Critical","検出状態":"検出","詳細情報":"本番Webサーバーの認証機構において、セッションIDの検証ロジックに欠陥が存在します。攻撃者が特定のパラメータを操作することで、有効なユーザー認証を経由せずに管理画面へのアクセスが可能となります。影響範囲は全ユーザーセッションであり、顧客情報や決済データへの不正アクセスリスクが高い状態です。脆弱性スコア：CVSS 9.8","推奨対応":"1. 即座にセッション検証ロジックをパッチ適用（セキュリティアップデート v2.4.1以上）、2. 既存セッションの全強制リセット、3. 過去7日間のアクセスログ監査実施、4. WAFルール追加による入力値フィルタリング強化","対応期限":"2025-01-17T17:00:00+09:00","対応担当者ID":"usr-20240101-yamada","作成日時":"2025-01-15T10:15:00+09:00","更新日時":"2025-01-15T10:15:00+09:00","作成者ID":"usr-20230615-suzuki"},{"スキャン結果ID":"rec-20250115-db-sqli-001","脆弱性ID":"rec-vuln-sqli-001","スキャン実行日時":"2025-01-10T14:30:00+09:00","対象リソース":"prod-db-server-01","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"データベースサーバーのユーザー認証モジュールにおいて、入力値の不十分なサニタイズにより、攻撃者が細工されたSQLクエリを注入可能な状態が検出されました。特に顧客管理画面の検索機能において、WHERE句内のパラメータが直接SQLに埋め込まれており、UNION SELECT文による任意データの抽出やデータベース管理者権限での操作が可能です。影響範囲は本番環境の顧客データベース全体に及びます。","推奨対応":"1. プリペアドステートメント（パラメータ化クエリ）の導入、2. 入力値の厳密なバリデーション実装、3. データベースユーザーの権限最小化、4. WAFルール追加によるSQL注入パターンの検知、5. コード審査後の本番環境への反映。パッチバージョン：v2.3.5以上。","対応期限":"2025-01-24T17:00:00+09:00","対応担当者ID":"rec-user-yamada-001","作成日時":"2025-01-10T15:45:00+09:00","更新日時":"2025-01-14T10:20:00+09:00","作成者ID":"rec-user-suzuki-001"},{"スキャン結果ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-2024-1203","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"営業部門クライアント端末群","重要度レベル":"High","検出状態":"解決","詳細情報":"Microsoft Outlook用プラグイン（バージョン2.3.1）にメモリ破損脆弱性が存在。特定の悪意あるメール添付ファイルを開くことで、任意のコード実行が可能な状態にありました。影響範囲は営業部門の約120台のクライアント端末。CVE-2024-49876に相当。","推奨対応":"Microsoft Outlook用プラグインをバージョン2.4.2以上に更新してください。パッチはマイクロソフト社公式サイトから配布されています。併せてOutlookのセキュリティ設定を「高」に変更し、未検証の添付ファイルの自動実行を無効にしてください。","対応期限":"2025-02-15T17:00:00+09:00","対応担当者ID":"rec-user-0342","作成日時":"2024-12-20T14:22:00+09:00","更新日時":"2025-01-15T16:45:00+09:00","作成者ID":"rec-user-0156"},{"スキャン結果ID":"rec-20250215-001","脆弱性ID":"vuln-api-ratelimit-bypass-042","スキャン実行日時":"2025-02-10T14:30:00+09:00","対象リソース":"API Gateway - Production Environment","重要度レベル":"High","検出状態":"誤検知","詳細情報":"APIゲートウェイのレート制限機構において、特定のヘッダ値を操作することで制限を回避可能と判定されました。しかし、詳細な検証の結果、当該ヘッダはロードバランサーにより正規化され、実際には制限回避が不可能であることが確認されました。検出ツール側がロードバランサーの動作を考慮していなかったことが原因です。","推奨対応":"本脆弱性は誤検知のため、対応は不要です。ただし、今後同様の誤検知を防止するため、スキャンツールの設定を見直し、ロードバランサー経由のトラフィックパターンを学習データに追加することを推奨します。","対応期限":"2025-03-10T23:59:59+09:00","対応担当者ID":"user-sec-yamada-001","作成日時":"2025-02-10T15:45:00+09:00","更新日時":"2025-02-14T10:20:00+09:00","作成者ID":"user-scan-suzuki-002"},{"スキャン結果ID":"rec-20250115-fw-001","脆弱性ID":"rec-vuln-cve-2024-50123","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"社内ファイアウォール-FortiGate3100D","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"FortiOS 7.0系における未適用のセキュリティパッチにより、認証を回避した遠隔からのコード実行が可能な脆弱性が存在します。本社ネットワークの境界防御を担当するファイアウォールであるため、外部からの不正アクセスリスクが極めて高く、全社ネットワークの機密情報漏洩の危険性があります。CVE-2024-50123として公開されており、既に悪用コードが公開されています。","推奨対応":"FortiOS最新版（7.0.14以上）へのセキュリティパッチ適用。メンテナンスウィンドウを設定し、夜間の業務時間外での適用を推奨。適用前にテスト環境での動作確認必須。パッチ適用後は脆弱性スキャンの再実行が必要です。","対応期限":"2025-01-20T23:59:59+09:00","対応担当者ID":"rec-user-2024-0847","作成日時":"2025-01-15T09:45:00+09:00","更新日時":"2025-01-15T14:20:00+09:00","作成者ID":"rec-user-2024-0523"},{"スキャン結果ID":"rec-001","脆弱性ID":"rec-vuln-0847","スキャン実行日時":"2024-11-15T09:30:00+09:00","対象リソース":"staging-api-container:v2.1.3","重要度レベル":"High","検出状態":"確認","詳細情報":"Node.jsランタイムに含まれるexpress-sessionライブラリ（バージョン1.17.2）に認証バイパス脆弱性が存在します。CVE-2024-47763に該当し、セッションIDの生成アルゴリズムに暗号学的な弱点があり、攻撃者が予測可能なセッションIDを生成してセッション乗っ取り攻撃が可能となる恐れがあります。影響範囲はステージング環境のAPI認証機構全体に及びます。","推奨対応":"express-sessionライブラリを1.17.3以上にアップグレードしてください。コンテナイメージの再ビルドを実施し、package-lock.jsonを更新の上、ステージング環境に再デプロイしてください。本番環境への昇格前に機能テストを完了させてください。","対応期限":"2024-12-06T17:00:00+09:00","対応担当者ID":"rec-user-0234","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-11-15T14:45:00+09:00","作成者ID":"rec-user-0156"},{"スキャン結果ID":"rec-20250215-vpn-001","脆弱性ID":"rec-vuln-cve-2024-8765","スキャン実行日時":"2025-02-10T14:30:00+09:00","対象リソース":"本社VPN接続ゲートウェイ(vpn-gw-01)","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"VPN接続機能に使用されているOpenVPN 2.4.9において、暗号化プロトコルTLS 1.0の脆弱性が検出されました。CVE-2024-8765により、中間者攻撃（MITM）の可能性が指摘されています。特に古いクライアント環境との接続時にプロトコルダウングレード攻撃が可能となり、通信内容の盗聴リスクがあります。影響範囲は全VPN接続ユーザー（約450名）です。","推奨対応":"OpenVPNをバージョン2.6.8以上にアップグレードし、TLS 1.2以上を強制設定してください。設定ファイルのtls-versionを「1.2 1.3」に変更し、レガシープロトコルを無効化してください。クライアント側もバージョン2.5.0以上への更新を全ユーザーに通知してください。段階的なロールアウトスケジュールの策定を推奨します。","対応期限":"2025-02-20T17:00:00+09:00","対応担当者ID":"rec-user-佐藤健一","作成日時":"2025-02-10T15:45:00+09:00","更新日時":"2025-02-15T09:20:00+09:00","作成者ID":"rec-user-山田花子"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"vuln-2024-0847","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"バックアップシステム_メインサーバー","重要度レベル":"Critical","検出状態":"確認","詳細情報":"バックアップシステムのデーモンプロセス（backup-daemon v3.2.1）において、不適切な権限検証が実装されている。ローカルユーザーが特殊なシステムコール経由でroot権限を取得可能な状態にある。影響範囲は本番環境のバックアップサーバー3台及びリカバリー機能全般に及ぶ。CVE-2024-8847に対応。","推奨対応":"1. backup-daemon を v3.2.5以上にアップデート（パッチ提供済み）\n2. 権限昇格に関する監査ログ確認\n3. 本番環境への緊急デプロイ前にステージング環境で検証\n4. 実装後は権限監査ツールで継続監視","対応期限":"2025-02-15T23:59:59+09:00","対応担当者ID":"user-rec-0342","作成日時":"2025-01-15T10:15:00+09:00","更新日時":"2025-01-16T14:45:30+09:00","作成者ID":"user-rec-0128"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"rec-vuln-xss-0042","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"セキュリティ監視ツール v3.2.1","重要度レベル":"Low","検出状態":"検出","詳細情報":"監視ツールの管理画面のユーザー検索フォームにおいて、入力値が適切にサニタイズされていないため、クロスサイトスクリプティング(XSS)脆弱性が存在します。攻撃者が細工されたスクリプトを含むURLを管理者に送付し、クリックさせることで、管理者のセッション情報を窃取される可能性があります。影響範囲は管理画面にアクセス可能なユーザーに限定されます。","推奨対応":"1. 入力値に対するHTML/JavaScriptエスケープ処理の実装 2. Content Security Policy(CSP)ヘッダーの追加設定 3. 管理画面へのアクセス制限強化 4. ベンダーより提供予定のパッチv3.2.2の適用予定","対応期限":"2025-03-15T23:59:59+09:00","対応担当者ID":"rec-user-0087","作成日時":"2025-01-15T10:05:00+09:00","更新日時":"2025-01-15T10:05:00+09:00","作成者ID":"rec-user-0156"},{"スキャン結果ID":"rec-20250215-cv-001","脆弱性ID":"rec-vuln-s3-miscfg-042","スキャン実行日時":"2025-02-15T09:30:00+09:00","対象リソース":"AWS-CloudStorage-Production-Bucket-01","重要度レベル":"Critical","検出状態":"検出","詳細情報":"クラウドストレージバケット（AWS S3）のアクセス権限設定が過度に広範囲に設定されており、認証なしでの読み取りアクセスが可能な状態です。バケット内には顧客個人情報、契約書、財務データを含む約2,500ファイル（総容量約45GB）が保存されており、インターネット経由で誰でもアクセス可能な状況が確認されました。バケットポリシーが「Principal: *」に設定されており、パブリックアクセスブロック設定も無効化されています。","推奨対応":"1. 直ちにバケットポリシーを修正し、必要な組織内ユーザーのみにアクセスを制限してください。2. パブリックアクセスブロック設定を有効化してください。3. IAMロールベースのアクセス制御を実装してください。4. CloudTrailログを確認し、スキャン発見前のアクセス履歴を調査してください。5. 影響を受けた可能性のある顧客に対する通知を検討してください。","対応期限":"2025-02-17T17:00:00+09:00","対応担当者ID":"rec-user-yamada-001","作成日時":"2025-02-15T09:35:00+09:00","更新日時":"2025-02-15T09:35:00+09:00","作成者ID":"rec-user-suzuki-002"}],"脆弱性対応チケット":[{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"【Critical】Linux kernel CVE-2024-1086 緊急パッチ適用","説明":"本番環境のLinuxサーバーに対して、カーネル権限昇格脆弱性(CVE-2024-1086)の緊急パッチを適用する必要があります。CVSS v3.1スコア8.8の高リスク脆弱性のため、即座の対応が必須です。対応内容：(1)パッチの検証テスト環境での実施、(2)本番環境への段階的適用、(3)適用後の動作確認とログ監視。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2025-01-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-13T09:30:00+09:00","作成者ID":"rec-005","更新日時":"2025-01-14T14:20:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"Webアプリケーション認証機能のセッション固定化脆弱性の修正","説明":"セッション固定化攻撃に対する脆弱性が検出されました。ログイン前後でセッションIDが変更されていないため、攻撃者がセッションIDを固定化し、ユーザーのアカウントを乗っ取る可能性があります。ログイン成功時にセッションIDを再生成し、既存のセッション変数を新しいセッションに移行する実装が必要です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2025-02-28T17:00:00+09:00","対応完了日":null,"作成日時":"2024-12-15T09:30:00+09:00","作成者ID":"rec-005","更新日時":"2025-01-10T14:20:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"本番DBサーバーのアクセス制御設定不備改善","説明":"セキュリティスキャン結果により、本番環境のPostgreSQLサーバーにおいて、不要なIPアドレスからのアクセスが許可されている状態が検出されました。具体的には、開発環境からのアクセスが制限されていないため、本番データへの不正アクセスリスクが存在します。ファイアウォール設定の見直しとデータベースユーザーの権限制限を実施し、必要最小限のアクセス権限に修正する必要があります。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2025-02-28T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T10:30:00+09:00","作成者ID":"rec-005","更新日時":"2025-01-22T14:15:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"古いSSLプロトコル(SSLv3、TLS1.0)の廃止対応","説明":"セキュリティスキャンにより、本番環境のWebサーバーで脆弱な古いSSLプロトコル(SSLv3、TLS1.0)が有効になっていることが検出されました。これらのプロトコルは既に廃止予定であり、セキュリティリスクが高いため、TLS1.2以上への対応を実施する必要があります。対応内容としてはサーバー設定の見直し、SSL証明書の更新、動作確認テストを実施予定です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2025-03-15T17:00:00+09:00","対応完了日":null,"作成日時":"2024-12-10T09:30:00+09:00","作成者ID":"rec-005","更新日時":"2025-01-20T14:15:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"外部ペネテストで発見されたXSS脆弱性の修正","説明":"外部ペネトレーションテスト実施時に、顧客管理画面の検索機能においてReflected XSS脆弱性が発見されました。ユーザー入力値がサニタイズされずにHTML出力されているため、攻撃者が悪意あるスクリプトを注入可能な状態です。入力値の適切なエスケープ処理とCSP（Content Security Policy）の導入により対応予定です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2025-01-31T17:00:00+09:00","対応完了日":null,"作成日時":"2024-12-10T09:30:00+09:00","作成者ID":"rec-005","更新日時":"2024-12-18T14:15:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-20250110-003","チケットタイトル":"OpenSSL脆弱性CVE-2024-0847 セキュリティパッチ適用後の回帰テスト実施","説明":"OpenSSL 3.0.xの重大な脆弱性（CVE-2024-0847）に対してセキュリティパッチを適用しました。本チケットでは、パッチ適用後の回帰テストを実施し、既存機能への影響がないことを検証します。対象システムはWebサーバー、APIサーバー、データベース接続層です。テスト項目：TLS/SSL通信の正常性確認、既存クライアント接続の互換性検証、パフォーマンス測定、ログ出力の確認。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2024-0156","期限日":"2025-01-24T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-2024-0089","更新日時":"2025-01-18T14:45:00+09:00","更新者ID":"rec-user-2024-0156"},{"チケットID":"rec-20250115-0847","脆弱性ID":"rec-vuln-2024-1203","スキャン結果ID":"rec-scan-2024-1156","チケットタイトル":"Apache Log4j リモートコード実行脆弱性（CVE-2024-50379）対応延期","説明":"2024年12月の定期脆弱性スキャンにおいて、本番環境のログ出力ライブラリに既知のリモートコード実行脆弱性が検出されました。CVE-2024-50379はCVSS 9.8の高リスク脆弱性ですが、現在進行中の基幹業務システム統合プロジェクト（予定完了: 2025年3月）との関連性が高く、ライブラリの更新による回帰テストが膨大になるため、プロジェクト完了後の2025年4月以降の対応に延期することが決定されました。その間、ネットワークセグメンテーション強化とアクセス制御の厳格化により一時的なリスク軽減措置を実施予定です。","ステータス":"対応延期","優先度":"高","割当者ID":"rec-user-2024-0234","期限日":"2025-04-30T17:00:00+09:00","対応完了日":null,"作成日時":"2024-12-16T10:30:00+09:00","作成者ID":"rec-user-2024-0156","更新日時":"2025-01-15T14:22:00+09:00","更新者ID":"rec-user-2024-0089"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2025-0847","スキャン結果ID":"rec-scan-20250110-dev-001","チケットタイトル":"開発環境SQLインジェクション脆弱性の本番展開前対応","説明":"開発環境での定期脆弱性スキャン（2025年1月10日実施）において、ユーザー認証モジュールのSQL文構築処理でパラメータ化クエリが未適用の箇所が検出されました。CVE-2024-XXXXX相当の高リスク脆弱性です。本番環境への来月の定期リリースに先立ち、該当箇所のコード修正とセキュリティテスト実施が必須となります。修正内容：プリペアドステートメントの導入、入力値の厳密なバリデーション実装、SQLインジェクション対策の統合テスト実施予定。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-佐藤次郎","期限日":"2025-02-05T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-11T09:30:00+09:00","作成者ID":"rec-user-山田花子","更新日時":"2025-01-15T14:20:00+09:00","更新者ID":"rec-user-佐藤次郎"},{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"CVSS 7.5 認証回避脆弱性の緊急対応","説明":"2024年10月のセキュリティスキャンで検出された認証メカニズムの脆弱性。CVSS スコア7.5（高）の脆弱性であり、金融商品取引法（FISC）のコンプライアンス要件に基づき、検出から30日以内の対応が必須。対応内容：認証ライブラリのパッチ適用、入力値検証ロジックの強化、ペネトレーションテストによる再検証。","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2024-11-15T17:00:00+09:00","対応完了日":null,"作成日時":"2024-10-16T09:30:00+09:00","作成者ID":"rec-005","更新日時":"2024-11-08T14:20:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-20250110-003","チケットタイトル":"Apache Log4j関連脆弱性の統合対応","説明":"2025年1月のセキュリティスキャンで検出された複数のApache Log4j関連脆弱性（CVE-2024-50379、CVE-2024-50380、CVE-2024-50381）をまとめた統合対応チケットです。本番環境の3つのアプリケーションサーバーに影響があり、Log4jライブラリのバージョン2.17.0から2.23.1への一括アップグレードが必要です。各サーバーについて動作確認テストを実施した上で、段階的にパッチを適用します。対応完了後はペネトレーションテストを実施予定です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-0324","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-10T09:30:00+09:00","作成者ID":"rec-user-0156","更新日時":"2025-01-14T14:22:00+09:00","更新者ID":"rec-user-0324"}],"影響範囲分析":[{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-2025-0156","脆弱性対応チケットID":"rec-ticket-2025-1203","影響を受けるユーザー数":2847,"影響を受けるシステム数":34,"影響度レベル":"Critical","影響範囲説明":"認証システムのセッション管理機能に存在する認可回避脆弱性により、不正なトークン生成が可能。社内全ユーザーが対象であり、営業システム、人事管理システム、財務システムなど主要業務システム34システムが影響を受ける。攻撃者が他ユーザーのアカウントで不正アクセスを行える高リスク状況。本社および全営業拠点の業務継続性が脅威にさらされている。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15T14:30:00+09:00","作成日時":"2025-01-15T09:45:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-0847","脆弱性スキャン結果ID":"rec-scan-2024-1123","脆弱性対応チケットID":"rec-ticket-SEC-2024-5632","影響を受けるユーザー数":47,"影響を受けるシステム数":8,"影響度レベル":"High","影響範囲説明":"営業部門のWindowsサーバー群（8台）において、ローカル権限昇格脆弱性CVE-2024-1234が検出されました。影響範囲は営業部門の営業職員47名およびシステム管理者3名に限定されています。本脆弱性を悪用された場合、攻撃者は当該サーバー上でシステム権限を取得し、顧客情報データベースへのアクセスが可能になる恐れがあります。ただし、外部ネットワークからの直接的なアクセスは遮断されており、内部ネットワークからの攻撃に限定されます。","対応優先度":"P2","分析状態":"完了","分析完了日時":"2024-11-27 14:30:00","作成日時":"2024-11-24 09:15:00","更新日時":"2024-11-27 14:30:00","作成者":"鈴木健一","更新者":"鈴木健一"},{"影響範囲分析ID":"rec-20250215-imp-001","脆弱性ID":"rec-20250210-vuln-042","脆弱性スキャン結果ID":"rec-20250208-scan-156","脆弱性対応チケットID":"rec-20250211-ticket-089","影響を受けるユーザー数":12500,"影響を受けるシステム数":7,"影響度レベル":"Critical","影響範囲説明":"顧客データベース（CRM、受注管理、請求システム、ポータルサイト、API ゲートウェイ、データ分析基盤、レポーティングツール）の7システムにおいて、SQL インジェクション脆弱性が検出されました。攻撃者が不正なクエリを注入することで、顧客の個人情報（氏名、住所、電話番号、メールアドレス、購買履歴）および契約情報へのアクセス、改ざん、削除が可能です。特に、Web アプリケーションの検索機能とフィルタ機能において入力値の適切なサニタイズが行われていないため、リスクが高まっています。影響対象ユーザーは全国の法人顧客および個人顧客約12,500名に及びます。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-02-15 14:30:00","作成日時":"2025-02-11 09:15:00","更新日時":"2025-02-15 14:30:00","作成者":"佐藤花子","更新者":"鈴木健一"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-20250115-003","脆弱性対応チケットID":"rec-ticket-2025-0156","影響を受けるユーザー数":2400,"影響を受けるシステム数":18,"影響度レベル":"High","影響範囲説明":"Apache Log4j ライブラリ（バージョン 2.14.1）の既知脆弱性（CVE-2021-44228）が本番環境の決済処理システム、ユーザー認証システム、ログ集約基盤に存在することを確認。開発環境の全18システムにも同一バージョンが導入されている。本番環境では約2,400名の利用ユーザーが影響を受ける可能性あり。リモートコード実行のリスクが高く、金融取引データの漏洩やシステム停止の危険性が存在する。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-22 16:45:00","作成日時":"2025-01-15 09:30:00","更新日時":"2025-01-22 16:45:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250115-001","脆弱性ID":"rec-vuln-20250110-045","脆弱性スキャン結果ID":"rec-scan-20250108-023","脆弱性対応チケットID":"rec-ticket-20250112-089","影響を受けるユーザー数":2847,"影響を受けるシステム数":34,"影響度レベル":"High","影響範囲説明":"外部ベンダー提供のログ管理ツール（LogMaster v3.2.1）に認証回避の脆弱性が発見されました。当社は営業部門、企画部門、システム運用部門の3部門で同ツールを導入しており、間接的にこれらの部門が利用するCRM、BI分析ツール、監視ダッシュボードの34システムに波及的な影響が懸念されます。特に営業部門の顧客データベースへの不正アクセスリスクが高く、2,847名の顧客情報が露出する可能性があります。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15 14:30:00","作成日時":"2025-01-12 09:15:00","更新日時":"2025-01-15 14:30:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-20250110-156","脆弱性対応チケットID":"rec-ticket-2025-03421","影響を受けるユーザー数":2847,"影響を受けるシステム数":23,"影響度レベル":"Medium","影響範囲説明":"複数の社内システムに散在する低優先度脆弱性（情報開示、権限昇格関連）の累積的リスク分析。個別には軽微だが、複合的な悪用により営業システム、人事管理システム、経理システムなど基幹業務システムへのアクセス権限が段階的に昇格される可能性が確認された。特に営業担当者2,847名が利用する営業支援システムと連携する23のシステムが対象。定期的なセキュリティパッチの未適用が主要因であり、今後のシステム更新計画との調整が必要。","対応優先度":"P2","分析状態":"完了","分析完了日時":"2025-01-15T16:45:00+09:00","作成日時":"2025-01-10T09:30:00+09:00","更新日時":"2025-01-15T16:45:00+09:00","作成者":"鈴木花子","更新者":"山田太郎"},{"影響範囲分析ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-2024-8392","脆弱性スキャン結果ID":"rec-scan-2025-0156","脆弱性対応チケットID":"rec-ticket-2025-4821","影響を受けるユーザー数":2847,"影響を受けるシステム数":34,"影響度レベル":"High","影響範囲説明":"Apache Struts2の認証回避脆弱性（CVE-2024-50379）により、営業システム、人事管理システム、経理システムの3つの基幹システムが影響を受ける。特に営業部門（1,850名）と管理部門（997名）のユーザーが該当。パッチ適用前の現状では、認証を回避した不正アクセスにより顧客情報および財務データの流出リスクが極めて高い。","対応優先度":"P1","分析状態":"進行中","分析完了日時":null,"作成日時":"2025-01-14T16:30:00+09:00","更新日時":"2025-01-15T08:47:23+09:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-2025-0312","脆弱性対応チケットID":"rec-ticket-2025-1456","影響を受けるユーザー数":2847,"影響を受けるシステム数":34,"影響度レベル":"Critical","影響範囲説明":"Apache Log4j 2系の遠隔コード実行脆弱性（CVE-2024-50379）により、営業、企画、システム部門を含む全社員が使用する基幹システム、ポータルサイト、ログ管理システムが影響を受ける。特に顧客情報を保有する営業システムと財務データを管理する会計システムへのアクセス権を持つ管理者層への影響が深刻。外部からの不正アクセスにより、顧客情報漏洩および業務データ改ざんのリスクが極めて高い状況。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-03-14 16:45:00","作成日時":"2025-03-12 09:30:00","更新日時":"2025-03-14 16:45:00","作成者":"鈴木健一","更新者":"佐藤美咲"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-2025-0312","脆弱性対応チケットID":"rec-ticket-2025-1204","影響を受けるユーザー数":2850,"影響を受けるシステム数":34,"影響度レベル":"Critical","影響範囲説明":"クラウドマイグレーション後のセキュリティグループ設定ミスにより、本来は社内ネットワークのみからアクセス可能であるべきデータベース管理画面が、インターネットから直接アクセス可能な状態で露出。影響対象はグループ全体の営業部門、企画部門、事務部門のユーザーおよび基幹システム、データウェアハウス、顧客管理システムなど重要システム34台。個人情報約28万件を含む顧客データベースへのアクセスリスクが高い。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-03-14 16:45:00","作成日時":"2025-03-12 09:20:00","更新日時":"2025-03-14 16:45:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250215-0847","脆弱性ID":"rec-20240618-0312","脆弱性スキャン結果ID":"rec-20240920-1156","脆弱性対応チケットID":"rec-20241105-0523","影響を受けるユーザー数":1247,"影響を受けるシステム数":23,"影響度レベル":"High","影響範囲説明":"認証機構の不備により、営業部門と管理部門の計23システムにおいて、不正なアクセス権限昇格が可能な状態が確認されました。特に顧客情報管理システムと財務データベースへのアクセス制御が不十分であり、約1,247名のユーザーアカウントが影響を受けています。セキュリティ監査指摘事項に基づく再分析の結果、初期評価時は過小評価されていた影響範囲が判明しました。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-02-15 14:30:00","作成日時":"2024-09-20 09:15:00","更新日時":"2025-02-15 14:30:00","作成者":"山田花子","更新者":"佐藤次郎"}],"システム資産":[{"資産ID":"rec-001","資産名":"メインサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.50","ホスト名":"mainserver01.corp.local","OSタイプ":"Linux","OSバージョン":"Red Hat Enterprise Linux 8.9","所有部門":"情報システム部","責任者":"田中太郎","重要度レベル":"Critical","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2022-04-15T09:00:00Z","廃止予定日":null,"備考":"本社データセンター基幹業務用。ERP・会計システムホスト。24時間監視対象。バックアップは毎日深夜実施。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2025-01-20T10:15:00Z","作成者":"admin_user","更新者":"tanaka_taro"},{"資産ID":"rec-001","資産名":"営業部ファイルサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.50","ホスト名":"fileserver-sales01.company.local","OSタイプ":"Windows","OSバージョン":"Windows Server 2019","所有部門":"営業部","責任者":"佐藤花子","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2022-04-15T00:00:00Z","廃止予定日":null,"備考":"営業部門の顧客情報・提案資料を管理。毎月第2木曜日に定期スキャン実施。ストレージ容量2TB。","作成日時":"2024-01-10T09:30:00Z","更新日時":"2025-01-08T14:20:00Z","作成者":"admin-yamada","更新者":"admin-yamada"},{"資産ID":"rec-001","資産名":"ファイアウォール01-境界防御","資産タイプ":"ネットワークデバイス","IPアドレス":"192.168.1.1","ホスト名":"fw-boundary-01.corp.local","OSタイプ":"FortiOS","OSバージョン":"7.4.2","所有部門":"ネットワーク運用部","責任者":"山田太郎","重要度レベル":"Critical","スキャン対象フラグ":false,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-06-15T09:00:00Z","廃止予定日":null,"備考":"本社ネットワーク境界に設置。内部ネットワークと外部インターネット間のトラフィック制御。冗長化構成でfw-boundary-02と連携。年2回のセキュリティ監査対象。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2025-01-22T10:15:00Z","作成者":"admin-001","更新者":"suzuki-hanako"},{"資産ID":"rec-001","資産名":"開発環境Linuxサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.45","ホスト名":"dev-linux-srv01.internal.example.jp","OSタイプ":"Linux","OSバージョン":"Ubuntu 22.04 LTS","所有部門":"開発部","責任者":"山田太郎","重要度レベル":"Medium","スキャン対象フラグ":true,"監査対象フラグ":false,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00Z","廃止予定日":null,"備考":"開発環境用のアプリケーションサーバー。CI/CDパイプラインで使用。","作成日時":"2024-04-15T10:30:00Z","更新日時":"2025-01-20T14:15:00Z","作成者":"admin_user","更新者":"yamada_taro"},{"資産ID":"rec-001","資産名":"会計システムサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.50","ホスト名":"acct-srv01.example.jp","OSタイプ":"Linux","OSバージョン":"Red Hat Enterprise Linux 8.9","所有部門":"経理部門","責任者":"佐藤智也","重要度レベル":"Critical","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2022-04-15T00:00:00Z","廃止予定日":null,"備考":"会計・決算処理用途。月次・年次決算システムの中核。定期的なセキュリティパッチ適用必須。監査ログは7年間保管。","作成日時":"2024-01-10T09:30:00Z","更新日時":"2025-01-20T14:15:00Z","作成者":"admin001","更新者":"yamamoto_h"},{"資産ID":"rec-001","資産名":"支店ワークステーション群代表","資産タイプ":"ワークステーション","IPアドレス":"192.168.10.50","ホスト名":"ws-branch-rep.example.local","OSタイプ":"Windows","OSバージョン":"Windows 10 Pro","所有部門":"営業支店","責任者":"鈴木花子","重要度レベル":"Low","スキャン対象フラグ":false,"監査対象フラグ":false,"稼働状態":"稼働中","導入日":"2023-04-15T09:00:00Z","廃止予定日":null,"備考":"支店内ワークステーション群の稼働状況監視用代表機。定期的なハードウェア健全性チェック対象。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2024-12-20T10:15:00Z","作成者":"admin-yamada","更新者":"admin-yamada"},{"資産ID":"rec-001","資産名":"レガシーシステム用WEBサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.45","ホスト名":"legacy-web-srv01.company.local","OSタイプ":"Windows","OSバージョン":"Windows Server 2012 R2","所有部門":"情報システム部","責任者":"山田太郎","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2015-03-15T09:00:00Z","廃止予定日":"2025-06-30T23:59:59Z","備考":"基幹システムの段階的移行中。2025年6月末までに新システムへの完全移行予定。現在は監視強化中のため、脆弱性スキャンおよび監査ログ収集の対象とする。","作成日時":"2024-01-10T10:30:00Z","更新日時":"2024-12-20T14:15:00Z","作成者":"admin_user","更新者":"suzuki_hanako"},{"資産ID":"rec-001","資産名":"クラウド連携用APIゲートウェイ01","資産タイプ":"ネットワークデバイス","IPアドレス":"10.20.15.50","ホスト名":"apigw-prod-01.company.local","OSタイプ":"Linux","OSバージョン":"Ubuntu 22.04 LTS","所有部門":"クラウド基盤部","責任者":"山田太郎","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00Z","廃止予定日":null,"備考":"AWS・Azure・GCP連携用のAPIゲートウェイ。本番環境。レート制限: 10,000req/min。SSL/TLS 1.3対応。","作成日時":"2024-04-10T14:30:00Z","更新日時":"2025-01-22T10:15:00Z","作成者":"admin_user","更新者":"佐藤花子"},{"資産ID":"rec-001","資産名":"バックアップストレージNAS-01","資産タイプ":"ネットワークストレージ","IPアドレス":"192.168.10.50","ホスト名":"backup-nas-01.corp.example.jp","OSタイプ":"NAS OS","OSバージョン":"8.5.2","所有部門":"情報システム部","責任者":"佐藤健一","重要度レベル":"High","スキャン対象フラグ":false,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-06-15T00:00:00Z","廃止予定日":null,"備考":"容量50TB、RAID6構成、毎日23:00に全社システムのバックアップ実行、RPO=1日","作成日時":"2024-01-10T09:30:00Z","更新日時":"2025-01-15T14:20:00Z","作成者":"admin_yamada","更新者":"admin_yamada"},{"資産ID":"rec-001","資産名":"SIEM監視サーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.100.50","ホスト名":"siem-monitor-01.corp.local","OSタイプ":"Linux","OSバージョン":"Red Hat Enterprise Linux 8.9","所有部門":"情報セキュリティ部","責任者":"鈴木健一","重要度レベル":"Critical","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00Z","廃止予定日":null,"備考":"全社ログ集約・監視の中核システム。Splunk Enterprise導入。24時間監視対象。冗長化構成予定中。","作成日時":"2024-04-10T14:30:00Z","更新日時":"2025-01-20T10:15:00Z","作成者":"admin_yamamoto","更新者":"admin_yamamoto"}],"権限設定":[{"権限設定ID":"rec-001","ユーザーID":"rec-u-0001","役割":"システム管理者","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":true,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-01T09:00:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者":"rec-u-0000","更新者":"rec-u-0000","備考":"システム管理者として全セキュリティ機能への完全アクセス権を付与。初期構築時に山田太郎により設定。定期的なアクセス権限監査対象。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"セキュリティアナリスト","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":true,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-003","更新者":"rec-003","備考":"セキュリティインシデント対応チームへの配属に伴い、監査ログ閲覧とインシデント対応権限を付与。定期的な権限見直しは年1回実施予定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"脆弱性管理専門家","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"脆弱性管理専門チームメンバー。脆弱性の検査、分析、修正提案業務に従事。監査ログ閲覧とレポート生成は必須要件。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"監査担当者","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-003","更新者":"rec-004","備考":"監査部門による定期監査対応のため、監査ログ閲覧とレポート生成権限のみを付与。2025年度監査計画に基づき権限設定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-047","役割":"インシデント対応チーム長","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-u-001","更新者":"rec-u-001","備考":"セキュリティインシデント対応の統括責任者。全インシデント対応チケットの作成・編集・クローズ権限および権限削除権限を保有。月次セキュリティレポートの生成も担当。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"セキュリティアナリスト","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-01T09:30:00","更新日時":"2024-04-01T09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"2024年度新入社員。セキュリティアナリスト業務研修中のため、監査ログ閲覧と脆弱性情報の確認のみ許可。インシデント対応やレポート生成は3ヶ月の研修期間後に権限追加予定。直属上司は山田太郎。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"システム資産管理者","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":true,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-003","更新者":"rec-004","備考":"システム資産管理部門専有権限。サーバー、ネットワーク機器、ソフトウェアライセンスの一元管理を担当。年1回の権限見直し予定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-U2024001","役割":"外部監査人","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"rec-U2024admin","更新者":"rec-U2024admin","備考":"2024年度年間監査対応のため、2024年10月15日〜2025年3月31日の期間限定で監査ログ閲覧権限およびレポート生成権限を付与。監査担当：山田監査法人 田中太郎。期限切れ後は自動無効化予定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"権限管理者","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2024-04-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"権限管理者として他ユーザーの権限削除のみを許可。セキュリティポリシーに基づき最小権限の原則を適用。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"セキュリティアナリスト","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":false,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-02-28 14:45:00","作成者":"rec-003","更新者":"rec-004","備考":"2025年3月31日付けで退職予定のため、2025年2月28日に全権限を無効化した。最終アクセス日は2025年2月27日。"}],"脆弱性マスタ":[{"脆弱性ID":"rec-001","CVE_ID":"CVE-2021-44228","脆弱性名":"Apache Log4j リモートコード実行脆弱性（Log4Shell）","説明":"Apache Log4j 2.0から2.14.1までのバージョンに存在する脆弱性。JNDI（Java Naming and Directory Interface）機能を悪用することで、ネットワーク経由から任意のコードを実行される可能性がある。特にクラウド環境やコンテナ環境での影響が大きく、攻撃難易度が低いため緊急対応が必要。","CVSS_スコア":100,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2021-12-10T00:00:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2021-44228\nhttps://logging.apache.org/log4j/2.x/security-vulnerability.html","対応優先度":"P1","ステータス":"Active","作成日時":"2024-01-15T09:30:00Z","更新日時":"2024-12-20T14:45:00Z","作成者":"rec-user-0847"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-21893","脆弱性名":"Windows Kernel権限昇格脆弱性","説明":"Windows OSのカーネルコンポーネントにおける入力検証不十分な脆弱性。ローカルの認証済みユーザーが特別に細工されたアプリケーションを実行することで、システム権限で任意のコードを実行される可能性があります。","CVSS_スコア":85,"深刻度":"Critical","攻撃ベクトル":"Local","影響範囲":"Changed","公開日":"2024-02-13T09:00:00Z","参考URL":"https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-21893","対応優先度":"P1","ステータス":"Active","作成日時":"2024-02-13T14:30:00Z","更新日時":"2024-02-16T11:45:00Z","作成者":"rec-user-0847"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-3156","脆弱性名":"OpenSSL メモリ解放後の使用脆弱性","説明":"OpenSSL 3.0.x から 3.2.x において、TLS通信時のセッション再開処理中にメモリ解放後使用（Use-After-Free）が発生する脆弱性。特定の条件下で暗号化通信の完全性が損なわれ、中間者攻撃による通信内容の改ざんが可能となる可能性がある。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-07-15T10:30:00Z","参考URL":"https://www.openssl.org/news/secadv/20240715.txt","対応優先度":"P1","ステータス":"Resolved","作成日時":"2024-07-16T09:00:00Z","更新日時":"2025-01-20T14:30:00Z","作成者":"rec-u-0042"},{"脆弱性ID":"rec-001-vuln-php-auth-2024","CVE_ID":"CVE-2024-28971","脆弱性名":"PHPフレームワーク認証回避脆弱性","説明":"Laravel 11.0以前のバージョンにおいて、セッション管理機構の実装に不備があり、特定の条件下で認証トークンの検証がバイパスされる可能性がある。攻撃者は細工されたリクエストを送信することで、認証を回避し管理者権限で本番環境にアクセスできる恐れがある。","CVSS_スコア":92,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-11-15T08:30:00Z","参考URL":"https://laravel.com/security/advisories/CVE-2024-28971","対応優先度":"P1","ステータス":"Active","作成日時":"2024-11-16T10:45:00Z","更新日時":"2025-01-10T14:20:00Z","作成者":"rec-user-佐藤花子"},{"脆弱性ID":"rec-001-vuln-20250115","CVE_ID":"CVE-2024-50379","脆弱性名":"Apache Commons Collections 3.x 型変換の脆弱性","説明":"Apache Commons Collections 3.x系において、特定の型変換処理中にデシリアライゼーション攻撃が可能な脆弱性。旧バージョンのJavaライブラリを使用している廃止予定の社内システムで発見された。攻撃者が細工されたシリアライズオブジェクトを送信することで、リモートコード実行の可能性がある。","CVSS_スコア":85,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-11-20T08:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-50379","対応優先度":"P3","ステータス":"Deprecated","作成日時":"2024-12-10T14:22:00Z","更新日時":"2025-01-15T09:45:00Z","作成者":"rec-user-20240601"},{"脆弱性ID":"rec-001-sqli-2024","CVE_ID":"CVE-2024-8765","脆弱性名":"ユーザー認証画面SQLインジェクション脆弱性","説明":"内部システムのユーザー認証画面のログインフォームにおいて、入力値の不十分なサニタイズにより、攻撃者がSQLインジェクション攻撃を実行可能な脆弱性が存在します。この脆弱性を利用することで、データベース内の機密情報の窃取、改ざん、または削除が可能になる可能性があります。","CVSS_スコア":72,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-06-15T10:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-8765","対応優先度":"P2","ステータス":"Active","作成日時":"2024-06-20T14:45:00Z","更新日時":"2024-12-10T09:15:00Z","作成者":"rec-user-佐藤花子"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-3156","脆弱性名":"ブラウザレンダリングエンジンのクロスサイトスクリプティング脆弱性","説明":"Chromiumベースのブラウザにおいて、特定のDOM要素の処理時にユーザー入力が適切にサニタイズされないため、攻撃者が悪意あるスクリプトを実行される可能性がある。月次セキュリティパッチで対応済み。","CVSS_スコア":72,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-03-15T09:00:00Z","参考URL":"https://chromereleases.googleblog.com/2024/03/stable-channel-update.html","対応優先度":"P2","ステータス":"Resolved","作成日時":"2024-03-16T10:30:00Z","更新日時":"2024-04-05T14:15:00Z","作成者":"rec-user-0042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-8765","脆弱性名":"クラウドAPI認証トークン検証不備","説明":"クラウドサービスのREST APIエンドポイントにおいて、認証トークンの有効期限検証が不適切に実装されており、期限切れトークンを使用して機密データへのアクセスが可能になる脆弱性。攻撃者は盗聴したトークンを用いて、認可されていない操作を実行される恐れがある。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-11-15T09:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-8765","対応優先度":"P2","ステータス":"Active","作成日時":"2024-11-16T14:22:00Z","更新日時":"2024-11-16T14:22:00Z","作成者":"rec-u-0042"}]};
+window.AIVIC_PRESET_SEED = {"脆弱性":[{"脆弱性ID":"rec-001","脆弱性名":"Webアプリケーション認証機能のSQLインジェクション脆弱性","説明":"ユーザーログイン画面のユーザー名入力フィールドに対するパラメータ検証が不十分であり、攻撃者が細工されたSQL文を入力することで、データベースへの不正なアクセスが可能となる。認証回避やデータベース内の機密情報の抽出につながる恐れがある。","CVE識別子":"CVE-2024-45821","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"顧客管理システム v2.3.1","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-15T17:00:00+09:00","対応内容":"入力値の厳密な検証とプリペアドステートメントの導入を実施中。SQLインジェクション対策として、ユーザー入力に対するサニタイゼーション処理を追加し、パラメータ化クエリの実装を進めている。","対応完了日時":null,"担当者":"山田花子","作成日時":"2024-11-15T10:45:00+09:00","更新日時":"2024-12-02T14:20:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"Palo Alto Networks PAN-OS 特権昇格脆弱性","説明":"本社ファイアウォール（Palo Alto Networks PA-5220）のOSであるPAN-OSに存在する認証回避および特権昇格の脆弱性。管理者以外のユーザーが特殊な入力値を送信することで、管理者権限を取得可能。ローカルネットワークからのアクセスで悪用される可能性が高い。","CVE識別子":"CVE-2024-21887","重要度レベル":"Critical","CVSSスコア":92,"影響を受けるシステム":"本社ファイアウォール（PA-5220）","検出日時":"2024-12-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-22T23:59:59+09:00","対応内容":"PAN-OS バージョン 10.2.8-h3 へのセキュリティパッチ適用予定。12月21日の夜間メンテナンスウィンドウで実施予定。事前にバックアップを取得し、テスト環境で検証完了。","対応完了日時":null,"担当者":"山田太郎","作成日時":"2024-12-15T10:15:00+09:00","更新日時":"2024-12-18T14:45:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"メールサーバーバッファオーバーフロー脆弱性","説明":"営業部門で使用しているメールサーバーのSMTPプロトコル処理機能において、過度に長いコマンド入力を受け取った際にバッファ領域を超過して書き込みが発生する脆弱性。攻撃者が細工されたメールを送信することで、任意のコード実行が可能となる可能性がある。","CVE識別子":"CVE-2024-31415","重要度レベル":"Critical","CVSSスコア":92,"影響を受けるシステム":"Postfix 3.7.0 (営業部門メールサーバー)","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59+09:00","対応内容":"Postfixを3.7.2パッチ版に更新。メールサーバーの再起動を実施し、SMTP通信ログの確認を完了。脆弱性スキャンツールによる検証で問題が解消されたことを確認。","対応完了日時":"2024-12-08T14:45:00+09:00","担当者":"佐藤健一","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-12-08T15:30:00+09:00","作成者":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","更新者":"b2c3d4e5-f6a7-8901-bcde-f12345678901"},{"脆弱性ID":"rec-001","脆弱性名":"TLS設定不備によるダウングレード攻撃の可能性","説明":"顧客向けポータルサイトのWebサーバーにおいて、TLS 1.0および1.1が有効になっており、より安全なTLS 1.2/1.3への強制が実装されていない状態。攻撃者がSSLストリップ攻撃やダウングレード攻撃を実行し、通信内容を盗聴される可能性がある。","CVE識別子":"CVE-2014-3566","重要度レベル":"High","CVSSスコア":73,"影響を受けるシステム":"顧客向けポータルサイト（prod-portal-01）","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-31T23:59:59+09:00","対応内容":"TLS 1.0/1.1を無効化し、TLS 1.2以上のみを有効化。HTTPSリダイレクト設定を強化。HSTS（HTTP Strict Transport Security）ヘッダーの実装。","対応完了日時":null,"担当者":"佐藤健一","作成日時":"2024-11-15T10:45:00+09:00","更新日時":"2024-12-10T14:20:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"データベースサーバーのデフォルトアカウント削除漏れ","説明":"本番環境のPostgreSQLサーバーにおいて、インストール時のデフォルトアカウント（postgres、template1等）が削除されずに残存していた。これらのアカウントは初期パスワードまたは空のパスワードで設定されており、認証情報の推測による不正アクセスのリスクが存在する。","CVE識別子":"CWE-1391","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"PostgreSQL 14.2（本番DB-01サーバー）","検出日時":"2024-11-15 09:30:00","対応状況":"対応完了","対応期限":"2024-12-15 17:00:00","対応内容":"2024年11月20日に該当サーバーへアクセスし、デフォルトアカウント（postgres、template1、guest等）の確認を実施。不要なロールを削除し、必要なアカウントについてはパスワードを強力なものに変更した。その後、2024年12月5日に内部監査チームによる確認テストを実施し、削除・変更が正常に反映されていることを確認。","対応完了日時":"2024-12-05 14:45:00","担当者":"佐藤健一","作成日時":"2024-11-15 10:15:00","更新日時":"2024-12-05 15:30:00","作成者":"rec-user-0047","更新者":"rec-user-0052"},{"脆弱性ID":"rec-001","脆弱性名":"Log4j リモートコード実行脆弱性","説明":"Apache Log4j2 ライブラリにおいて、JNDI インジェクション攻撃により、攻撃者が任意のコードを実行可能になる脆弱性。ログメッセージに特殊な文字列を埋め込むことで、リモートサーバーから悪意のあるクラスをロードされる危険性がある。","CVE識別子":"CVE-2021-44228","重要度レベル":"Critical","CVSSスコア":98,"影響を受けるシステム":"開発環境 Java アプリケーション","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応完了","対応期限":"2024-12-01T17:00:00+09:00","対応内容":"Log4j2 を 2.17.1 にバージョンアップ。既存の 2.11.0 から段階的にテスト環境で動作確認後、本番環境に展開。依存関係の確認と互換性テストを実施。","対応完了日時":"2024-11-28T16:45:00+09:00","担当者":"佐藤花子","作成日時":"2024-11-15T10:00:00+09:00","更新日時":"2024-11-28T17:30:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"APIエンドポイントの認可制御不備","説明":"本番環境の複数のAPIエンドポイントにおいて、リクエストユーザーの権限検証が不十分であり、認可されていないユーザーが他のユーザーのリソースにアクセス可能な状態が発見されました。特に/api/v1/users/{id}/profileおよび/api/v1/orders/{id}エンドポイントが影響を受けており、トークンベースの認証は実装されているものの、エンドポイントレベルでのロールベースアクセス制御（RBAC）が欠落しています。","CVE識別子":"CVE-2024-45821","重要度レベル":"High","CVSSスコア":78,"影響を受けるシステム":"顧客管理API v1.2.3","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2024-12-20T23:59:59+09:00","対応内容":"セキュリティアップデート v1.2.4の開発を進行中。全APIエンドポイントに対するロールベースアクセス制御ミドルウェアの実装、ユーザー権限の詳細な検証ロジックの追加、および統合テストの実施を予定しています。本番環境への展開は2024年12月15日を予定しています。","対応完了日時":null,"担当者":"佐藤次郎","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0042"},{"脆弱性ID":"rec-001","脆弱性名":"ネットワークスイッチファームウェアの遠隔コード実行脆弱性","説明":"Cisco Catalyst 9000シリーズのファームウェアに認証不要の遠隔コード実行脆弱性が存在します。特定の管理インターフェースへのアクセス制御が不適切であり、攻撃者が細工されたパケットを送信することで、スイッチ上で任意のコードを実行される可能性があります。","CVE識別子":"CVE-2024-20356","重要度レベル":"Critical","CVSSスコア":92,"影響を受けるシステム":"Catalyst 9300-48U-A、Catalyst 9300-24UX-A","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"対応中","対応期限":"2025-01-31T23:59:59+09:00","対応内容":"ファームウェアバージョン17.12.04以上への更新を計画中。本社データセンター内の5台のスイッチについて、2025年1月中に段階的に更新予定。テスト環境での検証を2024年12月末までに完了予定。","対応完了日時":null,"担当者":"佐藤健一","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-12-10T14:45:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"脆弱性ID":"rec-001","脆弱性名":"クラウドストレージのアクセス制御不備","説明":"Amazon S3バケットのパブリックアクセス設定が不適切に構成されており、認証なしで機密データへのアクセスが可能な状態となっていました。バケットポリシーとACLの設定が過度に寛容で、インターネット上の任意のユーザーがオブジェクトの読み取り・書き込みを実行できるリスクがありました。","CVE識別子":"CVE-2024-12345","重要度レベル":"Critical","CVSSスコア":87,"影響を受けるシステム":"AWS S3 - 営業部門データバケット","検出日時":"2024-11-15T09:30:00Z","対応状況":"対応完了","対応期限":"2024-12-15T23:59:59Z","対応内容":"バケットポリシーを修正し、特定のIAMロールのみにアクセスを許可するように設定変更。パブリックアクセスブロック機能を有効化。ACLをプライベートに設定。CloudTrailでアクセスログを有効化し、監視体制を構築。","対応完了日時":"2024-11-28T16:45:00Z","担当者":"鈴木健一","作成日時":"2024-11-15T10:00:00Z","更新日時":"2024-11-28T17:15:00Z","作成者":"rec-user-001","更新者":"rec-user-002"},{"脆弱性ID":"rec-001","脆弱性名":"VPNゲートウェイにおけるSSL/TLS暗号スイートの脆弱性","説明":"VPNゲートウェイで使用されているSSL/TLSプロトコルにおいて、脆弱な暗号スイート（RC4、DES等）がサポートされている状態が存在する。攻撃者が暗号化通信を解読される可能性がある。ただし、現在の運用環境ではクライアント側が強力な暗号スイートを優先的に使用しており、実質的な被害リスクは低い状態にある。","CVE識別子":"CVE-2024-12847","重要度レベル":"High","CVSSスコア":72,"影響を受けるシステム":"Fortinet FortiGate 3100D VPNゲートウェイ","検出日時":"2024-11-15T09:30:00+09:00","対応状況":"受け入れ","対応期限":"2025-02-15T23:59:59+09:00","対応内容":"リスク評価実施。現在のクライアント環境ではTLS 1.2以上が標準使用されており、脆弱な暗号スイートへの接続は実質的に発生していないことを確認。次期ハードウェア更新時（2025年度予算計上済み）に脆弱暗号スイート完全廃止予定。暫定対応として脆弱暗号スイートの使用ログを月次監視することで合意。","対応完了日時":"2024-12-10T14:45:00+09:00","担当者":"佐藤健一","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-12-10T14:45:00+09:00","作成者":"a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6","更新者":"f7g8h9i0-j1k2-43l4-m5n6-o7p8q9r0s1t2"}],"脆弱性スキャン結果":[{"スキャン結果ID":"rec-20250115-auth-bypass-001","脆弱性ID":"vuln-cve-2024-8765","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"prod-web-server-01.example.jp","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"本番Webサーバーのセッション管理機構に認証バイパス脆弱性が検出されました。攻撃者は特定の HTTP ヘッダを操作することで、有効なセッショントークンなしに管理者機能にアクセス可能です。影響範囲は全ユーザー認証プロセスで、機密情報の窃取、不正操作、データ改ざんのリスクがあります。脆弱性は Apache 2.4.49 の既知の問題に起因しています。","推奨対応":"1. Apache を 2.4.51 以上にアップグレード 2. セッション管理ロジックのコードレビュー実施 3. WAF ルール追加による HTTP ヘッダ検証強化 4. 緊急パッチ適用前の本番環境ロールバック計画策定 5. セキュリティ監査ログの確認と侵害有無の調査","対応期限":"2025-01-17T17:00:00+09:00","対応担当者ID":"user-yamada-hanako","作成日時":"2025-01-15T10:15:00+09:00","更新日時":"2025-01-15T14:45:00+09:00","作成者ID":"user-suzuki-taro"},{"スキャン結果ID":"rec-001-2024-ssl-dev-db","脆弱性ID":"vuln-ssl-protocol-001","スキャン実行日時":"2024-11-15T09:30:00+09:00","対象リソース":"dev-db-server-01","重要度レベル":"Medium","検出状態":"確認","詳細情報":"開発環境のPostgreSQLデータベースサーバーにおいて、TLS 1.0および1.1の古いプロトコルバージョンが有効になっていることを確認しました。ポート5432でのSSL/TLS通信時に、セキュリティレベルの低い暗号スイートが使用されている可能性があります。これにより、中間者攻撃やダウングレード攻撃のリスクが存在します。","推奨対応":"postgresql.confファイルのssl_protocolsパラメータを'TLSv1.2,TLSv1.3'に設定してください。また、ssl_ciphersで強力な暗号スイートのみを指定し、PostgreSQLサービスを再起動してください。詳細はPostgreSQL公式ドキュメントのセキュリティ設定を参照してください。","対応期限":"2025-01-31T17:00:00+09:00","対応担当者ID":"user-002-yamada","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者ID":"user-001-suzuki"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"vuln-sql-injection-001","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"営業管理システム_本番環境","重要度レベル":"High","検出状態":"確認","詳細情報":"営業管理システムの顧客検索機能において、ユーザー入力値が適切にサニタイズされていないため、SQLインジェクション攻撃が可能な状態が検出されました。攻撃者が細工されたSQL文を入力することで、データベースの不正アクセス、機密情報の漏洩、データ改ざんが可能となる可能性があります。特に顧客マスタテーブルおよび売上実績テーブルへのアクセス権限で実行される可能性が高いです。","推奨対応":"1. プリペアドステートメント（パラメータ化クエリ）の導入\n2. 入力値の厳密なバリデーション実装\n3. データベースユーザーの権限最小化\n4. SQLエラーメッセージの詳細情報非表示化\n5. Web Application Firewall（WAF）ルールの追加設定\n対応予定パッチバージョン: v3.2.1（予定リリース日2025年2月28日）","対応期限":"2025-02-15T17:00:00+09:00","対応担当者ID":"user-yamada-hanako","作成日時":"2025-01-15T10:15:00+09:00","更新日時":"2025-01-15T10:15:00+09:00","作成者ID":"user-suzuki-taro"},{"スキャン結果ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-20250110-0312","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"CloudStorage-API-Gateway-Production","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"クラウドストレージAPI認証エンドポイントにおいて、APIキーおよびアクセストークンが平文でログファイルに記録される脆弱性を検出しました。本脆弱性により、ログファイルへのアクセス権を持つ攻撃者が認証情報を窃取し、不正アクセスを行う可能性があります。影響範囲は本番環境のCloudStorage-API-Gateway全体で、約2,500社のテナント環境が対象となります。","推奨対応":"緊急度の高い脆弱性のため、以下の対応を実施してください：1) セキュリティパッチバージョン3.2.1以上への即時適用、2) ログ出力時の認証情報マスキング処理の実装、3) 既存ログファイルの暗号化とアクセス制限、4) 全テナントへの認証情報リセット通知。詳細はセキュリティアドバイザリーSA-2025-0156を参照してください。","対応期限":"2025-01-17T17:00:00+09:00","対応担当者ID":"rec-user-0584","作成日時":"2025-01-15T09:45:00+09:00","更新日時":"2025-01-15T14:20:00+09:00","作成者ID":"rec-user-0291"},{"スキャン結果ID":"rec-001","脆弱性ID":"vuln-042","スキャン実行日時":"2024-11-15T09:30:00+09:00","対象リソース":"顧客向けモバイルアプリ v2.3.1","重要度レベル":"High","検出状態":"誤検知","詳細情報":"セキュリティスキャンツールにより、アプリのローカルストレージに保存されるセッショントークンが暗号化されていないと検出されました。しかし、実装確認の結果、トークンはAES-256-GCMで暗号化され、Keychain/Securely Enclave経由で安全に保管されていることが確認されました。スキャンツールの検出ロジックが、デコンパイル後の中間表現を正確に解析できず、暗号化処理を見落としたことが原因と判明しました。","推奨対応":"本件は誤検知として確定。スキャンツール側にこの検出パターンを除外ルールとして登録し、今後の同様の誤検知を防止します。アプリケーション側の対応は不要。","対応期限":"2024-12-15T17:00:00+09:00","対応担当者ID":"user-087","作成日時":"2024-11-15T10:15:00+09:00","更新日時":"2024-11-22T14:45:00+09:00","作成者ID":"user-042"},{"スキャン結果ID":"rec-001","脆弱性ID":"rec-vuln-0847","スキャン実行日時":"2024-11-15T09:30:00+09:00","対象リソース":"ファイアウォール機器 FW-CORE-001","重要度レベル":"High","検出状態":"解決","詳細情報":"ファイアウォール機器の内部通信設定において、東京本社と大阪支社間のVPN通信が平文で送受信されていることが確認されました。具体的には、管理画面へのアクセスログ、システム間の同期データが暗号化されていない状態で転送されており、同一ネットワーク上での中間者攻撃（MITM）が可能な状況でした。影響範囲は両拠点間の約500台のエンドポイントデバイスとなります。","推奨対応":"ファイアウォール機器のIPSecおよびTLS1.3設定を有効化し、全ての内部通信チャネルに対して強力な暗号化プロトコルを適用してください。設定変更後、通信テストを実施して暗号化が正常に機能していることを確認してください。詳細は提供されたセキュリティパッチ「FW-CORE-2024-11-CRYPTO-v2.1」を適用してください。","対応期限":"2024-12-15T17:00:00+09:00","対応担当者ID":"rec-user-0312","作成日時":"2024-11-15T10:45:00+09:00","更新日時":"2025-01-10T14:20:00+09:00","作成者ID":"rec-user-0156"},{"スキャン結果ID":"rec-20250115-xss-001","脆弱性ID":"vuln-cve-2024-8765","スキャン実行日時":"2025-01-10T14:30:00+09:00","対象リソース":"決済システム_フロントエンド_本番環境","重要度レベル":"Critical","検出状態":"確認","詳細情報":"決済入力フォームの顧客名フィールドにおいて、入力値が適切にエスケープされていないため、反射型XSS脆弱性が存在します。攻撃者が悪意のあるJavaScriptコードを含むURLを作成し、ユーザーがアクセスすることで、セッショントークンやクッキー情報が盗聴される可能性があります。影響範囲は全決済ユーザーです。","推奨対応":"1. 顧客名フィールドの入力値に対してHTMLエスケープ処理を実装してください。2. Content Security Policy(CSP)ヘッダーを設定してください。3. DOMPurifyライブラリの導入を検討してください。4. 本番環境への適用前にセキュリティテストを実施してください。パッチバージョン: v2.8.5以降。","対応期限":"2025-01-20T17:00:00+09:00","対応担当者ID":"usr-dev-yamada","作成日時":"2025-01-10T15:45:00+09:00","更新日時":"2025-01-15T09:20:00+09:00","作成者ID":"usr-audit-suzuki"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"test-container-registry.example.com/api-service:v2.3.1-test","重要度レベル":"High","検出状態":"対応中","詳細情報":"Node.jsランタイムに含まれるExpress.jsライブラリ（バージョン4.17.1）において、HTTPヘッダーインジェクション脆弱性が存在します。特定の入力値が適切に検証されない場合、攻撃者が任意のHTTPヘッダーを挿入可能となり、セッションハイジャックやキャッシュポイズニング攻撃の原因となる可能性があります。テスト環境のコンテナイメージ内のnode_modules/expressディレクトリで確認されました。","推奨対応":"Express.jsを4.18.2以上にアップグレードしてください。Dockerfileのnpm install段階でpackage.jsonの依存関係を更新し、コンテナイメージを再ビルドしてください。具体的には『npm update express@latest』を実行後、イメージを再構築してください。","対応期限":"2025-02-15T17:00:00+09:00","対応担当者ID":"rec-user-2024-0156","作成日時":"2025-01-15T10:45:00+09:00","更新日時":"2025-01-16T14:20:00+09:00","作成者ID":"rec-user-2024-0089"},{"スキャン結果ID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"コア統合スイッチ CS-5600X (本社3階機械室)","重要度レベル":"Low","検出状態":"検出","詳細情報":"Cisco Catalyst 5600シリーズのファームウェアバージョン16.12.04において、SNMPv3認証プロトコルの実装に不適切なエラーハンドリングが存在します。特定の異常なSNMPクエリに対して過度なCPUリソースを消費する可能性があります。攻撃者が管理ネットワークへのアクセス権を保有している場合に限定されます。","推奨対応":"ファームウェアをバージョン16.12.05以上にアップグレードしてください。または、SNMPv3アクセスを信頼できるIPアドレス範囲に限定するアクセスリスト設定を実施してください。","対応期限":"2025-04-15T23:59:59+09:00","対応担当者ID":"rec-user-2024-0156","作成日時":"2025-01-15T10:45:00+09:00","更新日時":"2025-01-15T10:45:00+09:00","作成者ID":"rec-user-2024-0089"},{"スキャン結果ID":"rec-001-20250115-priv-esc","脆弱性ID":"vuln-002-privilege-escalation","スキャン実行日時":"2025-01-15T09:30:00+09:00","対象リソース":"バックアップシステム_本番環境_サーバーA","重要度レベル":"Critical","検出状態":"対応中","詳細情報":"バックアップシステムのバージョン3.2.1において、ローカルユーザーが不適切なファイルパーミッション設定を悪用することで、root権限への昇格が可能な脆弱性が検出されました。/opt/backup/config/ディレクトリのパーミッションが644に設定されており、通常ユーザーが機密設定ファイルを読み取り・修正可能な状態です。この脆弱性を利用することで、攻撃者はシステム全体の制御を獲得し、バックアップデータの改ざんや窃取が可能になります。","推奨対応":"公式パッチ3.2.2への更新が最優先です。ただし本番環境への直接適用は困難なため、代替対応として以下を検討中：(1)ファイルパーミッションの即時修正（/opt/backup/config/を755に変更）、(2)SELinux/AppArmorによるアクセス制御強化、(3)ファイアウォール設定の厳格化によるローカルアクセス制限。これらの措置により、本パッチ適用までの間、リスク軽減を図ります。","対応期限":"2025-02-15T23:59:59+09:00","対応担当者ID":"user-rec-012-yamada","作成日時":"2025-01-15T10:45:00+09:00","更新日時":"2025-01-22T14:20:00+09:00","作成者ID":"user-rec-008-suzuki"}],"脆弱性対応チケット":[{"チケットID":"rec-001","脆弱性ID":"rec-002","スキャン結果ID":"rec-003","チケットタイトル":"【緊急】Windows Server 2022 リモートコード実行脆弱性(CVE-2024-21892)パッチ適用","説明":"2024年12月のセキュリティ更新プログラムで公開された、Windows Server 2022における認証前のリモートコード実行脆弱性が検出されました。本社データセンターの基幹DBサーバー3台が未パッチ状態です。攻撃が既に観測されているため、48時間以内のパッチ適用が必須です。適用手順：1)事前バックアップ実施 2)メンテナンスウィンドウ確保 3)パッチ適用 4)再起動 5)動作確認","ステータス":"対応中","優先度":"高","割当者ID":"rec-004","期限日":"2024-12-22T18:00:00+09:00","対応完了日":null,"作成日時":"2024-12-20T09:15:00+09:00","作成者ID":"rec-005","更新日時":"2024-12-20T14:30:00+09:00","更新者ID":"rec-004"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-2025-0312","チケットタイトル":"Web管理画面のSQLインジェクション脆弱性修正","説明":"セキュリティスキャンにより、ユーザー検索機能の入力値に対するSQLインジェクション脆弱性が検出されました。検索フォームのキーワード入力欄でSQL文が直接実行される可能性があります。対応内容：プリペアドステートメントの導入、入力値のサニタイズ処理の追加、SQLクエリビルダーの使用を実施します。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-佐藤","期限日":"2025-02-15T17:00:00Z","対応完了日":null,"作成日時":"2025-01-15T09:30:00Z","作成者ID":"rec-user-鈴木","更新日時":"2025-01-22T14:45:00Z","更新者ID":"rec-user-佐藤"},{"チケットID":"rec-001-2024-ssl-cert-001","脆弱性ID":"rec-vuln-2024-ssl-001","スキャン結果ID":"rec-scan-2024-12-15-001","チケットタイトル":"期限切れSSL証明書の更新対応","説明":"本番環境のWebサーバー（api.example.co.jp）で使用されているSSL証明書が2025年1月31日に期限切れとなります。暗号化通信の継続性を確保するため、新規証明書の取得、インストール、動作確認を実施し、期限切れ前の更新完了が必須です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2024-001","期限日":"2025-01-25T17:00:00+09:00","対応完了日":null,"作成日時":"2024-12-15T09:30:00+09:00","作成者ID":"rec-user-2024-002","更新日時":"2024-12-20T14:15:00+09:00","更新者ID":"rec-user-2024-001"},{"チケットID":"rec-20250115-fw-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-20250110-fw","チケットタイトル":"ファイアウォール設定ミスによる不正アクセスリスク対応","説明":"セキュリティスキャンにより、ファイアウォールのルール設定に誤りが検出されました。管理画面へのアクセス制限が不適切に設定されており、社外ネットワークからの直接アクセスが可能な状態となっています。このリスクを排除するため、ファイアウォールルールの見直しと適切な設定への修正が必要です。具体的には、管理画面へのアクセスを社内ネットワークおよび承認されたVPN接続のみに限定する必要があります。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2024-0156","期限日":"2025-01-31T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-2024-0089","更新日時":"2025-01-20T14:15:00+09:00","更新者ID":"rec-user-2024-0156"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-8847","スキャン結果ID":"rec-scan-20250110-042","チケットタイトル":"Log4j 2.x ライブラリの脆弱性対応 - バージョン2.17.1への更新","説明":"依存ライブラリLog4j 2.14.1にCVE-2024-50379が検出されました。リモートコード実行の可能性がある重大な脆弱性のため、バージョン2.17.1以上への更新が必要です。本番環境への適用前に開発環境での動作確認とリグレッションテストを実施してください。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2024-156","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-10T09:30:00+09:00","作成者ID":"rec-user-2024-089","更新日時":"2025-01-15T14:22:00+09:00","更新者ID":"rec-user-2024-156"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-2025-0156","チケットタイトル":"本番環境デフォルトパスワード残存による認証脆弱性の改善","説明":"セキュリティスキャンにより、本番環境の管理画面にデフォルトパスワードが残存していることが検出されました。管理者アカウント（admin/admin）が初期設定のまま運用されており、認証回避のリスクが高い状態です。全ての管理アカウントのパスワードを強力なものに変更し、パスワードポリシーの適用を実施する必要があります。対応内容：1) 全管理アカウントの強制パスワード変更、2) パスワードポリシー（最小文字数12文字、複雑性要件）の設定、3) 変更内容の検証テスト、4) 関係者への周知。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2024-0523","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-2024-0891","更新日時":"2025-01-22T14:45:00+09:00","更新者ID":"rec-user-2024-0523"},{"チケットID":"rec-20250147","脆弱性ID":"rec-20250089","スキャン結果ID":"rec-20250156","チケットタイトル":"API認証トークン漏洩脆弱性 - セキュリティパッチ適用","説明":"2025年1月15日の定期セキュリティスキャンにより、REST API認証トークンがメモリ上に平文で保持される脆弱性が検出されました。攻撃者による認証回避およびトークン盗聴のリスクが高い。セキュリティパッチv2.4.1を適用し、トークンの暗号化保存とHTTP Onlyフラグの設定を実施してください。テスト環境での検証後、本番環境への展開をお願いします。","ステータス":"対応中","優先度":"高","割当者ID":"rec-00234","期限日":"2025-02-15T23:59:59+09:00","対応完了日":null,"作成日時":"2025-01-16T09:30:00+09:00","作成者ID":"rec-00128","更新日時":"2025-01-22T14:15:00+09:00","更新者ID":"rec-00234"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-2024-1203","チケットタイトル":"Apache Struts2 古いバージョンの段階的更新","説明":"2024年12月のセキュリティスキャンで検出された低優先度脆弱性。本番環境のApache Struts2がバージョン2.5.28で運用されており、最新セキュリティパッチの適用が必要。段階的な更新計画に基づき、開発環境での検証後、ステージング環境を経由して本番環境への適用を予定。影響度は低いものの、セキュリティ基準への準拠のため対応を進める。","ステータス":"対応中","優先度":"低","割当者ID":"rec-user-佐藤健一","期限日":"2025-04-30T23:59:59Z","対応完了日":null,"作成日時":"2024-12-20T10:30:00Z","作成者ID":"rec-user-山田花子","更新日時":"2025-01-15T14:22:00Z","更新者ID":"rec-user-佐藤健一"},{"チケットID":"rec-20250118-001","脆弱性ID":"rec-vuln-20250115-042","スキャン結果ID":"rec-scan-20250110-156","チケットタイトル":"本番環境APIエンドポイントのSQL インジェクション脆弱性対応","説明":"ペネトレーションテスト実施時に、顧客管理APIの検索パラメータにおいてSQL インジェクション脆弱性が指摘されました。攻撃者が不正なSQLクエリを挿入し、データベースへの不正アクセスが可能な状態です。対応内容：プリペアドステートメントの導入、入力値の厳格な検証ロジック実装、WAFルール追加設定を実施予定です。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-20240501-018","期限日":"2025-02-15T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-18T09:30:00+09:00","作成者ID":"rec-user-20240301-005","更新日時":"2025-01-22T14:15:00+09:00","更新者ID":"rec-user-20240501-018"},{"チケットID":"rec-20250115-001","脆弱性ID":"rec-vuln-2024-0847","スキャン結果ID":"rec-scan-2025-0312","チケットタイトル":"セキュリティ監査指摘：管理者権限の過度な委譲に関する改善","説明":"2024年12月実施のセキュリティ監査において、システム管理者権限が営業部門の一般ユーザーに不適切に委譲されていることが指摘されました。具体的には、データベースアクセス権限、ユーザー管理権限、システム設定変更権限が必要最小限の原則に違反しています。対応内容として、権限管理ポリシーの見直し、ロールベースアクセス制御（RBAC）の導入、および現在の過度な権限の段階的な剥奪を実施します。","ステータス":"対応中","優先度":"高","割当者ID":"rec-user-2024-0156","期限日":"2025-03-31T17:00:00+09:00","対応完了日":null,"作成日時":"2025-01-15T09:30:00+09:00","作成者ID":"rec-user-2024-0089","更新日時":"2025-02-08T14:45:00+09:00","更新者ID":"rec-user-2024-0156"}],"影響範囲分析":[{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-2024-1203","脆弱性対応チケットID":"rec-ticket-2024-5421","影響を受けるユーザー数":2847,"影響を受けるシステム数":34,"影響度レベル":"Critical","影響範囲説明":"認証サーバーのセッション検証ロジックに脆弱性が存在し、不正なトークン値でも認証を回避可能。全社員、パートナー企業ユーザー、顧客ポータルユーザーが影響対象。特に財務・人事・顧客データベースへの無権限アクセスリスクが極めて高い。本番環境の認証サーバー3台すべてが脆弱性を保持。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2024-12-04T17:30:00+09:00","作成日時":"2024-12-03T09:15:00+09:00","更新日時":"2024-12-04T17:30:00+09:00","作成者":"山田花子","更新者":"鈴木健一"},{"影響範囲分析ID":"rec-001-20250115-kh7m","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-20250110-5p2q","脆弱性対応チケットID":"rec-ticket-2025-003421","影響を受けるユーザー数":127,"影響を受けるシステム数":3,"影響度レベル":"High","影響範囲説明":"営業管理システム、顧客情報管理システム、請求システムにおいて、認証後のセッション管理の不備により、一般ユーザーが管理者権限を取得可能な脆弱性が確認されました。営業部門の127名のユーザーが影響対象となり、顧客データや売上情報への不正アクセスリスクが存在します。ただし、社内ネットワーク限定アクセスのため、外部からの直接的な悪用可能性は低いと判断されます。","対応優先度":"P2","分析状態":"完了","分析完了日時":"2025-01-15T16:45:00+09:00","作成日時":"2025-01-13T09:30:00+09:00","更新日時":"2025-01-15T16:45:00+09:00","作成者":"佐藤花子","更新者":"佐藤花子"},{"影響範囲分析ID":"rec-001-20250115-sqli-prod-db","脆弱性ID":"rec-vuln-20250110-sqli-001","脆弱性スキャン結果ID":"rec-scan-20250108-prod-db-comprehensive","脆弱性対応チケットID":"rec-ticket-20250110-sqli-prod-db-critical","影響を受けるユーザー数":2850,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"本番DBサーバーの検索機能に存在するSQLインジェクション脆弱性。攻撃者が不正なSQL文を挿入することで、顧客個人情報（氏名、住所、電話番号、メールアドレス）、取引履歴、支払い情報など機密情報への不正アクセスが可能。また、データベースの改ざんや削除も想定される。影響範囲は本番環境全体に及び、営業、会計、カスタマーサポートシステムを含む12システムが連携している。直接的には2,850名の顧客情報が危険にさらされている。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15 16:45:00","作成日時":"2025-01-10 09:30:00","更新日時":"2025-01-15 16:45:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250115-0847","脆弱性ID":"rec-vuln-2024-8832","脆弱性スキャン結果ID":"rec-scan-20250110-1523","脆弱性対応チケットID":"rec-ticket-2025-04521","影響を受けるユーザー数":2847,"影響を受けるシステム数":1243,"影響度レベル":"Critical","影響範囲説明":"クライアント端末に配布されたマルウェア（Trojan.GenericKD）により、営業部門、企画部門、技術部門の全ユーザーが感染。感染端末から社内ネットワークを経由して、ファイルサーバー、メールサーバー、営業管理システムへの横展開が確認された。特に営業管理システムの顧客データベースへのアクセス権限が奪取された可能性が高く、顧客情報漏洩リスクが極めて高い。スキャン結果より、感染端末からのC2通信が継続中であることが判明。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15 14:32:00","作成日時":"2025-01-10 09:15:00","更新日時":"2025-01-15 14:32:00","作成者":"佐藤花子","更新者":"山田次郎"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-0847","脆弱性スキャン結果ID":"rec-scan-2024-1203","脆弱性対応チケットID":"rec-ticket-SEC-2024-0156","影響を受けるユーザー数":287,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"営業部門と企画部門で運用されている基幹システム（LEGACY-ERP v3.2）において、クライアント・サーバー間通信の暗号化が未実装であることが判明。顧客情報、契約データ、売上予測情報など機密性の高いデータが平文で送受信されている状態。ネットワーク監視ツールによる傍受が容易であり、競争上重要な情報の流出リスクが極めて高い。営業所内ネットワークおよびVPN経由でのアクセスにおいても同様の脆弱性が存在。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2024-12-15 14:32:00","作成日時":"2024-12-10 09:15:00","更新日時":"2024-12-15 14:32:00","作成者":"山田花子","更新者":"山田花子"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-0847","脆弱性スキャン結果ID":"rec-scan-2024-1203","脆弱性対応チケットID":"rec-ticket-sec-5421","影響を受けるユーザー数":2847,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"AWS S3バケットの公開設定ミスにより、顧客データベースバックアップファイル、請求書PDF、従業員個人情報を含む約850GBのファイルが外部からアクセス可能な状態で公開されていました。当該バケットには2024年1月から10月までの営業データ、契約書、内部監査レポートが保存されており、インターネット上から誰でもアクセス可能でした。影響を受けるユーザーは全営業部門、人事部門、経営管理部門の従業員および取引先企業の担当者です。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2024-12-15 18:45:00","作成日時":"2024-12-13 09:30:00","更新日時":"2024-12-15 18:45:00","作成者":"佐藤花子","更新者":"山田太郎"},{"影響範囲分析ID":"rec-001-eia-20250115-vpn-gw","脆弱性ID":"rec-001-vuln-20250110-cve-2025-1234","脆弱性スキャン結果ID":"rec-001-scan-20250108-vpn-gateway","脆弱性対応チケットID":"rec-001-ticket-20250110-vpn-remote-access","影響を受けるユーザー数":487,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"VPNゲートウェイの認証バイパス脆弱性により、全国の遠隔作業者487名が不正アクセスの危険にさらされている。特に営業部門と企画部門の在宅勤務者が主な影響対象。東京、大阪、福岡の3拠点のVPNサーバーおよび関連する12個のネットワークセグメントが該当。段階的な影響として、第1段階は認証情報の盗聴リスク、第2段階は社内システムへの不正侵入、第3段階は顧客情報を含む重要データの流出が懸念される。","対応優先度":"P1","分析状態":"進行中","分析完了日時":null,"作成日時":"2025-01-10 09:30:00","更新日時":"2025-01-15 14:45:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-001","脆弱性ID":"rec-vuln-2024-0847","脆弱性スキャン結果ID":"rec-scan-20250115-003","脆弱性対応チケットID":"rec-ticket-2025-0156","影響を受けるユーザー数":12400,"影響を受けるシステム数":23,"影響度レベル":"Critical","影響範囲説明":"Apache Log4j 2.x系の遠隔コード実行脆弱性（CVE-2024-50379）により、社内の基幹システム群に連鎖的な影響が発生。認証基盤、顧客管理システム、決済処理システム、データ分析プラットフォーム、ログ監視システムなど23システムが該当ライブラリに依存。攻撃者がログメッセージを通じて任意コードを実行可能な状態。本社・支社・データセンターの全拠点に配置されたサーバー約340台が対象。影響ユーザーは全従業員12,400名及び外部連携先を含む。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-17T14:30:00+09:00","作成日時":"2025-01-15T09:45:00+09:00","更新日時":"2025-01-17T14:30:00+09:00","作成者":"山田花子","更新者":"佐藤次郎"},{"影響範囲分析ID":"rec-20250115-001","脆弱性ID":"rec-20250110-vuln-047","脆弱性スキャン結果ID":"rec-20250108-scan-156","脆弱性対応チケットID":"rec-20250112-ticket-089","影響を受けるユーザー数":2847,"影響を受けるシステム数":12,"影響度レベル":"Critical","影響範囲説明":"APIゲートウェイの認可ロジックに不備が存在し、JWT検証時にスコープチェックが不十分なため、認証済みユーザーが他の顧客データへのアクセストークンを改ざんすることで、本来アクセス権限のない顧客情報（個人識別情報、取引履歴、請求情報）にアクセス可能な状態。特に決済系APIおよび顧客管理APIで深刻。影響対象は当社プラットフォームを利用する中堅企業顧客層（約2,847ユーザー）および関連する12の基幹システム。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-15T14:32:00+09:00","作成日時":"2025-01-12T09:15:00+09:00","更新日時":"2025-01-15T14:32:00+09:00","作成者":"佐藤花子","更新者":"山田太郎"},{"影響範囲分析ID":"rec-001-2025-fw-seg-001","脆弱性ID":"rec-vuln-2025-fw-001","脆弱性スキャン結果ID":"rec-scan-2025-01-15-fw","脆弱性対応チケットID":"rec-ticket-2025-fw-seg-001","影響を受けるユーザー数":1247,"影響を受けるシステム数":34,"影響度レベル":"High","影響範囲説明":"ファイアウォール設定変更により、営業部門ネットワークセグメント（192.168.10.0/24）と財務部門ネットワークセグメント（192.168.20.0/24）間の通信制御が意図せず解放された。その結果、営業部門の1,247名のユーザーが財務システム、給与管理システム、経費精算システムなど機密性の高い34個のシステムに直接アクセス可能となった。特に財務データベースサーバー、給与台帳管理サーバー、監査ログサーバーへの無制限アクセスが確認された。","対応優先度":"P1","分析状態":"完了","分析完了日時":"2025-01-18 16:45:00","作成日時":"2025-01-16 09:30:00","更新日時":"2025-01-18 16:45:00","作成者":"鈴木健一","更新者":"佐藤美咲"}],"システム資産":[{"資産ID":"rec-001","資産名":"基幹DB01","資産タイプ":"サーバー","IPアドレス":"192.168.10.50","ホスト名":"db-core-01.corp.local","OSタイプ":"Linux","OSバージョン":"Red Hat Enterprise Linux 8.9","所有部門":"情報システム部","責任者":"山田太郎","重要度レベル":"Critical","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2020-04-15T00:00:00Z","廃止予定日":null,"備考":"本社データセンター機械室B棟に設置。24時間監視対象。バックアップは毎日23:00に実行。","作成日時":"2024-01-10T09:30:00Z","更新日時":"2025-01-08T14:20:00Z","作成者":"suzuki_hanako","更新者":"tanaka_jiro"},{"資産ID":"rec-001","資産名":"営業部共有ファイルサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.50","ホスト名":"fs-sales-01.company.local","OSタイプ":"Windows","OSバージョン":"Windows Server 2019","所有部門":"営業部","責任者":"佐藤健一","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2022-04-15T09:00:00Z","廃止予定日":null,"備考":"営業部全体で使用する共有ファイルサーバー。顧客情報、提案資料、契約書等の重要データを保管。毎週日曜23:00に自動バックアップ実施。","作成日時":"2024-01-10T08:30:00Z","更新日時":"2025-01-22T14:15:00Z","作成者":"admin-yamada","更新者":"admin-yamada"},{"資産ID":"rec-001","資産名":"ファイアウォール01-境界防御","資産タイプ":"ネットワークデバイス","IPアドレス":"192.168.0.1","ホスト名":"fw-boundary-01.corp.local","OSタイプ":"Palo Alto Networks PAN-OS","OSバージョン":"10.2.3","所有部門":"インフラストラクチャ部","責任者":"山田太郎","重要度レベル":"Critical","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-06-15T09:00:00Z","廃止予定日":null,"備考":"本社ネットワーク境界防御用。冗長構成でfw-boundary-02と連携。リアルタイム監査ログ送信先：SIEM(192.168.100.50:514)。月次セキュリティアップデート実施。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2025-01-22T11:45:00Z","作成者":"admin_user_001","更新者":"admin_user_002"},{"資産ID":"rec-001","資産名":"従業員支給ノートPC-営業部-001","資産タイプ":"ワークステーション","IPアドレス":"192.168.10.45","ホスト名":"laptop-sales-001.corp.local","OSタイプ":"Windows","OSバージョン":"Windows 11 Pro","所有部門":"営業部","責任者":"山田花子","重要度レベル":"Medium","スキャン対象フラグ":true,"監査対象フラグ":false,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00+09:00","廃止予定日":"2027-03-31T23:59:59+09:00","備考":"従業員支給ノートPC。営業活動用。年1回のハードウェア更新予定。","作成日時":"2024-04-15T10:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"admin-tanaka","更新者":"admin-suzuki"},{"資産ID":"rec-001","資産名":"開発環境サーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.45","ホスト名":"dev-linux-01.internal.example.jp","OSタイプ":"Linux","OSバージョン":"Ubuntu 22.04 LTS","所有部門":"システム開発部","責任者":"鈴木健一","重要度レベル":"Medium","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00Z","廃止予定日":null,"備考":"アプリケーション開発用。軽量監査ログ収集設定済み。月1回の脆弱性スキャン対象。","作成日時":"2024-04-10T14:30:00Z","更新日時":"2025-01-20T10:15:00Z","作成者":"admin_tanaka","更新者":"admin_suzuki"},{"資産ID":"rec-001","資産名":"社外クラウド連携APIゲートウェイ01","資産タイプ":"ネットワークデバイス","IPアドレス":"203.0.113.45","ホスト名":"api-gateway-prod-01.company.co.jp","OSタイプ":"Linux","OSバージョン":"Ubuntu 22.04 LTS","所有部門":"デジタル戦略部","責任者":"鈴木健一","重要度レベル":"High","スキャン対象フラグ":true,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2024-03-15T09:00:00Z","廃止予定日":null,"備考":"AWS API Gateway統合、月間トラフィック約500万リクエスト、TLS1.3対応、WAF有効化済み","作成日時":"2024-03-10T14:30:00Z","更新日時":"2025-01-20T10:15:00Z","作成者":"tanaka_taro","更新者":"yamamoto_hanako"},{"資産ID":"rec-001","資産名":"ネットワークプリンタ03","資産タイプ":"ネットワークデバイス","IPアドレス":"192.168.1.53","ホスト名":"printer03.example.co.jp","OSタイプ":"独自OS","OSバージョン":"v3.2","所有部門":"管理部","責任者":"佐藤花子","重要度レベル":"Low","スキャン対象フラグ":false,"監査対象フラグ":false,"稼働状態":"廃止予定","導入日":"2018-06-15T09:00:00Z","廃止予定日":"2025-03-31T23:59:59Z","備考":"老朽化による機能低下。2025年度新型プリンタへの更新予定。現在はバックアップ用途での運用。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2024-11-20T10:15:00Z","作成者":"admin_yamada","更新者":"admin_suzuki"},{"資産ID":"rec-001","資産名":"勤怠管理システムサーバー01","資産タイプ":"サーバー","IPアドレス":"192.168.10.45","ホスト名":"payroll-srv01.keiri.local","OSタイプ":"Linux","OSバージョン":"Rocky Linux 8.9","所有部門":"経理部門","責任者":"佐藤美咲","重要度レベル":"High","スキャン対象フラグ":false,"監査対象フラグ":true,"稼働状態":"稼働中","導入日":"2023-04-15T09:00:00Z","廃止予定日":null,"備考":"給与・勤怠データを管理する基幹システム。本番環境。脆弱性スキャンは月1回の定期メンテナンス時のみ実施。監査ログは90日間保持。","作成日時":"2024-01-10T14:30:00Z","更新日時":"2024-12-20T10:15:00Z","作成者":"admin_yamada","更新者":"admin_yamada"},{"資産ID":"rec-001","資産名":"テスト環境WS-02","資産タイプ":"ワークステーション","IPアドレス":"192.168.10.52","ホスト名":"test-ws-02.internal.local","OSタイプ":"Windows","OSバージョン":"Windows 10 Pro 22H2","所有部門":"品質保証部","責任者":"鈴木花子","重要度レベル":"Low","スキャン対象フラグ":false,"監査対象フラグ":false,"稼働状態":"稼働中","導入日":"2024-04-15T09:00:00Z","廃止予定日":null,"備考":"ソフトウェア動作検証用のテスト環境マシン。本番環境への接続なし。","作成日時":"2024-04-15T10:30:00Z","更新日時":"2024-11-20T14:15:00Z","作成者":"admin-yamada","更新者":"admin-yamada"},{"資産ID":"rec-001","資産名":"SIEM監視アプライアンス01","資産タイプ":"ネットワークデバイス","IPアドレス":"192.168.100.50","ホスト名":"siem-appliance-01.corp.local","OSタイプ":"Linux","OSバージョン":"RHEL 8.9","所有部門":"セキュリティ運用センター","責任者":"佐藤健一","重要度レベル":"Critical","スキャン対象フラグ":false,"監査対象フラグ":false,"稼働状態":"稼働中","導入日":"2023-06-15T00:00:00Z","廃止予定日":null,"備考":"セキュリティ監視用SIEMアプライアンス。ログ容量：50TB。自身のログはスタンドアロン監視システムで別途管理。定期メンテナンス：毎月第2日曜23:00-06:00。","作成日時":"2024-01-10T09:30:00Z","更新日時":"2025-01-08T14:15:00Z","作成者":"admin_user","更新者":"admin_user"}],"権限設定":[{"権限設定ID":"rec-001","ユーザーID":"rec-usr-0001","役割":"システム管理者","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":true,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-01T09:00:00+09:00","更新日時":"2024-04-01T09:00:00+09:00","作成者":"rec-usr-0001","更新者":"rec-usr-0001","備考":"システム初期導入時のシステム管理者初期設定。全セキュリティ機能へのアクセス権限を保有。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-0847","役割":"セキュリティアナリスト","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-u-0001","更新者":"rec-u-0002","備考":"セキュリティアナリスト佐藤花子に対する権限設定。監査ログの定期確認と脆弱性スキャン結果の管理を担当。2025年1月の権限見直しにより、セキュリティレポート生成権限を追加付与。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"監査担当者","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"内部監査部門による定期監査対応のため、監査ログ閲覧とレポート生成権限のみを付与。2024年度監査計画に基づく権限設定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-0847","役割":"インシデント対応チームリーダー","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-15T09:30:00+09:00","作成者":"rec-u-0001","更新者":"rec-u-0001","備考":"セキュリティインシデント対応の統括責任者として、チーム内の権限管理を含む全権限を付与。2024年11月より役職昇格に伴う権限変更。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"セキュリティ担当者","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2025-01-15 09:30:00","更新日時":"2025-01-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"新入社員向け制限付き権限。監査ログ閲覧のみ許可。3ヶ月後に権限拡張予定。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"システム資産管理専任者","監査ログ閲覧権限":false,"脆弱性管理権限":true,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":true,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-10-15 09:30:00","更新日時":"2024-10-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"システム資産の一元管理と脆弱性情報の更新を担当。月次資産棚卸し実施者。"},{"権限設定ID":"rec-001","ユーザーID":"rec-002","役割":"外部監査人","監査ログ閲覧権限":true,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-11-15 09:30:00","更新日時":"2024-11-15 09:30:00","作成者":"rec-003","更新者":"rec-003","備考":"2024年度定期監査対応。権限有効期限：2025年3月31日。山田監査事務所・佐藤次郎への一時的な権限付与。"},{"権限設定ID":"rec-001","ユーザーID":"usr-0847","役割":"セキュリティマネージャー","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":true,"レポート生成権限":true,"システム資産管理権限":true,"権限削除権限":true,"有効フラグ":true,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-10T14:22:00+09:00","作成者":"usr-0001","更新者":"usr-0001","備考":"セキュリティ体制強化に伴い、山田花子にセキュリティマネージャーとして全権限を付与。権限管理責任を委譲し、以降の権限設定変更はこのユーザーが承認。2025年1月の体制見直しで権限内容を確認・更新。"},{"権限設定ID":"rec-20250115-auth-001","ユーザーID":"rec-user-20240401-015","役割":"セキュリティアナリスト","監査ログ閲覧権限":false,"脆弱性管理権限":false,"インシデント対応権限":false,"レポート生成権限":false,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":false,"作成日時":"2024-04-01 09:30:00","更新日時":"2025-01-15 14:45:00","作成者":"rec-user-20240101-001","更新者":"rec-user-20250101-003","備考":"2025年1月15日付で退職者・佐藤花子の権限を全て無効化。セキュリティ体制の維持のため、監査ログ及び全権限を削除。"},{"権限設定ID":"rec-001","ユーザーID":"rec-u-0847","役割":"セキュリティアナリスト","監査ログ閲覧権限":true,"脆弱性管理権限":true,"インシデント対応権限":false,"レポート生成権限":true,"システム資産管理権限":false,"権限削除権限":false,"有効フラグ":true,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-u-0001","更新者":"rec-u-0052","備考":"2025年1月の組織再編に伴い、情報セキュリティ部から脅威インテリジェンスチームへ異動。脆弱性管理権限を新規付与、インシデント対応権限は除外。3ヶ月のトライアル期間後に権限見直し予定。"}],"脆弱性マスタ":[{"脆弱性ID":"rec-001","CVE_ID":"CVE-2021-44228","脆弱性名":"Apache Log4j リモートコード実行脆弱性（Log4Shell）","説明":"Apache Log4j 2.0から2.14.1までのバージョンに存在する脆弱性。JNDI（Java Naming and Directory Interface）を使用したログメッセージの処理時に、攻撃者が細工されたリクエストを送信することで、任意のコードを実行される可能性がある。この脆弱性は広く悪用され、多くのシステムに深刻な影響を与えた。","CVSS_スコア":100,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2021-12-10T00:00:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2021-44228\nhttps://logging.apache.org/log4j/2.x/security-recommendations.html","対応優先度":"P1","ステータス":"Active","作成日時":"2024-01-15T09:30:00Z","更新日時":"2024-12-20T14:45:00Z","作成者":"rec-user-0001"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-38063","脆弱性名":"Windows SMB認証回避の脆弱性","説明":"Windows SMBプロトコルにおいて、Kerberos認証処理の不適切な検証により、攻撃者が正当な認証情報なしにネットワークリソースへアクセス可能になる脆弱性。社内ドメインコントローラーを経由したファイルサーバーやプリンターへの不正アクセスが可能となり、機密情報の窃取やランサムウェアの拡散に悪用される可能性がある。","CVSS_スコア":89,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-09-10T00:00:00Z","参考URL":"https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-38063","対応優先度":"P1","ステータス":"Active","作成日時":"2024-09-11T09:30:00Z","更新日時":"2024-12-15T14:45:00Z","作成者":"rec-user-0847"},{"脆弱性ID":"rec-001-vuln-20250115","CVE_ID":"CVE-2024-50258","脆弱性名":"OpenSSL暗号化通信におけるバッファオーバーフロー脆弱性","説明":"OpenSSL 3.0.0から3.2.0までのバージョンにおいて、特定の暗号化アルゴリズム処理時にバッファオーバーフローが発生する可能性があります。攻撃者は細工されたTLSハンドシェイクメッセージを送信することで、リモートからコード実行を実現できます。金融機関の決済ゲートウェイやAPI通信において重大な影響が懸念されます。","CVSS_スコア":92,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-11-20T09:30:00Z","参考URL":"https://www.openssl.org/news/secadv/20241120.txt","対応優先度":"P1","ステータス":"Active","作成日時":"2024-11-21T14:45:00Z","更新日時":"2025-01-15T10:20:00Z","作成者":"rec-user-20240601"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-5678","脆弱性名":"Laravel フレームワーク Query Builder SQL インジェクション脆弱性","説明":"Laravel 10.x 以前のバージョンにおいて、Query Builder の whereRaw() メソッドでユーザー入力を直接結合した場合、SQL インジェクション攻撃が可能になる脆弱性。攻撃者は不正な SQL クエリを実行し、データベース内の機密情報を窃取または改ざんできる可能性がある。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-03-15T09:30:00+09:00","参考URL":"https://laravel.com/docs/security-advisories/CVE-2024-5678","対応優先度":"P1","ステータス":"Active","作成日時":"2024-03-16T14:22:00+09:00","更新日時":"2024-12-10T11:45:00+09:00","作成者":"rec-user-0847"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-21626","脆弱性名":"runc権限昇格脆弱性","説明":"Dockerコンテナランタイムのruncにおいて、ファイルディスクリプタの不適切な処理により、コンテナ内の低権限プロセスがホストシステムの権限で任意のコマンドを実行可能となる脆弱性。クラウド環境においてマルチテナント構成の場合、他のコンテナやホストシステムへのアクセスが可能になる恐れがある。","CVSS_スコア":87,"深刻度":"Critical","攻撃ベクトル":"Local","影響範囲":"Changed","公開日":"2024-02-01T09:00:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-21626","対応優先度":"P1","ステータス":"Active","作成日時":"2024-02-02T14:30:00Z","更新日時":"2024-12-15T10:45:00Z","作成者":"rec-user-0847"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-20821","脆弱性名":"Cisco IOS XE認証バイパス脆弱性","説明":"Cisco IOS XEの特定バージョンにおいて、HTTPSインターフェースの認証メカニズムに不具合が存在します。攻撃者は細工されたリクエストを送信することで、管理者認証を回避してネットワーク機器の設定変更が可能になる可能性があります。","CVSS_スコア":92,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-06-15T10:30:00Z","参考URL":"https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20240615-iosxe-auth","対応優先度":"P1","ステータス":"Active","作成日時":"2024-06-16T09:00:00Z","更新日時":"2025-01-20T14:30:00Z","作成者":"rec-user-0042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-50379","脆弱性名":"Apache Commons BeanUtils デシリアライゼーション脆弱性","説明":"Apache Commons BeanUtilsライブラリにおいて、不正なシリアライズされたオブジェクトを処理する際に、任意のコード実行が可能となるデシリアライゼーション脆弱性が存在します。攻撃者は細工されたシリアライズデータを送信することで、対象システムで任意のJavaコードを実行できます。","CVSS_スコア":92,"深刻度":"Critical","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-11-15T08:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-50379","対応優先度":"P1","ステータス":"Active","作成日時":"2024-11-16T10:45:00Z","更新日時":"2025-01-08T14:20:00Z","作成者":"rec-u-0042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-8765","脆弱性名":"WordPress プラグイン「Advanced Custom Fields Pro」のクロスサイトスクリプティング脆弱性","説明":"Advanced Custom Fields Pro バージョン 6.1.5 以前において、プラグイン設定ページの入力値が適切にサニタイズされないため、認証済みユーザーが悪意あるスクリプトを注入でき、他のユーザーのセッション情報を盗聴される可能性がある。","CVSS_スコア":58,"深刻度":"Medium","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-06-15T09:30:00Z","参考URL":"https://www.cvedetails.com/cve/CVE-2024-8765/","対応優先度":"P2","ステータス":"Resolved","作成日時":"2024-06-16T10:45:00Z","更新日時":"2025-01-20T14:22:00Z","作成者":"rec-user-042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-26874","脆弱性名":"Linux カーネル privilege escalation 脆弱性","説明":"Linux カーネルのメモリ管理サブシステムにおいて、不適切なアクセス制御により、ローカルユーザーが権限昇格を実行可能な脆弱性。特に netfilter モジュールの処理ロジックに起因する問題で、カーネルメモリへの不正アクセスが可能になる。","CVSS_スコア":78,"深刻度":"High","攻撃ベクトル":"Local","影響範囲":"Changed","公開日":"2024-03-15T09:00:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-26874\nhttps://www.kernel.org/doc/html/latest/process/security-bugs.html","対応優先度":"P2","ステータス":"Deprecated","作成日時":"2024-03-16T10:30:00Z","更新日時":"2025-01-20T14:45:00Z","作成者":"rec-user-0042"},{"脆弱性ID":"rec-001","CVE_ID":"CVE-2024-8765","脆弱性名":"SSL/TLS証明書検証不備","説明":"外部連携先システムとの通信において、SSL/TLS証明書の有効性検証が不十分であるため、中間者攻撃により通信内容の盗聴・改ざんが可能となる脆弱性。特に自己署名証明書の受け入れやホスト名検証の欠落が原因。","CVSS_スコア":72,"深刻度":"High","攻撃ベクトル":"Network","影響範囲":"Changed","公開日":"2024-06-15T09:30:00Z","参考URL":"https://nvd.nist.gov/vuln/detail/CVE-2024-8765","対応優先度":"P1","ステータス":"Active","作成日時":"2024-11-08T14:22:00Z","更新日時":"2025-01-20T10:15:00Z","作成者":"rec-user-0847"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788230891146";
 window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
@@ -459,7 +704,7 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
     <header class="shell-header">
       <div class="shell-header-left">
         <div class="shell-logo">
-          <div>セキュリティ対応</div>
+          <div>セキュリティインシデント対応</div>
           <div class="shell-logo-sub">公共施設予約</div>
         </div>
         <nav>
