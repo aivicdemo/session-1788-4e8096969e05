@@ -1,5 +1,5 @@
 #!/bin/bash
-# AIVIC Backend Deploy Script — セキュリティインシデント対応・監査ログ分析システム
+# AIVIC Backend Deploy Script — 公共施設オンライン予約・決済サービス
 # 使い方: bash deploy.sh [--guided]
 #
 # 前提条件:
@@ -9,7 +9,7 @@
 
 set -e
 
-STACK_NAME="aivic--------------------------"
+STACK_NAME="aivic-------------------"
 REGION=${AWS_REGION:-ap-northeast-1}
 GUIDED=${1:-""}
 

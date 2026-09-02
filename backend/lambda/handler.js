@@ -1,7 +1,7 @@
 "use strict";
 /**
- * AIVIC Backend Lambda Handler — セキュリティインシデント対応・監査ログ分析システム
- * DynamoDB CRUD API (テーブル数: 7)
+ * AIVIC Backend Lambda Handler — 公共施設オンライン予約・決済サービス
+ * DynamoDB CRUD API (テーブル数: 9)
  *
  * ルート:
  *   GET    /api/{tableIndex}         → テーブル全件取得 (Scan)
@@ -32,7 +32,9 @@ const TABLE_NAMES = [
   "AIVIC_TABLE_3",
   "AIVIC_TABLE_4",
   "AIVIC_TABLE_5",
-  "AIVIC_TABLE_6"
+  "AIVIC_TABLE_6",
+  "AIVIC_TABLE_7",
+  "AIVIC_TABLE_8"
 ].map((envKey) => process.env[envKey] || "");
 
 const CORS_HEADERS = {

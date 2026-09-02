@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Description: >
-  AIVIC Backend — セキュリティインシデント対応・監査ログ分析システム
+  AIVIC Backend — 公共施設オンライン予約・決済サービス
   DynamoDB + Lambda + API Gateway
 
 Globals:
@@ -35,11 +35,11 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "0"
         - Key: TableName
-          Value: "脆弱性"
+          Value: "施設"
 
   DynamoDBTable1:
     Type: AWS::DynamoDB::Table
@@ -54,11 +54,11 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "1"
         - Key: TableName
-          Value: "脆弱性スキャン結果"
+          Value: "施設利用時間帯"
 
   DynamoDBTable2:
     Type: AWS::DynamoDB::Table
@@ -73,11 +73,11 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "2"
         - Key: TableName
-          Value: "脆弱性対応チケット"
+          Value: "予約"
 
   DynamoDBTable3:
     Type: AWS::DynamoDB::Table
@@ -92,11 +92,11 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "3"
         - Key: TableName
-          Value: "影響範囲分析"
+          Value: "抽選申込"
 
   DynamoDBTable4:
     Type: AWS::DynamoDB::Table
@@ -111,11 +111,11 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "4"
         - Key: TableName
-          Value: "システム資産"
+          Value: "決済"
 
   DynamoDBTable5:
     Type: AWS::DynamoDB::Table
@@ -130,11 +130,11 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "5"
         - Key: TableName
-          Value: "権限設定"
+          Value: "決済履歴"
 
   DynamoDBTable6:
     Type: AWS::DynamoDB::Table
@@ -149,11 +149,49 @@ Resources:
           KeyType: HASH
       Tags:
         - Key: System
-          Value: セキュリティインシデント対応・監査ログ分析システム
+          Value: 公共施設オンライン予約・決済サービス
         - Key: TableIndex
           Value: "6"
         - Key: TableName
-          Value: "脆弱性マスタ"
+          Value: "キャンセル"
+
+  DynamoDBTable7:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-table7"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      Tags:
+        - Key: System
+          Value: 公共施設オンライン予約・決済サービス
+        - Key: TableIndex
+          Value: "7"
+        - Key: TableName
+          Value: "施設カテゴリ"
+
+  DynamoDBTable8:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-table8"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      Tags:
+        - Key: System
+          Value: 公共施設オンライン予約・決済サービス
+        - Key: TableIndex
+          Value: "8"
+        - Key: TableName
+          Value: "利用者認証ログ"
 
   # ── Lambda 関数 ───────────────────────────────────────────────
   AivicApiFunction:
@@ -162,7 +200,7 @@ Resources:
       FunctionName: !Sub "${AWS::StackName}-api"
       CodeUri: lambda/
       Handler: handler.handler
-      Description: "AIVIC CRUD API for セキュリティインシデント対応・監査ログ分析システム"
+      Description: "AIVIC CRUD API for 公共施設オンライン予約・決済サービス"
       Environment:
         Variables:
         AIVIC_TABLE_0: !Ref DynamoDBTable0
@@ -172,6 +210,8 @@ Resources:
         AIVIC_TABLE_4: !Ref DynamoDBTable4
         AIVIC_TABLE_5: !Ref DynamoDBTable5
         AIVIC_TABLE_6: !Ref DynamoDBTable6
+        AIVIC_TABLE_7: !Ref DynamoDBTable7
+        AIVIC_TABLE_8: !Ref DynamoDBTable8
       Policies:
         - Statement:
             - Effect: Allow
@@ -190,6 +230,8 @@ Resources:
             - !GetAtt DynamoDBTable4.Arn
             - !GetAtt DynamoDBTable5.Arn
             - !GetAtt DynamoDBTable6.Arn
+            - !GetAtt DynamoDBTable7.Arn
+            - !GetAtt DynamoDBTable8.Arn
       Events:
         ApiRoot:
           Type: Api
@@ -227,29 +269,37 @@ Outputs:
     Value: !Sub "https://${AivicApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"
 
   Table0Name:
-    Description: "DynamoDB table name for 脆弱性"
+    Description: "DynamoDB table name for 施設"
     Value: !Ref DynamoDBTable0
 
   Table1Name:
-    Description: "DynamoDB table name for 脆弱性スキャン結果"
+    Description: "DynamoDB table name for 施設利用時間帯"
     Value: !Ref DynamoDBTable1
 
   Table2Name:
-    Description: "DynamoDB table name for 脆弱性対応チケット"
+    Description: "DynamoDB table name for 予約"
     Value: !Ref DynamoDBTable2
 
   Table3Name:
-    Description: "DynamoDB table name for 影響範囲分析"
+    Description: "DynamoDB table name for 抽選申込"
     Value: !Ref DynamoDBTable3
 
   Table4Name:
-    Description: "DynamoDB table name for システム資産"
+    Description: "DynamoDB table name for 決済"
     Value: !Ref DynamoDBTable4
 
   Table5Name:
-    Description: "DynamoDB table name for 権限設定"
+    Description: "DynamoDB table name for 決済履歴"
     Value: !Ref DynamoDBTable5
 
   Table6Name:
-    Description: "DynamoDB table name for 脆弱性マスタ"
+    Description: "DynamoDB table name for キャンセル"
     Value: !Ref DynamoDBTable6
+
+  Table7Name:
+    Description: "DynamoDB table name for 施設カテゴリ"
+    Value: !Ref DynamoDBTable7
+
+  Table8Name:
+    Description: "DynamoDB table name for 利用者認証ログ"
+    Value: !Ref DynamoDBTable8
