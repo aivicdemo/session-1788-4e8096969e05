@@ -45,11 +45,11 @@ export const ROLE_PERMISSIONS: Record<Role, Set<string>> = {
     'payments:update',
     'payments:delete',
     'payments:bulk',
-    'paymenthistories:read',
-    'paymenthistories:create',
-    'paymenthistories:update',
-    'paymenthistories:delete',
-    'paymenthistories:bulk',
+    'paymenthistory:read',
+    'paymenthistory:create',
+    'paymenthistory:update',
+    'paymenthistory:delete',
+    'paymenthistory:bulk',
     'cancellations:read',
     'cancellations:create',
     'cancellations:update',
@@ -93,9 +93,9 @@ export const ROLE_PERMISSIONS: Record<Role, Set<string>> = {
     'payments:create',
     'payments:update',
     'payments:bulk',
-    'paymenthistories:read',
-    'paymenthistories:create',
-    'paymenthistories:bulk',
+    'paymenthistory:read',
+    'paymenthistory:create',
+    'paymenthistory:bulk',
     'cancellations:read',
     'cancellations:create',
     'cancellations:update',
@@ -116,7 +116,7 @@ export const ROLE_PERMISSIONS: Record<Role, Set<string>> = {
     'reservations:read',
     'lotteries:read',
     'payments:read',
-    'paymenthistories:read',
+    'paymenthistory:read',
     'cancellations:read',
     'categories:read',
     'authlogs:read',
@@ -124,23 +124,17 @@ export const ROLE_PERMISSIONS: Record<Role, Set<string>> = {
 };
 
 export function extractAuthContext(event: APIGatewayProxyEvent): AuthContext {
-  const authHeader = event.headers.Authorization || event.headers.authorization || '';
-  const token = authHeader.replace('Bearer ', '');
-  
-  try {
-    const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-    return {
-      userId: decoded.sub || decoded.userId || 'unknown',
-      role: (decoded.role || 'viewer') as Role,
-      email: decoded.email || 'unknown@example.com',
-    };
-  } catch {
-    return {
-      userId: 'unknown',
-      role: 'viewer',
-      email: 'unknown@example.com',
-    };
-  }
+  const authHeader = event.headers['Authorization'] || '';
+  const match = authHeader.match(/Bearer\s+(.+)/);
+  const token = match ? match[1] : '';
+
+  const decoded = JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64').toString('utf-8'));
+
+  return {
+    userId: decoded.sub || '',
+    role: (decoded.role || 'viewer') as Role,
+    email: decoded.email || '',
+  };
 }
 
 export function hasPermission(auth: AuthContext, permission: string): boolean {
