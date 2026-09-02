@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * DynamoDB Seeder — 公共施設オンライン予約・決済サービス
+ * DynamoDB Seeder — セキュリティインシデント対応・監査ログ分析システム
  * 使い方: node seed/seed.js [--table テーブル名]
  *
  * 前提条件:
@@ -18,15 +18,13 @@ const client = new DynamoDBClient({ region });
 
 // テーブルマッピング（DynamoDBの実際のテーブル名に合わせて変更してください）
 const TABLE_MAP = {
-  "施設",
-  "施設利用時間帯",
-  "予約",
-  "抽選申込",
-  "決済",
-  "決済履歴",
-  "キャンセル",
-  "施設カテゴリ",
-  "利用者認証ログ"
+  "脆弱性",
+  "脆弱性スキャン結果",
+  "脆弱性対応チケット",
+  "影響範囲分析",
+  "システム資産",
+  "権限設定",
+  "脆弱性マスタ"
 };
 
 async function seedTable(tableName, records) {
