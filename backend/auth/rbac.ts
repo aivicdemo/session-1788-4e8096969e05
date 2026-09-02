@@ -62,19 +62,14 @@ export function extractRBACContext(event: APIGatewayProxyEvent): RBACContext {
     throw new Error('Invalid token format');
   }
 
-  if (!decoded.userId || !decoded.role) {
+  if (!decoded.userId || !decoded.role || !rolePermissions[decoded.role]) {
     throw new Error('Invalid token payload');
   }
 
-  if (!['admin', 'operator', 'viewer'].includes(decoded.role)) {
-    throw new Error('Invalid role');
-  }
-
-  const role = decoded.role as Role;
   return {
     userId: decoded.userId,
-    role,
-    permissions: rolePermissions[role],
+    role: decoded.role,
+    permissions: rolePermissions[decoded.role],
   };
 }
 
