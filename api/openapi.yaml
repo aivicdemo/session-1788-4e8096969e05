@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: セキュリティインシデント対応・監査ログ分析システム API
+  title: 公共施設オンライン予約・決済サービス API
   version: 0.1.0
 paths:
   /resources:
