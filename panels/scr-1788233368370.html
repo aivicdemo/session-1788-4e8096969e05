@@ -146,7 +146,7 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--primary);
+  background: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,8 +210,15 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 2);
   letter-spacing: 0.3px;
+}
+
+.section-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+  font-weight: 500;
 }
 
 .card {
@@ -228,6 +235,12 @@ body {
   font-weight: 600;
   color: var(--primary);
   margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.card-content {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
 }
 
 .form-group {
@@ -273,16 +286,6 @@ body {
   border-color: var(--primary);
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 2);
-}
-
-.form-row.three {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
 .btn {
   height: var(--control-height);
   padding: 0 calc(var(--space-unit) * 2);
@@ -320,14 +323,32 @@ body {
   font-size: 12px;
 }
 
+.btn-danger {
+  background: var(--error);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #6b3333;
+}
+
+.btn-success {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: #2d6339;
+}
+
 .btn-group {
   display: flex;
   gap: calc(var(--space-unit) * 1);
-  margin-top: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
-.btn-group.right {
-  justify-content: flex-end;
+.btn-group .btn {
+  flex: 1;
 }
 
 .table {
@@ -338,6 +359,7 @@ body {
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
   overflow: hidden;
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
 .table thead {
@@ -360,6 +382,7 @@ body {
 
 .table tbody tr:hover {
   background: rgba(44, 62, 80, 0.02);
+  cursor: pointer;
 }
 
 .badge {
@@ -405,13 +428,6 @@ body {
   margin-bottom: calc(var(--space-unit) * 3);
 }
 
-.grid-4 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
 .stat-box {
   background: #ffffff;
   border: var(--border-width) solid var(--border);
@@ -433,142 +449,252 @@ body {
   color: var(--primary);
 }
 
-.stat-unit {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: calc(var(--space-unit) * 0.5);
-}
-
-.diff-box {
-  background: #ffffff;
+.collapsible-section {
+  background: var(--bg-card);
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
   margin-bottom: calc(var(--space-unit) * 2);
+  overflow: hidden;
 }
 
-.diff-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-}
-
-.diff-row:last-child {
-  margin-bottom: 0;
-}
-
-.diff-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: calc(var(--space-unit) * 0.5);
-}
-
-.diff-before {
-  padding: calc(var(--space-unit) * 1);
-  background: rgba(166, 124, 82, 0.08);
-  border-left: 3px solid var(--warning);
-  border-radius: var(--radius-control);
-  font-size: 12px;
-  color: var(--text);
-}
-
-.diff-after {
-  padding: calc(var(--space-unit) * 1);
-  background: rgba(61, 126, 74, 0.08);
-  border-left: 3px solid var(--success);
-  border-radius: var(--radius-control);
-  font-size: 12px;
-  color: var(--text);
-}
-
-.alert-box {
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 2);
+  background: var(--bg-card);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--motion-duration) ease;
 }
 
-.alert-title {
-  font-size: 12px;
+.collapsible-header:hover {
+  background: #ddd9d0;
+}
+
+.collapsible-title {
+  font-size: 13px;
   font-weight: 600;
   color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1);
 }
 
-.alert-content {
+.collapsible-toggle {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
-  color: var(--text);
-  line-height: 1.6;
+  color: var(--text-muted);
+  transition: transform var(--motion-duration) ease;
 }
 
-.progress-bar {
-  width: 100%;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
+.collapsible-section.open .collapsible-toggle {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  max-height: 0;
   overflow: hidden;
-  margin: calc(var(--space-unit) * 1) 0;
+  transition: max-height var(--motion-duration) ease;
 }
 
-.progress-fill {
-  height: 100%;
-  background: var(--primary);
-  transition: width var(--motion-duration) ease;
+.collapsible-section.open .collapsible-content {
+  max-height: 2000px;
+}
+
+.collapsible-body {
+  padding: calc(var(--space-unit) * 2);
+  border-top: var(--border-width) solid var(--border);
 }
 
 .split-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 60% 40%;
   gap: calc(var(--space-unit) * 3);
 }
 
 .split-left {
-  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 2);
 }
 
 .split-right {
-  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: calc(var(--space-unit) * 1.5);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.alert {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  border-radius: var(--radius-card);
+  font-size: 12px;
+  margin-bottom: calc(var(--space-unit) * 2);
+  border-left: 3px solid;
+}
+
+.alert-success {
+  background: rgba(61, 126, 74, 0.1);
+  border-left-color: var(--success);
+  color: var(--success);
+}
+
+.alert-warning {
+  background: rgba(166, 124, 82, 0.1);
+  border-left-color: var(--warning);
+  color: var(--warning);
+}
+
+.alert-error {
+  background: rgba(139, 69, 69, 0.1);
+  border-left-color: var(--error);
+  color: var(--error);
+}
+
+.alert-info {
+  background: rgba(74, 111, 165, 0.1);
+  border-left-color: var(--info);
+  color: var(--info);
+}
+
+.comparison-table {
+  width: 100%;
+  font-size: 12px;
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.comparison-table tr {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.comparison-table td {
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+}
+
+.comparison-table td:first-child {
+  font-weight: 600;
+  color: var(--primary);
+  width: 30%;
+  background: rgba(44, 62, 80, 0.02);
+}
+
+.comparison-before {
+  background: rgba(139, 69, 69, 0.05);
+}
+
+.comparison-after {
+  background: rgba(61, 126, 74, 0.05);
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: calc(var(--space-unit) * 2);
+  border-bottom: var(--border-width) solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.modal-body {
+  padding: calc(var(--space-unit) * 2);
+}
+
+.modal-footer {
+  padding: calc(var(--space-unit) * 2);
+  border-top: var(--border-width) solid var(--border);
+  display: flex;
+  gap: calc(var(--space-unit) * 1);
+  justify-content: flex-end;
+}
+
+.modal-footer .btn {
+  margin: 0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: calc(var(--space-unit) * 1) 0;
+  font-size: 12px;
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.info-value {
+  color: var(--text);
+  font-weight: 500;
 }
 
 @media (max-width: 1200px) {
-  .grid-4,
-  .grid-3 {
-    grid-template-columns: 1fr 1fr;
-  }
   .split-layout {
     grid-template-columns: 1fr;
-  }
-  .split-left,
-  .split-right {
-    grid-column: 1;
   }
 }
 
 @media (max-width: 768px) {
   .grid-2,
-  .grid-3,
-  .grid-4 {
+  .grid-3 {
     grid-template-columns: 1fr;
   }
-  .form-row,
-  .form-row.three {
-    grid-template-columns: 1fr;
-  }
+
   .shell-nav-top {
     flex-direction: column;
     gap: 0;
   }
+
   .shell-nav-link {
     padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-    border-bottom: none;
-    border-left: 3px solid transparent;
-  }
-  .shell-nav-link.aivic-active {
-    border-left-color: #ffffff;
-    border-bottom-color: transparent;
+    font-size: 12px;
   }
 }
   </style>
@@ -579,7 +705,7 @@ window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "料金・返金ルール管理・検証システム";
 window.AIVIC_TABLES = [{"tableName":"ログインユーザー","purpose":"料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ログイン用メールアドレス、システム内で一意"},{"name":"パスワードハッシュ","type":"varchar(100)","required":true,"description":"ハッシュ化されたパスワード"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ユーザーの表示名"},{"name":"ロール","type":"varchar(100)","required":true,"description":"ユーザーの権限レベル（管理者、担当者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効、無効、一時停止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"最後にログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーアカウント作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザー情報最終更新日時"},{"name":"作成者","type":"varchar(100)","required":false,"description":"ユーザーアカウント作成者のユーザーID"}]}];
-window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/1Pq","ユーザー名":"山田太郎","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00","作成日時":"2024-04-01T10:00:00","更新日時":"2025-01-15T09:30:00","作成者":"system"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:22:18","更新日時":"2025-01-10 16:45:32","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"satoh.yuki@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","ユーザー名":"佐藤由紀","ロール":"営業料金確認権限","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-10T14:20:00+09:00","更新日時":"2025-01-10T16:45:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"経理部門_返金承認権限","ステータス":"有効","最終ログイン日時":"2025-01-15T09:32:45+09:00","作成日時":"2024-04-10T14:20:00+09:00","更新日時":"2025-01-10T16:45:30+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamamoto.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890","ユーザー名":"山本花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-11-15 14:32:00","作成日時":"2023-04-10 09:15:00","更新日時":"2024-12-01 10:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"tanaka.taro@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"田中太郎","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2024-11-15 17:45:32","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:30:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.yamada@external-audit.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/KFm","ユーザー名":"山田監査人","ロール":"監査人","ステータス":"有効","最終ログイン日時":"2025-01-15T10:30:00+09:00","作成日時":"2024-12-01T09:00:00+09:00","更新日時":"2025-01-15T10:30:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-20T14:22:15+09:00","更新日時":"2025-01-10T16:45:30+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$kR9vE8mL2pQ4xJ6nF3sT5eW9oI1uY2vX7cB4dA5eF6gH7iJ8kL9m","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-03-20 14:15:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"}]};
+window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"山田太郎","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-01T08:00:00+09:00","更新日時":"2025-01-15T09:30:00+09:00","作成者":"system"},{"ユーザーID":"rec-001","メールアドレス":"tanaka.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOP","ユーザー名":"田中花子","ロール":"料金ルール管理担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:30","更新日時":"2025-01-10 16:45:20","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"refund.tanaka@company.jp","パスワードハッシュ":"$2b$12$K8vN9mL4pQ2xR5sT7uV8wOzY1aB3cD4eF5gH6iJ7kL8mN9oP0qR1s","ユーザー名":"田中花子","ロール":"返金処理担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"sales-billing@example.co.jp","パスワードハッシュ":"$2b$12$8kL9mN2pQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh","ユーザー名":"営業部請求確認用","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-04-01 09:00:00","更新日時":"2025-01-10 10:15:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001-kaikei-kessan-2024","メールアドレス":"kessan-kensho@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ","ユーザー名":"決算検証用システム","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-03-01 14:00:00","更新日時":"2024-12-20 16:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"shinjin.yamada@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","ユーザー名":"山田太郎（研修）","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2025-01-06 14:20:00","更新日時":"2025-01-15 09:30:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$K8vN3pQmL9xR2jF5wE1dZuM4oP6sT8vX9yA0bC1dE2fG3hI4jK5lM","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-08-15 09:30:00","作成日時":"2022-04-01 10:00:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"山田花子","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2025-01-15 17:30:45","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:22:18","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.tanaka@external-auditor.co.jp","パスワードハッシュ":"$2b$12$8kJ9mL2pQr5vN3xZ7hF4e.uY6tW9sA2bC5dE8fG1hI4jK7lM0nO9p","ユーザー名":"田中監査役","ロール":"監査担当者","ステータス":"一時停止予定","最終ログイン日時":"2025-01-15T14:32:00+09:00","作成日時":"2024-12-10T09:15:00+09:00","更新日時":"2025-01-15T14:32:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"support-vendor@techsupport.co.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/R1m","ユーザー名":"システム保守部 技術サポート","ロール":"技術サポート","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-04-10 09:00:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788233368370";
 window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
@@ -600,7 +726,7 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
               <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">ルール管理</a>
             </li>
             <li class="shell-nav-item">
-              <a class="shell-nav-link" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">計算異常検出</a>
+              <a class="shell-nav-link" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">異常検出・分析</a>
             </li>
           </ul>
         </nav>
@@ -924,6 +1050,55 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
       </main>
     </div>
   </div>
+
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">確認</div>
+      <div class="modal-body">
+        <p id="confirmMessage" style="font-size: 13px; color: var(--text); margin-bottom: calc(var(--space-unit) * 2);"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closeConfirmModal()">キャンセル</button>
+        <button class="btn btn-primary btn-sm" onclick="confirmAction()">実行</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let pendingAction = null;
+
+    function showConfirmModal(message, action) {
+      document.getElementById('confirmMessage').textContent = message;
+      pendingAction = action;
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('active');
+      pendingAction = null;
+    }
+
+    function confirmAction() {
+      if (pendingAction && typeof pendingAction === 'function') {
+        pendingAction();
+      }
+      closeConfirmModal();
+    }
+
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+      header.addEventListener('click', function() {
+        const section = this.closest('.collapsible-section');
+        section.classList.toggle('open');
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.collapsible-section').forEach(section => {
+        section.classList.add('open');
+      });
+    });
+  </script>
+
   
 <script>
 (function() {
