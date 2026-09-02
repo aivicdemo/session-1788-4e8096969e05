@@ -3423,748 +3423,6 @@
     ]
   },
   {
-    "systemId": "itg-1",
-    "systemName": "セキュリティインシデント対応・監査ログ分析システム",
-    "screens": [
-      {
-        "id": "scr-1788230867652",
-        "name": "監査ログ・脆弱性分析ダッシュボード",
-        "purpose": "セキュリティインシデント対応と脆弱性管理を一元化し、監査ログの検索・分析、脆弱性スキャン結果の自動集計、影響範囲分析、対応状況の追跡、レポート生成を実現するダッシュボード",
-        "items": [
-          "監査ログ検索フォーム",
-          "監査ログフィルタリング条件パネル",
-          "監査ログ一覧テーブル",
-          "監査ログ異常検知アラート表示",
-          "脆弱性スキャン結果サマリーカード",
-          "脆弱性スキャン結果詳細テーブル",
-          "脆弱性発見時の自動集計結果表示",
-          "影響範囲分析グラフ・マップ表示",
-          "影響を受けるシステム資産一覧",
-          "脆弱性対応チケット一覧テーブル",
-          "チケット優先度・ステータスフィルタ",
-          "対応状況履歴タイムライン表示"
-        ]
-      },
-      {
-        "id": "scr-1788230891146",
-        "name": "脆弱性対応管理画面",
-        "purpose": "脆弱性対応チケットの作成・編集、対応状況の追跡・更新、対応履歴の記録、影響範囲分析の表示、関連監査ログの参照を統合し、脆弱性対応状況の一元管理とレポート生成を実現する",
-        "items": [
-          "脆弱性対応チケット一覧",
-          "チケット作成ボタン",
-          "チケット編集フォーム",
-          "対応状況ドロップダウン",
-          "対応状況更新ボタン",
-          "対応状況履歴タイムライン",
-          "影響範囲分析パネル",
-          "影響を受けるシステム資産リスト",
-          "関連監査ログビューア",
-          "監査ログフィルタ",
-          "チケット詳細表示パネル",
-          "対応担当者割り当てフィールド"
-        ]
-      }
-    ],
-    "tableDefinitions": [
-      {
-        "tableName": "脆弱性",
-        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性の情報を一元管理し、リスク評価、対応状況の追跡、監査ログとの関連付けを行うためのマスタテーブル",
-        "columns": [
-          {
-            "name": "脆弱性ID",
-            "type": "uuid",
-            "required": true,
-            "description": "脆弱性を一意に識別するプライマリキー"
-          },
-          {
-            "name": "脆弱性名",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "脆弱性の名称またはタイトル"
-          },
-          {
-            "name": "説明",
-            "type": "text",
-            "required": false,
-            "description": "脆弱性の詳細な説明と技術的背景"
-          },
-          {
-            "name": "CVE識別子",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "CVE番号などの外部脆弱性識別子"
-          },
-          {
-            "name": "重要度レベル",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "脆弱性の重要度（Critical/High/Medium/Low等）"
-          },
-          {
-            "name": "CVSS スコア",
-            "type": "integer",
-            "required": false,
-            "description": "CVSS脆弱性スコア（0-100）"
-          },
-          {
-            "name": "影響を受けるシステム",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "脆弱性が存在するシステムまたはコンポーネント名"
-          },
-          {
-            "name": "検出日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "脆弱性が検出された日時"
-          },
-          {
-            "name": "対応状況",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "対応状況（未対応/対応中/対応完了/受け入れ等）"
-          },
-          {
-            "name": "対応期限",
-            "type": "timestamp",
-            "required": false,
-            "description": "脆弱性への対応期限"
-          },
-          {
-            "name": "対応内容",
-            "type": "text",
-            "required": false,
-            "description": "実施した対応内容の詳細"
-          },
-          {
-            "name": "対応完了日時",
-            "type": "timestamp",
-            "required": false,
-            "description": "脆弱性対応が完了した日時"
-          },
-          {
-            "name": "担当者",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "脆弱性対応の担当者"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "レコード作成日時"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "レコード最終更新日時"
-          },
-          {
-            "name": "作成者",
-            "type": "uuid",
-            "required": true,
-            "description": "レコード作成者のユーザーID"
-          },
-          {
-            "name": "更新者",
-            "type": "uuid",
-            "required": true,
-            "description": "レコード最終更新者のユーザーID"
-          }
-        ]
-      },
-      {
-        "tableName": "脆弱性スキャン結果",
-        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、スキャン実行ごとの脆弱性検出結果を記録し、脆弱性の追跡、リスク評価、対応状況の管理を支援する。",
-        "columns": [
-          {
-            "name": "スキャン結果ID",
-            "type": "uuid",
-            "required": true,
-            "description": "脆弱性スキャン結果の一意識別子"
-          },
-          {
-            "name": "脆弱性ID",
-            "type": "uuid",
-            "required": true,
-            "description": "検出された脆弱性マスタへの外部キー参照"
-          },
-          {
-            "name": "スキャン実行日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "脆弱性スキャンが実行された日時"
-          },
-          {
-            "name": "対象リソース",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "スキャン対象となったシステム、ホスト、またはアプリケーション名"
-          },
-          {
-            "name": "重要度レベル",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "検出された脆弱性の重要度（Critical/High/Medium/Low等）"
-          },
-          {
-            "name": "検出状態",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "脆弱性の現在の状態（検出/確認/対応中/解決/誤検知等）"
-          },
-          {
-            "name": "詳細情報",
-            "type": "text",
-            "required": false,
-            "description": "脆弱性の詳細な説明、影響範囲、技術的詳細"
-          },
-          {
-            "name": "推奨対応",
-            "type": "text",
-            "required": false,
-            "description": "脆弱性に対する推奨される対応方法やパッチ情報"
-          },
-          {
-            "name": "対応期限",
-            "type": "timestamp",
-            "required": false,
-            "description": "脆弱性の対応が必要な期限日時"
-          },
-          {
-            "name": "対応担当者ID",
-            "type": "uuid",
-            "required": false,
-            "description": "ユーザーテーブルへの外部キー参照、対応を担当するユーザー"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "スキャン結果レコードが作成された日時"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "スキャン結果レコードが最後に更新された日時"
-          },
-          {
-            "name": "作成者ID",
-            "type": "uuid",
-            "required": true,
-            "description": "ユーザーテーブルへの外部キー参照、スキャン結果を作成したユーザー"
-          }
-        ]
-      },
-      {
-        "tableName": "脆弱性対応チケット",
-        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性に対する対応状況を追跡・管理し、対応履歴と責任者を記録するためのチケット管理テーブル",
-        "columns": [
-          {
-            "name": "チケットID",
-            "type": "uuid",
-            "required": true,
-            "description": "脆弱性対応チケットの一意識別子"
-          },
-          {
-            "name": "脆弱性ID",
-            "type": "uuid",
-            "required": true,
-            "description": "関連する脆弱性テーブルへの外部キー"
-          },
-          {
-            "name": "スキャン結果ID",
-            "type": "uuid",
-            "required": false,
-            "description": "脆弱性スキャン結果テーブルへの外部キー"
-          },
-          {
-            "name": "チケットタイトル",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "対応チケットの簡潔なタイトル"
-          },
-          {
-            "name": "説明",
-            "type": "text",
-            "required": false,
-            "description": "脆弱性対応の詳細説明と対応内容"
-          },
-          {
-            "name": "ステータス",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "チケットの現在のステータス（未対応、対応中、対応完了、却下等）"
-          },
-          {
-            "name": "優先度",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "対応の優先度レベル（高、中、低等）"
-          },
-          {
-            "name": "割当者ID",
-            "type": "uuid",
-            "required": false,
-            "description": "ユーザーテーブルへの外部キー、対応を担当するユーザー"
-          },
-          {
-            "name": "期限日",
-            "type": "timestamp",
-            "required": false,
-            "description": "脆弱性対応の期限日時"
-          },
-          {
-            "name": "対応完了日",
-            "type": "timestamp",
-            "required": false,
-            "description": "脆弱性対応が完了した日時"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "チケット作成日時"
-          },
-          {
-            "name": "作成者ID",
-            "type": "uuid",
-            "required": true,
-            "description": "ユーザーテーブルへの外部キー、チケット作成者"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "チケット最終更新日時"
-          },
-          {
-            "name": "更新者ID",
-            "type": "uuid",
-            "required": true,
-            "description": "ユーザーテーブルへの外部キー、最終更新者"
-          }
-        ]
-      },
-      {
-        "tableName": "影響範囲分析",
-        "purpose": "セキュリティインシデント発生時に脆弱性やインシデントの影響を受けるユーザー、システム、資産を特定・追跡し、対応優先度の判定と被害範囲の可視化を支援する",
-        "columns": [
-          {
-            "name": "影響範囲分析ID",
-            "type": "uuid",
-            "required": true,
-            "description": "影響範囲分析レコードの一意識別子"
-          },
-          {
-            "name": "脆弱性ID",
-            "type": "uuid",
-            "required": true,
-            "description": "関連する脆弱性への外部キー参照"
-          },
-          {
-            "name": "脆弱性スキャン結果ID",
-            "type": "uuid",
-            "required": false,
-            "description": "関連するスキャン結果への外部キー参照"
-          },
-          {
-            "name": "脆弱性対応チケットID",
-            "type": "uuid",
-            "required": false,
-            "description": "関連する対応チケットへの外部キー参照"
-          },
-          {
-            "name": "影響を受けるユーザー数",
-            "type": "integer",
-            "required": true,
-            "description": "この脆弱性により影響を受けるユーザーの総数"
-          },
-          {
-            "name": "影響を受けるシステム数",
-            "type": "integer",
-            "required": true,
-            "description": "この脆弱性により影響を受けるシステムの総数"
-          },
-          {
-            "name": "影響度レベル",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "影響範囲の深刻度レベル（例：Critical、High、Medium、Low）"
-          },
-          {
-            "name": "影響範囲説明",
-            "type": "text",
-            "required": false,
-            "description": "影響範囲の詳細説明と分析結果"
-          },
-          {
-            "name": "対応優先度",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "影響範囲に基づく対応優先度（例：P1、P2、P3、P4）"
-          },
-          {
-            "name": "分析状態",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "分析の進行状態（例：未実施、進行中、完了、再分析待ち）"
-          },
-          {
-            "name": "分析完了日時",
-            "type": "timestamp",
-            "required": false,
-            "description": "影響範囲分析が完了した日時"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "レコード作成日時"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "レコード最終更新日時"
-          },
-          {
-            "name": "作成者",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "分析を実施したユーザーまたはシステム"
-          },
-          {
-            "name": "更新者",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "レコードを最後に更新したユーザーまたはシステム"
-          }
-        ]
-      },
-      {
-        "tableName": "システム資産",
-        "purpose": "組織内のIT資産(サーバー、ネットワークデバイス、ソフトウェア等)を一元管理し、脆弱性スキャンや監査ログの対象資産を特定するためのマスタテーブル",
-        "columns": [
-          {
-            "name": "資産ID",
-            "type": "uuid",
-            "required": true,
-            "description": "システム資産の一意識別子"
-          },
-          {
-            "name": "資産名",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "資産の名称(例:WEBサーバー01、ファイアウォール等)"
-          },
-          {
-            "name": "資産タイプ",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "資産の種類(サーバー、ネットワークデバイス、ワークステーション、ソフトウェア等)"
-          },
-          {
-            "name": "IPアドレス",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "資産のIPアドレス(ネットワーク接続資産の場合)"
-          },
-          {
-            "name": "ホスト名",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "資産のホスト名またはFQDN"
-          },
-          {
-            "name": "OSタイプ",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "オペレーティングシステムの種類(Windows、Linux等)"
-          },
-          {
-            "name": "OSバージョン",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "オペレーティングシステムのバージョン"
-          },
-          {
-            "name": "所有部門",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "資産を管理する部門名"
-          },
-          {
-            "name": "責任者",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "資産の管理責任者名"
-          },
-          {
-            "name": "重要度レベル",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "資産の重要度(Critical、High、Medium、Low等)"
-          },
-          {
-            "name": "スキャン対象フラグ",
-            "type": "boolean",
-            "required": true,
-            "description": "脆弱性スキャンの対象とするかどうか"
-          },
-          {
-            "name": "監査対象フラグ",
-            "type": "boolean",
-            "required": true,
-            "description": "監査ログ収集の対象とするかどうか"
-          },
-          {
-            "name": "稼働状態",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "資産の稼働状態(稼働中、停止中、廃止等)"
-          },
-          {
-            "name": "導入日",
-            "type": "timestamp",
-            "required": false,
-            "description": "資産の導入日"
-          },
-          {
-            "name": "廃止予定日",
-            "type": "timestamp",
-            "required": false,
-            "description": "資産の廃止予定日"
-          },
-          {
-            "name": "備考",
-            "type": "text",
-            "required": false,
-            "description": "その他の備考情報"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "レコード作成日時"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "レコード最終更新日時"
-          },
-          {
-            "name": "作成者",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "レコード作成者のユーザーID"
-          },
-          {
-            "name": "更新者",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "レコード最終更新者のユーザーID"
-          }
-        ]
-      },
-      {
-        "tableName": "権限設定",
-        "purpose": "ユーザーの役割に基づいたシステムアクセス権限と操作権限を管理し、セキュリティインシデント対応・監査ログ分析システムへのアクセス制御を実施する",
-        "columns": [
-          {
-            "name": "権限設定ID",
-            "type": "uuid",
-            "required": true,
-            "description": "権限設定の一意識別子"
-          },
-          {
-            "name": "ユーザーID",
-            "type": "uuid",
-            "required": true,
-            "description": "権限が割り当てられるユーザーの識別子"
-          },
-          {
-            "name": "役割",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "ユーザーに割り当てられた役割（管理者、セキュリティアナリスト、監査担当者等）"
-          },
-          {
-            "name": "監査ログ閲覧権限",
-            "type": "boolean",
-            "required": true,
-            "description": "監査ログの閲覧が許可されているかどうか"
-          },
-          {
-            "name": "脆弱性管理権限",
-            "type": "boolean",
-            "required": true,
-            "description": "脆弱性情報の管理・編集が許可されているかどうか"
-          },
-          {
-            "name": "インシデント対応権限",
-            "type": "boolean",
-            "required": true,
-            "description": "セキュリティインシデント対応チケットの作成・編集が許可されているかどうか"
-          },
-          {
-            "name": "レポート生成権限",
-            "type": "boolean",
-            "required": true,
-            "description": "セキュリティレポートの生成が許可されているかどうか"
-          },
-          {
-            "name": "システム資産管理権限",
-            "type": "boolean",
-            "required": true,
-            "description": "システム資産情報の管理が許可されているかどうか"
-          },
-          {
-            "name": "権限削除権限",
-            "type": "boolean",
-            "required": true,
-            "description": "他ユーザーの権限削除が許可されているかどうか"
-          },
-          {
-            "name": "有効フラグ",
-            "type": "boolean",
-            "required": true,
-            "description": "権限設定が有効かどうか"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "権限設定が作成された日時"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "権限設定が最後に更新された日時"
-          },
-          {
-            "name": "作成者",
-            "type": "uuid",
-            "required": true,
-            "description": "権限設定を作成したユーザーの識別子"
-          },
-          {
-            "name": "更新者",
-            "type": "uuid",
-            "required": true,
-            "description": "権限設定を最後に更新したユーザーの識別子"
-          },
-          {
-            "name": "備考",
-            "type": "text",
-            "required": false,
-            "description": "権限設定に関する補足情報"
-          }
-        ]
-      },
-      {
-        "tableName": "脆弱性マスタ",
-        "purpose": "脆弱性の基本情報を一元管理し、スキャン結果や対応チケットで参照される脆弱性の定義情報を保持するマスタテーブル",
-        "columns": [
-          {
-            "name": "脆弱性ID",
-            "type": "uuid",
-            "required": true,
-            "description": "脆弱性を一意に識別するプライマリキー"
-          },
-          {
-            "name": "CVE_ID",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "CVE識別子（例：CVE-2024-1234）"
-          },
-          {
-            "name": "脆弱性名",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "脆弱性の名称"
-          },
-          {
-            "name": "説明",
-            "type": "text",
-            "required": true,
-            "description": "脆弱性の詳細説明"
-          },
-          {
-            "name": "CVSS_スコア",
-            "type": "integer",
-            "required": true,
-            "description": "CVSS v3.1スコア（0-100）"
-          },
-          {
-            "name": "深刻度",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "深刻度レベル（Critical/High/Medium/Low）"
-          },
-          {
-            "name": "攻撃ベクトル",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "攻撃ベクトル（Network/Adjacent/Local/Physical）"
-          },
-          {
-            "name": "影響範囲",
-            "type": "varchar(100)",
-            "required": false,
-            "description": "影響範囲（Unchanged/Changed）"
-          },
-          {
-            "name": "公開日",
-            "type": "timestamp",
-            "required": false,
-            "description": "脆弱性が公開された日時"
-          },
-          {
-            "name": "参考URL",
-            "type": "text",
-            "required": false,
-            "description": "脆弱性に関する参考情報のURL"
-          },
-          {
-            "name": "対応優先度",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "組織内での対応優先度（P1/P2/P3/P4）"
-          },
-          {
-            "name": "ステータス",
-            "type": "varchar(100)",
-            "required": true,
-            "description": "脆弱性の状態（Active/Deprecated/Resolved）"
-          },
-          {
-            "name": "作成日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "マスタレコード作成日時"
-          },
-          {
-            "name": "更新日時",
-            "type": "timestamp",
-            "required": true,
-            "description": "マスタレコード最終更新日時"
-          },
-          {
-            "name": "作成者",
-            "type": "uuid",
-            "required": true,
-            "description": "マスタレコード作成者のユーザーID"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "systemId": "itg-8",
     "systemName": "施設管理者向け予約・料金管理機能",
     "screens": [
@@ -6097,6 +5355,748 @@
             "type": "timestamp",
             "required": true,
             "description": "ログレコードが作成された日時"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-1",
+    "systemName": "セキュリティインシデント対応・監査ログ分析システム",
+    "screens": [
+      {
+        "id": "scr-1788230867652",
+        "name": "監査ログ・脆弱性分析ダッシュボード",
+        "purpose": "セキュリティインシデント対応と脆弱性管理を一元化し、監査ログの検索・分析、脆弱性スキャン結果の自動集計、影響範囲分析、対応状況の追跡、レポート生成を実現するダッシュボード",
+        "items": [
+          "監査ログ検索フォーム",
+          "監査ログフィルタリング条件パネル",
+          "監査ログ一覧テーブル",
+          "監査ログ異常検知アラート表示",
+          "脆弱性スキャン結果サマリーカード",
+          "脆弱性スキャン結果詳細テーブル",
+          "脆弱性発見時の自動集計結果表示",
+          "影響範囲分析グラフ・マップ表示",
+          "影響を受けるシステム資産一覧",
+          "脆弱性対応チケット一覧テーブル",
+          "チケット優先度・ステータスフィルタ",
+          "対応状況履歴タイムライン表示"
+        ]
+      },
+      {
+        "id": "scr-1788230891146",
+        "name": "脆弱性対応管理画面",
+        "purpose": "脆弱性対応チケットの作成・編集、対応状況の追跡・更新、対応履歴の記録、影響範囲分析の表示、関連監査ログの参照を統合し、脆弱性対応状況の一元管理とレポート生成を実現する",
+        "items": [
+          "脆弱性対応チケット一覧",
+          "チケット作成ボタン",
+          "チケット編集フォーム",
+          "対応状況ドロップダウン",
+          "対応状況更新ボタン",
+          "対応状況履歴タイムライン",
+          "影響範囲分析パネル",
+          "影響を受けるシステム資産リスト",
+          "関連監査ログビューア",
+          "監査ログフィルタ",
+          "チケット詳細表示パネル",
+          "対応担当者割り当てフィールド"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "脆弱性",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性の情報を一元管理し、リスク評価、対応状況の追跡、監査ログとの関連付けを行うためのマスタテーブル",
+        "columns": [
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性を一意に識別するプライマリキー"
+          },
+          {
+            "name": "脆弱性名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の名称またはタイトル"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性の詳細な説明と技術的背景"
+          },
+          {
+            "name": "CVE識別子",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "CVE番号などの外部脆弱性識別子"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の重要度（Critical/High/Medium/Low等）"
+          },
+          {
+            "name": "CVSS スコア",
+            "type": "integer",
+            "required": false,
+            "description": "CVSS脆弱性スコア（0-100）"
+          },
+          {
+            "name": "影響を受けるシステム",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "脆弱性が存在するシステムまたはコンポーネント名"
+          },
+          {
+            "name": "検出日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "脆弱性が検出された日時"
+          },
+          {
+            "name": "対応状況",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "対応状況（未対応/対応中/対応完了/受け入れ等）"
+          },
+          {
+            "name": "対応期限",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性への対応期限"
+          },
+          {
+            "name": "対応内容",
+            "type": "text",
+            "required": false,
+            "description": "実施した対応内容の詳細"
+          },
+          {
+            "name": "対応完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性対応が完了した日時"
+          },
+          {
+            "name": "担当者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "脆弱性対応の担当者"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "脆弱性スキャン結果",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、スキャン実行ごとの脆弱性検出結果を記録し、脆弱性の追跡、リスク評価、対応状況の管理を支援する。",
+        "columns": [
+          {
+            "name": "スキャン結果ID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性スキャン結果の一意識別子"
+          },
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "検出された脆弱性マスタへの外部キー参照"
+          },
+          {
+            "name": "スキャン実行日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "脆弱性スキャンが実行された日時"
+          },
+          {
+            "name": "対象リソース",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "スキャン対象となったシステム、ホスト、またはアプリケーション名"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "検出された脆弱性の重要度（Critical/High/Medium/Low等）"
+          },
+          {
+            "name": "検出状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の現在の状態（検出/確認/対応中/解決/誤検知等）"
+          },
+          {
+            "name": "詳細情報",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性の詳細な説明、影響範囲、技術的詳細"
+          },
+          {
+            "name": "推奨対応",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性に対する推奨される対応方法やパッチ情報"
+          },
+          {
+            "name": "対応期限",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性の対応が必要な期限日時"
+          },
+          {
+            "name": "対応担当者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "ユーザーテーブルへの外部キー参照、対応を担当するユーザー"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "スキャン結果レコードが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "スキャン結果レコードが最後に更新された日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテーブルへの外部キー参照、スキャン結果を作成したユーザー"
+          }
+        ]
+      },
+      {
+        "tableName": "脆弱性対応チケット",
+        "purpose": "セキュリティインシデント対応・監査ログ分析システムにおいて、検出された脆弱性に対する対応状況を追跡・管理し、対応履歴と責任者を記録するためのチケット管理テーブル",
+        "columns": [
+          {
+            "name": "チケットID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性対応チケットの一意識別子"
+          },
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する脆弱性テーブルへの外部キー"
+          },
+          {
+            "name": "スキャン結果ID",
+            "type": "uuid",
+            "required": false,
+            "description": "脆弱性スキャン結果テーブルへの外部キー"
+          },
+          {
+            "name": "チケットタイトル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "対応チケットの簡潔なタイトル"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性対応の詳細説明と対応内容"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "チケットの現在のステータス（未対応、対応中、対応完了、却下等）"
+          },
+          {
+            "name": "優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "対応の優先度レベル（高、中、低等）"
+          },
+          {
+            "name": "割当者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "ユーザーテーブルへの外部キー、対応を担当するユーザー"
+          },
+          {
+            "name": "期限日",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性対応の期限日時"
+          },
+          {
+            "name": "対応完了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性対応が完了した日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "チケット作成日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテーブルへの外部キー、チケット作成者"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "チケット最終更新日時"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "ユーザーテーブルへの外部キー、最終更新者"
+          }
+        ]
+      },
+      {
+        "tableName": "影響範囲分析",
+        "purpose": "セキュリティインシデント発生時に脆弱性やインシデントの影響を受けるユーザー、システム、資産を特定・追跡し、対応優先度の判定と被害範囲の可視化を支援する",
+        "columns": [
+          {
+            "name": "影響範囲分析ID",
+            "type": "uuid",
+            "required": true,
+            "description": "影響範囲分析レコードの一意識別子"
+          },
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する脆弱性への外部キー参照"
+          },
+          {
+            "name": "脆弱性スキャン結果ID",
+            "type": "uuid",
+            "required": false,
+            "description": "関連するスキャン結果への外部キー参照"
+          },
+          {
+            "name": "脆弱性対応チケットID",
+            "type": "uuid",
+            "required": false,
+            "description": "関連する対応チケットへの外部キー参照"
+          },
+          {
+            "name": "影響を受けるユーザー数",
+            "type": "integer",
+            "required": true,
+            "description": "この脆弱性により影響を受けるユーザーの総数"
+          },
+          {
+            "name": "影響を受けるシステム数",
+            "type": "integer",
+            "required": true,
+            "description": "この脆弱性により影響を受けるシステムの総数"
+          },
+          {
+            "name": "影響度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "影響範囲の深刻度レベル（例：Critical、High、Medium、Low）"
+          },
+          {
+            "name": "影響範囲説明",
+            "type": "text",
+            "required": false,
+            "description": "影響範囲の詳細説明と分析結果"
+          },
+          {
+            "name": "対応優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "影響範囲に基づく対応優先度（例：P1、P2、P3、P4）"
+          },
+          {
+            "name": "分析状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "分析の進行状態（例：未実施、進行中、完了、再分析待ち）"
+          },
+          {
+            "name": "分析完了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "影響範囲分析が完了した日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "分析を実施したユーザーまたはシステム"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "レコードを最後に更新したユーザーまたはシステム"
+          }
+        ]
+      },
+      {
+        "tableName": "システム資産",
+        "purpose": "組織内のIT資産(サーバー、ネットワークデバイス、ソフトウェア等)を一元管理し、脆弱性スキャンや監査ログの対象資産を特定するためのマスタテーブル",
+        "columns": [
+          {
+            "name": "資産ID",
+            "type": "uuid",
+            "required": true,
+            "description": "システム資産の一意識別子"
+          },
+          {
+            "name": "資産名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の名称(例:WEBサーバー01、ファイアウォール等)"
+          },
+          {
+            "name": "資産タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の種類(サーバー、ネットワークデバイス、ワークステーション、ソフトウェア等)"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "資産のIPアドレス(ネットワーク接続資産の場合)"
+          },
+          {
+            "name": "ホスト名",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "資産のホスト名またはFQDN"
+          },
+          {
+            "name": "OSタイプ",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "オペレーティングシステムの種類(Windows、Linux等)"
+          },
+          {
+            "name": "OSバージョン",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "オペレーティングシステムのバージョン"
+          },
+          {
+            "name": "所有部門",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産を管理する部門名"
+          },
+          {
+            "name": "責任者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "資産の管理責任者名"
+          },
+          {
+            "name": "重要度レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の重要度(Critical、High、Medium、Low等)"
+          },
+          {
+            "name": "スキャン対象フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "脆弱性スキャンの対象とするかどうか"
+          },
+          {
+            "name": "監査対象フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "監査ログ収集の対象とするかどうか"
+          },
+          {
+            "name": "稼働状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "資産の稼働状態(稼働中、停止中、廃止等)"
+          },
+          {
+            "name": "導入日",
+            "type": "timestamp",
+            "required": false,
+            "description": "資産の導入日"
+          },
+          {
+            "name": "廃止予定日",
+            "type": "timestamp",
+            "required": false,
+            "description": "資産の廃止予定日"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "その他の備考情報"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レコード作成者のユーザーID"
+          },
+          {
+            "name": "更新者",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "レコード最終更新者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "権限設定",
+        "purpose": "ユーザーの役割に基づいたシステムアクセス権限と操作権限を管理し、セキュリティインシデント対応・監査ログ分析システムへのアクセス制御を実施する",
+        "columns": [
+          {
+            "name": "権限設定ID",
+            "type": "uuid",
+            "required": true,
+            "description": "権限設定の一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "権限が割り当てられるユーザーの識別子"
+          },
+          {
+            "name": "役割",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ユーザーに割り当てられた役割（管理者、セキュリティアナリスト、監査担当者等）"
+          },
+          {
+            "name": "監査ログ閲覧権限",
+            "type": "boolean",
+            "required": true,
+            "description": "監査ログの閲覧が許可されているかどうか"
+          },
+          {
+            "name": "脆弱性管理権限",
+            "type": "boolean",
+            "required": true,
+            "description": "脆弱性情報の管理・編集が許可されているかどうか"
+          },
+          {
+            "name": "インシデント対応権限",
+            "type": "boolean",
+            "required": true,
+            "description": "セキュリティインシデント対応チケットの作成・編集が許可されているかどうか"
+          },
+          {
+            "name": "レポート生成権限",
+            "type": "boolean",
+            "required": true,
+            "description": "セキュリティレポートの生成が許可されているかどうか"
+          },
+          {
+            "name": "システム資産管理権限",
+            "type": "boolean",
+            "required": true,
+            "description": "システム資産情報の管理が許可されているかどうか"
+          },
+          {
+            "name": "権限削除権限",
+            "type": "boolean",
+            "required": true,
+            "description": "他ユーザーの権限削除が許可されているかどうか"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "権限設定が有効かどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "権限設定が作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "権限設定が最後に更新された日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "権限設定を作成したユーザーの識別子"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": true,
+            "description": "権限設定を最後に更新したユーザーの識別子"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "権限設定に関する補足情報"
+          }
+        ]
+      },
+      {
+        "tableName": "脆弱性マスタ",
+        "purpose": "脆弱性の基本情報を一元管理し、スキャン結果や対応チケットで参照される脆弱性の定義情報を保持するマスタテーブル",
+        "columns": [
+          {
+            "name": "脆弱性ID",
+            "type": "uuid",
+            "required": true,
+            "description": "脆弱性を一意に識別するプライマリキー"
+          },
+          {
+            "name": "CVE_ID",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "CVE識別子（例：CVE-2024-1234）"
+          },
+          {
+            "name": "脆弱性名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": true,
+            "description": "脆弱性の詳細説明"
+          },
+          {
+            "name": "CVSS_スコア",
+            "type": "integer",
+            "required": true,
+            "description": "CVSS v3.1スコア（0-100）"
+          },
+          {
+            "name": "深刻度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "深刻度レベル（Critical/High/Medium/Low）"
+          },
+          {
+            "name": "攻撃ベクトル",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "攻撃ベクトル（Network/Adjacent/Local/Physical）"
+          },
+          {
+            "name": "影響範囲",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "影響範囲（Unchanged/Changed）"
+          },
+          {
+            "name": "公開日",
+            "type": "timestamp",
+            "required": false,
+            "description": "脆弱性が公開された日時"
+          },
+          {
+            "name": "参考URL",
+            "type": "text",
+            "required": false,
+            "description": "脆弱性に関する参考情報のURL"
+          },
+          {
+            "name": "対応優先度",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "組織内での対応優先度（P1/P2/P3/P4）"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "脆弱性の状態（Active/Deprecated/Resolved）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "マスタレコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "マスタレコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "マスタレコード作成者のユーザーID"
           }
         ]
       }

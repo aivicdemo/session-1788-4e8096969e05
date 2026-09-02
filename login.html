@@ -7,117 +7,69 @@
   <style>
     :root {
       /* ========== 色彩体系 ========== */
-      /* 県庁の落ち着いたトーン：深い紺と石色を基調に、公共性と信頼感を表現 */
-      --primary: #1e3a5f;
-      --primary-hover: #152a47;
-      --primary-light: #2d5a8c;
+      /* 県庁の落ち着いたトーン：深い紺と石灰色を基調に、公務的な信頼感と厳格性を表現 */
+      --primary: #2c3e50;
+      --primary-hover: #1a252f;
       
-      /* 背景：薄い石灰色（公文書の紙質感を想起） */
+      /* 背景：薄い石灰色（公文書のような質感）に微かな緑味を加えた落ち着き */
       --bg-main: #f0ede8;
-      --bg-card: #e8e5df;
-      --bg-sidebar: #ebe8e2;
-      --top-bar-bg: #1e3a5f;
-      --top-bar-border: #152a47;
+      --bg-card: #e8e5e0;
+      --bg-sidebar: #ebe8e3;
+      --top-bar-bg: #2c3e50;
+      --top-bar-border: #1a252f;
       
-      /* テキスト */
-      --text: #2a2520;
-      --text-muted: #6b6560;
+      /* 境界線：石灰色系で統一、やや濃いめで公式感を強調 */
+      --border: #c9c5bd;
       
-      /* 境界線：落ち着いた灰色、県庁の厳格さを表現 */
-      --border: #c9c4bc;
+      /* テキスト：深い紺で、落ち着いた読みやすさ */
+      --text: #1a1f26;
+      --text-muted: #6b7280;
+      
+      /* ステータス・アラート色 */
+      --success: #3d7e4a;
+      --warning: #a67c52;
+      --error: #8b4545;
+      --info: #4a6fa5;
       
       /* ========== タイポグラフィ ========== */
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+      --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
       
       /* ========== 寸法・間隔 ========== */
       --space-unit: 8px;
       --control-height: 40px;
-      --border-width: 1px;
       
-      /* ========== 角丸 ========== */
-      /* 県庁の格調を損なわないよう、控えめな角丸 */
+      /* 角丸：公式感を損なわないよう控えめに */
       --radius-card: 4px;
       --radius-control: 3px;
       
-      /* ========== 影 ========== */
-      /* 紙のような薄い影：公文書の積み重ねを暗示 */
-      --shadow-card: 0 2px 6px rgba(30, 58, 95, 0.08), 0 1px 2px rgba(30, 58, 95, 0.04);
+      /* ========== 枠線 ========== */
+      --border-width: 1px;
       
-      /* ========== 質感 ========== */
-      /* 和紙のような微細な織目を表現：公共施設の落ち着きと信頼感 */
+      /* ========== 影・奥行き ========== */
+      --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
+      
+      /* ========== モーション ========== */
+      --motion-duration: 200ms;
+      
+      /* ========== 質感・テクスチャ ========== */
+      /* 公文書の紙質感：微細な織目模様で、デジタルながら公式文書の重厚さを表現 */
       --surface-texture: 
         repeating-linear-gradient(
           90deg,
           transparent,
           transparent 2px,
-          rgba(30, 58, 95, 0.02) 2px,
-          rgba(30, 58, 95, 0.02) 4px
+          rgba(172, 167, 154, 0.03) 2px,
+          rgba(172, 167, 154, 0.03) 4px
         ),
         repeating-linear-gradient(
           0deg,
           transparent,
           transparent 2px,
-          rgba(30, 58, 95, 0.015) 2px,
-          rgba(30, 58, 95, 0.015) 4px
+          rgba(172, 167, 154, 0.02) 2px,
+          rgba(172, 167, 154, 0.02) 4px
         );
       --surface-texture-size: 100% 100%;
       --surface-texture-position: 0 0;
-      
-      /* ========== モーション ========== */
-      /* 行政手続きの厳格さを保ちながら、適度な応答性 */
-      --motion-duration: 200ms;
-      
-      /* ========== セマンティック色 ========== */
-      --success: #2e7d32;
-      --success-light: #e8f5e9;
-      --warning: #f57c00;
-      --warning-light: #fff3e0;
-      --error: #c62828;
-      --error-light: #ffebee;
-      --info: #1565c0;
-      --info-light: #e3f2fd;
-      
-      /* ========== 追加の質感制御 ========== */
-      /* カード・パネルの微妙な立体感 */
-      --card-border-color: rgba(30, 58, 95, 0.06);
-      --divider-color: rgba(30, 58, 95, 0.08);
-      
-      /* フォーカス状態（キーボード操作時の視認性） */
-      --focus-outline: 2px solid #1e3a5f;
-      --focus-outline-offset: 2px;
-      
-      /* ========== 入力フィールド ========== */
-      --input-bg: #ffffff;
-      --input-border: #c9c4bc;
-      --input-border-focus: #1e3a5f;
-      --input-text: #2a2520;
-      --input-placeholder: #9a9490;
-      
-      /* ========== ボタン ========== */
-      --button-primary-bg: #1e3a5f;
-      --button-primary-text: #ffffff;
-      --button-primary-hover: #152a47;
-      --button-secondary-bg: #e8e5df;
-      --button-secondary-text: #2a2520;
-      --button-secondary-hover: #ddd9d1;
-      --button-disabled-bg: #d4cfc7;
-      --button-disabled-text: #9a9490;
-      
-      /* ========== サイドバー ========== */
-      --sidebar-item-hover: rgba(30, 58, 95, 0.08);
-      --sidebar-item-active-bg: rgba(30, 58, 95, 0.12);
-      --sidebar-item-active-border: #1e3a5f;
-      
-      /* ========== テーブル ========== */
-      --table-header-bg: #e8e5df;
-      --table-header-text: #2a2520;
-      --table-row-hover: rgba(30, 58, 95, 0.04);
-      --table-border: #c9c4bc;
-      
-      /* ========== ステータスバッジ ========== */
-      --badge-bg: #e8e5df;
-      --badge-text: #2a2520;
-      --badge-border: #c9c4bc;
     }
 
     * {
@@ -133,61 +85,78 @@
 
     body {
       font-family: var(--font-family);
-      background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%);
+      background: linear-gradient(135deg, var(--bg-main) 0%, #ede9e3 100%);
       background-attachment: fixed;
       color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: var(--space-unit) * 2;
+      padding: var(--space-unit);
     }
 
     .login-container {
       width: 100%;
       max-width: 420px;
-    }
-
-    .login-card {
-      background: var(--input-bg);
-      border: var(--border-width) solid var(--card-border-color);
+      background: var(--bg-card);
+      border: var(--border-width) solid var(--border);
       border-radius: var(--radius-card);
-      box-shadow: var(--shadow-card);
+      box-shadow: var(--shadow-card), 0 4px 12px rgba(28, 31, 38, 0.12);
       padding: calc(var(--space-unit) * 6);
       background-image: var(--surface-texture);
       background-size: var(--surface-texture-size);
       background-position: var(--surface-texture-position);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .login-header {
-      text-align: center;
       margin-bottom: calc(var(--space-unit) * 4);
+      text-align: center;
     }
 
-    .login-header-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto calc(var(--space-unit) * 2);
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius: var(--radius-control);
-      display: flex;
+    .login-logo {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 24px;
-      font-weight: 600;
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: var(--radius-control);
+      margin-bottom: calc(var(--space-unit) * 2);
+      box-shadow: 0 2px 6px rgba(44, 62, 80, 0.2);
     }
 
-    .login-header h1 {
+    .login-logo svg {
+      width: 28px;
+      height: 28px;
+      stroke: #f0ede8;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .login-title {
       font-size: 24px;
       font-weight: 600;
       color: var(--text);
       margin-bottom: calc(var(--space-unit) * 1);
+      letter-spacing: -0.3px;
     }
 
-    .login-header p {
-      font-size: 14px;
+    .login-subtitle {
+      font-size: 13px;
       color: var(--text-muted);
+      font-weight: 400;
       line-height: 1.5;
     }
 
@@ -203,69 +172,67 @@
       gap: calc(var(--space-unit) * 1.5);
     }
 
-    .form-group label {
+    .form-label {
       font-size: 13px;
       font-weight: 500;
       color: var(--text);
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
-    .form-group input {
+    .form-input {
       height: var(--control-height);
-      padding: 0 calc(var(--space-unit) * 2);
-      border: var(--border-width) solid var(--input-border);
+      padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
+      border: var(--border-width) solid var(--border);
       border-radius: var(--radius-control);
-      background: var(--input-bg);
-      color: var(--input-text);
-      font-size: 14px;
+      background: #f8f6f2;
+      color: var(--text);
       font-family: var(--font-family);
-      transition: border-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
-    }
-
-    .form-group input::placeholder {
-      color: var(--input-placeholder);
-    }
-
-    .form-group input:focus {
+      font-size: 14px;
+      transition: all var(--motion-duration) ease;
       outline: none;
-      border-color: var(--input-border-focus);
-      box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.08);
+    }
+
+    .form-input::placeholder {
+      color: #a9a39a;
     }
 
     .login-button {
       height: var(--control-height);
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: var(--button-primary-text);
+      background: var(--primary);
+      color: #f0ede8;
       border: none;
       border-radius: var(--radius-control);
       font-size: 14px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      transition: background var(--motion-duration) ease, box-shadow var(--motion-duration) ease, transform var(--motion-duration) ease;
+      transition: all var(--motion-duration) ease;
       margin-top: calc(var(--space-unit) * 1);
+      box-shadow: 0 2px 6px rgba(44, 62, 80, 0.15);
+      font-family: var(--font-family);
     }
 
     .login-button:hover {
-      background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
-      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.15);
+      background: var(--primary-hover);
+      box-shadow: 0 4px 10px rgba(44, 62, 80, 0.25);
       transform: translateY(-1px);
     }
 
     .login-button:active {
       transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(30, 58, 95, 0.1);
-    }
-
-    .login-button:focus {
-      outline: var(--focus-outline);
-      outline-offset: var(--focus-outline-offset);
+      box-shadow: 0 2px 4px rgba(44, 62, 80, 0.15);
     }
 
     .login-footer {
-      margin-top: calc(var(--space-unit) * 4);
+      margin-top: calc(var(--space-unit) * 5);
       padding-top: calc(var(--space-unit) * 3);
-      border-top: var(--border-width) solid var(--divider-color);
+      border-top: var(--border-width) solid var(--border);
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
@@ -274,87 +241,76 @@
 
     .login-footer strong {
       color: var(--text);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     @media (max-width: 480px) {
-      .login-card {
+      .login-container {
+        max-width: 100%;
         padding: calc(var(--space-unit) * 4);
       }
 
-      .login-header h1 {
+      .login-title {
         font-size: 20px;
       }
 
-      .login-header p {
-        font-size: 13px;
-      }
-
-      .form-group label {
+      .login-subtitle {
         font-size: 12px;
-      }
-
-      .form-group input {
-        font-size: 16px;
-      }
-
-      .login-button {
-        font-size: 13px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .form-group input,
-      .login-button {
-        transition: none;
       }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <div class="login-card">
-      <div class="login-header">
-        <div class="login-header-icon">🏛️</div>
-        <h1 data-testid="login-title">ログイン</h1>
-        <p>公共施設予約システムへようこそ</p>
+    <div class="login-header">
+      <div class="login-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"></path>
+        </svg>
+      </div>
+      <h1 class="login-title" data-testid="login-title">ログイン</h1>
+      <p class="login-subtitle">セキュリティインシデント対応・監査ログ分析システム</p>
+    </div>
+
+    <form class="login-form" data-testid="login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="username">ユーザー名</label>
+        <input
+          class="form-input"
+          type="text"
+          id="username"
+          name="username"
+          data-testid="username"
+          placeholder="ユーザー名を入力"
+          autocomplete="username"
+        >
       </div>
 
-      <form data-testid="login-form" class="login-form" novalidate>
-        <div class="form-group">
-          <label for="username">ユーザー名</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            data-testid="username"
-            placeholder="ユーザー名を入力"
-            autocomplete="username"
-          >
-        </div>
+      <div class="form-group">
+        <label class="form-label" for="password">パスワード</label>
+        <input
+          class="form-input"
+          type="password"
+          id="password"
+          name="password"
+          data-testid="password"
+          placeholder="パスワードを入力"
+          autocomplete="current-password"
+        >
+      </div>
 
-        <div class="form-group">
-          <label for="password">パスワード</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            data-testid="password"
-            placeholder="パスワードを入力"
-            autocomplete="current-password"
-          >
-        </div>
+      <button
+        class="login-button"
+        type="submit"
+        data-testid="login-button"
+      >
+        ログイン
+      </button>
+    </form>
 
-        <button type="submit" data-testid="login-button" class="login-button">
-          ログイン
-        </button>
-
-        <div class="login-footer">
-          <p><strong>サンプル実装について：</strong><br>
-          このログイン画面はサンプル実装です。<br>
-          どのような入力でもログインできます。</p>
-        </div>
-      </form>
+    <div class="login-footer">
+      <strong>※ サンプル実装について</strong><br>
+      このサンプル実装では、どのような入力内容でもログインが成功します。
     </div>
   </div>
 
