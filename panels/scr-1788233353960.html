@@ -3,71 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>料金・返金ルール管理・検証システム</title>
+  <title>料金・返金ルール管理・検証システム | 公共施設予約</title>
   <style>
 :root {
-  --primary: #1e3a5f;
-  --primary-hover: #152847;
-  --primary-light: #2d5a8c;
-  
-  --bg-main: #f0f2f0;
-  --bg-card: #e8ebe8;
-  --bg-sidebar: #e5e9e5;
-  --top-bar-bg: #1e3a5f;
-  
-  --text: #1a1a1a;
-  --text-muted: #5a5a5a;
-  
-  --border: #c5ccc5;
-  --top-bar-border: #0f1f2f;
-  
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  
+  --primary: #2c3e50;
+  --primary-hover: #1a252f;
+  --bg-main: #f0ede8;
+  --bg-card: #e8e5e0;
+  --bg-sidebar: #ebe8e3;
+  --top-bar-bg: #2c3e50;
+  --top-bar-border: #1a252f;
+  --border: #c9c5bd;
+  --text: #1a1f26;
+  --text-muted: #6b7280;
+  --success: #3d7e4a;
+  --warning: #a67c52;
+  --error: #8b4545;
+  --info: #4a6fa5;
+  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
   --space-unit: 8px;
   --control-height: 40px;
-  --radius-card: 6px;
-  --radius-control: 4px;
+  --radius-card: 4px;
+  --radius-control: 3px;
   --border-width: 1px;
-  
-  --shadow-card: 0 2px 8px rgba(30, 58, 95, 0.08);
-  
+  --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
+  --motion-duration: 200ms;
   --surface-texture: 
     repeating-linear-gradient(
       90deg,
       transparent,
       transparent 2px,
-      rgba(30, 58, 95, 0.02) 2px,
-      rgba(30, 58, 95, 0.02) 4px
+      rgba(172, 167, 154, 0.03) 2px,
+      rgba(172, 167, 154, 0.03) 4px
     ),
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      rgba(30, 58, 95, 0.02) 2px,
-      rgba(30, 58, 95, 0.02) 4px
+      rgba(172, 167, 154, 0.02) 2px,
+      rgba(172, 167, 154, 0.02) 4px
     );
-  --surface-texture-size: 4px 4px;
+  --surface-texture-size: 100% 100%;
   --surface-texture-position: 0 0;
-  
-  --motion-duration: 200ms;
-  
-  --accent-success: #2e7d32;
-  --accent-warning: #d97706;
-  --accent-error: #c92a2a;
-  --accent-info: #1976d2;
-  
-  --bg-card-hover: #dfe4df;
-  --bg-input: #ffffff;
-  --bg-input-disabled: #f5f7f5;
-  
-  --top-bar-text: #ffffff;
-  --top-bar-text-muted: #b0c4de;
-  
-  --divider-light: #d9dcd9;
-  --divider-strong: #b5bdb5;
-  
-  --focus-ring: 0 0 0 3px rgba(30, 58, 95, 0.15);
-  --selection-bg: rgba(30, 58, 95, 0.2);
 }
 
 * {
@@ -77,102 +54,121 @@
 }
 
 html, body {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  font-family: var(--font-family);
+  background: var(--bg-main);
+  color: var(--text);
+  line-height: 1.5;
 }
 
 body {
-  font-family: var(--font-family);
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text);
-  background: var(--bg-main);
-  background-image: var(--surface-texture);
-  background-size: var(--surface-texture-size);
-  background-position: var(--surface-texture-position);
+  display: flex;
+  flex-direction: column;
 }
 
-[data-aivic-shell-pattern="command_center"] {
+[data-aivic-shell-pattern] {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
+  overflow: hidden;
 }
 
 .shell-header {
-  background: var(--top-bar-bg);
-  border-bottom: var(--border-width) solid var(--top-bar-border);
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
   height: 56px;
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 calc(var(--space-unit) * 3);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-card);
 }
 
 .shell-header-left {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 2);
+  gap: calc(var(--space-unit) * 3);
 }
 
 .shell-logo {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--top-bar-text);
+  color: #ffffff;
   letter-spacing: 0.5px;
 }
 
-.shell-nav-toggle {
-  background: none;
-  border: none;
-  color: var(--top-bar-text);
-  cursor: pointer;
-  font-size: 20px;
-  padding: calc(var(--space-unit) * 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity var(--motion-duration);
+.shell-logo-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
 }
 
-.shell-nav-toggle:hover {
-  opacity: 0.8;
+.shell-nav-top {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
+  list-style: none;
+}
+
+.shell-nav-item {
+  position: relative;
+}
+
+.shell-nav-link {
+  display: block;
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-duration) ease;
+  border-bottom: 2px solid transparent;
+}
+
+.shell-nav-link:hover {
+  color: #ffffff;
+}
+
+.shell-nav-link.aivic-active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
 }
 
 .shell-header-right {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 1.5);
+  gap: calc(var(--space-unit) * 2);
 }
 
-.user-avatar {
+.shell-user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--primary-light);
-  color: var(--top-bar-text);
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.user-name {
-  color: var(--top-bar-text);
   font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-.user-logout {
-  color: var(--top-bar-text-muted);
-  text-decoration: none;
+.shell-user-name {
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.shell-logout {
   font-size: 12px;
-  transition: color var(--motion-duration);
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color var(--motion-duration) ease;
 }
 
-.user-logout:hover {
-  color: var(--top-bar-text);
+.shell-logout:hover {
+  color: #ffffff;
 }
 
 .shell-body {
@@ -181,468 +177,411 @@ body {
   overflow: hidden;
 }
 
-.shell-sidebar {
-  width: 240px;
-  background: var(--bg-sidebar);
-  border-right: var(--border-width) solid var(--border);
-  overflow-y: auto;
-  flex-shrink: 0;
-  transition: transform var(--motion-duration);
-}
-
-.shell-sidebar.collapsed {
-  transform: translateX(-100%);
-  position: absolute;
-  z-index: 100;
-  height: 100%;
-}
-
-.shell-nav-section {
-  padding: calc(var(--space-unit) * 1.5) 0;
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.shell-nav-section:last-child {
-  border-bottom: none;
-}
-
-.shell-nav-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 2);
-  letter-spacing: 0.5px;
-}
-
-.shell-nav-item {
-  display: block;
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-  color: var(--text);
-  text-decoration: none;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background var(--motion-duration), color var(--motion-duration);
-  border-left: 3px solid transparent;
-}
-
-.shell-nav-item:hover {
-  background: var(--bg-card-hover);
-}
-
-.shell-nav-item.aivic-active {
-  background: var(--bg-card);
-  border-left-color: var(--primary);
-  color: var(--primary);
-  font-weight: 500;
-}
-
 .content-area {
   flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
 }
 
 [data-aivic-panel] {
-  display: contents;
+  padding: calc(var(--space-unit) * 3);
+  min-height: 100%;
 }
 
-.panel-container {
-  padding: calc(var(--space-unit) * 2.5);
-  flex: 1;
-  overflow-y: auto;
-}
-
-.panel-header {
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.panel-title {
-  font-size: 20px;
-  font-weight: 600;
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
   color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 0.5);
-}
-
-.panel-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.section-card {
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 1.75);
-  margin-bottom: calc(var(--space-unit) * 2);
-  box-shadow: var(--shadow-card);
-}
-
-.section-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1.25);
-  text-transform: uppercase;
+  margin-bottom: calc(var(--space-unit) * 1);
   letter-spacing: 0.3px;
 }
 
-.form-group {
+.page-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 3);
+  font-weight: 500;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
   margin-bottom: calc(var(--space-unit) * 1.5);
+  letter-spacing: 0.3px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 3);
+  box-shadow: var(--shadow-card);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.form-group {
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
 .form-label {
   display: block;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.5);
+  margin-bottom: calc(var(--space-unit) * 0.75);
 }
 
-.form-input, .form-select, .form-textarea {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1);
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
   font-size: 13px;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-control);
-  background: var(--bg-input);
+  background: #ffffff;
   color: var(--text);
   font-family: var(--font-family);
-  transition: border-color var(--motion-duration), box-shadow var(--motion-duration);
+  transition: border-color var(--motion-duration) ease;
 }
 
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: var(--focus-ring);
-}
-
-.form-input:disabled, .form-select:disabled {
-  background: var(--bg-input-disabled);
-  color: var(--text-muted);
-  cursor: not-allowed;
+.form-input,
+.form-select {
+  height: var(--control-height);
 }
 
 .form-textarea {
-  resize: vertical;
   min-height: 80px;
+  resize: vertical;
 }
 
-.button {
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1.5);
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.form-row.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.btn {
+  height: var(--control-height);
+  padding: 0 calc(var(--space-unit) * 2);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   border-radius: var(--radius-control);
   cursor: pointer;
-  transition: background var(--motion-duration), color var(--motion-duration);
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 0.5);
+  transition: all var(--motion-duration) ease;
+  font-family: var(--font-family);
 }
 
-.button-primary {
+.btn-primary {
   background: var(--primary);
-  color: var(--top-bar-text);
+  color: #ffffff;
 }
 
-.button-primary:hover {
+.btn-primary:hover {
   background: var(--primary-hover);
 }
 
-.button-secondary {
+.btn-secondary {
   background: var(--bg-card);
   color: var(--text);
   border: var(--border-width) solid var(--border);
 }
 
-.button-secondary:hover {
-  background: var(--bg-card-hover);
+.btn-secondary:hover {
+  background: #ffffff;
 }
 
-.button-success {
-  background: var(--accent-success);
-  color: white;
+.btn-sm {
+  height: 32px;
+  padding: 0 calc(var(--space-unit) * 1.5);
+  font-size: 12px;
 }
 
-.button-success:hover {
-  background: #1f5620;
-}
-
-.button-warning {
-  background: var(--accent-warning);
-  color: white;
-}
-
-.button-warning:hover {
-  background: #b85f00;
-}
-
-.button-error {
-  background: var(--accent-error);
-  color: white;
-}
-
-.button-error:hover {
-  background: #a01f1f;
-}
-
-.button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.button-group {
+.btn-group {
   display: flex;
   gap: calc(var(--space-unit) * 1);
   margin-top: calc(var(--space-unit) * 2);
 }
 
-.table-wrapper {
-  overflow-x: auto;
-  margin: calc(var(--space-unit) * 1) 0;
+.btn-group.right {
+  justify-content: flex-end;
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
 }
 
-thead {
-  background: var(--bg-card-hover);
-  border-bottom: var(--border-width) solid var(--divider-strong);
+.table thead {
+  background: var(--primary);
+  color: #ffffff;
 }
 
-th {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.25);
+.table th {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   text-align: left;
   font-weight: 600;
-  color: var(--primary);
   font-size: 12px;
-  text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
-td {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.25);
-  border-bottom: var(--border-width) solid var(--divider-light);
-  color: var(--text);
+.table td {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  border-top: var(--border-width) solid var(--border);
 }
 
-tbody tr:hover {
-  background: rgba(30, 58, 95, 0.03);
+.table tbody tr:hover {
+  background: rgba(44, 62, 80, 0.02);
 }
 
 .badge {
   display: inline-block;
-  padding: calc(var(--space-unit) * 0.25) calc(var(--space-unit) * 0.75);
-  border-radius: calc(var(--radius-control) * 2);
+  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
   font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.2px;
+  font-weight: 600;
+  border-radius: 2px;
+  white-space: nowrap;
 }
 
 .badge-success {
-  background: rgba(46, 125, 50, 0.15);
-  color: var(--accent-success);
+  background: rgba(61, 126, 74, 0.15);
+  color: var(--success);
 }
 
 .badge-warning {
-  background: rgba(217, 119, 6, 0.15);
-  color: var(--accent-warning);
+  background: rgba(166, 124, 82, 0.15);
+  color: var(--warning);
 }
 
 .badge-error {
-  background: rgba(201, 42, 42, 0.15);
-  color: var(--accent-error);
+  background: rgba(139, 69, 69, 0.15);
+  color: var(--error);
 }
 
 .badge-info {
-  background: rgba(25, 118, 210, 0.15);
-  color: var(--accent-info);
+  background: rgba(74, 111, 165, 0.15);
+  color: var(--info);
 }
 
-.summary-grid {
+.grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: calc(var(--space-unit) * 1.5);
-  margin: calc(var(--space-unit) * 1.5) 0;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
 }
 
-.summary-item {
-  background: var(--bg-input);
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.stat-box {
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 1.25);
+  padding: calc(var(--space-unit) * 2);
   text-align: center;
 }
 
-.summary-label {
-  font-size: 11px;
+.stat-label {
+  font-size: 12px;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin-bottom: calc(var(--space-unit) * 0.5);
+  font-weight: 500;
+  margin-bottom: calc(var(--space-unit) * 1);
 }
 
-.summary-value {
-  font-size: 18px;
-  font-weight: 600;
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
   color: var(--primary);
 }
 
-.accordion {
+.stat-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: calc(var(--space-unit) * 0.5);
+}
+
+.diff-box {
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  overflow: hidden;
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.diff-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
   margin-bottom: calc(var(--space-unit) * 1.5);
 }
 
-.accordion-item {
-  border-bottom: var(--border-width) solid var(--border);
+.diff-row:last-child {
+  margin-bottom: 0;
 }
 
-.accordion-item:last-child {
-  border-bottom: none;
-}
-
-.accordion-header {
-  background: var(--bg-card);
-  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.75);
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 500;
-  color: var(--primary);
-  transition: background var(--motion-duration);
-  user-select: none;
-}
-
-.accordion-header:hover {
-  background: var(--bg-card-hover);
-}
-
-.accordion-toggle {
+.diff-label {
   font-size: 12px;
-  transition: transform var(--motion-duration);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 0.5);
 }
 
-.accordion-item.open .accordion-toggle {
-  transform: rotate(180deg);
+.diff-before {
+  padding: calc(var(--space-unit) * 1);
+  background: rgba(166, 124, 82, 0.08);
+  border-left: 3px solid var(--warning);
+  border-radius: var(--radius-control);
+  font-size: 12px;
+  color: var(--text);
 }
 
-.accordion-content {
-  display: none;
-  padding: calc(var(--space-unit) * 1.5);
-  background: var(--bg-input);
+.diff-after {
+  padding: calc(var(--space-unit) * 1);
+  background: rgba(61, 126, 74, 0.08);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius-control);
+  font-size: 12px;
+  color: var(--text);
 }
 
-.accordion-item.open .accordion-content {
-  display: block;
+.alert-box {
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.alert-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1);
+}
+
+.alert-content {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
 }
 
 .progress-bar {
   width: 100%;
-  height: 6px;
-  background: var(--divider-light);
-  border-radius: 3px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
   overflow: hidden;
   margin: calc(var(--space-unit) * 1) 0;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--accent-success);
-  transition: width var(--motion-duration);
+  background: var(--primary);
+  transition: width var(--motion-duration) ease;
 }
 
-.alert {
-  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
-  border-radius: var(--radius-card);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-  font-size: 13px;
-  border-left: 3px solid;
-}
-
-.alert-success {
-  background: rgba(46, 125, 50, 0.1);
-  border-left-color: var(--accent-success);
-  color: var(--accent-success);
-}
-
-.alert-warning {
-  background: rgba(217, 119, 6, 0.1);
-  border-left-color: var(--accent-warning);
-  color: var(--accent-warning);
-}
-
-.alert-error {
-  background: rgba(201, 42, 42, 0.1);
-  border-left-color: var(--accent-error);
-  color: var(--accent-error);
-}
-
-.alert-info {
-  background: rgba(25, 118, 210, 0.1);
-  border-left-color: var(--accent-info);
-  color: var(--accent-info);
-}
-
-.two-column {
+.split-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 2);
+  gap: calc(var(--space-unit) * 3);
 }
 
-.three-section {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-unit) * 2);
+.split-left {
+  grid-column: 1;
 }
 
-@media (max-width: 1024px) {
-  .two-column {
+.split-right {
+  grid-column: 2;
+}
+
+@media (max-width: 1200px) {
+  .grid-4,
+  .grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .split-layout {
     grid-template-columns: 1fr;
   }
-  
-  .shell-sidebar {
-    position: absolute;
-    height: 100%;
-    z-index: 100;
+  .split-left,
+  .split-right {
+    grid-column: 1;
   }
 }
 
 @media (max-width: 768px) {
-  .shell-header {
-    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
   }
-  
-  .shell-sidebar {
-    width: 200px;
+  .form-row,
+  .form-row.three {
+    grid-template-columns: 1fr;
   }
-  
-  .panel-container {
-    padding: calc(var(--space-unit) * 1.5);
+  .shell-nav-top {
+    flex-direction: column;
+    gap: 0;
   }
-  
-  .summary-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .shell-nav-link {
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
+    border-bottom: none;
+    border-left: 3px solid transparent;
+  }
+  .shell-nav-link.aivic-active {
+    border-left-color: #ffffff;
+    border-bottom-color: transparent;
   }
 }
   </style>
+  
 <script>
 window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
 window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "料金・返金ルール管理・検証システム";
 window.AIVIC_TABLES = [{"tableName":"ログインユーザー","purpose":"料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ログイン用メールアドレス、システム内で一意"},{"name":"パスワードハッシュ","type":"varchar(100)","required":true,"description":"ハッシュ化されたパスワード"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ユーザーの表示名"},{"name":"ロール","type":"varchar(100)","required":true,"description":"ユーザーの権限レベル（管理者、担当者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効、無効、一時停止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"最後にログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーアカウント作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザー情報最終更新日時"},{"name":"作成者","type":"varchar(100)","required":false,"description":"ユーザーアカウント作成者のユーザーID"}]}];
-window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"システム管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 08:00:00","更新日時":"2025-01-15 09:30:00","作成者":"rec-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.yuki@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木由紀","ロール":"営業事務員","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.kaoru@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木薫","ロール":"部門長","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"550e8400-e29b-41d4-a716-446655440000","メールアドレス":"suzuki.yuki@support.example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP","ユーザー名":"鈴木由紀","ロール":"カスタマーサポート担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"佐藤太郎"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.yuki@company.jp","パスワードハッシュ":"$2b$12$8kL9mN2pQ5vR7sT4uW6xZ.9aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0u","ユーザー名":"鈴木由紀","ロール":"監査担当者","ステータス":"有効","最終ログイン日時":"2025-01-16 09:32:15","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"legacy-admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"旧システム管理者","ロール":"管理者","ステータス":"無効","最終ログイン日時":"2024-03-15 14:32:00","作成日時":"2024-01-10 09:00:00","更新日時":"2024-06-20 11:45:00","作成者":"rec-sys-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00","作成日時":"2025-01-10T14:20:00","更新日時":"2025-01-10T14:20:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-11-15 09:30:00","作成日時":"2023-04-10 10:15:00","更新日時":"2025-01-20 14:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.viewer@deloitte-jp.co.jp","パスワードハッシュ":"$2b$12$8kN9pL2mQ5vX7zJ4hR8sF.e6tY3wB1cD9mN2pQ5vX7zJ4hR8sF.e6t","ユーザー名":"デロイト監査部_ビューアー","ロール":"ビューアー","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-11-20 09:15:00","更新日時":"2025-01-10 10:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"プロジェクトマネージャー","ステータス":"一時停止","最終ログイン日時":"2024-12-15 17:45:32","作成日時":"2021-04-01 09:00:00","更新日時":"2025-01-20 14:30:00","作成者":"rec-admin-001"}]};
+window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/1Pq","ユーザー名":"山田太郎","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00","作成日時":"2024-04-01T10:00:00","更新日時":"2025-01-15T09:30:00","作成者":"system"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:22:18","更新日時":"2025-01-10 16:45:32","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"satoh.yuki@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","ユーザー名":"佐藤由紀","ロール":"営業料金確認権限","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-10T14:20:00+09:00","更新日時":"2025-01-10T16:45:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"経理部門_返金承認権限","ステータス":"有効","最終ログイン日時":"2025-01-15T09:32:45+09:00","作成日時":"2024-04-10T14:20:00+09:00","更新日時":"2025-01-10T16:45:30+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamamoto.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890","ユーザー名":"山本花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-11-15 14:32:00","作成日時":"2023-04-10 09:15:00","更新日時":"2024-12-01 10:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"tanaka.taro@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"田中太郎","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2024-11-15 17:45:32","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:30:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.yamada@external-audit.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/KFm","ユーザー名":"山田監査人","ロール":"監査人","ステータス":"有効","最終ログイン日時":"2025-01-15T10:30:00+09:00","作成日時":"2024-12-01T09:00:00+09:00","更新日時":"2025-01-15T10:30:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-20T14:22:15+09:00","更新日時":"2025-01-10T16:45:30+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$kR9vE8mL2pQ4xJ6nF3sT5eW9oI1uY2vX7cB4dA5eF6gH7iJ8kL9m","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-03-20 14:15:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788233353960";
-window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
+window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {\n  const tableIndex = 0;\n  let currentRuleData = {};\n  let extractedBeforeData = [];\n  let extractedAfterData = [];\n  let scheduleList = [];\n\n  // Initialize form with default values\n  function initializeForm() {\n    container.querySelector('[name=\"facility\"]').value = '';\n    container.querySelector('[name=\"timeslot\"]').value = '';\n    container.querySelector('[name=\"usertype\"]').value = '';\n    container.querySelector('[name=\"price\"]').value = '';\n    container.querySelector('[name=\"cancelDays\"]').value = '7';\n    container.querySelector('[name=\"refundRate\"]').value = '100';\n    container.querySelector('[name=\"fee\"]').value = '0';\n    container.querySelector('[name=\"refundMethod\"]').value = '';\n    container.querySelector('[name=\"changeDays\"]').value = '14';\n    container.querySelector('[name=\"changeLimit\"]').value = '3';\n    container.querySelector('[name=\"changeFee\"]').value = '0';\n    container.querySelector('[name=\"approvalRequired\"]').value = '';\n  }\n\n  // Update change summary\n  function updateChangeSummary() {\n    const facility = container.querySelector('[name=\"facility\"]').value || '未指定';\n    const price = container.querySelector('[name=\"price\"]').value || '0';\n    const cancelDays = container.querySelector('[name=\"cancelDays\"]').value || '7';\n    const refundRate = container.querySelector('[name=\"refundRate\"]').value || '100';\n    \n    container.querySelector('#change-before-summary').textContent = '現在のルール（詳細は別途確認）';\n    container.querySelector('#change-after-summary').textContent = `${facility} / ¥${price}/時間 / キャンセル期限${cancelDays}日前 / 返金率${refundRate}%`;\n  }\n\n  // Extract affected reservations (before rule)\n  container.querySelector('[data-testid=\"extract-before-button\"]').addEventListener('click', async () => {\n    try {\n      const rows = await window.aivicApi.list(tableIndex);\n      extractedBeforeData = rows || [];\n      \n      container.querySelector('#impact-before-count').textContent = extractedBeforeData.length;\n      container.querySelector('#validation-result').innerHTML = `\n        <div style=\"padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); border-left: 3px solid #a67c52;\">\n          <div style=\"font-size: 12px; color: var(--text); margin-bottom: 8px;\"><strong>変更前ルール適用対象</strong></div>\n          <div style=\"font-size: 12px; color: var(--text-muted);\">\n            抽出件数: <strong style=\"color: var(--text);\">${extractedBeforeData.length}件</strong><br/>\n            施設別: 体育館 ${extractedBeforeData.filter(r => r.facility === 'gym').length}件 / プール ${extractedBeforeData.filter(r => r.facility === 'pool').length}件\n          </div>\n        </div>\n      `;\n    } catch (err) {\n      console.error('Error extracting before data:', err);\n    }\n  });\n\n  // Extract affected reservations (after rule)\n  container.querySelector('[data-testid=\"extract-after-button\"]').addEventListener('click', async () => {\n    try {\n      const rows = await window.aivicApi.list(tableIndex);\n      extractedAfterData = rows || [];\n      \n      container.querySelector('#impact-after-count').textContent = extractedAfterData.length;\n      \n      const beforeCount = parseInt(container.querySelector('#impact-before-count').textContent) || 0;\n      const afterCount = extractedAfterData.length;\n      const diff = afterCount - beforeCount;\n      \n      container.querySelector('#impact-amount-diff').textContent = `${diff > 0 ? '+' : ''}${diff}件`;\n      \n      container.querySelector('#validation-result').innerHTML = `\n        <div style=\"padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); border-left: 3px solid #3d7e4a;\">\n          <div style=\"font-size: 12px; color: var(--text); margin-bottom: 8px;\"><strong>変更後ルール適用対象</strong></div>\n          <div style=\"font-size: 12px; color: var(--text-muted);\">\n            抽出件数: <strong style=\"color: var(--text);\">${extractedAfterData.length}件</strong><br/>\n            差分: <strong style=\"color: var(--text);\">${diff > 0 ? '+' : ''}${diff}件</strong>\n          </div>\n        </div>\n      `;\n    } catch (err) {\n      console.error('Error extracting after data:', err);\n    }\n  });\n\n  // Add schedule row\n  container.querySelector('[data-testid=\"add-schedule-button\"]').addEventListener('click', () => {\n    const startDt = container.querySelector('[name=\"applyStartDt\"]').value;\n    const endDt = container.querySelector('[name=\"applyEndDt\"]').value;\n    const group = container.querySelector('[name=\"applyGroup\"]').value;\n    \n    if (!startDt || !endDt || !group) {\n      alert('適用開始日時、終了日時、対象グループを指定してください');\n      return;\n    }\n    \n    const schedule = { startDt, endDt, group, id: Date.now() };\n    scheduleList.push(schedule);\n    renderScheduleTable();\n  });\n\n  // Render schedule table\n  function renderScheduleTable() {\n    const tbody = container.querySelector('#schedule-tbody');\n    if (scheduleList.length === 0) {\n      tbody.innerHTML = '<tr style=\"border-bottom: 1px solid var(--border);\"><td colspan=\"4\" style=\"padding: 12px; text-align: center; color: var(--text-muted);\">スケジュールが登録されていません</td></tr>';\n      return;\n    }\n    \n    tbody.innerHTML = scheduleList.map(s => `\n      <tr style=\"border-bottom: 1px solid var(--border);\">\n        <td style=\"padding: 8px; border-right: 1px solid var(--border); color: var(--text); font-size: 12px;\">${new Date(s.startDt).toLocaleString('ja-JP')}</td>\n        <td style=\"padding: 8px; border-right: 1px solid var(--border); color: var(--text); font-size: 12px;\">${new Date(s.endDt).toLocaleString('ja-JP')}</td>\n        <td style=\"padding: 8px; border-right: 1px solid var(--border); color: var(--text); font-size: 12px;\">${s.group}</td>\n        <td style=\"padding: 8px; text-align: center;\">\n          <button class=\"delete-schedule-btn\" data-id=\"${s.id}\" style=\"background: none; border: none; color: #8b4545; cursor: pointer; font-size: 12px;\">削除</button>\n        </td>\n      </tr>\n    `).join('');\n    \n    container.querySelectorAll('.delete-schedule-btn').forEach(btn => {\n      btn.addEventListener('click', (e) => {\n        const id = parseInt(e.target.dataset.id);\n        scheduleList = scheduleList.filter(s => s.id !== id);\n        renderScheduleTable();\n      });\n    });\n  }\n\n  // Save rule\n  container.querySelector('[data-testid=\"save-button\"]').addEventListener('click', () => {\n    const facility = container.querySelector('[name=\"facility\"]').value;\n    const price = container.querySelector('[name=\"price\"]').value;\n    \n    if (!facility || !price) {\n      alert('施設と料金は必須です');\n      return;\n    }\n    \n    const impactCount = parseInt(container.querySelector('#impact-after-count').textContent) || 0;\n    container.querySelector('#confirm-impact-count').textContent = impactCount;\n    container.querySelector('#confirm-dialog-overlay').style.display = 'flex';\n  });\n\n  // Confirm execution\n  container.querySelector('[data-testid=\"confirm-execute-button\"]').addEventListener('click', async () => {\n    try {\n      const ruleData = {\n        facility: container.querySelector('[name=\"facility\"]').value,\n        timeslot: container.querySelector('[name=\"timeslot\"]').value,\n        usertype: container.querySelector('[name=\"usertype\"]').value,\n        price: container.querySelector('[name=\"price\"]').value,\n        cancelDays: container.querySelector('[name=\"cancelDays\"]').value,\n        refundRate: container.querySelector('[name=\"refundRate\"]').value,\n        fee: container.querySelector('[name=\"fee\"]').value,\n        refundMethod: container.querySelector('[name=\"refundMethod\"]').value,\n        changeDays: container.querySelector('[name=\"changeDays\"]').value,\n        changeLimit: container.querySelector('[name=\"changeLimit\"]').value,\n        changeFee: container.querySelector('[name=\"changeFee\"]').value,\n        approvalRequired: container.querySelector('[name=\"approvalRequired\"]').value,\n        applyStartDt: container.querySelector('[name=\"applyStartDt\"]').value,\n        applyEndDt: container.querySelector('[name=\"applyEndDt\"]').value,\n        schedules: scheduleList\n      };\n      \n      const result = await window.aivicApi.save(tableIndex, ruleData);\n      if (result) {\n        alert('ルール変更が確定・実行されました');\n        container.querySelector('#confirm-dialog-overlay').style.display = 'none';\n        initializeForm();\n        renderScheduleTable();\n      }\n    } catch (err) {\n      console.error('Error saving rule:', err);\n    }\n  });\n\n  // Close confirmation dialog\n  container.querySelector('[data-testid=\"confirm-cancel-button\"]').addEventListener('click', () => {\n    container.querySelector('#confirm-dialog-overlay').style.display = 'none';\n  });\n\n  container.querySelector('[data-testid=\"cancel-button\"]').addEventListener('click', () => {\n    initializeForm();\n    scheduleList = [];\n    renderScheduleTable();\n  });\n\n  // Update summary on input change\n  container.querySelectorAll('input, select').forEach(el => {\n    el.addEventListener('change', updateChangeSummary);\n  });\n\n  // Close dialog on overlay click\n  container.querySelector('#confirm-dialog-overlay').addEventListener('click', (e) => {\n    if (e.target === container.querySelector('#confirm-dialog-overlay')) {\n      container.querySelector('#confirm-dialog-overlay').style.display = 'none';\n    }\n  });\n\n  // Keyboard shortcut: Esc to close dialog\n  document.addEventListener('keydown', (e) => {\n    if (e.key === 'Escape') {\n      container.querySelector('#confirm-dialog-overlay').style.display = 'none';\n    }\n  });\n\n  initializeForm();\n  renderScheduleTable();\n}";
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -651,272 +590,268 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
   <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
     <header class="shell-header">
       <div class="shell-header-left">
-        <button class="shell-nav-toggle" id="nav-toggle">☰</button>
-        <div class="shell-logo">料金・返金ルール管理</div>
+        <div class="shell-logo">
+          <div>料金・返金ルール管理</div>
+          <div class="shell-logo-sub">公共施設予約</div>
+        </div>
+        <nav>
+          <ul class="shell-nav-top">
+            <li class="shell-nav-item">
+              <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">ルール管理</a>
+            </li>
+            <li class="shell-nav-item">
+              <a class="shell-nav-link" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">計算異常検出</a>
+            </li>
+          </ul>
+        </nav>
       </div>
       <div class="shell-header-right">
-        <div class="user-avatar">U</div>
-        <div class="user-name">ユーザー</div>
-        <a href="./login.html" class="user-logout">ログアウト</a>
+        <div class="shell-user-avatar">U</div>
+        <div class="shell-user-name">ユーザー</div>
+        <a class="shell-logout" href="./login.html">ログアウト</a>
       </div>
     </header>
-
     <div class="shell-body">
-      <aside class="shell-sidebar" id="sidebar">
-        <div class="shell-nav-section">
-          <div class="shell-nav-label">メイン</div>
-          <a class="shell-nav-item aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">ルール管理</a>
-          <a class="shell-nav-item" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">異常検出</a>
-        </div>
-        <div class="shell-nav-section">
-          <div class="shell-nav-label">システム</div>
-          <a class="shell-nav-item" href="./login.html">ログアウト</a>
-        </div>
-      </aside>
-
       <main class="content-area">
-        <div data-aivic-panel="scr-1788233353960" style="display:block"><div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; background: var(--bg-main); min-height: 100vh;">
+        <div data-aivic-panel="scr-1788233353960" style="display:block"><div style="display: flex; flex-direction: column; gap: 24px; padding: 20px; background: var(--bg-main); color: var(--text); font-family: var(--font-family);">
   
-  <!-- ページタイトル -->
-  <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-    <h1 style="margin: 0; font-size: 20px; font-weight: 600; color: var(--text);">料金ルール・返金条件管理</h1>
-    <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted);">ルール定義、変更内容登録、影響範囲検証、段階的適用スケジュール管理</p>
+  <!-- Breadcrumb / Header -->
+  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+    公共施設予約 / 料金・返金ルール管理・検証システム / 料金ルール・返金条件管理画面
   </div>
+  
+  <h1 style="font-size: 24px; font-weight: 600; margin: 0; color: var(--text);">料金ルール・返金条件管理</h1>
 
-  <!-- 上部：ルール定義フォーム 2カラム -->
-  <div style="display: grid; grid-template-columns: calc(50% - 8px) calc(50% - 8px); gap: 16px;">
+  <!-- Section 1: Rule Definition Forms (3-column card layout) -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
     
-    <!-- 料金ルール定義フォーム -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">料金ルール定義</h2>
+    <!-- Card 1: 料金ルール定義 -->
+    <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+      <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">料金ルール定義</h3>
       
-      <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">ルール名</label>
-          <input type="text" data-testid="rule-name" placeholder="例：GW期間割増料金" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
-        </div>
-
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">適用開始日</label>
-          <input type="date" data-testid="rule-start-date" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
-        </div>
-
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">料金額（円）</label>
-          <input type="number" data-testid="rule-amount" placeholder="0" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
-        </div>
-
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">適用条件</label>
-          <select data-testid="rule-condition" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);">
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">施設</label>
+          <select data-testid="facility-select" name="facility" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
             <option value="">選択してください</option>
-            <option value="date_range">期間指定</option>
-            <option value="day_of_week">曜日指定</option>
-            <option value="booking_type">予約タイプ</option>
-            <option value="customer_segment">顧客セグメント</option>
+            <option value="gym">体育館</option>
+            <option value="pool">プール</option>
+            <option value="hall">集会室</option>
           </select>
         </div>
-
-        <button data-testid="rule-save-btn" class="action-btn" style="width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 4px;">ルール保存</button>
+        
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">時間帯</label>
+          <select data-testid="timeslot-select" name="timeslot" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
+            <option value="">選択してください</option>
+            <option value="morning">午前（9:00-12:00）</option>
+            <option value="afternoon">午後（13:00-17:00）</option>
+            <option value="evening">夜間（18:00-21:00）</option>
+          </select>
+        </div>
+        
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">利用者区分</label>
+          <select data-testid="usertype-select" name="usertype" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
+            <option value="">選択してください</option>
+            <option value="resident">市民</option>
+            <option value="group">団体</option>
+            <option value="commercial">営利利用</option>
+          </select>
+        </div>
+        
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">料金（円/時間）</label>
+          <input data-testid="price-input" type="number" name="price" placeholder="0" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+        </div>
       </div>
     </div>
 
-    <!-- 返金条件設定フォーム -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">返金条件設定</h2>
+    <!-- Card 2: 返金条件設定 -->
+    <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+      <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">返金条件設定</h3>
       
-      <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">返金条件名</label>
-          <input type="text" data-testid="refund-name" placeholder="例：キャンセル時全額返金" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">キャンセル期限（日前）</label>
+          <input data-testid="cancel-days-input" type="number" name="cancelDays" placeholder="7" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
         </div>
-
+        
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">返金率（%）</label>
-          <input type="number" data-testid="refund-rate" placeholder="0" min="0" max="100" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">返金率（%）</label>
+          <input data-testid="refund-rate-input" type="number" name="refundRate" placeholder="100" min="0" max="100" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
         </div>
-
+        
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">キャンセル期限（日前）</label>
-          <input type="number" data-testid="refund-deadline" placeholder="0" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">手数料（円）</label>
+          <input data-testid="fee-input" type="number" name="fee" placeholder="0" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
         </div>
-
+        
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">適用対象</label>
-          <select data-testid="refund-target" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);">
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">返金方法</label>
+          <select data-testid="refund-method-select" name="refundMethod" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
             <option value="">選択してください</option>
-            <option value="all">全予約</option>
-            <option value="advance">事前予約</option>
-            <option value="group">グループ予約</option>
-            <option value="corporate">法人予約</option>
+            <option value="bank">銀行振込</option>
+            <option value="card">クレジットカード返金</option>
+            <option value="voucher">施設利用券</option>
           </select>
         </div>
+      </div>
+    </div>
 
-        <button data-testid="refund-save-btn" class="action-btn" style="width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 4px;">返金条件保存</button>
+    <!-- Card 3: 予約変更承認基準 -->
+    <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+      <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">予約変更承認基準</h3>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">変更可能期間（日前まで）</label>
+          <input data-testid="change-days-input" type="number" name="changeDays" placeholder="14" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+        </div>
+        
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">変更回数制限</label>
+          <input data-testid="change-limit-input" type="number" name="changeLimit" placeholder="3" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+        </div>
+        
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">変更手数料（円）</label>
+          <input data-testid="change-fee-input" type="number" name="changeFee" placeholder="0" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+        </div>
+        
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">承認要否</label>
+          <select data-testid="approval-required-select" name="approvalRequired" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
+            <option value="">選択してください</option>
+            <option value="yes">要承認</option>
+            <option value="no">自動承認</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 中央：ルール変更内容登録エリア -->
-  <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">ルール変更内容登録</h2>
+  <!-- Section 2: Rule Change Summary & Extraction Controls -->
+  <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+    <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">ルール変更内容</h3>
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">変更対象ルール</label>
-        <select data-testid="change-target-rule" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);">
-          <option value="">選択してください</option>
-          <option value="rule_1">GW期間割増料金</option>
-          <option value="rule_2">早期割引</option>
-          <option value="rule_3">グループ割引</option>
-        </select>
+      <div style="padding: 10px; background: var(--bg-main); border-radius: var(--radius-control); border-left: 3px solid #a67c52;">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">変更前</div>
+        <div id="change-before-summary" style="font-size: 13px; color: var(--text); font-weight: 500;">未設定</div>
       </div>
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">変更内容</label>
-        <select data-testid="change-type" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);">
-          <option value="">選択してください</option>
-          <option value="amount">料金額変更</option>
-          <option value="condition">適用条件変更</option>
-          <option value="date_range">適用期間変更</option>
-          <option value="refund">返金条件変更</option>
-        </select>
+      <div style="padding: 10px; background: var(--bg-main); border-radius: var(--radius-control); border-left: 3px solid #3d7e4a;">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">変更後</div>
+        <div id="change-after-summary" style="font-size: 13px; color: var(--text); font-weight: 500;">未設定</div>
       </div>
     </div>
-
-    <div>
-      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">変更内容の詳細</label>
-      <textarea data-testid="change-detail" placeholder="変更前後の差分を記入してください" style="width: 100%; padding: 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family); min-height: 80px; resize: vertical;"></textarea>
-    </div>
-
-    <div style="display: flex; gap: 8px; margin-top: 12px;">
-      <button data-testid="register-change-btn" class="action-btn" style="flex: 1; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">変更内容登録</button>
-      <button data-testid="extract-before-btn" class="action-btn secondary" style="flex: 1; padding: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">変更前抽出</button>
-      <button data-testid="extract-after-btn" class="action-btn secondary" style="flex: 1; padding: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">変更後抽出</button>
+    
+    <div style="display: flex; gap: 8px;">
+      <button data-testid="extract-before-button" class="action-btn" style="flex: 1; padding: 8px; font-size: 13px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); cursor: pointer;">変更前ルール適用対象を抽出</button>
+      <button data-testid="extract-after-button" class="action-btn" style="flex: 1; padding: 8px; font-size: 13px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); cursor: pointer;">変更後ルール適用対象を抽出</button>
     </div>
   </div>
 
-  <!-- 下部：検証パネル + サマリー 2カラム -->
-  <div style="display: grid; grid-template-columns: 40% 60%; gap: 16px;">
+  <!-- Section 3: Validation Results & Impact Summary -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     
-    <!-- 影響範囲検証結果パネル -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">影響範囲検証</h2>
-      
-      <div id="validation-panel" style="display: flex; flex-direction: column; gap: 10px; min-height: 120px;">
-        <div style="padding: 10px; background: rgba(44, 82, 130, 0.05); border-left: 3px solid var(--primary); border-radius: 4px;">
-          <p style="margin: 0; font-size: 12px; color: var(--text-muted);">検証待機中</p>
+    <!-- Validation Results Panel -->
+    <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+      <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">影響範囲検証結果</h3>
+      <div id="validation-result" style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+        <div style="padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); text-align: center;">
+          抽出ボタンをクリックして検証を実行してください
         </div>
       </div>
     </div>
 
-    <!-- 影響対象予約件数サマリー -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">影響対象サマリー</h2>
-      
+    <!-- Impact Summary -->
+    <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+      <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">影響対象予約件数</h3>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-        <div style="padding: 12px; background: rgba(44, 82, 130, 0.08); border-radius: 4px; border: 1px solid rgba(44, 82, 130, 0.15);">
-          <p style="margin: 0 0 4px 0; font-size: 11px; color: var(--text-muted); font-weight: 500;">対象予約件数</p>
-          <p data-testid="affected-count" style="margin: 0; font-size: 20px; font-weight: 700; color: var(--primary);">0件</p>
+        <div style="padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); text-align: center;">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">変更前対象</div>
+          <div id="impact-before-count" style="font-size: 20px; font-weight: 600; color: var(--text);">0</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">件</div>
         </div>
-        <div style="padding: 12px; background: rgba(44, 82, 130, 0.08); border-radius: 4px; border: 1px solid rgba(44, 82, 130, 0.15);">
-          <p style="margin: 0 0 4px 0; font-size: 11px; color: var(--text-muted); font-weight: 500;">金額影響度</p>
-          <p data-testid="affected-amount" style="margin: 0; font-size: 20px; font-weight: 700; color: var(--primary);">¥0</p>
+        <div style="padding: 12px; background: var(--bg-main); border-radius: var(--radius-control); text-align: center;">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">変更後対象</div>
+          <div id="impact-after-count" style="font-size: 20px; font-weight: 600; color: var(--text);">0</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">件</div>
         </div>
       </div>
-
-      <div style="margin-top: 12px; padding: 10px; background: rgba(107, 101, 96, 0.05); border-radius: 4px; border-left: 3px solid var(--text-muted);">
-        <p style="margin: 0; font-size: 12px; color: var(--text-muted);">
-          <strong>警告:</strong> <span id="validation-message">ルール変更内容を登録してください</span>
-        </p>
+      <div style="margin-top: 12px; padding: 10px; background: var(--bg-main); border-radius: var(--radius-control); font-size: 12px; color: var(--text);">
+        <div style="color: var(--text-muted); margin-bottom: 4px;">金額差分</div>
+        <div id="impact-amount-diff" style="font-weight: 600;">¥0</div>
       </div>
     </div>
   </div>
 
-  <!-- 最下部：段階的適用スケジュール設定テーブル -->
-  <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <h2 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">段階的適用スケジュール</h2>
+  <!-- Section 4: Phased Application Schedule -->
+  <div class="card" style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);">
+    <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: var(--text);">段階的適用スケジュール</h3>
     
-    <div class="table-wrap" style="overflow-x: auto; border: 1px solid var(--border); border-radius: 4px;">
-      <table data-testid="schedule-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-          <tr style="background: rgba(44, 82, 130, 0.08); border-bottom: 1px solid var(--border);">
-            <th style="padding: 10px; text-align: left; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">段階</th>
-            <th style="padding: 10px; text-align: left; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">適用開始日時</th>
-            <th style="padding: 10px; text-align: left; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">適用終了日時</th>
-            <th style="padding: 10px; text-align: left; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">対象グループ</th>
-            <th style="padding: 10px; text-align: left; font-weight: 600; color: var(--text); border-right: 1px solid var(--border);">ステータス</th>
-            <th style="padding: 10px; text-align: center; font-weight: 600; color: var(--text);">操作</th>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
+      <div>
+        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">適用開始日時</label>
+        <input data-testid="apply-start-datetime" type="datetime-local" name="applyStartDt" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+      </div>
+      <div>
+        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">適用終了日時</label>
+        <input data-testid="apply-end-datetime" type="datetime-local" name="applyEndDt" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+      </div>
+      <div>
+        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">段階別適用対象グループ</label>
+        <select data-testid="apply-group-select" name="applyGroup" style="width: 100%; padding: 8px; border: 1px solid rgba(201, 197, 189, 0.6); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
+          <option value="">選択してください</option>
+          <option value="all">全施設・全利用者</option>
+          <option value="resident">市民のみ</option>
+          <option value="group">団体のみ</option>
+          <option value="gym">体育館のみ</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="overflow-x: auto;">
+      <table data-testid="schedule-table" style="width: 100%; font-size: 13px; border-collapse: collapse;">
+        <thead style="background: var(--bg-main); border-bottom: 1px solid var(--border);">
+          <tr>
+            <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">開始日時</th>
+            <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">終了日時</th>
+            <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">対象グループ</th>
+            <th style="padding: 8px; text-align: center; color: var(--text); font-weight: 600;">操作</th>
           </tr>
         </thead>
         <tbody id="schedule-tbody">
           <tr style="border-bottom: 1px solid var(--border);">
-            <td colspan="6" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">スケジュールを追加してください</td>
+            <td colspan="4" style="padding: 12px; text-align: center; color: var(--text-muted);">スケジュールが登録されていません</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div style="margin-top: 12px; display: flex; gap: 8px;">
-      <button data-testid="add-schedule-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">+ スケジュール追加</button>
-      <button data-testid="confirm-execute-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-left: auto;" disabled>確定・実行</button>
-    </div>
+    <button data-testid="add-schedule-button" class="action-btn secondary" style="margin-top: 12px; padding: 8px 12px; font-size: 13px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); cursor: pointer;">+ スケジュール追加</button>
+  </div>
+
+  <!-- Section 5: Action Buttons -->
+  <div style="display: flex; gap: 12px; justify-content: flex-end;">
+    <button data-testid="cancel-button" class="action-btn secondary" style="padding: 10px 20px; font-size: 13px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); cursor: pointer;">キャンセル</button>
+    <button data-testid="save-button" class="action-btn" style="padding: 10px 20px; font-size: 13px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); cursor: pointer; font-weight: 600;">ルール変更を確定・実行</button>
   </div>
 </div>
 
-<!-- スケジュール追加モーダル -->
-<div id="schedule-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 6px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">スケジュール追加</h3>
-    
-    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">適用開始日時</label>
-        <input type="datetime-local" data-testid="modal-start-datetime" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
-      </div>
-
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">適用終了日時</label>
-        <input type="datetime-local" data-testid="modal-end-datetime" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);" />
-      </div>
-
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">対象グループ</label>
-        <select data-testid="modal-target-group" class="input" style="width: 100%; padding: 8px 10px; border: 1px solid rgba(107, 101, 96, 0.25); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family);">
-          <option value="">選択してください</option>
-          <option value="group_a">グループA（新規顧客）</option>
-          <option value="group_b">グループB（既存顧客）</option>
-          <option value="group_c">グループC（VIP顧客）</option>
-          <option value="all">全グループ</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-      <button data-testid="modal-cancel-btn" class="action-btn secondary" style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">キャンセル</button>
-      <button data-testid="modal-add-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">追加</button>
-    </div>
-  </div>
-</div>
-
-<!-- 確定・実行確認ダイアログ -->
-<div id="confirm-dialog" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 6px; max-width: 450px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">適用スケジュール確定</h3>
-    
-    <div style="padding: 12px; background: rgba(44, 82, 130, 0.08); border-radius: 4px; border-left: 3px solid var(--primary); margin-bottom: 16px;">
-      <p style="margin: 0; font-size: 13px; color: var(--text);">
-        以下のスケジュールで料金ルール・返金条件を段階的に適用します。<br/>
-        <strong>この操作は取り消せません。</strong>
-      </p>
-    </div>
-
-    <div id="confirm-summary" style="padding: 12px; background: rgba(107, 101, 96, 0.05); border-radius: 4px; margin-bottom: 16px; max-height: 200px; overflow-y: auto; font-size: 12px; color: var(--text-muted);">
-      <!-- 確認内容が動的に挿入される -->
-    </div>
-
-    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-      <button data-testid="confirm-cancel-btn" class="action-btn secondary" style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">キャンセル</button>
-      <button data-testid="confirm-execute-final-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">実行</button>
+<!-- Confirmation Dialog (initially hidden) -->
+<div id="confirm-dialog-overlay" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">ルール変更を確定します</h2>
+    <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 16px 0; line-height: 1.6;">
+      このルール変更は以下の予約に適用されます。<br/>
+      <strong id="confirm-impact-count" style="color: var(--text);">0件</strong>の予約が影響を受けます。<br/>
+      この操作は取り消せません。よろしいですか？
+    </p>
+    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+      <button data-testid="confirm-cancel-button" class="action-btn secondary" style="padding: 8px 16px; font-size: 13px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); cursor: pointer;">キャンセル</button>
+      <button data-testid="confirm-execute-button" class="action-btn" style="padding: 8px 16px; font-size: 13px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); cursor: pointer; font-weight: 600;">確定・実行</button>
     </div>
   </div>
 </div></div>
@@ -924,35 +859,6 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
       </main>
     </div>
   </div>
-
-  <script>
-    const navToggle = document.getElementById('nav-toggle');
-    const sidebar = document.getElementById('sidebar');
-    
-    navToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-    });
-
-    function showScreen(screenId) {
-      const panels = document.querySelectorAll('[data-aivic-panel]');
-      panels.forEach(panel => {
-        panel.style.display = panel.getAttribute('data-aivic-panel') === screenId ? '' : 'none';
-      });
-
-      const navItems = document.querySelectorAll('[data-aivic-nav]');
-      navItems.forEach(item => {
-        item.classList.toggle('aivic-active', item.getAttribute('data-aivic-nav') === screenId);
-      });
-
-      if (window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-      }
-    }
-
-    window.showScreen = showScreen;
-  </script>
-
-  
   
 <script>
 (function() {

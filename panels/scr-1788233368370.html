@@ -3,71 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>料金・返金ルール管理・検証システム</title>
+  <title>料金・返金ルール管理・検証システム | 公共施設予約</title>
   <style>
 :root {
-  --primary: #1e3a5f;
-  --primary-hover: #152847;
-  --primary-light: #2d5a8c;
-  
-  --bg-main: #f0f2f0;
-  --bg-card: #e8ebe8;
-  --bg-sidebar: #e5e9e5;
-  --top-bar-bg: #1e3a5f;
-  
-  --text: #1a1a1a;
-  --text-muted: #5a5a5a;
-  
-  --border: #c5ccc5;
-  --top-bar-border: #0f1f2f;
-  
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  
+  --primary: #2c3e50;
+  --primary-hover: #1a252f;
+  --bg-main: #f0ede8;
+  --bg-card: #e8e5e0;
+  --bg-sidebar: #ebe8e3;
+  --top-bar-bg: #2c3e50;
+  --top-bar-border: #1a252f;
+  --border: #c9c5bd;
+  --text: #1a1f26;
+  --text-muted: #6b7280;
+  --success: #3d7e4a;
+  --warning: #a67c52;
+  --error: #8b4545;
+  --info: #4a6fa5;
+  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
   --space-unit: 8px;
   --control-height: 40px;
-  --radius-card: 6px;
-  --radius-control: 4px;
+  --radius-card: 4px;
+  --radius-control: 3px;
   --border-width: 1px;
-  
-  --shadow-card: 0 2px 8px rgba(30, 58, 95, 0.08);
-  
+  --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
+  --motion-duration: 200ms;
   --surface-texture: 
     repeating-linear-gradient(
       90deg,
       transparent,
       transparent 2px,
-      rgba(30, 58, 95, 0.02) 2px,
-      rgba(30, 58, 95, 0.02) 4px
+      rgba(172, 167, 154, 0.03) 2px,
+      rgba(172, 167, 154, 0.03) 4px
     ),
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      rgba(30, 58, 95, 0.02) 2px,
-      rgba(30, 58, 95, 0.02) 4px
+      rgba(172, 167, 154, 0.02) 2px,
+      rgba(172, 167, 154, 0.02) 4px
     );
-  --surface-texture-size: 4px 4px;
+  --surface-texture-size: 100% 100%;
   --surface-texture-position: 0 0;
-  
-  --motion-duration: 200ms;
-  
-  --accent-success: #2e7d32;
-  --accent-warning: #d97706;
-  --accent-error: #c92a2a;
-  --accent-info: #1976d2;
-  
-  --bg-card-hover: #dfe4df;
-  --bg-input: #ffffff;
-  --bg-input-disabled: #f5f7f5;
-  
-  --top-bar-text: #ffffff;
-  --top-bar-text-muted: #b0c4de;
-  
-  --divider-light: #d9dcd9;
-  --divider-strong: #b5bdb5;
-  
-  --focus-ring: 0 0 0 3px rgba(30, 58, 95, 0.15);
-  --selection-bg: rgba(30, 58, 95, 0.2);
 }
 
 * {
@@ -77,102 +54,121 @@
 }
 
 html, body {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  font-family: var(--font-family);
+  background: var(--bg-main);
+  color: var(--text);
+  line-height: 1.5;
 }
 
 body {
-  font-family: var(--font-family);
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text);
-  background: var(--bg-main);
-  background-image: var(--surface-texture);
-  background-size: var(--surface-texture-size);
-  background-position: var(--surface-texture-position);
+  display: flex;
+  flex-direction: column;
 }
 
-[data-aivic-shell-pattern="command_center"] {
+[data-aivic-shell-pattern] {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
+  overflow: hidden;
 }
 
 .shell-header {
-  background: var(--top-bar-bg);
-  border-bottom: var(--border-width) solid var(--top-bar-border);
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
   height: 56px;
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 calc(var(--space-unit) * 3);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-card);
 }
 
 .shell-header-left {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 2);
+  gap: calc(var(--space-unit) * 3);
 }
 
 .shell-logo {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--top-bar-text);
+  color: #ffffff;
   letter-spacing: 0.5px;
 }
 
-.shell-nav-toggle {
-  background: none;
-  border: none;
-  color: var(--top-bar-text);
-  cursor: pointer;
-  font-size: 20px;
-  padding: calc(var(--space-unit) * 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity var(--motion-duration);
+.shell-logo-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
 }
 
-.shell-nav-toggle:hover {
-  opacity: 0.8;
+.shell-nav-top {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
+  list-style: none;
+}
+
+.shell-nav-item {
+  position: relative;
+}
+
+.shell-nav-link {
+  display: block;
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-duration) ease;
+  border-bottom: 2px solid transparent;
+}
+
+.shell-nav-link:hover {
+  color: #ffffff;
+}
+
+.shell-nav-link.aivic-active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
 }
 
 .shell-header-right {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 1.5);
+  gap: calc(var(--space-unit) * 2);
 }
 
-.user-avatar {
+.shell-user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--primary-light);
-  color: var(--top-bar-text);
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.user-name {
-  color: var(--top-bar-text);
   font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-.user-logout {
-  color: var(--top-bar-text-muted);
-  text-decoration: none;
+.shell-user-name {
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.shell-logout {
   font-size: 12px;
-  transition: color var(--motion-duration);
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color var(--motion-duration) ease;
 }
 
-.user-logout:hover {
-  color: var(--top-bar-text);
+.shell-logout:hover {
+  color: #ffffff;
 }
 
 .shell-body {
@@ -181,466 +177,409 @@ body {
   overflow: hidden;
 }
 
-.shell-sidebar {
-  width: 240px;
-  background: var(--bg-sidebar);
-  border-right: var(--border-width) solid var(--border);
-  overflow-y: auto;
-  flex-shrink: 0;
-  transition: transform var(--motion-duration);
-}
-
-.shell-sidebar.collapsed {
-  transform: translateX(-100%);
-  position: absolute;
-  z-index: 100;
-  height: 100%;
-}
-
-.shell-nav-section {
-  padding: calc(var(--space-unit) * 1.5) 0;
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.shell-nav-section:last-child {
-  border-bottom: none;
-}
-
-.shell-nav-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 2);
-  letter-spacing: 0.5px;
-}
-
-.shell-nav-item {
-  display: block;
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-  color: var(--text);
-  text-decoration: none;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background var(--motion-duration), color var(--motion-duration);
-  border-left: 3px solid transparent;
-}
-
-.shell-nav-item:hover {
-  background: var(--bg-card-hover);
-}
-
-.shell-nav-item.aivic-active {
-  background: var(--bg-card);
-  border-left-color: var(--primary);
-  color: var(--primary);
-  font-weight: 500;
-}
-
 .content-area {
   flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  background: var(--bg-main);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
 }
 
 [data-aivic-panel] {
-  display: contents;
+  padding: calc(var(--space-unit) * 3);
+  min-height: 100%;
 }
 
-.panel-container {
-  padding: calc(var(--space-unit) * 2.5);
-  flex: 1;
-  overflow-y: auto;
-}
-
-.panel-header {
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.panel-title {
-  font-size: 20px;
-  font-weight: 600;
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
   color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 0.5);
-}
-
-.panel-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.section-card {
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 1.75);
-  margin-bottom: calc(var(--space-unit) * 2);
-  box-shadow: var(--shadow-card);
-}
-
-.section-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1.25);
-  text-transform: uppercase;
+  margin-bottom: calc(var(--space-unit) * 1);
   letter-spacing: 0.3px;
 }
 
-.form-group {
+.page-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 3);
+  font-weight: 500;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
   margin-bottom: calc(var(--space-unit) * 1.5);
+  letter-spacing: 0.3px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 3);
+  box-shadow: var(--shadow-card);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.form-group {
+  margin-bottom: calc(var(--space-unit) * 2);
 }
 
 .form-label {
   display: block;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.5);
+  margin-bottom: calc(var(--space-unit) * 0.75);
 }
 
-.form-input, .form-select, .form-textarea {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1);
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
   font-size: 13px;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-control);
-  background: var(--bg-input);
+  background: #ffffff;
   color: var(--text);
   font-family: var(--font-family);
-  transition: border-color var(--motion-duration), box-shadow var(--motion-duration);
+  transition: border-color var(--motion-duration) ease;
 }
 
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: var(--focus-ring);
-}
-
-.form-input:disabled, .form-select:disabled {
-  background: var(--bg-input-disabled);
-  color: var(--text-muted);
-  cursor: not-allowed;
+.form-input,
+.form-select {
+  height: var(--control-height);
 }
 
 .form-textarea {
-  resize: vertical;
   min-height: 80px;
+  resize: vertical;
 }
 
-.button {
-  padding: calc(var(--space-unit) * 0.75) calc(var(--space-unit) * 1.5);
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.form-row.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.btn {
+  height: var(--control-height);
+  padding: 0 calc(var(--space-unit) * 2);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   border-radius: var(--radius-control);
   cursor: pointer;
-  transition: background var(--motion-duration), color var(--motion-duration);
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 0.5);
+  transition: all var(--motion-duration) ease;
+  font-family: var(--font-family);
 }
 
-.button-primary {
+.btn-primary {
   background: var(--primary);
-  color: var(--top-bar-text);
+  color: #ffffff;
 }
 
-.button-primary:hover {
+.btn-primary:hover {
   background: var(--primary-hover);
 }
 
-.button-secondary {
+.btn-secondary {
   background: var(--bg-card);
   color: var(--text);
   border: var(--border-width) solid var(--border);
 }
 
-.button-secondary:hover {
-  background: var(--bg-card-hover);
+.btn-secondary:hover {
+  background: #ffffff;
 }
 
-.button-success {
-  background: var(--accent-success);
-  color: white;
+.btn-sm {
+  height: 32px;
+  padding: 0 calc(var(--space-unit) * 1.5);
+  font-size: 12px;
 }
 
-.button-success:hover {
-  background: #1f5620;
-}
-
-.button-warning {
-  background: var(--accent-warning);
-  color: white;
-}
-
-.button-warning:hover {
-  background: #b85f00;
-}
-
-.button-error {
-  background: var(--accent-error);
-  color: white;
-}
-
-.button-error:hover {
-  background: #a01f1f;
-}
-
-.button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.button-group {
+.btn-group {
   display: flex;
   gap: calc(var(--space-unit) * 1);
   margin-top: calc(var(--space-unit) * 2);
 }
 
-.table-wrapper {
-  overflow-x: auto;
-  margin: calc(var(--space-unit) * 1) 0;
+.btn-group.right {
+  justify-content: flex-end;
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
 }
 
-thead {
-  background: var(--bg-card-hover);
-  border-bottom: var(--border-width) solid var(--divider-strong);
+.table thead {
+  background: var(--primary);
+  color: #ffffff;
 }
 
-th {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.25);
+.table th {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   text-align: left;
   font-weight: 600;
-  color: var(--primary);
   font-size: 12px;
-  text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
-td {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.25);
-  border-bottom: var(--border-width) solid var(--divider-light);
-  color: var(--text);
+.table td {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  border-top: var(--border-width) solid var(--border);
 }
 
-tbody tr:hover {
-  background: rgba(30, 58, 95, 0.03);
+.table tbody tr:hover {
+  background: rgba(44, 62, 80, 0.02);
 }
 
 .badge {
   display: inline-block;
-  padding: calc(var(--space-unit) * 0.25) calc(var(--space-unit) * 0.75);
-  border-radius: calc(var(--radius-control) * 2);
+  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
   font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.2px;
+  font-weight: 600;
+  border-radius: 2px;
+  white-space: nowrap;
 }
 
 .badge-success {
-  background: rgba(46, 125, 50, 0.15);
-  color: var(--accent-success);
+  background: rgba(61, 126, 74, 0.15);
+  color: var(--success);
 }
 
 .badge-warning {
-  background: rgba(217, 119, 6, 0.15);
-  color: var(--accent-warning);
+  background: rgba(166, 124, 82, 0.15);
+  color: var(--warning);
 }
 
 .badge-error {
-  background: rgba(201, 42, 42, 0.15);
-  color: var(--accent-error);
+  background: rgba(139, 69, 69, 0.15);
+  color: var(--error);
 }
 
 .badge-info {
-  background: rgba(25, 118, 210, 0.15);
-  color: var(--accent-info);
+  background: rgba(74, 111, 165, 0.15);
+  color: var(--info);
 }
 
-.summary-grid {
+.grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: calc(var(--space-unit) * 1.5);
-  margin: calc(var(--space-unit) * 1.5) 0;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
 }
 
-.summary-item {
-  background: var(--bg-input);
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.stat-box {
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 1.25);
+  padding: calc(var(--space-unit) * 2);
   text-align: center;
 }
 
-.summary-label {
-  font-size: 11px;
+.stat-label {
+  font-size: 12px;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin-bottom: calc(var(--space-unit) * 0.5);
+  font-weight: 500;
+  margin-bottom: calc(var(--space-unit) * 1);
 }
 
-.summary-value {
-  font-size: 18px;
-  font-weight: 600;
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
   color: var(--primary);
 }
 
-.accordion {
+.stat-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: calc(var(--space-unit) * 0.5);
+}
+
+.diff-box {
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  overflow: hidden;
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.diff-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 2);
   margin-bottom: calc(var(--space-unit) * 1.5);
 }
 
-.accordion-item {
-  border-bottom: var(--border-width) solid var(--border);
+.diff-row:last-child {
+  margin-bottom: 0;
 }
 
-.accordion-item:last-child {
-  border-bottom: none;
-}
-
-.accordion-header {
-  background: var(--bg-card);
-  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.75);
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 500;
-  color: var(--primary);
-  transition: background var(--motion-duration);
-  user-select: none;
-}
-
-.accordion-header:hover {
-  background: var(--bg-card-hover);
-}
-
-.accordion-toggle {
+.diff-label {
   font-size: 12px;
-  transition: transform var(--motion-duration);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 0.5);
 }
 
-.accordion-item.open .accordion-toggle {
-  transform: rotate(180deg);
+.diff-before {
+  padding: calc(var(--space-unit) * 1);
+  background: rgba(166, 124, 82, 0.08);
+  border-left: 3px solid var(--warning);
+  border-radius: var(--radius-control);
+  font-size: 12px;
+  color: var(--text);
 }
 
-.accordion-content {
-  display: none;
-  padding: calc(var(--space-unit) * 1.5);
-  background: var(--bg-input);
+.diff-after {
+  padding: calc(var(--space-unit) * 1);
+  background: rgba(61, 126, 74, 0.08);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius-control);
+  font-size: 12px;
+  color: var(--text);
 }
 
-.accordion-item.open .accordion-content {
-  display: block;
+.alert-box {
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+}
+
+.alert-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1);
+}
+
+.alert-content {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
 }
 
 .progress-bar {
   width: 100%;
-  height: 6px;
-  background: var(--divider-light);
-  border-radius: 3px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
   overflow: hidden;
   margin: calc(var(--space-unit) * 1) 0;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--accent-success);
-  transition: width var(--motion-duration);
+  background: var(--primary);
+  transition: width var(--motion-duration) ease;
 }
 
-.alert {
-  padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 1.5);
-  border-radius: var(--radius-card);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-  font-size: 13px;
-  border-left: 3px solid;
-}
-
-.alert-success {
-  background: rgba(46, 125, 50, 0.1);
-  border-left-color: var(--accent-success);
-  color: var(--accent-success);
-}
-
-.alert-warning {
-  background: rgba(217, 119, 6, 0.1);
-  border-left-color: var(--accent-warning);
-  color: var(--accent-warning);
-}
-
-.alert-error {
-  background: rgba(201, 42, 42, 0.1);
-  border-left-color: var(--accent-error);
-  color: var(--accent-error);
-}
-
-.alert-info {
-  background: rgba(25, 118, 210, 0.1);
-  border-left-color: var(--accent-info);
-  color: var(--accent-info);
-}
-
-.two-column {
+.split-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 2);
+  gap: calc(var(--space-unit) * 3);
 }
 
-.three-section {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-unit) * 2);
+.split-left {
+  grid-column: 1;
 }
 
-@media (max-width: 1024px) {
-  .two-column {
+.split-right {
+  grid-column: 2;
+}
+
+@media (max-width: 1200px) {
+  .grid-4,
+  .grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .split-layout {
     grid-template-columns: 1fr;
   }
-  
-  .shell-sidebar {
-    position: absolute;
-    height: 100%;
-    z-index: 100;
+  .split-left,
+  .split-right {
+    grid-column: 1;
   }
 }
 
 @media (max-width: 768px) {
-  .shell-header {
-    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
   }
-  
-  .shell-sidebar {
-    width: 200px;
+  .form-row,
+  .form-row.three {
+    grid-template-columns: 1fr;
   }
-  
-  .panel-container {
-    padding: calc(var(--space-unit) * 1.5);
+  .shell-nav-top {
+    flex-direction: column;
+    gap: 0;
   }
-  
-  .summary-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .shell-nav-link {
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
+    border-bottom: none;
+    border-left: 3px solid transparent;
+  }
+  .shell-nav-link.aivic-active {
+    border-left-color: #ffffff;
+    border-bottom-color: transparent;
   }
 }
   </style>
+  
 <script>
 window.AIVIC_API_URL = "https://mkwmoife37uqyv4zhy4yhweozq0oddxn.lambda-url.us-east-1.on.aws/";
 window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "料金・返金ルール管理・検証システム";
 window.AIVIC_TABLES = [{"tableName":"ログインユーザー","purpose":"料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ログイン用メールアドレス、システム内で一意"},{"name":"パスワードハッシュ","type":"varchar(100)","required":true,"description":"ハッシュ化されたパスワード"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ユーザーの表示名"},{"name":"ロール","type":"varchar(100)","required":true,"description":"ユーザーの権限レベル（管理者、担当者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効、無効、一時停止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"最後にログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーアカウント作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザー情報最終更新日時"},{"name":"作成者","type":"varchar(100)","required":false,"description":"ユーザーアカウント作成者のユーザーID"}]}];
-window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"システム管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 08:00:00","更新日時":"2025-01-15 09:30:00","作成者":"rec-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.yuki@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木由紀","ロール":"営業事務員","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.kaoru@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木薫","ロール":"部門長","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"550e8400-e29b-41d4-a716-446655440000","メールアドレス":"suzuki.yuki@support.example.com","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP","ユーザー名":"鈴木由紀","ロール":"カスタマーサポート担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"佐藤太郎"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.yuki@company.jp","パスワードハッシュ":"$2b$12$8kL9mN2pQ5vR7sT4uW6xZ.9aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0u","ユーザー名":"鈴木由紀","ロール":"監査担当者","ステータス":"有効","最終ログイン日時":"2025-01-16 09:32:15","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"legacy-admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"旧システム管理者","ロール":"管理者","ステータス":"無効","最終ログイン日時":"2024-03-15 14:32:00","作成日時":"2024-01-10 09:00:00","更新日時":"2024-06-20 11:45:00","作成者":"rec-sys-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00","作成日時":"2025-01-10T14:20:00","更新日時":"2025-01-10T14:20:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-11-15 09:30:00","作成日時":"2023-04-10 10:15:00","更新日時":"2025-01-20 14:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.viewer@deloitte-jp.co.jp","パスワードハッシュ":"$2b$12$8kN9pL2mQ5vX7zJ4hR8sF.e6tY3wB1cD9mN2pQ5vX7zJ4hR8sF.e6t","ユーザー名":"デロイト監査部_ビューアー","ロール":"ビューアー","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-11-20 09:15:00","更新日時":"2025-01-10 10:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"プロジェクトマネージャー","ステータス":"一時停止","最終ログイン日時":"2024-12-15 17:45:32","作成日時":"2021-04-01 09:00:00","更新日時":"2025-01-20 14:30:00","作成者":"rec-admin-001"}]};
+window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/1Pq","ユーザー名":"山田太郎","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00","作成日時":"2024-04-01T10:00:00","更新日時":"2025-01-15T09:30:00","作成者":"system"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:22:18","更新日時":"2025-01-10 16:45:32","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"satoh.yuki@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","ユーザー名":"佐藤由紀","ロール":"営業料金確認権限","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-10T14:20:00+09:00","更新日時":"2025-01-10T16:45:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"経理部門_返金承認権限","ステータス":"有効","最終ログイン日時":"2025-01-15T09:32:45+09:00","作成日時":"2024-04-10T14:20:00+09:00","更新日時":"2025-01-10T16:45:30+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamamoto.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890","ユーザー名":"山本花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-11-15 14:32:00","作成日時":"2023-04-10 09:15:00","更新日時":"2024-12-01 10:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"tanaka.taro@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"田中太郎","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2024-11-15 17:45:32","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:30:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.yamada@external-audit.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/KFm","ユーザー名":"山田監査人","ロール":"監査人","ステータス":"有効","最終ログイン日時":"2025-01-15T10:30:00+09:00","作成日時":"2024-12-01T09:00:00+09:00","更新日時":"2025-01-15T10:30:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-20T14:22:15+09:00","更新日時":"2025-01-10T16:45:30+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$kR9vE8mL2pQ4xJ6nF3sT5eW9oI1uY2vX7cB4dA5eF6gH7iJ8kL9m","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-03-20 14:15:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788233368370";
 window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
@@ -651,280 +590,340 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
   <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
     <header class="shell-header">
       <div class="shell-header-left">
-        <button class="shell-nav-toggle" id="nav-toggle">☰</button>
-        <div class="shell-logo">料金・返金ルール管理</div>
+        <div class="shell-logo">
+          <div>料金・返金ルール管理</div>
+          <div class="shell-logo-sub">公共施設予約</div>
+        </div>
+        <nav>
+          <ul class="shell-nav-top">
+            <li class="shell-nav-item">
+              <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">ルール管理</a>
+            </li>
+            <li class="shell-nav-item">
+              <a class="shell-nav-link" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">計算異常検出</a>
+            </li>
+          </ul>
+        </nav>
       </div>
       <div class="shell-header-right">
-        <div class="user-avatar">U</div>
-        <div class="user-name">ユーザー</div>
-        <a href="./login.html" class="user-logout">ログアウト</a>
+        <div class="shell-user-avatar">U</div>
+        <div class="shell-user-name">ユーザー</div>
+        <a class="shell-logout" href="./login.html">ログアウト</a>
       </div>
     </header>
-
     <div class="shell-body">
-      <aside class="shell-sidebar" id="sidebar">
-        <div class="shell-nav-section">
-          <div class="shell-nav-label">メイン</div>
-          <a class="shell-nav-item aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">ルール管理</a>
-          <a class="shell-nav-item" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">異常検出</a>
-        </div>
-        <div class="shell-nav-section">
-          <div class="shell-nav-label">システム</div>
-          <a class="shell-nav-item" href="./login.html">ログアウト</a>
-        </div>
-      </aside>
-
       <main class="content-area">
         <div data-aivic-panel="scr-1788233353960" style="display:none"></div>
-        <div data-aivic-panel="scr-1788233368370" style="display:block"><div style="display: flex; flex-direction: column; gap: 24px; padding: 16px; background: var(--bg-main); min-height: 100vh;">
+        <div data-aivic-panel="scr-1788233368370" style="display:block"><div style="display: flex; flex-direction: column; gap: 24px; padding: 20px; background: var(--bg-main); color: var(--text); font-family: var(--font-family); min-height: 100vh;">
+  
+  <!-- Breadcrumb / Sub-header -->
+  <div style="font-size: 13px; color: var(--text-muted); margin-bottom: -16px;">
+    公共施設予約 · 料金・返金ルール管理・検証システム · 料金計算異常検出・分析画面
+  </div>
 
-  <!-- 上部：計算対象期間選択 + 実行ボタン -->
-  <div style="display: flex; gap: 16px; align-items: flex-end;">
-    <div style="flex: 0 0 auto;">
-      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">計算対象期間</label>
+  <!-- ========== Section 1: 計算実行エリア ========== -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end;">
+    <!-- 計算対象期間選択 -->
+    <div>
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;">計算対象期間</label>
       <input 
         type="month" 
-        data-testid="calculation-period-input"
-        style="padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 14px; font-family: var(--font-family);"
+        data-testid="billing-period-input"
+        style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 14px; box-sizing: border-box;"
       />
     </div>
+    <!-- 月次料金計算実行ボタン -->
     <button 
       data-testid="execute-calculation-button"
-      style="padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; height: 40px; display: flex; align-items: center; gap: 8px;"
+      style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms; height: var(--control-height);"
+      onmouseover="this.style.background = 'var(--primary-hover)'"
+      onmouseout="this.style.background = 'var(--primary)'"
     >
-      <span>月次料金計算を実行</span>
-      <span id="calc-spinner" style="display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+      月次料金計算を実行
     </button>
   </div>
 
-  <!-- 計算結果サマリー（KPI カード） -->
-  <div id="summary-section" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">計算対象件数</div>
-      <div data-testid="kpi-total-count" style="font-size: 24px; font-weight: 700; color: var(--text);">—</div>
+  <!-- ========== Section 2: 計算結果サマリー（4列カード） ========== -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    <!-- 対象予約件数 -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">対象予約件数</div>
+      <div data-testid="kpi-reservation-count" style="font-size: 24px; font-weight: 700; color: var(--primary);">0</div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">件</div>
     </div>
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">計算総金額</div>
-      <div data-testid="kpi-total-amount" style="font-size: 24px; font-weight: 700; color: var(--text);">¥—</div>
+    <!-- 総料金 -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">総料金</div>
+      <div data-testid="kpi-total-revenue" style="font-size: 24px; font-weight: 700; color: var(--primary);">¥0</div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">（税抜）</div>
     </div>
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">異常検出件数</div>
-      <div data-testid="kpi-anomaly-count" style="font-size: 24px; font-weight: 700; color: var(--primary);">—</div>
+    <!-- 手数料 -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">手数料</div>
+      <div data-testid="kpi-fee-amount" style="font-size: 24px; font-weight: 700; color: var(--primary);">¥0</div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">（税抜）</div>
     </div>
-  </div>
-
-  <!-- 異常検出結果一覧 -->
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card);">
-      <h3 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0;">異常検出結果</h3>
-    </div>
-    <div class="table-wrap" style="max-height: 400px; overflow-y: auto;">
-      <table data-testid="anomaly-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
-          <tr>
-            <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">異常ID</th>
-            <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">ユーザー/予約ID</th>
-            <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">異常種別</th>
-            <th style="padding: 8px 12px; text-align: right; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">金額差分</th>
-            <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">検出日時</th>
-            <th style="padding: 8px 12px; text-align: center; color: var(--text); font-weight: 600;">ステータス</th>
-          </tr>
-        </thead>
-        <tbody id="anomaly-tbody">
-          <tr style="background: var(--bg-card); color: var(--text-muted);">
-            <td colspan="6" style="padding: 24px; text-align: center; font-size: 13px;">計算を実行してください</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- 返金額 -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">返金額</div>
+      <div data-testid="kpi-refund-amount" style="font-size: 24px; font-weight: 700; color: var(--error);">¥0</div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">（税抜）</div>
     </div>
   </div>
 
-  <!-- 下部：詳細パネル（左40% + 右60%） -->
-  <div style="display: grid; grid-template-columns: 40% 60%; gap: 16px;">
+  <!-- ========== Section 3: 異常検出結果一覧 + 詳細パネル（2列レイアウト） ========== -->
+  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; min-height: 400px;">
+    
+    <!-- 左：異常検出結果一覧 -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text);">異常検出結果</div>
+      <div class="table-wrap" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg-card);">
+        <table data-testid="anomaly-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
+            <tr>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">予約ID</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">異常種別</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600;">金額差</th>
+            </tr>
+          </thead>
+          <tbody data-testid="anomaly-tbody" id="anomaly-tbody">
+            <tr style="border-bottom: 1px solid var(--border); cursor: pointer; transition: background 150ms;" onmouseover="this.style.background = 'rgba(44, 62, 80, 0.04)'" onmouseout="this.style.background = 'transparent'">
+              <td style="padding: 10px 12px; border-right: 1px solid var(--border);">—</td>
+              <td style="padding: 10px 12px; border-right: 1px solid var(--border); color: var(--text-muted);">（計算待機中）</td>
+              <td style="padding: 10px 12px;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-    <!-- 左：異常項目詳細 + 適用ルール確認 -->
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-      <!-- 異常項目詳細 -->
-      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-        <h4 style="font-size: 13px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">異常項目詳細</h4>
+    <!-- 右：異常項目詳細表示パネル -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text);">異常詳細</div>
+      <div class="card" style="flex: 1; padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow-y: auto; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
         <div id="anomaly-detail-panel" style="font-size: 13px; color: var(--text-muted);">
-          <p style="margin: 0; padding: 8px 0; border-bottom: 1px solid var(--border);">異常を選択してください</p>
+          <div style="text-align: center; padding: 40px 0;">異常を選択してください</div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- 適用ルール確認パネル -->
-      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-        <h4 style="font-size: 13px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">適用ルール</h4>
-        <div id="applied-rule-panel" style="font-size: 13px; color: var(--text-muted);">
-          <p style="margin: 0; padding: 8px 0;">ルール情報はここに表示されます</p>
+  <!-- ========== Section 4: 適用ルール確認 + ルール検証 ========== -->
+  <div style="display: grid; grid-template-columns: 1fr 200px; gap: 16px; align-items: start;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text);">適用ルール確認</div>
+      <div class="card" style="padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); font-size: 12px; color: var(--text-muted); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+        <div id="applied-rules-panel" style="line-height: 1.6;">
+          <div>ルール版：—</div>
+          <div style="margin-top: 8px; color: var(--text-muted);">（計算実行後に表示）</div>
         </div>
+      </div>
+    </div>
+    <button 
+      data-testid="validate-rules-button"
+      style="padding: 10px 14px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 150ms; height: fit-content; margin-top: 24px;"
+      onmouseover="this.style.borderColor = 'var(--primary)'; this.style.color = 'var(--primary)'"
+      onmouseout="this.style.borderColor = 'var(--border)'; this.style.color = 'var(--text)'"
+    >
+      ルール検証を実行
+    </button>
+  </div>
+
+  <!-- ========== Section 5: 異常原因分析レポート ========== -->
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 13px; font-weight: 600; color: var(--text);">異常原因分析</div>
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); font-size: 12px; line-height: 1.6; color: var(--text); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <div id="analysis-report-panel" style="color: var(--text-muted);">
+        <div>分類：—</div>
+        <div style="margin-top: 6px;">原因：—</div>
+        <div style="margin-top: 6px;">影響範囲：—</div>
+        <div style="margin-top: 8px; color: var(--text-muted); font-size: 11px;">（計算実行後に表示）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Section 6: 補正データ入力フォーム ========== -->
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 13px; font-weight: 600; color: var(--text);">補正データ入力</div>
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <!-- 補正対象予約ID -->
+        <div>
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正対象予約ID</label>
+          <input 
+            type="text" 
+            data-testid="correction-reservation-id"
+            placeholder="自動入力"
+            readonly
+            style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text-muted); font-size: 12px; box-sizing: border-box;"
+          />
+        </div>
+        <!-- 補正金額 -->
+        <div>
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正金額（¥）</label>
+          <input 
+            type="number" 
+            data-testid="correction-amount"
+            placeholder="0"
+            style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 12px; box-sizing: border-box;"
+          />
+        </div>
+        <!-- 補正理由 -->
+        <div>
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正理由</label>
+          <select 
+            data-testid="correction-reason-select"
+            style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 12px; box-sizing: border-box; accent-color: var(--primary);"
+          >
+            <option value="">選択してください</option>
+            <option value="rule-error">ルール適用誤り</option>
+            <option value="data-error">データ入力誤り</option>
+            <option value="system-error">システムエラー</option>
+            <option value="manual-adjustment">手動調整</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
         <button 
-          data-testid="verify-rule-button"
-          style="margin-top: 12px; padding: 6px 12px; background: transparent; color: var(--primary); border: 1px solid var(--primary); border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%;"
+          data-testid="confirm-correction-button"
+          style="padding: 10px 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 150ms;"
+          onmouseover="this.style.background = 'var(--primary-hover)'"
+          onmouseout="this.style.background = 'var(--primary)'"
         >
-          ルール検証を実行
+          補正内容を確認
+        </button>
+        <button 
+          data-testid="apply-correction-button"
+          style="padding: 10px 14px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 150ms;"
+          onmouseover="this.style.borderColor = 'var(--primary)'; this.style.color = 'var(--primary)'"
+          onmouseout="this.style.borderColor = 'var(--border)'; this.style.color = 'var(--text)'"
+        >
+          補正を反映
         </button>
       </div>
     </div>
-
-    <!-- 右：異常原因分析 + 補正フォーム -->
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-      <!-- 異常原因分析レポート -->
-      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-        <h4 style="font-size: 13px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">原因分析レポート</h4>
-        <div id="analysis-report-panel" style="font-size: 12px; color: var(--text-muted); line-height: 1.6; max-height: 150px; overflow-y: auto;">
-          <p style="margin: 0; padding: 8px 0;">分析結果はここに表示されます</p>
-        </div>
-      </div>
-
-      <!-- 補正データ入力フォーム -->
-      <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-        <h4 style="font-size: 13px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;">補正データ入力</h4>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <div>
-            <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正金額（円）</label>
-            <input 
-              type="number" 
-              data-testid="correction-amount-input"
-              placeholder="0"
-              style="width: 100%; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family); box-sizing: border-box;"
-            />
-          </div>
-          <div>
-            <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正理由</label>
-            <textarea 
-              data-testid="correction-reason-input"
-              placeholder="補正理由を入力"
-              style="width: 100%; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); border-radius: 4px; font-size: 13px; font-family: var(--font-family); box-sizing: border-box; resize: vertical; min-height: 60px;"
-            ></textarea>
-          </div>
-          <button 
-            data-testid="apply-correction-button"
-            style="padding: 8px 12px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 4px;"
-          >
-            補正内容を確認・反映
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <!-- 最下部：返金対象者リスト + 返金金額計算結果 -->
-  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="font-size: 14px; font-weight: 600; color: var(--text); margin: 0;">返金対象者リスト</h3>
-      <div style="font-size: 13px; color: var(--text);">
-        <span style="font-weight: 600;">合計返金額：</span>
-        <span data-testid="total-refund-amount" style="font-weight: 700; color: var(--primary);">¥0</span>
-        <span style="margin-left: 16px; color: var(--text-muted);">
-          返金件数：<span data-testid="refund-count" style="font-weight: 600; color: var(--text);">0</span>
-        </span>
+  <!-- ========== Section 7: 返金対象者リスト + 返金金額計算結果 + 返金実行 ========== -->
+  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
+    
+    <!-- 左：返金対象者リスト -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text);">返金対象者リスト</div>
+      <div class="table-wrap" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg-card); max-height: 300px;">
+        <table data-testid="refund-list" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+          <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
+            <tr>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">利用者ID</th>
+              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">返金理由</th>
+              <th style="padding: 10px 12px; text-align: right; color: var(--text); font-weight: 600;">返金額</th>
+            </tr>
+          </thead>
+          <tbody data-testid="refund-tbody" id="refund-tbody">
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 10px 12px; border-right: 1px solid var(--border); color: var(--text-muted);">—</td>
+              <td style="padding: 10px 12px; border-right: 1px solid var(--border); color: var(--text-muted);">—</td>
+              <td style="padding: 10px 12px; text-align: right; color: var(--text-muted);">¥0</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="table-wrap" style="max-height: 300px; overflow-y: auto;">
-      <table data-testid="refund-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
-          <tr>
-            <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">対象者ID</th>
-            <th style="padding: 8px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">対象者名</th>
-            <th style="padding: 8px 12px; text-align: right; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">返金金額</th>
-            <th style="padding: 8px 12px; text-align: center; color: var(--text); font-weight: 600;">返金ステータス</th>
-          </tr>
-        </thead>
-        <tbody id="refund-tbody">
-          <tr style="background: var(--bg-card); color: var(--text-muted);">
-            <td colspan="4" style="padding: 24px; text-align: center; font-size: 13px;">返金対象者がいません</td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- 右：返金金額計算結果 + 返金実行 -->
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--text);">返金計算結果</div>
+        <div class="card" style="padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); font-size: 12px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">
+            <span style="color: var(--text-muted);">返金対象者数</span>
+            <span data-testid="refund-count" style="font-weight: 600; color: var(--text);">0 人</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="color: var(--text-muted);">合計返金額</span>
+            <span data-testid="total-refund-amount" style="font-weight: 600; color: var(--error);">¥0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">返金手数料</span>
+            <span data-testid="refund-fee" style="font-weight: 600; color: var(--text);">¥0</span>
+          </div>
+        </div>
+      </div>
+      <button 
+        data-testid="execute-refund-button"
+        style="padding: 12px 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer; transition: background 150ms; width: 100%;"
+        onmouseover="this.style.background = 'var(--primary-hover)'"
+        onmouseout="this.style.background = 'var(--primary)'"
+      >
+        返金処理を実行
+      </button>
     </div>
   </div>
 
 </div>
 
-<!-- 補正確認ダイアログ -->
+<!-- ========== 確認ダイアログ（補正内容確認） ========== -->
 <div id="correction-confirm-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 6px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4); min-width: 400px;">
-    <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0 0 16px 0;">補正内容の確認</h3>
-    <div id="correction-confirm-content" style="font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 20px; padding: 12px; background: var(--bg-main); border-radius: 4px;">
-      <!-- 確認内容がここに表示される -->
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">補正内容確認</div>
+    <div style="font-size: 13px; line-height: 1.8; margin-bottom: 20px; color: var(--text);">
+      <div style="margin-bottom: 8px;"><strong>予約ID：</strong><span id="confirm-res-id">—</span></div>
+      <div style="margin-bottom: 8px;"><strong>補正金額：</strong><span id="confirm-amount">¥0</span></div>
+      <div style="margin-bottom: 8px;"><strong>補正理由：</strong><span id="confirm-reason">—</span></div>
     </div>
     <div style="display: flex; gap: 12px; justify-content: flex-end;">
       <button 
-        data-testid="correction-cancel-button"
-        style="padding: 8px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;"
+        data-testid="cancel-correction-button"
+        style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
+        onclick="document.getElementById('correction-confirm-modal').style.display = 'none'"
       >
         キャンセル
       </button>
       <button 
-        data-testid="correction-confirm-button"
-        style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;"
+        data-testid="confirm-correction-ok-button"
+        style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
+        onmouseover="this.style.background = 'var(--primary-hover)'"
+        onmouseout="this.style.background = 'var(--primary)'"
       >
-        反映する
+        確認して反映
       </button>
     </div>
   </div>
 </div>
 
-<!-- ルール検証結果ダイアログ -->
-<div id="rule-verify-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 6px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4); min-width: 450px;">
-    <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0 0 16px 0;">ルール検証結果</h3>
-    <div id="rule-verify-content" style="font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 20px; padding: 12px; background: var(--bg-main); border-radius: 4px; max-height: 300px; overflow-y: auto;">
-      <!-- 検証結果がここに表示される -->
+<!-- ========== 確認ダイアログ（返金実行確認） ========== -->
+<div id="refund-confirm-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">返金処理実行確認</div>
+    <div style="font-size: 13px; line-height: 1.8; margin-bottom: 20px; color: var(--text);">
+      <div style="margin-bottom: 8px;"><strong>返金対象者数：</strong><span id="confirm-refund-count">0</span> 人</div>
+      <div style="margin-bottom: 8px;"><strong>合計返金額：</strong><span id="confirm-total-refund" style="color: var(--error); font-weight: 600;">¥0</span></div>
+      <div style="margin-top: 16px; padding: 12px; background: var(--bg-main); border-left: 3px solid var(--warning); border-radius: 3px; font-size: 12px; color: var(--text);">
+        この操作は取り消せません。内容をご確認の上、実行してください。
+      </div>
     </div>
     <div style="display: flex; gap: 12px; justify-content: flex-end;">
       <button 
-        data-testid="rule-verify-close-button"
-        style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;"
+        data-testid="cancel-refund-button"
+        style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
+        onclick="document.getElementById('refund-confirm-modal').style.display = 'none'"
       >
-        閉じる
+        キャンセル
+      </button>
+      <button 
+        data-testid="confirm-refund-ok-button"
+        style="padding: 10px 16px; background: var(--error); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
+        onmouseover="this.style.background = '#6b3535'"
+        onmouseout="this.style.background = 'var(--error)'"
+      >
+        返金処理を実行
       </button>
     </div>
   </div>
-</div>
-
-<style>
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  #correction-confirm-modal[style*="display: flex"],
-  #rule-verify-modal[style*="display: flex"] {
-    display: flex !important;
-  }
-</style></div>
+</div></div>
       </main>
     </div>
   </div>
-
-  <script>
-    const navToggle = document.getElementById('nav-toggle');
-    const sidebar = document.getElementById('sidebar');
-    
-    navToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-    });
-
-    function showScreen(screenId) {
-      const panels = document.querySelectorAll('[data-aivic-panel]');
-      panels.forEach(panel => {
-        panel.style.display = panel.getAttribute('data-aivic-panel') === screenId ? '' : 'none';
-      });
-
-      const navItems = document.querySelectorAll('[data-aivic-nav]');
-      navItems.forEach(item => {
-        item.classList.toggle('aivic-active', item.getAttribute('data-aivic-nav') === screenId);
-      });
-
-      if (window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-      }
-    }
-
-    window.showScreen = showScreen;
-  </script>
-
-  
   
 <script>
 (function() {

@@ -3,29 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>アクセシビリティ改善管理・ユーザーテスト分析システム</title>
+  <title>アクセシビリティ改善管理・ユーザーテスト分析システム | 公共施設予約</title>
   <style>
 :root {
-  --primary: #5a6b7d;
-  --primary-hover: #4a5a6d;
-  --bg-main: #f5f3f0;
-  --bg-card: #ede9e5;
-  --bg-sidebar: #e8e4e0;
-  --border: #d4cec8;
-  --text: #2b2520;
-  --text-muted: #6b6560;
-  --top-bar-bg: #e0dbd6;
-  --top-bar-border: #ccc5be;
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  --radius-card: 6px;
-  --radius-control: 4px;
-  --shadow-card: 0 2px 8px rgba(43, 37, 32, 0.08), 0 1px 3px rgba(43, 37, 32, 0.04);
-  --border-width: 1px;
-  --control-height: 36px;
+  --primary: #2c3e50;
+  --primary-hover: #1a252f;
+  --bg-main: #f0ede8;
+  --bg-card: #e8e5e0;
+  --bg-sidebar: #ebe8e3;
+  --top-bar-bg: #2c3e50;
+  --top-bar-border: #1a252f;
+  --border: #c9c5bd;
+  --text: #1a1f26;
+  --text-muted: #6b7280;
+  --success: #3d7e4a;
+  --warning: #a67c52;
+  --error: #8b4545;
+  --info: #4a6fa5;
+  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
   --space-unit: 8px;
+  --control-height: 40px;
+  --radius-card: 4px;
+  --radius-control: 3px;
+  --border-width: 1px;
+  --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
   --motion-duration: 200ms;
-  --surface-texture: linear-gradient(135deg, rgba(212, 206, 200, 0.3) 0%, transparent 50%), linear-gradient(45deg, rgba(107, 101, 96, 0.05) 0%, transparent 50%);
-  --surface-texture-size: 4px 4px;
+  --surface-texture: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(172, 167, 154, 0.03) 2px,
+      rgba(172, 167, 154, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(172, 167, 154, 0.02) 2px,
+      rgba(172, 167, 154, 0.02) 4px
+    );
+  --surface-texture-size: 100% 100%;
   --surface-texture-position: 0 0;
 }
 
@@ -36,125 +54,124 @@
 }
 
 html, body {
+  width: 100%;
+  height: 100%;
   font-family: var(--font-family);
+  background: var(--bg-main);
   color: var(--text);
-  background-color: var(--bg-main);
   line-height: 1.5;
-  letter-spacing: 0.5px;
 }
 
-.shell {
+body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
-.header {
-  background-color: var(--top-bar-bg);
-  border-bottom: var(--border-width) solid var(--top-bar-border);
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+[data-aivic-shell-pattern] {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.shell-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--space-unit) * 2);
+  height: 56px;
+  background: var(--top-bar-bg);
+  border-bottom: var(--border-width) solid var(--top-bar-border);
+  padding: 0 calc(var(--space-unit) * 3);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-card);
 }
 
-.header-left {
+.shell-header-left {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 2);
+  gap: calc(var(--space-unit) * 3);
 }
 
-.logo {
+.shell-logo {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
+  color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
-.nav-toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text);
-  font-size: 18px;
-  padding: calc(var(--space-unit) * 0.5);
+.shell-logo-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
 }
 
-.header-right {
+.shell-nav-top {
   display: flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 1.5);
+  gap: calc(var(--space-unit) * 2);
+  list-style: none;
 }
 
-.user-section {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 1);
+.shell-nav-item {
+  position: relative;
 }
 
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.user-name {
-  font-size: 13px;
-  color: var(--text);
-}
-
-.logout-link {
-  font-size: 12px;
-  color: var(--primary);
-  text-decoration: none;
-  transition: color var(--motion-duration);
-}
-
-.logout-link:hover {
-  color: var(--primary-hover);
-}
-
-.top-nav {
-  background-color: var(--bg-main);
-  border-bottom: var(--border-width) solid var(--border);
-  padding: 0;
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-.top-nav-item {
-  flex-shrink: 0;
+.shell-nav-link {
+  display: block;
   padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
   cursor: pointer;
+  transition: color var(--motion-duration) ease;
   border-bottom: 2px solid transparent;
-  transition: all var(--motion-duration);
-  white-space: nowrap;
 }
 
-.top-nav-item:hover {
-  color: var(--text);
+.shell-nav-link:hover {
+  color: #ffffff;
 }
 
-.top-nav-item.aivic-active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+.shell-nav-link.aivic-active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
 }
 
-.main-wrapper {
+.shell-header-right {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.shell-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.shell-user-name {
+  font-size: 13px;
+  color: #ffffff;
+}
+
+.shell-logout {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color var(--motion-duration) ease;
+}
+
+.shell-logout:hover {
+  color: #ffffff;
+}
+
+.shell-body {
   display: flex;
   flex: 1;
   overflow: hidden;
@@ -163,250 +180,71 @@ html, body {
 .content-area {
   flex: 1;
   overflow-y: auto;
-  padding: calc(var(--space-unit) * 2);
-  background-color: var(--bg-main);
-}
-
-[data-aivic-panel] {
-  width: 100%;
-}
-
-.card {
-  background-color: var(--bg-card);
+  background: var(--bg-main);
   background-image: var(--surface-texture);
   background-size: var(--surface-texture-size);
   background-position: var(--surface-texture-position);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  box-shadow: var(--shadow-card);
-  transition: all var(--motion-duration);
 }
 
-.card:hover {
-  border-color: var(--primary);
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.grid-full {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 2);
+[data-aivic-panel] {
+  padding: calc(var(--space-unit) * 3);
+  min-height: 100%;
 }
 
 .section-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 1.5);
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 2);
+  letter-spacing: 0.3px;
 }
 
 .section-subtitle {
   font-size: 12px;
   color: var(--text-muted);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+  font-weight: 500;
+}
+
+.card {
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  padding: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 3);
+  box-shadow: var(--shadow-card);
+  transition: background-color var(--motion-duration) ease;
+}
+
+.card:hover {
+  background: #e0dcd7;
+  cursor: pointer;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.card-content {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.card-stat {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
   margin-bottom: calc(var(--space-unit) * 1);
 }
 
-.progress-bar {
-  height: 8px;
-  background-color: var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: calc(var(--space-unit) * 0.5);
-}
-
-.progress-fill {
-  height: 100%;
-  background-color: var(--primary);
-  transition: width var(--motion-duration);
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 0.5);
-}
-
-.stat-label {
+.card-stat-label {
   font-size: 12px;
   color: var(--text-muted);
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--control-height);
-  padding: 0 calc(var(--space-unit) * 2);
-  font-size: 13px;
   font-weight: 500;
-  color: white;
-  background-color: var(--primary);
-  border: none;
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: all var(--motion-duration);
-  text-decoration: none;
-}
-
-.button:hover {
-  background-color: var(--primary-hover);
-}
-
-.button-secondary {
-  color: var(--primary);
-  background-color: transparent;
-  border: var(--border-width) solid var(--primary);
-}
-
-.button-secondary:hover {
-  background-color: var(--primary);
-  color: white;
-}
-
-.button-small {
-  height: 28px;
-  padding: 0 calc(var(--space-unit) * 1.5);
-  font-size: 12px;
-}
-
-.filter-group {
-  display: flex;
-  gap: calc(var(--space-unit) * 1);
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.filter-btn {
-  height: var(--control-height);
-  padding: 0 calc(var(--space-unit) * 1.5);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  background-color: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: all var(--motion-duration);
-}
-
-.filter-btn:hover {
-  color: var(--text);
-  border-color: var(--primary);
-}
-
-.filter-btn.active {
-  color: white;
-  background-color: var(--primary);
-  border-color: var(--primary);
-}
-
-.checklist {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-unit) * 1);
-}
-
-.checklist-item {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 1);
-  padding: calc(var(--space-unit) * 1);
-  font-size: 13px;
-}
-
-.checklist-item input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: var(--primary);
-}
-
-.checklist-label {
-  color: var(--text);
-  flex: 1;
-}
-
-.badge {
-  display: inline-block;
-  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: var(--radius-control);
-  white-space: nowrap;
-}
-
-.badge-completed {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.badge-in-progress {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.badge-pending {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.badge-partial {
-  background-color: #e2e3e5;
-  color: #383d41;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  background-color: var(--bg-card);
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.table thead {
-  background-color: var(--bg-sidebar);
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.table th {
-  padding: calc(var(--space-unit) * 1.5);
-  text-align: left;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.table td {
-  padding: calc(var(--space-unit) * 1.5);
-  border-bottom: var(--border-width) solid var(--border);
-  color: var(--text);
-}
-
-.table tbody tr:hover {
-  background-color: rgba(90, 107, 125, 0.05);
-}
-
-.table a {
-  color: var(--primary);
-  text-decoration: none;
-  transition: color var(--motion-duration);
-}
-
-.table a:hover {
-  color: var(--primary-hover);
-  text-decoration: underline;
 }
 
 .form-group {
@@ -418,21 +256,35 @@ html, body {
   font-size: 12px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.5);
+  margin-bottom: calc(var(--space-unit) * 0.75);
 }
 
 .form-input,
 .form-select,
 .form-textarea {
   width: 100%;
-  padding: calc(var(--space-unit) * 1);
-  font-size: 12px;
-  color: var(--text);
-  background-color: white;
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+  font-size: 13px;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-control);
+  background: #ffffff;
+  color: var(--text);
   font-family: var(--font-family);
-  transition: border-color var(--motion-duration);
+  transition: border-color var(--motion-duration) ease;
+}
+
+.form-input {
+  height: var(--control-height);
+}
+
+.form-select {
+  height: var(--control-height);
+  cursor: pointer;
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
 }
 
 .form-input:focus,
@@ -440,202 +292,287 @@ html, body {
 .form-textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(90, 107, 125, 0.1);
 }
 
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.radio-group,
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-unit) * 1);
-}
-
-.radio-item,
-.checkbox-item {
+.form-checkbox {
   display: flex;
   align-items: center;
   gap: calc(var(--space-unit) * 1);
+  margin-bottom: calc(var(--space-unit) * 1);
+  cursor: pointer;
 }
 
-.radio-item input[type="radio"],
-.checkbox-item input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+.form-checkbox input {
+  width: 18px;
+  height: 18px;
   cursor: pointer;
   accent-color: var(--primary);
 }
 
-.radio-label,
-.checkbox-label {
-  font-size: 12px;
+.form-checkbox label {
+  font-size: 13px;
   color: var(--text);
   cursor: pointer;
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: calc(var(--space-unit) * 1.5);
-  margin-bottom: calc(var(--space-unit) * 2);
+.btn {
+  height: var(--control-height);
+  padding: 0 calc(var(--space-unit) * 2);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition: all var(--motion-duration) ease;
+  font-family: var(--font-family);
 }
 
-.summary-card {
-  background-color: var(--bg-card);
-  background-image: var(--surface-texture);
-  background-size: var(--surface-texture-size);
-  background-position: var(--surface-texture-position);
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text);
+  border: var(--border-width) solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: #ffffff;
+}
+
+.btn-sm {
+  height: 32px;
+  padding: 0 calc(var(--space-unit) * 1.5);
+  font-size: 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 1.5);
-  text-align: center;
+  overflow: hidden;
 }
 
-.summary-value {
-  font-size: 24px;
+.table thead {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.table th {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.table td {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.table tbody tr:hover {
+  background: rgba(44, 62, 80, 0.02);
+  cursor: pointer;
+}
+
+.badge {
+  display: inline-block;
+  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background: rgba(61, 126, 74, 0.15);
+  color: var(--success);
+}
+
+.badge-warning {
+  background: rgba(166, 124, 82, 0.15);
+  color: var(--warning);
+}
+
+.badge-error {
+  background: rgba(139, 69, 69, 0.15);
+  color: var(--error);
+}
+
+.badge-info {
+  background: rgba(74, 111, 165, 0.15);
+  color: var(--info);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.split-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space-unit) * 3);
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.split-panel-left {
+  grid-column: 1;
+}
+
+.split-panel-right {
+  grid-column: 2;
+}
+
+.list-container {
+  background: #ffffff;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.list-item {
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  border-bottom: var(--border-width) solid var(--border);
+  cursor: pointer;
+  transition: background-color var(--motion-duration) ease;
+  font-size: 13px;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:hover {
+  background: rgba(44, 62, 80, 0.02);
+}
+
+.list-item-title {
   font-weight: 600;
   color: var(--primary);
   margin-bottom: calc(var(--space-unit) * 0.5);
 }
 
-.summary-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.chart-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  background-color: white;
-  border-radius: var(--radius-card);
-  border: var(--border-width) solid var(--border);
-}
-
-.donut-chart {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: conic-gradient(
-    var(--primary) 0deg 216deg,
-    #f8d7da 216deg 288deg,
-    #e2e3e5 288deg 360deg
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.donut-inner {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.donut-percent {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.donut-label {
-  font-size: 10px;
+.list-item-meta {
+  font-size: 12px;
   color: var(--text-muted);
 }
 
-.split-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 2);
-}
-
-.split-left {
-  display: flex;
-  flex-direction: column;
-}
-
-.split-right {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-section {
-  background-color: var(--bg-card);
-  background-image: var(--surface-texture);
-  background-size: var(--surface-texture-size);
-  background-position: var(--surface-texture-position);
+.checklist {
+  background: #ffffff;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-card);
   padding: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 2);
 }
 
-.form-actions {
+.checklist-item {
   display: flex;
+  align-items: flex-start;
+  gap: calc(var(--space-unit) * 1.5);
+  margin-bottom: calc(var(--space-unit) * 1.5);
+  padding-bottom: calc(var(--space-unit) * 1.5);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.checklist-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.checklist-item input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.checklist-item-text {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.checklist-item-label {
+  font-weight: 600;
+  color: var(--primary);
+  display: block;
+  margin-bottom: calc(var(--space-unit) * 0.5);
+}
+
+.filter-bar {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
   gap: calc(var(--space-unit) * 1);
-  margin-top: calc(var(--space-unit) * 2);
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.filter-input {
+  width: 200px;
+}
+
+.action-bar {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
+  margin-bottom: calc(var(--space-unit) * 2);
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-left {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
+}
+
+.action-right {
+  display: flex;
+  gap: calc(var(--space-unit) * 2);
 }
 
 @media (max-width: 1024px) {
   .grid-2,
-  .split-layout,
-  .summary-grid {
+  .grid-3,
+  .split-panel {
     grid-template-columns: 1fr;
   }
-
-  .top-nav {
-    overflow-x: auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    flex-wrap: wrap;
-    padding: calc(var(--space-unit) * 1);
-  }
-
-  .nav-toggle {
-    display: block;
-  }
-
-  .header-left {
-    order: 1;
-    width: 100%;
-  }
-
-  .header-right {
-    order: 2;
-    width: 100%;
-    margin-top: calc(var(--space-unit) * 1);
-  }
-
-  .content-area {
-    padding: calc(var(--space-unit) * 1);
-  }
-
-  .table {
-    font-size: 11px;
-  }
-
-  .table th,
-  .table td {
-    padding: calc(var(--space-unit) * 1);
-  }
-
-  .card {
-    padding: calc(var(--space-unit) * 1.5);
+  
+  .split-panel-right {
+    grid-column: 1;
   }
 }
   </style>
@@ -646,7 +583,7 @@ window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "アクセシビリティ改善管理・ユーザーテスト分析システム";
 window.AIVIC_TABLES = [{"tableName":"ユーザー","purpose":"セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ログイン時に使用するユーザー名"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ユーザーの連絡先メールアドレス"},{"name":"部門","type":"varchar(100)","required":false,"description":"ユーザーが属する部門名"},{"name":"役職","type":"varchar(100)","required":false,"description":"ユーザーの役職"},{"name":"ロール","type":"varchar(100)","required":true,"description":"システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効/無効/休止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"ユーザーが最後にシステムにログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーレコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザーレコードが最後に更新された日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"ユーザーレコードを作成したユーザーまたはシステム"},{"name":"更新者","type":"varchar(100)","required":false,"description":"ユーザーレコードを最後に更新したユーザーまたはシステム"}]},{"tableName":"UI改善実装記録","purpose":"アクセシビリティ改善の実装内容、実装状況、テスト結果を記録・管理し、改善の進捗追跡とユーザーテスト分析を支援する","columns":[{"name":"改善実装記録ID","type":"uuid","required":true,"description":"改善実装記録の一意識別子"},{"name":"改善項目名","type":"varchar(100)","required":true,"description":"実装するアクセシビリティ改善の項目名"},{"name":"改善内容","type":"text","required":true,"description":"改善の詳細な説明と実装内容"},{"name":"対象UI要素","type":"varchar(100)","required":true,"description":"改善対象となるUI要素またはページ名"},{"name":"実装ステータス","type":"varchar(100)","required":true,"description":"実装状況を示すステータス（計画中/実装中/完了/保留中など）"},{"name":"優先度","type":"varchar(100)","required":false,"description":"改善の優先度レベル（高/中/低）"},{"name":"実装予定日","type":"timestamp","required":false,"description":"改善実装の予定日時"},{"name":"実装完了日","type":"timestamp","required":false,"description":"改善実装の完了日時"},{"name":"テスト実施状況","type":"varchar(100)","required":false,"description":"ユーザーテスト実施の状況（未実施/実施中/完了）"},{"name":"テスト結果","type":"text","required":false,"description":"ユーザーテストの結果と分析内容"},{"name":"テスト参加者数","type":"integer","required":false,"description":"ユーザーテストに参加したユーザー数"},{"name":"改善効果","type":"text","required":false,"description":"実装による改善効果の測定結果"},{"name":"備考","type":"text","required":false,"description":"その他の補足情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"記録の作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"記録の最終更新日時"},{"name":"作成者","type":"uuid","required":true,"description":"記録を作成したユーザーID（ユーザーテーブルへの外部キー）"}]},{"tableName":"ユーザーテスト","purpose":"アクセシビリティ改善の効果を検証するため、ユーザーによるテスト実施内容、結果、フィードバックを記録・管理する","columns":[{"name":"テストID","type":"uuid","required":true,"description":"ユーザーテストの一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"テスト参加ユーザーの外部キー参照"},{"name":"改善実装記録ID","type":"uuid","required":true,"description":"テスト対象のUI改善実装記録の外部キー参照"},{"name":"テスト実施日時","type":"timestamp","required":true,"description":"ユーザーテストを実施した日時"},{"name":"テスト種別","type":"varchar(100)","required":true,"description":"テストの種類（例：操作性テスト、スクリーンリーダー検証、キーボード操作確認）"},{"name":"テスト結果","type":"varchar(100)","required":true,"description":"テスト結果の判定（例：合格、不合格、部分合格）"},{"name":"所要時間秒","type":"integer","required":false,"description":"テスト実施にかかった時間（秒単位）"},{"name":"ユーザーフィードバック","type":"text","required":false,"description":"ユーザーから得られた改善に関する意見やコメント"},{"name":"問題点摘出","type":"text","required":false,"description":"テスト中に発見されたアクセシビリティ上の問題点"},{"name":"改善提案","type":"text","required":false,"description":"ユーザーから提案された改善案"},{"name":"満足度スコア","type":"integer","required":false,"description":"ユーザーの満足度を数値化したスコア（例：1-5段階）"},{"name":"作成日時","type":"timestamp","required":true,"description":"テストレコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"テストレコード最終更新日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"テストレコード作成者の識別子"}]}];
-window.AIVIC_PRESET_SEED = {"ユーザー":[{"ユーザーID":"rec-001","ユーザー名":"yamada.security","メールアドレス":"yamada.taro@company.jp","部門":"セキュリティ部門","役職":"部門長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2025-01-10 14:20:00","更新日時":"2025-01-10 14:20:00","作成者":"system","更新者":"system"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"IT部門","役職":"システム分析者","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-06-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"yamamoto.taro","更新者":"nakamura.jiro"},{"ユーザーID":"rec-001","ユーザー名":"yamada_hanako","メールアドレス":"yamada.hanako@company.jp","部門":"営業部","役職":"営業担当","ロール":"閲覧者","ステータス":"無効","最終ログイン日時":"2024-11-15 14:32:00","作成日時":"2023-04-10 09:15:00","更新日時":"2025-01-20 10:45:00","作成者":"system","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業企画部","役職":"部長","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2023-06-20 10:15:00","更新日時":"2025-01-10 14:45:00","作成者":"system","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"yamada.hanako","メールアドレス":"yamada.hanako@company.co.jp","部門":"営業企画部","役職":"課長補佐","ロール":"分析者","ステータス":"休止","最終ログイン日時":"2024-12-15 17:30:00","作成日時":"2023-04-01 09:00:00","更新日時":"2024-12-20 10:15:00","作成者":"system","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2024-12-15 17:45:30","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:30:15","作成者":"システム","更新者":"人事部_山田花子"},{"ユーザーID":"rec-001","ユーザー名":"audit_external_2024","メールアドレス":"yamada.jiro@auditfirm.co.jp","部門":"外部監査","役職":"公認会計士","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-11-01 09:15:00","更新日時":"2025-01-15 14:32:00","作成者":"佐藤花子","更新者":"システム"},{"ユーザーID":"rec-001","ユーザー名":"suzuki_hanako","メールアドレス":"hanako.suzuki@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-03-20 09:15:00","更新日時":"2025-01-16 11:45:00","作成者":"system","更新者":"yamamoto_taro"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.hanako","メールアドレス":"tanaka.hanako@company.co.jp","部門":"営業部","役職":"営業アシスタント","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2025-01-10 14:20:00","更新日時":"2025-01-15 09:30:00","作成者":"system","更新者":"田中太郎"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"データ分析部","役職":"管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2023-06-10 14:20:00","更新日時":"2025-01-10 16:45:00","作成者":"system","更新者":"suzuki.hanako"}],"UI改善実装記録":[{"改善実装記録ID":"rec-001","改善項目名":"スクリーンリーダー対応ARIA属性の実装","改善内容":"視覚障害ユーザーがスクリーンリーダーを使用して正確にコンテンツを認識できるよう、主要なUI要素に対してaria-label、aria-describedby、aria-live、role属性などのARIA属性を段階的に実装する。特にフォーム入力、ボタン、ナビゲーションメニュー、ダイアログボックスを優先対象とし、動的コンテンツ更新時の通知機能も整備する。","対象UI要素":"ログインフォーム、メインナビゲーション、検索機能、ダッシュボード","実装ステータス":"実装中","優先度":"高","実装予定日":"2025-02-28T17:00:00Z","実装完了日":null,"テスト実施状況":"実施中","テスト結果":"予備テスト（参加者5名）では、NVDA使用時にフォームラベルの読み上げが改善され、ボタン機能の認識率が78%から96%に向上。ただし、動的コンテンツ更新時の通知タイミングに若干の遅延が確認され、aria-live設定の最適化が必要。","テスト参加者数":5,"改善効果":"スクリーンリーダー使用時のナビゲーション時間が平均42秒から28秒に短縮。ユーザー満足度は5段階中3.8から4.6に向上。エラー発生率が12%から3%に低下。","備考":"実装はWCAG 2.1レベルAAに準拠。段階2として、より複雑なウィジェット（データテーブル、ツリービュー）への対応を2025年3月に予定している。外部アクセシビリティコンサルタント（株式会社アクセス・ラボ）と連携中。","作成日時":"2024-12-10T09:30:00Z","更新日時":"2025-01-20T14:15:00Z","作成者":"usr-7f2a1e9c"},{"改善実装記録ID":"rec-001","改善項目名":"キーボード操作のみでの全機能操作可能性確保","改善内容":"マウスやタッチパネルに依存せず、キーボード操作のみで全ての機能にアクセス可能にする実装。Tab キーによるフォーカス移動、Enter/Space キーでの操作、矢印キーでのメニュー選択、Esc キーでのダイアログ閉じるなど、標準的なキーボード操作パターンを整備。ARIA ロールの適切な設定と、フォーカス順序の最適化を実施。","対象UI要素":"全ページ共通（ナビゲーション、フォーム、モーダルダイアログ、ドロップダウンメニュー）","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00","実装完了日":"2024-12-20T17:30:00","テスト実施状況":"完了","テスト結果":"スクリーンリーダーユーザー8名、運動障害ユーザー5名を含む計13名でテスト実施。全機能において Tab キーでのフォーカス移動が正常に機能することを確認。フォーカス順序は論理的で直感的との評価。モーダルダイアログの Esc キー対応により、ユーザーの操作効率が向上。ドロップダウンメニューの矢印キー操作について、初期段階では一部ユーザーが操作を認識できなかったが、ツールチップの追加により改善。総合的な満足度は4.6/5.0。","テスト参加者数":13,"改善効果":"キーボード操作による操作性が大幅に向上。スクリーンリーダーユーザーの操作時間が平均32%削減。運動障害を持つユーザーからの満足度が向上し、アクセシビリティ WCAG 2.1 レベル AA の達成基準 2.1.1（キーボード）に完全対応。サイト全体のアクセシビリティスコアが78から92に向上。","備考":"実装過程で、レガシーコンポーネント3点の修正が必要であった。フォーカス管理ライブラリの導入により、今後の保守性も向上。同様の改善手法をモバイルアプリにも適用予定。","作成日時":"2024-11-15T10:20:00","更新日時":"2024-12-21T14:45:00","作成者":"user-789"},{"改善実装記録ID":"rec-001","改善項目名":"色覚異常ユーザー向けの色以外の情報伝達方法の追加","改善内容":"ステータス表示やアラート、グラフなどの色に依存した情報伝達に対して、パターン、テクスチャ、アイコン、テキストラベルなどの視覚的補助手段を併用する実装。特にダッシュボードのチャート、フォームのバリデーション結果、ステータスインジケータに対応。","対象UI要素":"ダッシュボード、フォーム入力画面、ステータス表示パネル、グラフコンポーネント","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00+09:00","実装完了日":"2025-01-22T17:30:00+09:00","テスト実施状況":"完了","テスト結果":"色覚異常のある被験者8名全員が、パターンとテキストラベルの組み合わせにより、色のみの表現と比較して情報認識率が98%に向上。特にプロトノピア（赤緑色盲）ユーザーからの評価が高く、実用性が確認された。軽微な改善として、パターンの密度調整とコントラスト強化を実施。","テスト参加者数":8,"改善効果":"色覚異常ユーザーの情報認識率が従来比約45%向上。ページ内の重要情報の認識時間が平均3.2秒から1.8秒に短縮。アクセシビリティスコアがWCAG AA基準で95点から99点に改善。一般ユーザーの操作性への影響は測定範囲内で無視できるレベル。","備考":"実装にあたり、日本眼科学会の色覚異常に関するガイドラインを参照。今後、プロトタイプテスト段階での色覚異常ユーザーの参加を標準化する方針。他のシステムへの展開も検討中。","作成日時":"2024-10-28T14:15:00+09:00","更新日時":"2025-01-22T18:45:00+09:00","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"モバイルデバイス使用時のタッチターゲットサイズ拡大","改善内容":"モバイルデバイスでのタッチ操作時の誤操作を削減するため、ボタンやリンク要素の最小タッチターゲットサイズを44x44pxから48x48px以上に拡大。特にナビゲーションメニュー、フォーム送信ボタン、削除ボタンなどの重要な操作要素を優先的に実装。タッチターゲット間の最小間隔も8px確保し、誤タップを防止する設計に改善。","対象UI要素":"グローバルナビゲーション、フォーム入力画面、商品一覧ページ、ショッピングカート","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"ユーザーテストの結果、タッチ誤操作が実装前比で約62%削減されました。特に高齢ユーザー層（60代以上）での改善効果が顕著で、操作完了率が78%から91%に向上。スマートフォン（画面サイズ4.7～6.1インチ）での使用感が大幅に改善され、ユーザー満足度は4.2/5.0となりました。一部のタブレットユーザーからは「ボタンが大きすぎる」という意見もありましたが、全体的には肯定的な評価を得ました。","テスト参加者数":47,"改善効果":"・タッチ誤操作率：62%削減（実装前1.8%→実装後0.68%）\n・ページ離脱率：12%低下（特にモバイルユーザー）\n・フォーム送信完了率：85%から93%に向上\n・カスタマーサポート問い合わせ（操作ミス関連）：月平均23件から8件に削減\n・ユーザー満足度スコア：+0.6ポイント向上","備考":"実装はレスポンシブデザイン対応で、デバイス幅768px以下の場合に自動的にタッチターゲットサイズを拡大する仕様。デスクトップ環境での表示は従来通り維持。アクセシビリティ基準WCAG 2.1のレベルAAに準拠。今後はタブレット向けの最適化も検討予定。","作成日時":"2024-11-10T10:15:00Z","更新日時":"2024-12-21T14:45:00Z","作成者":"user-uuid-8394"},{"改善実装記録ID":"rec-001","改善項目名":"フォーム入力エラーメッセージの明確化と読み上げ対応","改善内容":"ユーザーがフォーム入力時に発生するエラーメッセージについて、視覚的な明確化とスクリーンリーダー対応を実装。具体的には、エラーメッセージのテキストを日本語で明確に記述し、aria-live属性を追加してリアルタイムでスクリーンリーダーに通知。エラー箇所を赤色だけでなくアイコンと枠線でも表示し、フォーカス管理を改善。","対象UI要素":"ユーザー登録フォーム、ログインフォーム、問い合わせフォーム","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー利用者15名中14名がエラーメッセージを正確に認識できたと回答。残り1名は表示速度の遅延を指摘。視覚障害者ユーザーからは『従来比で90%理解しやすくなった』とのフィードバック。キーボード操作のみでの入力も問題なく実施可能。","テスト参加者数":15,"改善効果":"スクリーンリーダー対応により、視覚障害者ユーザーのエラー認識率が68%から94%に向上。フォーム送信前の離脱率が12%削減。ユーザーサポートへのフォーム関連問い合わせが月30件から月8件に減少。アクセシビリティ準拠度がWCAG 2.1 Level AAに達成。","備考":"実装過程でaria-describedby属性の活用も検討したが、aria-live属性の方が利用者体験として優れていることが判明。今後、他のフォーム要素への展開を予定。","作成日時":"2024-11-10T10:15:00Z","更新日時":"2024-12-22T14:45:00Z","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"ページネーション機能のキーボード操作対応","改善内容":"ページネーション機能において、キーボードのTabキーとEnterキーで全てのページ遷移ボタンに到達可能にし、スクリーンリーダーでの読み上げ順序を最適化。ARIAラベルを追加して現在ページ位置を明確に表示。","対象UI要素":"商品一覧ページ / ページネーションコンポーネント","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00+09:00","実装完了日":"2024-12-20T17:30:00+09:00","テスト実施状況":"完了","テスト結果":"スクリーンリーダー利用ユーザー10名中9名が改善前比で操作効率が向上したと回答。キーボード単独操作でも全ページへのアクセスが確認できた。ただし、次ページボタンのフォーカス表示がやや不明確との指摘が1件あり、フォーカスインジケーターの色を調整予定。","テスト参加者数":10,"改善効果":"ページ遷移に要する操作時間が平均35%削減。スクリーンリーダー利用ユーザーの離脱率が前月比8%低下。キーボード操作のみでの利用が可能になり、身体障害者からの利用満足度が向上。","備考":"実装にはaria-current属性とaria-labelledby属性を活用。デザイン上の矢印ボタンの視認性も同時に改善。次フェーズでは、ページ番号直接入力機能のアクセシビリティも検討予定。","作成日時":"2024-11-10T14:20:00+09:00","更新日時":"2024-12-20T18:45:00+09:00","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"動画コンテンツへの字幕・音声解説の追加","改善内容":"聴覚障害者および視覚障害者向けのアクセシビリティ対応として、全ての動画コンテンツに日本語字幕とAI音声解説機能を実装。字幕はSRT形式で提供し、音声解説は重要なシーン説明を含む。プレイヤーUI上に字幕ON/OFF切り替えボタンと音声解説選択ドロップダウンを追加。","対象UI要素":"動画プレイヤーコンポーネント、動画コンテンツ管理ページ","実装ステータス":"実装中","優先度":"高","実装予定日":"2025-03-31T17:00:00Z","実装完了日":null,"テスト実施状況":"実施中","テスト結果":"予備テスト（n=8）では字幕の同期精度は99.2%を達成。音声解説の明瞭性について高評価を得た。ただしモバイル環境での字幕フォントサイズ調整機能の追加要望が複数件あり、改善予定。","テスト参加者数":8,"改善効果":"字幕機能により聴覚障害ユーザーのコンテンツ理解度が平均87%から94%に向上。音声解説により視覚障害ユーザーの満足度が大幅に改善。プレイヤーの利用継続率が前月比23%増加。","備考":"字幕データは外部翻訳サービス（DeepL API）を活用。音声解説はGoogle Cloud Text-to-Speech APIで自動生成し、専門用語については手動レビュー実施。今後、多言語字幕対応（英語、中国語）も検討中。","作成日時":"2025-01-15T10:30:00Z","更新日時":"2025-02-20T14:45:00Z","作成者":"usr-7a3f9e2b"},{"改善実装記録ID":"rec-001","改善項目名":"認知障害ユーザー向けシンプルナビゲーション","改善内容":"ナビゲーションメニューを3階層から2階層に簡潔化し、アイコンとテキストラベルを併用。メニュー項目を最大5個に制限し、色覚異常対応として色だけでなく形状でも区別できるデザインに変更。フォーカス時の視覚的フィードバックを強化し、キーボード操作時の移動先を明確に表示。","対象UI要素":"グローバルナビゲーション、サイドメニュー","実装ステータス":"完了","優先度":"高","実装予定日":"2024-10-15T09:00:00Z","実装完了日":"2024-11-28T17:30:00Z","テスト実施状況":"完了","テスト結果":"認知障害ユーザー8名中7名が改善後のナビゲーションを容易に理解できると回答。操作時間が平均34%短縮。ただし1名からは追加のラベル説明が必要との指摘あり。今後、ツールチップ機能の追加を検討。","テスト参加者数":8,"改善効果":"ナビゲーション到達時間：平均2分45秒→1分48秒。エラー率：8.5%→2.1%。ユーザー満足度：3.2/5.0→4.4/5.0。直感的操作性の向上により、サポート問い合わせが月間12件削減。","備考":"実装時にWCAG 2.1 AA準拠を確認済み。音声ナレーション対応も同時実装。今後、さらに複雑な業務フロー向けの段階的ガイダンス機能の追加を次フェーズで検討予定。","作成日時":"2024-10-01T10:15:00Z","更新日時":"2024-11-28T18:45:00Z","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"テキスト色コントラスト比の改善","改善内容":"WCAG 2.1 AA基準に準拠するため、本文テキストのコントラスト比を4.5:1以上に改善。グレー系の薄いテキスト色を濃いグレー（#333333）に変更し、背景色の白（#FFFFFF）とのコントラスト比を7:1に設定。特にボタンラベル、フォームラベル、ナビゲーションメニューを優先的に対応。","対象UI要素":"ナビゲーションメニュー、フォーム入力ラベル、ボタンテキスト、ページ本文","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-10T17:30:00Z","テスト実施状況":"完了","テスト結果":"ユーザーテストの結果、全参加者がテキストの可読性が向上したと評価。特に高齢者ユーザー（65歳以上）から『文字が読みやすくなった』という肯定的フィードバックを得た。色覚異常を持つユーザーも識別が容易になったと報告。自動テストツール（axe DevTools）でもAAレベルの基準をクリアしたことを確認。","テスト参加者数":12,"改善効果":"ページ滞在時間が平均18%増加、ユーザー満足度スコアが3.2から4.1に向上。アクセシビリティ準拠率がWCAG 2.1 A基準から AA基準に昇格。サポート問い合わせのうち『文字が読めない』という内容の件数が改善前比で67%削減。","備考":"実装時にCSS変数を使用し、ダークモード対応も同時に実施。他のテキスト色についても同様のコントラスト基準を適用済み。今後、AAA基準への対応も検討予定。","作成日時":"2024-11-15T09:00:00Z","更新日時":"2024-12-10T17:30:00Z","作成者":"user-uuid-8472"},{"改善実装記録ID":"rec-001","改善項目名":"ダークモード実装時のコントラスト比率確保","改善内容":"ダークモード導入に伴い、WCAG 2.1 AA基準に準拠したコントラスト比率（4.5:1以上）を確保するため、テキスト色と背景色の組み合わせを見直し。特に、本文テキスト、リンク、ボタンラベルなどの重要な要素について、明度差を高めるカラーパレットを再設計。また、フォーカスインジケータの視認性も向上させた。","対象UI要素":"全ページ共通（テーマ切り替え機能、ヘッダー、サイドバー、メインコンテンツ、フッター）","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"ユーザーテスト参加者全員がダークモード使用時のテキスト可読性が「良好」と評価。特に夜間利用シーンでの目の疲労軽減が確認された。スクリーンリーダー利用者からも色情報に依存しない設計が評価され、操作性に支障なし。","テスト参加者数":12,"改善効果":"ページロード時のコントラスト比率平均値が3.2:1から5.8:1に向上。ユーザーのダークモード利用率が導入前の23%から実装後は58%に増加。アクセシビリティスコアがWCAG AA準拠に達成し、ユーザー満足度は87%を記録。","備考":"実装過程でカラーパレットの微調整を3回実施。デザインシステムの統一化により、今後の新機能追加時のアクセシビリティ対応が効率化された。","作成日時":"2024-10-28T10:15:00Z","更新日時":"2024-12-22T14:45:00Z","作成者":"usr-2024-0847"}],"ユーザーテスト":[{"テストID":"rec-001","ユーザーID":"rec-u-042","改善実装記録ID":"rec-impl-015","テスト実施日時":"2024-11-22T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"NVDA使用時、ログインボタンのラベルが正しく読み上げられました。ただし、パスワード入力欄のエラーメッセージが表示される際、スクリーンリーダーが自動的にフォーカスを移動してくれないため、エラー内容に気づくまで時間がかかりました。全体的には操作可能ですが、フォーカス管理の改善があると更に使いやすくなります。","問題点摘出":"1. パスワード入力エラー時のアラート通知がスクリーンリーダーで自動読み上げされない\n2. 「ログイン状態を保持する」チェックボックスの関連テキストが分かりにくい\n3. パスワードリセットリンクのアクセシビリティラベルが不足している","改善提案":"エラーメッセージ発生時にaria-liveリージョンを使用してリアルタイム通知を実装してください。チェックボックスのラベル構造を明確にし、パスワードリセットリンクにはaria-labelを追加することを推奨します。","満足度スコア":3,"作成日時":"2024-11-22T15:45:00+09:00","更新日時":"2024-11-22T15:45:00+09:00","作成者":"鈴木花子"},{"テストID":"rec-001","ユーザーID":"rec-user-0847","改善実装記録ID":"rec-impl-0312","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"スクリーンリーダーで基本的な項目は読み上げられるようになりました。ただし、エラーメッセージの位置がわかりにくく、修正後に再度フォーム送信する際の流れが不明確でした。全体的には以前より使いやすくなったと感じます。","問題点摘出":"1. 必須項目のマーク（*）がスクリーンリーダーで読み上げられていない。2. フォーム送信後のエラーメッセージがフォーカス管理されておらず、ユーザーが気づきにくい。3. 郵便番号の自動入力機能が有効な場合、確認ダイアログの内容が不完全に読み上げられる。","改善提案":"1. 必須項目を「（必須）」というテキストで明示し、スクリーンリーダーで確実に読み上げられるようにする。2. エラー発生時にフォーカスを自動的にエラーメッセージ領域に移動させる。3. 郵便番号自動入力のダイアログに aria-live リージョンを追加し、変更内容をリアルタイムで通知する。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-u-042","改善実装記録ID":"rec-i-156","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"キーボード操作確認","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"Tabキーでの移動は概ね良好だが、管理画面の左側メニューから右側のコンテンツエリアへの遷移時にフォーカスが見えにくい場面がありました。全体的には操作性は改善されていると感じます。","問題点摘出":"1. ドロップダウンメニュー展開時のフォーカス位置が不明確\n2. モーダルダイアログ表示時の初期フォーカスが設定されていない\n3. 一部ボタンのTabキー順序が論理的でない（右から左への移動がある）","改善提案":"フォーカスインジケーターの色をより高コントラストに変更してほしい。また、Escキーでモーダルを閉じる機能があるとさらに使いやすくなります。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0047","改善実装記録ID":"rec-impl-0023","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"色覚異常対応検証","テスト結果":"部分合格","所要時間秒":1840,"ユーザーフィードバック":"全体的には改善されましたが、グラフの赤と緑の区別がまだ困難です。凡例の文字サイズも小さく、拡大表示時に読みづらくなります。数値ラベルの追加により、色に頼らずデータ把握ができるようになったのは良い改善です。","問題点摘出":"1. 売上推移グラフの赤系と緑系の色が区別しにくい。2. ステータスインジケーターの黄色と橙色が判別困難。3. ダッシュボードウィジェットの選択状態を示す青い枠線が薄く視認性が低い。4. ヒートマップの色グラデーションが単色で表現されていない。","改善提案":"1. グラフに市松模様やストライプパターンを追加して色以外の視覚情報を提供する。2. RGB値を工夫した色選定（例：赤→濃い赤、緑→濃い青）の検討。3. 全ウィジェットに数値ラベルを必須表示する。4. ステータス表示にアイコンシンボルを併用する。5. コントラスト比を最低4.5:1に統一する。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"佐藤美咲"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-i-0523","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"レスポンシブデザイン確認","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"文字を200%に拡大すると、ボタンが画面外に隠れてしまい操作できない箇所が複数ありました。ただし、メニュー部分は見やすくなり、全体的には改善されていると感じます。","問題点摘出":"フォームの送信ボタンが拡大時に画面右側にはみ出す。プルダウンメニューの選択肢が縦に圧縮されて読みにくい。ヘッダー内の検索ボックスが横スクロール領域に移動する。","改善提案":"ボタンやフォーム要素をより柔軟に配置し、テキスト拡大時に自動で改行するようにしてほしい。スマートフォン表示のような縦長レイアウトに切り替わる仕組みがあると良い。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"山田花子"},{"テストID":"rec-001-ut-20250214-001","ユーザーID":"rec-001-user-20240501-015","改善実装記録ID":"rec-001-impl-20250110-008","テスト実施日時":"2025-02-14T10:30:00+09:00","テスト種別":"音声読み上げ検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"音声読み上げの速度が適切で聞き取りやすかった。ただし、複雑な表形式の帳票では行と列の関係性が不明確に感じた。金額欄の読み上げ順序を改善してほしい。","問題点摘出":"帳票内の複数列テーブルで、スクリーンリーダーが行ヘッダーと金額データの対応関係を正確に読み上げていない。特に決算報告書の集計行で、合計値の読み上げ位置が不正確。","改善提案":"テーブル構造にARIA-labelledbyを追加し、各セルが対応するヘッダーを明示的に参照するようにしてください。また、金額欄には通貨記号を先に読み上げる設定を推奨します。","満足度スコア":3,"作成日時":"2025-02-14T11:15:00+09:00","更新日時":"2025-02-14T11:15:00+09:00","作成者":"山田花子"},{"テストID":"rec-20250215-001","ユーザーID":"rec-user-0847","改善実装記録ID":"rec-impl-2024-0156","テスト実施日時":"2025-02-15 14:30:00","テスト種別":"音声コマンド操作確認","テスト結果":"部分合格","所要時間秒":1840,"ユーザーフィードバック":"音声認識の反応速度は良好で、基本的なナビゲーション操作は問題なく実行できました。ただし、複数単語のコマンド入力時に誤認識が発生することがあり、特に固有名詞を含むコマンドの精度向上を望みます。","問題点摘出":"1. 環境音が多い場所での音声認識率が低下（約65%）。2. コマンド実行後のフィードバック音声が小さすぎて聞き取りにくい。3. キャンセルコマンドの応答遅延が2秒程度発生。4. 長時間の音声操作による喉の疲労を軽減する機能が不足。","改善提案":"ノイズキャンセリング機能の強化、フィードバック音声の音量調整機能の追加、コマンド実行の即座な音声確認、短縮コマンド機能の実装、定期的な休止を促すリマインダー機能の導入","満足度スコア":3,"作成日時":"2025-02-15 15:45:00","更新日時":"2025-02-16 09:20:00","作成者":"佐藤美咲"},{"テストID":"rec-20250218-001","ユーザーID":"rec-user-047","改善実装記録ID":"rec-impl-156","テスト実施日時":"2025-02-18T14:30:00+09:00","テスト種別":"複数支援技術併用検証","テスト結果":"部分合格","所要時間秒":1847,"ユーザーフィードバック":"スクリーンリーダーとキーボード操作を組み合わせた場合、全体的には操作可能でしたが、複雑なフォーム入力時にタブキーの順序が直感的でなく、何度も前後に移動する必要がありました。音声読み上げと画面表示の同期もほぼ問題ありませんでしたが、動的に更新されるエラーメッセージの読み上げタイミングに若干の遅延を感じました。","問題点摘出":"1. フォーカス移動順序が論理的でなく、ユーザーが期待する順序と異なる。2. 動的コンテンツ更新時にARIA live regionの更新が遅延する。3. 複数のモーダルダイアログが重なった場合、スクリーンリーダーでの階層構造の認識が不明確。4. キーボードショートカットとスクリーンリーダーのコマンドが競合する場面がある。","改善提案":"フォーカス管理の改善とタブオーダーの最適化、ARIA live regionのpolite属性からassertive属性への変更検討、モーダルダイアログのaria-modalとroleの明確な定義、キーボードショートカットの設定画面提供による競合回避機能の実装","満足度スコア":3,"作成日時":"2025-02-18T15:45:00+09:00","更新日時":"2025-02-18T15:45:00+09:00","作成者":"佐藤美咲"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-impl-0523","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"操作性テスト","テスト結果":"合格","所要時間秒":245,"ユーザーフィードバック":"改善前は同じ操作に3分以上かかっていたが、新しいUIレイアウトにより操作手順が直感的になり、大幅に時間短縮できた。ナビゲーションメニューの位置変更が特に効果的だった。","問題点摘出":"特に重大な問題は検出されず。ただし、確認ボタンのフォーカス表示がやや不明瞭な場面が1回あった。","改善提案":"確認ボタンのフォーカス状態をさらに視認性の高い色（例：より濃い青枠）に変更することで、さらなる操作効率向上が期待できる。","満足度スコア":4,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-15T15:45:00+09:00","作成者":"鈴木花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-impl-0523","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"スクリーンリーダーで読み上げられない項目が複数ありました。特に、フォーム内のエラーメッセージが読み上げられず、どこに問題があるのか判断しにくかったです。ただし、主要なナビゲーション部分は改善されており、操作しやすくなったと感じます。","問題点摘出":"1) 入力フォームのラベル要素がaria-labelledbyで正しく関連付けられていない 2) エラーメッセージにaria-liveが設定されていないため、動的な更新が通知されない 3) フォーカス順序が論理的でなく、タブキーでの移動が直感的でない 4) ボタンのアイコンに代替テキストが未設定","改善提案":"フォーム要素に対してaria-labelledbyを正しく実装し、エラーメッセージにはaria-live=\"polite\"を追加してください。また、タブインデックスを見直して論理的なフォーカス順序を確立し、すべてのアイコンボタンにaria-labelを付与することを推奨します。","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"鈴木美咲"}]};
+window.AIVIC_PRESET_SEED = {"ユーザー":[{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"セキュリティ部門","役職":"部門長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:45","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:22:30","作成者":"system","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.incident","メールアドレス":"suzuki.taro@company.jp","部門":"セキュリティ運用センター","役職":"インシデント分析者","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"system","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"内部監査部","役職":"監査員","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 11:45:00","作成者":"system","更新者":"yamamoto.taro"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.hanako","メールアドレス":"tanaka.hanako@company.co.jp","部門":"営業部","役職":"営業事務","ロール":"閲覧者","ステータス":"休止","最終ログイン日時":null,"作成日時":"2025-01-15 09:30:00","更新日時":"2025-01-15 09:30:00","作成者":"system","更新者":"system"},{"ユーザーID":"rec-001","ユーザー名":"yamada.hanako","メールアドレス":"yamada.hanako@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"休止","最終ログイン日時":"2024-12-15 18:30:00","作成日時":"2023-04-10 09:15:00","更新日時":"2024-12-20 14:45:00","作成者":"system","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2024-12-15 17:30:00","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-31 14:20:00","作成者":"system","更新者":"鈴木花子"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 11:45:00","作成者":"admin","更新者":"hr_system"},{"ユーザーID":"rec-001","ユーザー名":"system_integration_service","メールアドレス":"system-integration@company.jp","部門":"システム運用部","役職":"自動処理サービス","ロール":"システム管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 03:45:22","作成日時":"2024-04-10 09:30:00","更新日時":"2025-01-10 14:20:15","作成者":"山田太郎","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"audit_ext_2024","メールアドレス":"suzuki.hanako@auditfirm-jp.com","部門":"外部監査部門","役職":"シニア監査人","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-11-20 09:15:00","更新日時":"2025-01-10 10:45:00","作成者":"山田次郎","更新者":"佐藤美咲"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"部門長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"system","更新者":"佐藤花子"}],"UI改善実装記録":[{"改善実装記録ID":"rec-001","改善項目名":"スクリーンリーダー対応ARIA属性の実装","改善内容":"視覚障害ユーザーが利用するスクリーンリーダーで正確に読み上げられるよう、主要なUI要素にaria-label、aria-describedby、aria-live、role属性を実装。特にフォーム入力欄、ボタン、ナビゲーションメニュー、動的更新コンテンツに対応。","対象UI要素":"ユーザーダッシュボード、注文フォーム、ナビゲーションバー、通知パネル","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー（NVDA、JAWS）での読み上げテストを実施。フォーム項目の89%が正確に読み上げられることを確認。動的更新コンテンツでのaria-live属性の有効性も検証済み。軽微な改善点2件を次回リリースで対応予定。","テスト参加者数":12,"改善効果":"スクリーンリーダー利用ユーザーのタスク完了率が68%から84%に向上。平均操作時間が12分から8分に短縮。ユーザー満足度スコアが3.2から4.5に改善。","備考":"実装時にWCAG 2.1 AA基準に準拠。外部アクセシビリティコンサルタント（佐藤アクセシビリティ研究所）による監査済み。今後、ARIA実装ガイドラインを社内標準として文書化予定。","作成日時":"2024-11-10T10:15:00Z","更新日時":"2024-12-22T14:45:00Z","作成者":"a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6"},{"改善実装記録ID":"rec-001","改善項目名":"キーボード操作のみでの全機能アクセス可能化","改善内容":"マウスに依存しない操作体系の実装。Tab キーによるフォーカス移動、Enter/Space キーによる操作実行、矢印キーによるメニュー選択、Esc キーによるダイアログ閉鎖など、標準的なキーボード操作パターンを全UI要素に適用。フォーカス表示の視認性向上（2px 以上の枠線表示）と論理的なタブ順序の設定を実施。","対象UI要素":"メインナビゲーション、フォーム入力欄、ボタン、ドロップダウンメニュー、モーダルダイアログ、テーブル操作","実装ステータス":"完了","優先度":"高","実装予定日":"2024-09-15T09:00:00","実装完了日":"2024-11-28T17:30:00","テスト実施状況":"完了","テスト結果":"スクリーンリーダーユーザー12名とキーボード操作限定ユーザー8名による検証を実施。全機能へのアクセスが確認され、操作性は良好との評価を得た。フォーカス順序に関して3件の改善要望があり、対応済み。タブキーでの移動速度について2名から肯定的なフィードバック。","テスト参加者数":20,"改善効果":"キーボード操作のアクセシビリティスコアが従来の58%から94%に向上。ユーザー操作時間は平均12%短縮。スクリーンリーダー利用者の業務効率が約35%改善。WCAG 2.1 レベルAA達成率が100%に到達。","備考":"実装過程で JavaScript のイベントハンドリングを全面的に見直し。従来のクリックイベント依存から、keydown/keyup イベントの適切な組み合わせに変更。モーダルダイアログのフォーカストラップ機能も実装。本番環境への反映は2024年12月1日に実施済み。","作成日時":"2024-08-20T10:15:00","更新日時":"2024-11-28T18:45:00","作成者":"usr-7a3f2b1c"},{"改善実装記録ID":"rec-001","改善項目名":"色覚異常ユーザー向けコントラスト比改善","改善内容":"WCAG 2.1 AA レベルの達成基準に準拠し、テキストと背景色のコントラスト比を 4.5:1 以上に改善。特に赤緑色盲ユーザーが識別しやすいよう、青系と黄系の色使いに統一。ボタン、フォーム要素、グラフの配色を段階的に見直し、色のみに依存しない情報表示に対応。","対象UI要素":"ダッシュボード、フォーム入力画面、グラフ表示エリア","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00","実装完了日":"2024-12-20T17:30:00","テスト実施状況":"完了","テスト結果":"色覚異常ユーザー8名による検証テストを実施。改善前は識別困難だった警告表示が 87.5% のユーザーで正確に認識可能に。グラフの凡例も全ユーザーが区別可能と回答。軽度の赤緑色盲ユーザーからは操作性が向上したとの高評価を得た。","テスト参加者数":8,"改善効果":"ユーザビリティスコアが改善前の 62 点から 91 点に向上（+29 点）。色覚異常ユーザーの操作エラー率が 18% から 3% に低下。アクセシビリティ準拠率が WCAG 2.1 AA レベル 78% から 96% に改善。","備考":"実装には CSS 変数を活用し、将来的なテーマ切り替え機能への対応も考慮。デザイン部門と連携し、全社的なカラーガイドラインの見直しも実施予定。","作成日時":"2024-10-28T10:15:00","更新日時":"2024-12-21T14:45:00","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"モバイル画面での音声読み上げ機能の最適化","改善内容":"スクリーンリーダー利用者のためにモバイル画面上のテキスト要素に対して、より自然で聞き取りやすい音声読み上げを実現。ARIA属性の適切な設定、読み上げ順序の最適化、複雑なUIコンポーネントの説明文追加により、視覚障害ユーザーの操作性向上を図る。","対象UI要素":"モバイルアプリケーション全体（特にナビゲーションメニュー、フォーム入力、商品一覧）","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"視覚障害ユーザー8名による実施結果、読み上げ速度の調整により理解度が87%から94%に向上。特にフォーム入力時のエラーメッセージ読み上げが改善され、入力エラー率が12%低下。ナビゲーション操作時間が平均18秒から12秒に短縮。","テスト参加者数":8,"改善効果":"音声読み上げの精度向上により、視覚障害ユーザーのアプリ利用時間が平均23分から31分に増加。ユーザー満足度スコアが3.2から4.6に改善。アクセシビリティ関連の問い合わせが月間12件から3件に削減。","備考":"実装過程でiOS VoiceOverおよびAndroid TalkBackの両方で動作確認を実施。WCAG 2.1 AA準拠を達成。今後のアップデートでは、音声コマンド機能の追加を検討予定。","作成日時":"2024-10-28T10:15:00Z","更新日時":"2024-12-20T18:45:00Z","作成者":"user-uuid-5847"},{"改善実装記録ID":"rec-001","改善項目名":"フォーム入力エラーメッセージのアクセシビリティ向上","改善内容":"フォーム送信時のエラーメッセージをスクリーンリーダー対応にし、視覚的な色のみでなくアイコンと テキストを組み合わせて表示。ARIAラベルを追加し、エラー箇所への自動フォーカスと role=\"alert\" 属性を実装。エラーメッセージの読み上げ順序を最適化し、入力フィールドとの関連性を明確化。","対象UI要素":"ユーザー登録フォーム、ログインフォーム、決済フォーム","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー（NVDA、JAWS）での読み上げ確認で全エラーメッセージが正確に認識された。キーボード操作のみでエラー箇所への遷移が可能になり、視覚障害者ユーザーの操作性が大幅に向上。色覚異常者向けのテストでも識別性が確認された。","テスト参加者数":12,"改善効果":"フォーム送信エラー時の再入力完了までの平均時間が38秒から22秒に短縮。スクリーンリーダーユーザーの成功率が62%から94%に向上。アクセシビリティ準拠レベルがWCAG 2.1 Level AA達成。","備考":"実装後、既存ユーザーからのアクセシビリティ関連の問い合わせが50%減少。今後、同様の手法を他のフォーム要素に拡大予定。","作成日時":"2024-11-10T08:15:00Z","更新日時":"2024-12-21T14:45:00Z","作成者":"usr-7f2a9c4e"},{"改善実装記録ID":"rec-001","改善項目名":"動画コンテンツへの字幕・音声ガイド追加","改善内容":"既存の動画コンテンツに対して、日本語字幕と音声ガイド機能を実装します。聴覚障害者向けに字幕を、視覚障害者向けに詳細な音声ガイドを提供することで、すべてのユーザーが同等のコンテンツ体験を得られるようにします。WebVTT形式の字幕ファイルを作成し、HTML5 video要素に統合。音声ガイドはMP3形式で別トラックとして配信します。","対象UI要素":"動画プレイヤーページ、学習動画セクション","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-20T17:30:00Z","テスト実施状況":"完了","テスト結果":"聴覚障害者15名、視覚障害者12名の参加により実施。字幕の同期精度は99.2%で良好。音声ガイドの速度調整機能についてユーザーから好評を得ました。字幕フォントサイズ拡大機能の追加要望が3件ありました。","テスト参加者数":27,"改善効果":"動画コンテンツへのアクセス性が大幅に向上。字幕利用者の視聴完了率が従来比43%向上。音声ガイド機能の利用率は月間ユーザー数の18%に達しました。ユーザー満足度調査では4.6/5.0の高評価を獲得。","備考":"フェーズ2として、多言語字幕（英語・中国語）の追加を2025年Q1に計画中。字幕フォントサイズ拡大機能は追加要望に応じて2025年1月の次回更新で実装予定。","作成日時":"2024-10-22T10:15:00Z","更新日時":"2024-12-20T18:45:00Z","作成者":"user-uuid-8c9d2f4e"},{"改善実装記録ID":"rec-001","改善項目名":"ナビゲーションメニューの構造化マークアップ改善","改善内容":"ナビゲーションメニューに対してWAI-ARIAランドマークロール（navigation）を追加し、セマンティックHTMLの<nav>要素を導入しました。また、メニュー階層構造を正確に表現するため、ネストされたリスト構造を実装し、スクリーンリーダーユーザーがメニュー項目数と階層関係を正確に認識できるようにしました。キーボード操作時のフォーカス管理も改善し、Tabキーでの移動とEnter/Spaceキーでの選択が確実に動作するようにしています。","対象UI要素":"グローバルナビゲーションメニュー","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00Z","実装完了日":"2024-12-10T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー（NVDA、JAWS）での読み上げが正確に機能することを確認しました。キーボード操作のみでメニュー全体を操作可能であることを検証しました。参加者からは「メニュー構造が明確になり、操作がしやすくなった」という評価を得ました。WCAG 2.1 AA基準への適合を確認しています。","テスト参加者数":12,"改善効果":"スクリーンリーダーユーザーのナビゲーション完了率が68%から94%に向上しました。キーボード操作のみでのサイト利用が可能になり、アクセシビリティ監査スコアが15ポイント改善されました。ページ離脱率が12%減少し、ユーザー滞在時間が平均3分15秒増加しました。","備考":"実装後、他のページのナビゲーション要素への横展開を検討中です。デザイン面での視認性も維持され、既存のCSS設計との互換性も確保されています。今後のメンテナンス性向上のため、コンポーネント化を進める予定です。","作成日時":"2024-11-10T10:45:00Z","更新日時":"2024-12-15T14:20:00Z","作成者":"usr-0847"},{"改善実装記録ID":"rec-001","改善項目名":"認知障害ユーザー向けUI簡潔化","改善内容":"画面上の情報量を削減し、1画面あたりの選択肢を最大3つに制限。色覚異常対応のため、色だけでなくアイコンと文字ラベルで状態を表示。ボタンサイズを44x44px以上に統一し、誤操作を防止。フローを3ステップ以下に簡潔化し、戻るボタンと確認画面を各ステップに配置。","対象UI要素":"ダッシュボード、フォーム入力画面、決済フロー","実装ステータス":"完了","優先度":"高","実装予定日":"2024-09-15T09:00:00Z","実装完了日":"2024-11-28T17:30:00Z","テスト実施状況":"完了","テスト結果":"認知障害ユーザー8名と健常者5名で実施。認知障害ユーザーの操作完了率が改善前の42%から82%に向上。平均操作時間は8分30秒から4分15秒に短縮。誤操作率は68%から12%に低下。参加者からは『選択肢が少なくてわかりやすい』『戻るボタンがあると安心』とのフィードバック。健常者への影響は最小限で、操作性の低下なし。","テスト参加者数":13,"改善効果":"認知障害ユーザーのサービス利用継続率が前月比34%向上。カスタマーサポートへの問い合わせ件数が月平均28件から8件に削減。ユーザー満足度スコアが2.1から4.3に上昇。アクセシビリティ準拠により、WCAG 2.1 AA レベルを達成。","備考":"実装にあたり、認知心理学の専門家と連携。今後、高齢者向けUI改善への応用も検討中。音声ガイダンス機能の追加は次フェーズで実装予定。","作成日時":"2024-08-20T10:15:00Z","更新日時":"2024-12-05T14:45:00Z","作成者":"user-7824"},{"改善実装記録ID":"rec-001","改善項目名":"PDFドキュメントのスクリーンリーダー互換性確保","改善内容":"既存のPDFドキュメント生成システムにアクセシビリティ対応を実装。タグ付きPDF形式への変換、論理的な見出し構造の設定、代替テキストの追加、表構造の適切なマークアップを実施。NVDA、JAWS、VoiceOverでの動作確認を含む。","対象UI要素":"レポート出力機能、ドキュメント管理ページ、PDF生成エンジン","実装ステータス":"完了","優先度":"高","実装予定日":"2024-10-15T09:00:00Z","実装完了日":"2024-11-28T17:30:00Z","テスト実施状況":"完了","テスト結果":"スクリーンリーダー3種類での検証を実施。NVDA、JAWSでの読み上げ精度が95%以上に改善。VoiceOverでの表データ読み込みが正常に機能することを確認。視覚障害ユーザーからのフィードバックで高い満足度を得た。","テスト参加者数":12,"改善効果":"スクリーンリーダー利用ユーザーのドキュメント読了時間が平均35%短縮。エラー率が8.2%から1.3%に低下。ユーザー満足度調査で4.6/5.0を達成。","備考":"実装にあたりPDF/UA標準に準拠。今後、他のドキュメント形式（Excel、Word）への展開も検討中。","作成日時":"2024-10-10T10:15:00Z","更新日時":"2024-11-28T18:45:00Z","作成者":"usr-2024-0847"},{"改善実装記録ID":"rec-001","改善項目名":"高齢者向けフォントサイズ拡大機能","改善内容":"ユーザー設定画面にフォントサイズ調整スライダーを追加し、100%から200%までの範囲でテキストサイズを段階的に拡大できる機能を実装。見出し、本文、ボタンテキストなど全UI要素に対応。ブラウザのズーム機能とは独立した独自実装により、レイアウト崩れを防止。","対象UI要素":"設定画面、ダッシュボード、コンテンツ表示ページ","実装ステータス":"完了","優先度":"高","実装予定日":"2024-11-15T09:00:00","実装完了日":"2024-12-20T17:30:00","テスト実施状況":"完了","テスト結果":"65歳以上のユーザー15名を対象に実施。150%以上のフォントサイズで可読性が大幅に向上し、操作ミスが43%削減された。ただし200%では一部ボタンが画面外に出るケースが2件報告され、レスポンシブ対応を追加実装した。全体満足度は4.6/5.0。","テスト参加者数":15,"改善効果":"高齢者ユーザーの利用時間が平均18分から24分に増加（33%増）。サポート問い合わせ件数が月間45件から28件に削減（38%削減）。ページ離脱率が12%から7%に改善。","備考":"実装後、60代ユーザーからの肯定的フィードバックが多数寄せられた。今後、色コントラスト調整機能の追加も検討予定。","作成日時":"2024-10-28T10:15:00","更新日時":"2024-12-20T18:45:00","作成者":"usr-8f3a2b1c"}],"ユーザーテスト":[{"テストID":"rec-20250115-001","ユーザーID":"rec-user-047","改善実装記録ID":"rec-impl-0892","テスト実施日時":"2025-01-15T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"不合格","所要時間秒":1840,"ユーザーフィードバック":"NVDA使用時にフォーム入力後の確認ボタン押下後、成功メッセージが音声で読み上げられませんでした。画面には「送信完了」と表示されていますが、スクリーンリーダーユーザーは完了を認識できません。また、エラーメッセージの優先度表示も不明確です。","問題点摘出":"1. 成功メッセージのaria-liveアトリビュートが設定されていない。2. エラーメッセージの読み上げ順序が視覚的な配置と異なる。3. フォーカス管理が不適切で、送信後のフォーカス位置が不明確。4. 動的に追加されるメッセージに対するロール指定がない。","改善提案":"aria-live=\"polite\"をメッセージコンテナに追加し、成功・エラーメッセージの読み上げを確実にしてください。また、送信後のフォーカスを確認メッセージ領域に移動させ、aria-roleで適切なロールを指定することを推奨します。複数のメッセージが同時に表示される場合はaria-atomicも検討してください。","満足度スコア":2,"作成日時":"2025-01-15T15:45:00+09:00","更新日時":"2025-01-15T15:45:00+09:00","作成者":"佐藤花子"},{"テストID":"rec-001","ユーザーID":"rec-002","改善実装記録ID":"rec-003","テスト実施日時":"2024-11-15T14:30:00","テスト種別":"キーボード操作確認","テスト結果":"不合格","所要時間秒":1240,"ユーザーフィードバック":"タブキーで画面内を移動する際に、ボタンやリンクの順序が予想と異なり、何度も行き来する必要があった。特にフォーム入力時に戻ってしまうことが多く、操作が複雑に感じられた。","問題点摘出":"タブキーの遷移順序がHTMLのDOM順序と一致していない。検索ボックスの後に、本来は下部のサブメニューへ遷移するべきだが、ページ上部の隠れた要素へ遷移してしまう。フォーム内のボタン群の遷移順序も左右方向ではなく上下方向になっており、論理的でない。","改善提案":"tabindexを明示的に設定して遷移順序を統一してほしい。できれば視覚的にフォーカス位置を示すハイライトをもっと目立たせてほしい。また、タブキーで遷移できない要素については、スキップリンクを追加して効率化してほしい。","満足度スコア":2,"作成日時":"2024-11-15T15:45:00","更新日時":"2024-11-15T15:45:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-impl-2156","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"操作性テスト","テスト結果":"部分合格","所要時間秒":1245,"ユーザーフィードバック":"ボタンのコントラストが前回より改善されており、視認性が向上しました。ただし、背景がグラデーション時のテキストはまだ読みづらい箇所があります。全体的には使いやすくなった印象です。","問題点摘出":"グラデーション背景上のラベルテキスト（WCAG AA基準未満）、フォーカスインジケーターの色が背景と区別しづらい場合がある、ダークモード時の入力フィールド枠線が薄い","改善提案":"テキストに白い縁取りまたはシャドウを追加する、フォーカス時の枠線を太さ3px以上にする、ダークモード時のコントラスト比を4.5:1以上に統一する","満足度スコア":3,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-usr-042","改善実装記録ID":"rec-impl-015","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"ワンハンド操作確認","テスト結果":"合格","所要時間秒":1240,"ユーザーフィードバック":"左手のみでの操作がスムーズになりました。特にボタン間隔が広がったことで誤タップが減少し、操作効率が向上しました。ただし、戻るボタンの位置がやや遠いため、もう少し中央寄りにあると理想的です。","問題点摘出":"改善前は親指の可動域内にボタンが密集しており、誤タップが頻繁に発生していました。特に削除ボタンと確認ボタンが近接していたため、重大な操作ミスのリスクがありました。","改善提案":"戻るボタンを画面下部中央に配置し、さらに長押しで操作確認ダイアログを表示する機能を追加してはいかがでしょうか。また、ボタンのサイズを現在より10%大きくすることで、さらに操作性が向上すると考えます。","満足度スコア":4,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"佐藤美咲"},{"テストID":"rec-001-ut-20250115-0847","ユーザーID":"rec-001-user-20240601-1234","改善実装記録ID":"rec-001-impl-20250110-5678","テスト実施日時":"2025-01-15T14:30:00+09:00","テスト種別":"アクセシビリティ検証","テスト結果":"不合格","所要時間秒":1240,"ユーザーフィードバック":"フォーム入力時にスクリーンリーダーで項目名が読み上げられず、何を入力すべきか判断できませんでした。特に住所欄と電話番号欄の区別がつきにくく、入力を間違えてしまいました。","問題点摘出":"テキスト入力フィールドのラベル要素がinput要素と関連付けされていない。for属性とid属性のマッピングが未実装のため、スクリーンリーダーが項目名を正しく認識できない状態。特に必須項目の標識がアクセシビリティツリーに反映されていない。","改善提案":"全input要素にid属性を付与し、対応するlabel要素のfor属性と紐付けしてください。また必須項目にはaria-required属性を追加し、視覚的な必須マーク（赤いアスタリスク）と同期させることを推奨します。","満足度スコア":2,"作成日時":"2025-01-15T15:45:00+09:00","更新日時":"2025-01-15T15:45:00+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-i-0523","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"色覚異常対応視認性テスト","テスト結果":"合格","所要時間秒":1240,"ユーザーフィードバック":"新しい配色は非常に見やすくなりました。特にボタンとテキストのコントラストが改善され、画面全体の識別性が向上しています。赤と緑の区別が明確になったことで、ストレスなく操作できるようになりました。","問題点摘出":"改善前の配色では赤緑色覚異常の利用者にとって重要な警告アイコンが識別困難でしたが、改善版では解決されています。","改善提案":"今後は他のページのフォーム要素についても同様の配色改善を検討していただきたいです。","満足度スコア":5,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-15T15:45:00+09:00","作成者":"鈴木花子"},{"テストID":"rec-001","ユーザーID":"rec-u-042","改善実装記録ID":"rec-impl-0156","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"スクリーンリーダー検証","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"NVDA使用時のメニュー構造は大幅に改善されました。ただし、サブメニューの展開時にアナウンスが重複することがあり、若干の混乱を感じました。全体的には操作がしやすくなったと感じます。","問題点摘出":"グローバルナビゲーションのサブメニュー展開時にaria-expandedの状態変化がスクリーンリーダーで二重アナウンスされる。ドロップダウンメニュー内のリンクフォーカス移動時に視覚的フォーカスインジケータが不明確。","改善提案":"aria-liveリージョンの設定を見直し、重複アナウンスを排除してください。フォーカスインジケータのコントラスト比を4.5:1以上に改善することを推奨します。","満足度スコア":4,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-imp-0523","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"統合テスト","テスト結果":"不合格","所要時間秒":2340,"ユーザーフィードバック":"NVDA使用時はフォーム送信が正常に動作しましたが、JAWS併用でスクリーンリーダー検証を行った際に、動的に生成されるエラーメッセージが読み上げられません。また、キーボード操作のみで進めると、タブ順序が意図しない順序になり、フォーカスが迷子になってしまいました。","問題点摘出":"1. 複数支援技術環境でのaria-liveリージョン競合による通知見落とし\n2. 動的コンテンツ生成時のDOMアップデート順序の不整合\n3. タブインデックス指定ルールの矛盾（負の値と正の値の混在）\n4. JAWSのフォーカスモード自動切り替えに対応していない実装\n5. スクリーンリーダー間でのキャッシュ機構の非同期化","改善提案":"aria-liveの優先度を統一し、複数リージョンの同時更新を避ける設計に変更してください。タブインデックスは0と-1のみの使用に統一し、JavaScriptでフォーカス管理を明示的に制御すべきです。支援技術の自動モード切り替えに対応するため、role属性の動的変更時にaria-busyフラグを活用してください。","満足度スコア":2,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"山田花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-impl-0523","テスト実施日時":"2024-11-15T14:30:00+09:00","テスト種別":"操作性テスト","テスト結果":"部分合格","所要時間秒":1240,"ユーザーフィードバック":"全体的には使いやすくなりましたが、フォーム送信後の確認メッセージが小さく見づらかったです。また、タブキーでの移動順序が直感的でない箇所がありました。","問題点摘出":"確認メッセージのフォントサイズが12pxと小さく、コントラスト比が4.2:1で基準を下回っている。フォーカスインジケーターが不十分な要素が3箇所確認された。","改善提案":"確認メッセージのフォントサイズを16px以上に拡大し、コントラスト比を7:1以上にする。タブ移動の順序をDOM順に統一し、視覚的なフォーカスインジケーターを全ての対話要素に追加する。","満足度スコア":4,"作成日時":"2024-11-15T15:45:00+09:00","更新日時":"2024-11-16T09:20:00+09:00","作成者":"佐藤花子"},{"テストID":"rec-001","ユーザーID":"rec-u-0847","改善実装記録ID":"rec-impl-0234","テスト実施日時":"2025-01-15T14:30:00","テスト種別":"操作性テスト","テスト結果":"合格","所要時間秒":1840,"ユーザーフィードバック":"全体的に操作がスムーズで、特にスクリーンリーダーとの相性が良くなった。ボタンのラベルも明確で判断しやすい。本番環境での使用に問題はないと感じる。","問題点摘出":"特に重大な問題は検出されなかった。軽微な問題として、フォーム送信後のフォーカス移動が若干遅延する傾向が見られたが、実用上の支障はない。","改善提案":"コントラスト比をさらに高めることで、より見やすくなる可能性がある。また、エラーメッセージの表示位置を入力フィールドの直下に統一すると、より直感的になるだろう。","満足度スコア":4,"作成日時":"2025-01-15T15:45:00","更新日時":"2025-01-15T15:45:00","作成者":"鈴木花子"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788232179316";
 window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
@@ -654,301 +591,213 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </head>
 <body>
 <nav style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg,var(--bg-sidebar,#0e1a31));border-bottom:1px solid var(--top-bar-border,var(--border,#2a3a5d));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--text,#e8eefc);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:1;border-bottom:2px solid var(--primary,#2b66ff);font-weight:600;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788271057677.html" data-aivic-nav-system="itg-8" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">施設管理者向け予約・料金管理機能</a><a href="./scr-1788270636243.html" data-aivic-nav-system="itg-7" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">公共施設オンライン予約・決済サービス</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--text,#e8eefc);opacity:0.6;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
-  <div class="shell" data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
-    <header class="header">
-      <div class="header-left">
-        <button class="nav-toggle" aria-label="メニュー">☰</button>
-        <a href="#" class="logo">アクセシビリティ改善管理</a>
-      </div>
-      <div class="header-right">
-        <div class="user-section">
-          <div class="user-avatar">U</div>
-          <span class="user-name">ユーザー</span>
-          <a href="./login.html" class="logout-link">ログアウト</a>
+  <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
+    <header class="shell-header">
+      <div class="shell-header-left">
+        <div class="shell-logo">
+          <div>アクセシビリティ改善</div>
+          <div class="shell-logo-sub">公共施設予約</div>
         </div>
+        <nav>
+          <ul class="shell-nav-top">
+            <li class="shell-nav-item">
+              <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788232084202" href="./scr-1788232084202.html">改善ダッシュボード</a>
+            </li>
+            <li class="shell-nav-item">
+              <a class="shell-nav-link" data-aivic-nav="scr-1788232179316" href="./scr-1788232179316.html">ユーザーテスト管理</a>
+            </li>
+            <li class="shell-nav-item">
+              <a class="shell-nav-link" data-aivic-nav="scr-1788232195429" href="./scr-1788232195429.html">UI改善実装</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="shell-header-right">
+        <div class="shell-user-avatar">U</div>
+        <div class="shell-user-name">ユーザー</div>
+        <a class="shell-logout" href="./login.html">ログアウト</a>
       </div>
     </header>
-
-    <nav class="top-nav">
-      <div class="top-nav-item aivic-active" data-aivic-nav="scr-1788232084202" onclick="window.location.href='./scr-1788232084202.html'">
-        改善ダッシュボード
-      </div>
-      <div class="top-nav-item" data-aivic-nav="scr-1788232179316" onclick="window.location.href='./scr-1788232179316.html'">
-        ユーザーテスト管理
-      </div>
-      <div class="top-nav-item" data-aivic-nav="scr-1788232195429" onclick="window.location.href='./scr-1788232195429.html'">
-        UI改善実装管理
-      </div>
-    </nav>
-
-    <div class="main-wrapper">
+    <div class="shell-body">
       <main class="content-area">
         <div data-aivic-panel="scr-1788232084202" style="display:none"></div>
-        <div data-aivic-panel="scr-1788232179316" style="display:block"><div style="display: flex; height: 100%; background: var(--bg-main); font-family: var(--font-family);">
-  <!-- 左ペイン: テスト計画一覧・検索 -->
-  <div style="width: 40%; border-right: var(--border-width) solid var(--border); display: flex; flex-direction: column; background: var(--bg-main);">
-    <!-- 検索フィルターセクション -->
-    <div style="padding: 16px; border-bottom: var(--border-width) solid var(--border); background: var(--bg-card);">
-      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">テスト計画</h3>
-      
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <!-- テスト種別フィルター -->
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">テスト種別</label>
-          <select data-testid="test-type-filter" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px;">
-            <option value="">すべて</option>
-            <option value="操作性テスト">操作性テスト</option>
-            <option value="スクリーンリーダー検証">スクリーンリーダー検証</option>
-            <option value="キーボード操作確認">キーボード操作確認</option>
-            <option value="色覚特性対応確認">色覚特性対応確認</option>
-          </select>
-        </div>
-
-        <!-- ステータスフィルター -->
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">ステータス</label>
-          <select data-testid="status-filter" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px;">
-            <option value="">すべて</option>
-            <option value="計画中">計画中</option>
-            <option value="実施中">実施中</option>
-            <option value="完了">完了</option>
-          </select>
-        </div>
-
-        <!-- 検索ボタン -->
-        <button data-testid="search-button" style="padding: 8px 12px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: background var(--motion-duration);">
-          検索
-        </button>
-      </div>
-    </div>
-
-    <!-- テスト計画一覧 -->
-    <div style="flex: 1; overflow-y: auto; padding: 8px;">
-      <div id="test-plans-list" style="display: flex; flex-direction: column; gap: 8px;">
-        <!-- 動的に生成される計画アイテム -->
-      </div>
-    </div>
-
-    <!-- 新規作成ボタン -->
-    <div style="padding: 12px; border-top: var(--border-width) solid var(--border); background: var(--bg-card);">
-      <button data-testid="create-plan-button" style="width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: background var(--motion-duration);">
-        + 新規テスト計画
-      </button>
-    </div>
+        <div data-aivic-panel="scr-1788232179316" style="display:block"><div style="display: flex; flex-direction: column; height: 100%; background: var(--bg-main); color: var(--text); font-family: var(--font-family);">
+  
+  <!-- Breadcrumb / Sub-header -->
+  <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-main); font-size: 12px; color: var(--text-muted);">
+    公共施設予約 / アクセシビリティ改善管理・ユーザーテスト分析システム / ユーザーテスト管理・分析画面
   </div>
 
-  <!-- 右ペイン: テスト実施記録フォーム + 結果一覧 -->
-  <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-    <!-- テスト実施記録入力フォーム -->
-    <div style="padding: 16px; border-bottom: var(--border-width) solid var(--border); background: var(--bg-card); box-shadow: var(--shadow-card);">
+  <!-- Filter Bar -->
+  <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <label style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+      テスト種別:
+      <select data-testid="test-type-filter" style="padding: 6px 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
+        <option value="">すべて</option>
+        <option value="操作性テスト">操作性テスト</option>
+        <option value="スクリーンリーダー検証">スクリーンリーダー検証</option>
+        <option value="キーボード操作確認">キーボード操作確認</option>
+        <option value="色彩コントラスト検証">色彩コントラスト検証</option>
+      </select>
+    </label>
+    <label style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+      ステータス:
+      <select data-testid="status-filter" style="padding: 6px 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;">
+        <option value="">すべて</option>
+        <option value="未対応">未対応</option>
+        <option value="対応中">対応中</option>
+        <option value="完了">完了</option>
+      </select>
+    </label>
+    <label style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+      期間:
+      <input type="date" data-testid="date-from-filter" style="padding: 6px 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+      <span>〜</span>
+      <input type="date" data-testid="date-to-filter" style="padding: 6px 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px;" />
+    </label>
+    <button data-testid="search-button" style="padding: 6px 12px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; cursor: pointer; margin-left: auto;">検索</button>
+  </div>
+
+  <!-- Main Content -->
+  <div style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+    
+    <!-- Test Record Input Form -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
       <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">テスト実施記録</h3>
       
-      <form id="test-record-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-        <!-- テスト実施日時 -->
+      <!-- Row 1: Date, Tester, Test Type, Target User -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">実施日時 *</label>
-          <input data-testid="test-date-input" type="datetime-local" name="testDate" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">テスト実施日時</label>
+          <input type="datetime-local" data-testid="test-datetime" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;" />
         </div>
-
-        <!-- テスト種別 -->
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">テスト種別 *</label>
-          <select data-testid="test-type-select" name="testType" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">実施者</label>
+          <input type="text" data-testid="tester-name" placeholder="自動入力" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;" readonly />
+        </div>
+        <div>
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">テスト種別</label>
+          <select data-testid="test-type-select" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;">
             <option value="">選択してください</option>
             <option value="操作性テスト">操作性テスト</option>
             <option value="スクリーンリーダー検証">スクリーンリーダー検証</option>
             <option value="キーボード操作確認">キーボード操作確認</option>
-            <option value="色覚特性対応確認">色覚特性対応確認</option>
+            <option value="色彩コントラスト検証">色彩コントラスト検証</option>
           </select>
         </div>
-
-        <!-- 実施者 -->
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">実施者 *</label>
-          <select data-testid="tester-select" name="testerId" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">対象ユーザー</label>
+          <select data-testid="target-user-select" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;">
             <option value="">選択してください</option>
           </select>
         </div>
+      </div>
 
-        <!-- 対象ユーザー -->
+      <!-- Row 2: Result Classification, Priority, Satisfaction Score -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">対象ユーザー *</label>
-          <select data-testid="user-select" name="userId" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
-            <option value="">選択してください</option>
-          </select>
-        </div>
-
-        <!-- テスト結果 -->
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">テスト結果 *</label>
-          <select data-testid="result-select" name="testResult" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">テスト結果</label>
+          <select data-testid="test-result-select" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;">
             <option value="">選択してください</option>
             <option value="合格">合格</option>
             <option value="部分合格">部分合格</option>
             <option value="不合格">不合格</option>
           </select>
         </div>
-
-        <!-- 優先度レベル -->
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">優先度 *</label>
-          <select data-testid="priority-select" name="priority" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">優先度</label>
+          <select data-testid="priority-select" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;">
             <option value="">選択してください</option>
             <option value="高">高</option>
             <option value="中">中</option>
             <option value="低">低</option>
           </select>
         </div>
-
-        <!-- 満足度スコア -->
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">満足度スコア (1-5)</label>
-          <input data-testid="satisfaction-input" type="number" name="satisfactionScore" min="1" max="5" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">満足度スコア (1-5)</label>
+          <input type="number" data-testid="satisfaction-score" min="1" max="5" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;" />
         </div>
+      </div>
 
-        <!-- 所要時間（秒） -->
+      <!-- Row 3: Improvement Item Link -->
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">改善項目リンク</label>
+        <select data-testid="improvement-item-select" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box;">
+          <option value="">選択してください</option>
+        </select>
+      </div>
+
+      <!-- Row 4: User Feedback -->
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">ユーザーフィードバック (最大500文字)</label>
+        <textarea data-testid="user-feedback" maxlength="500" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box; resize: vertical; min-height: 60px;" placeholder="ユーザーからの意見やコメントを記入"></textarea>
+      </div>
+
+      <!-- Row 5: Issues & Suggestions -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">所要時間（秒）</label>
-          <input data-testid="duration-input" type="number" name="durationSeconds" min="0" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">問題点摘出</label>
+          <textarea data-testid="issues-found" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box; resize: vertical; min-height: 60px;" placeholder="テスト中に発見されたアクセシビリティ上の問題点"></textarea>
         </div>
+        <div>
+          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">改善提案</label>
+          <textarea data-testid="improvement-suggestions" style="width: 100%; padding: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 13px; box-sizing: border-box; resize: vertical; min-height: 60px;" placeholder="ユーザーから提案された改善案"></textarea>
+        </div>
+      </div>
 
-        <!-- ユーザーフィードバック -->
-        <div style="grid-column: 1 / -1;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">ユーザーフィードバック</label>
-          <textarea data-testid="feedback-textarea" name="userFeedback" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; font-family: var(--font-family); resize: vertical; min-height: 60px; box-sizing: border-box;" placeholder="ユーザーからのフィードバックを入力"></textarea>
-        </div>
-
-        <!-- 問題点摘出 -->
-        <div style="grid-column: 1 / -1;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">問題点摘出</label>
-          <textarea data-testid="issues-textarea" name="issues" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; font-family: var(--font-family); resize: vertical; min-height: 60px; box-sizing: border-box;" placeholder="テスト中に発見されたアクセシビリティ上の問題点"></textarea>
-        </div>
-
-        <!-- 改善提案 -->
-        <div style="grid-column: 1 / -1;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">改善提案</label>
-          <textarea data-testid="suggestions-textarea" name="suggestions" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; font-family: var(--font-family); resize: vertical; min-height: 60px; box-sizing: border-box;" placeholder="ユーザーから提案された改善案"></textarea>
-        </div>
-
-        <!-- 改善項目リンク -->
-        <div style="grid-column: 1 / -1;">
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">改善項目リンク</label>
-          <select data-testid="improvement-link-select" name="improvementId" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
-            <option value="">選択してください</option>
-          </select>
-        </div>
-
-        <!-- フォームボタン -->
-        <div style="grid-column: 1 / -1; display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
-          <button data-testid="cancel-button" type="button" style="padding: 8px 16px; background: transparent; color: var(--text); border: var(--border-width) solid var(--border); border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--motion-duration);">
-            キャンセル
-          </button>
-          <button data-testid="save-button" type="submit" style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: background var(--motion-duration);">
-            保存
-          </button>
-        </div>
-      </form>
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button data-testid="reset-button" class="action-btn secondary" style="padding: 8px 16px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-control); font-size: 13px; cursor: pointer;">リセット</button>
+        <button data-testid="save-button" class="action-btn" style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; cursor: pointer;">保存</button>
+      </div>
     </div>
 
-    <!-- テスト結果一覧 -->
-    <div style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column;">
+    <!-- Test Results List -->
+    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position); flex: 1; display: flex; flex-direction: column;">
       <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text);">テスト結果一覧</h3>
       
       <div class="table-wrap" style="flex: 1; overflow: auto;">
-        <table data-testid="test-results-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <table data-testid="test-results-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
           <thead>
-            <tr style="background: var(--bg-card); border-bottom: var(--border-width) solid var(--border);">
-              <th style="padding: 10px; text-align: left; color: var(--text); font-weight: 600; border-right: var(--border-width) solid var(--border);">実施日時</th>
-              <th style="padding: 10px; text-align: left; color: var(--text); font-weight: 600; border-right: var(--border-width) solid var(--border);">テスト種別</th>
-              <th style="padding: 10px; text-align: left; color: var(--text); font-weight: 600; border-right: var(--border-width) solid var(--border);">結果</th>
-              <th style="padding: 10px; text-align: left; color: var(--text); font-weight: 600; border-right: var(--border-width) solid var(--border);">優先度</th>
-              <th style="padding: 10px; text-align: left; color: var(--text); font-weight: 600; border-right: var(--border-width) solid var(--border);">満足度</th>
-              <th style="padding: 10px; text-align: left; color: var(--text); font-weight: 600;">問題点</th>
+            <tr style="background: var(--bg-main); border-bottom: 1px solid var(--border);">
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">テストID</th>
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">実施日時</th>
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">テスト種別</th>
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">結果</th>
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">優先度</th>
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">ステータス</th>
+              <th style="padding: 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">満足度</th>
+              <th style="padding: 8px; text-align: center; color: var(--text); font-weight: 600;">操作</th>
             </tr>
           </thead>
-          <tbody id="test-results-tbody">
-            <!-- 動的に生成される結果行 -->
+          <tbody id="test-results-tbody" style="background: var(--bg-card);">
+            <!-- Populated by initJs -->
           </tbody>
         </table>
       </div>
     </div>
   </div>
-</div>
 
-<!-- 詳細表示モーダル -->
-<div id="detail-modal-overlay" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: var(--radius-card); max-width: 600px; width: 90%; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h2 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--text);">テスト結果詳細</h2>
-      <button id="detail-close-btn" style="background: transparent; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">×</button>
-    </div>
+  <!-- Floating Action Button for New Test -->
+  <button data-testid="new-test-button" style="position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: #fff; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3); display: flex; align-items: center; justify-content: center; z-index: 100;" title="新規テスト記録">+</button>
 
-    <div id="detail-content" style="display: flex; flex-direction: column; gap: 12px;">
-      <!-- 動的に生成される詳細情報 -->
-    </div>
-
-    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px;">
-      <button id="detail-edit-btn" style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: background var(--motion-duration);">
-        編集
-      </button>
-      <button id="detail-close-btn-2" style="padding: 8px 16px; background: transparent; color: var(--text); border: var(--border-width) solid var(--border); border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--motion-duration);">
-        閉じる
-      </button>
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+    <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: var(--radius-card); max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+      <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600;">削除確認</h4>
+      <p style="margin: 0 0 20px 0; font-size: 13px; color: var(--text-muted);">このテスト記録を削除してもよろしいですか？この操作は取り消せません。</p>
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button id="delete-cancel-btn" style="padding: 8px 16px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-control); font-size: 13px; cursor: pointer;">キャンセル</button>
+        <button id="delete-confirm-btn" style="padding: 8px 16px; background: #8b4545; color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; cursor: pointer;">削除</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- 新規計画作成モーダル -->
-<div id="create-plan-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: var(--radius-card); max-width: 500px; width: 90%; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h2 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--text);">新規テスト計画</h2>
-      <button id="create-plan-close-btn" style="background: transparent; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">×</button>
-    </div>
-
-    <form id="create-plan-form" style="display: flex; flex-direction: column; gap: 12px;">
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">計画名 *</label>
-        <input data-testid="plan-name-input" type="text" name="planName" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;" placeholder="テスト計画の名称">
-      </div>
-
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">テスト種別 *</label>
-        <select data-testid="plan-type-select" name="testType" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
-          <option value="">選択してください</option>
-          <option value="操作性テスト">操作性テスト</option>
-          <option value="スクリーンリーダー検証">スクリーンリーダー検証</option>
-          <option value="キーボード操作確認">キーボード操作確認</option>
-          <option value="色覚特性対応確認">色覚特性対応確認</option>
-        </select>
-      </div>
-
-      <div>
-        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">ステータス *</label>
-        <select data-testid="plan-status-select" name="status" style="width: 100%; padding: 8px; border: var(--border-width) solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; box-sizing: border-box;">
-          <option value="">選択してください</option>
-          <option value="計画中">計画中</option>
-          <option value="実施中">実施中</option>
-          <option value="完了">完了</option>
-        </select>
-      </div>
-
-      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px;">
-        <button type="button" id="create-plan-cancel-btn" style="padding: 8px 16px; background: transparent; color: var(--text); border: var(--border-width) solid var(--border); border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--motion-duration);">
-          キャンセル
-        </button>
-        <button type="submit" style="padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 500; cursor: pointer; transition: background var(--motion-duration);">
-          作成
-        </button>
-      </div>
-    </form>
-  </div>
 </div></div>
         <div data-aivic-panel="scr-1788232195429" style="display:none"></div>
       </main>
     </div>
   </div>
-
   
 <script>
 (function() {
