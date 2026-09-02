@@ -128,24 +128,30 @@ export function extractAuthContext(event: APIGatewayProxyEvent): AuthContext {
   const authHeader = event.headers['Authorization'] || '';
   const token = authHeader.replace('Bearer ', '');
   
-  // Mock token parsing - in production, verify JWT
-  const decoded = Buffer.from(token, 'base64').toString('utf-8');
-  const [userId, role, email] = decoded.split(':');
-  
-  return {
-    userId: userId || 'unknown',
-    role: (role as Role) || 'viewer',
-    email: email || 'unknown@example.com',
-  };
+  // Mock token parsing - in production, validate JWT
+  try {
+    const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    return {
+      userId: decoded.sub || 'unknown',
+      role: (decoded.role || 'viewer') as Role,
+      email: decoded.email || 'unknown@example.com',
+    };
+  } catch {
+    return {
+      userId: 'unknown',
+      role: 'viewer',
+      email: 'unknown@example.com',
+    };
+  }
 }
 
-export function hasPermission(auth: AuthContext, permission: string): boolean {
-  const permissions = ROLE_PERMISSIONS[auth.role];
+export function hasPermission(context: AuthContext, permission: string): boolean {
+  const permissions = ROLE_PERMISSIONS[context.role];
   return permissions.has(permission);
 }
 
-export function requirePermission(auth: AuthContext, permission: string): void {
-  if (!hasPermission(auth, permission)) {
+export function requirePermission(context: AuthContext, permission: string): void {
+  if (!hasPermission(context, permission)) {
     throw new ForbiddenError(`Permission denied: ${permission}`);
   }
 }
