@@ -4163,5 +4163,1943 @@
         ]
       }
     ]
+  },
+  {
+    "systemId": "itg-8",
+    "systemName": "施設管理者向け予約・料金管理機能",
+    "screens": [
+      {
+        "id": "scr-1788271057677",
+        "name": "予約申込管理画面",
+        "purpose": "施設管理者が予約申込の受付状況を一覧表示し、団体ごとの承認基準に基づいて承認・却下・保留を判定・実行するとともに、施設職員による代行予約の登録と利用者への通知を管理する画面",
+        "items": [
+          "予約申込一覧表",
+          "受付状況フィルタ（新規受付・承認済・却下・保留）",
+          "団体名表示",
+          "利用者名表示",
+          "予約日時表示",
+          "施設名表示",
+          "利用人数表示",
+          "団体別承認基準自動判定結果表示",
+          "承認ボタン",
+          "却下ボタン",
+          "保留ボタン",
+          "却下理由入力欄"
+        ]
+      },
+      {
+        "id": "scr-1788271076575",
+        "name": "料金・収納管理画面",
+        "purpose": "施設管理者が団体ごとの料金ルール・割引・返金条件を適用して利用料金を自動計算し、団体別・利用者別の収納状況を一元管理・表示する画面",
+        "items": [
+          "団体選択フィルタ",
+          "利用者選択フィルタ",
+          "期間指定フィルタ",
+          "料金ルール一覧表示",
+          "適用中の割引マスタ表示",
+          "返金条件一覧表示",
+          "利用料金自動計算実行ボタン",
+          "利用料金計算結果テーブル",
+          "団体別収納状況サマリー",
+          "利用者別収納状況詳細テーブル",
+          "収納状況の団体別集計表示",
+          "収納状況の利用者別集計表示"
+        ]
+      },
+      {
+        "id": "scr-1788271093475",
+        "name": "帳票・ダウンロード画面",
+        "purpose": "施設管理者が予約一覧、利用実績、料金計算結果、収納状況などを帳票形式で出力し、CSV等の形式でダウンロードできる機能を提供する画面",
+        "items": [
+          "帳票種別選択（予約一覧・利用実績・料金計算結果・収納状況）",
+          "期間指定（開始日・終了日）",
+          "団体による絞り込み",
+          "利用者による絞り込み",
+          "出力形式選択（PDF・CSV・Excel）",
+          "プレビューボタン",
+          "ダウンロードボタン",
+          "出力条件リセットボタン",
+          "操作履歴表示（ダウンロード実行日時・ユーザー・出力形式）"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "利用者",
+        "purpose": "公共施設オンライン予約・決済サービスの利用者情報を管理し、認証、予約、決済処理に必要な基本情報を保持する",
+        "columns": [
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "利用者を一意に識別するプライマリキー"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン認証および連絡用のメールアドレス、ユニーク制約あり"
+          },
+          {
+            "name": "パスワードハッシュ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "ログイン認証用のハッシュ化されたパスワード"
+          },
+          {
+            "name": "氏名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "利用者の氏名"
+          },
+          {
+            "name": "電話番号",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "予約確認や施設からの連絡用電話番号"
+          },
+          {
+            "name": "住所",
+            "type": "text",
+            "required": false,
+            "description": "利用者の住所情報"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "利用者ステータス(有効/無効/休止中等)、予約可能判定に使用"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "利用者登録日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "利用者情報最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "操作履歴",
+        "purpose": "ユーザーによるバックアップ・復旧システムの全操作を記録し、監査証跡とトラブルシューティングの基盤を提供する",
+        "columns": [
+          {
+            "name": "操作履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作履歴の一意識別子"
+          },
+          {
+            "name": "ユーザーID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作を実行したユーザーの識別子、ユーザーテーブルへの外部キー"
+          },
+          {
+            "name": "操作種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "実行された操作の種類（バックアップ実行、復旧実行、設定変更、ジョブ削除等）"
+          },
+          {
+            "name": "対象リソースタイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "操作の対象となるリソースの種類（バックアップジョブ、復旧ジョブ、RTO_RPO設定等）"
+          },
+          {
+            "name": "対象リソースID",
+            "type": "uuid",
+            "required": true,
+            "description": "操作の対象となるリソースの識別子"
+          },
+          {
+            "name": "操作内容",
+            "type": "text",
+            "required": false,
+            "description": "操作の詳細な内容や変更内容の説明"
+          },
+          {
+            "name": "操作ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "操作の実行結果（成功、失敗、部分成功等）"
+          },
+          {
+            "name": "エラーメッセージ",
+            "type": "text",
+            "required": false,
+            "description": "操作失敗時のエラーメッセージ"
+          },
+          {
+            "name": "実行開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "操作の実行開始日時"
+          },
+          {
+            "name": "実行終了日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "操作の実行終了日時"
+          },
+          {
+            "name": "実行時間秒",
+            "type": "integer",
+            "required": false,
+            "description": "操作の実行所要時間（秒単位）"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "操作を実行したクライアントのIPアドレス"
+          },
+          {
+            "name": "セッションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "操作を実行したセッションの識別子"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "操作履歴レコードの作成日時"
+          }
+        ]
+      },
+      {
+        "tableName": "施設管理者",
+        "purpose": "施設の管理者情報を管理し、予約・料金管理機能の権限制御と監査証跡を実現するマスタテーブル",
+        "columns": [
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "施設管理者を一意に識別するプライマリキー"
+          },
+          {
+            "name": "施設ID",
+            "type": "uuid",
+            "required": true,
+            "description": "管理対象の施設を識別する外部キー"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "管理者権限を持つ利用者を識別する外部キー"
+          },
+          {
+            "name": "管理者名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設管理者の表示名"
+          },
+          {
+            "name": "メールアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設管理者の連絡先メールアドレス"
+          },
+          {
+            "name": "電話番号",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "施設管理者の連絡先電話番号"
+          },
+          {
+            "name": "権限レベル",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "管理者の権限レベル(FULL/RESERVATION/BILLING等)"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "管理者のステータス(ACTIVE/INACTIVE/SUSPENDED)"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者の利用者ID"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード最終更新者の利用者ID"
+          }
+        ]
+      },
+      {
+        "tableName": "団体",
+        "purpose": "施設管理者が団体利用者の予約・料金を一元管理するための団体マスタテーブル。団体情報、利用実績、請求情報を保持し、予約・料金計算・請求処理の基盤となる。",
+        "columns": [
+          {
+            "name": "団体ID",
+            "type": "uuid",
+            "required": true,
+            "description": "団体を一意に識別するプライマリキー"
+          },
+          {
+            "name": "団体名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "団体の正式名称"
+          },
+          {
+            "name": "団体名カナ",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "団体名のカナ表記、検索・ソート用"
+          },
+          {
+            "name": "代表者名",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "団体の代表者または責任者の名前"
+          },
+          {
+            "name": "代表者電話番号",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "団体代表者の連絡先電話番号"
+          },
+          {
+            "name": "代表者メールアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "団体代表者のメールアドレス"
+          },
+          {
+            "name": "住所",
+            "type": "text",
+            "required": false,
+            "description": "団体の所在地住所"
+          },
+          {
+            "name": "会員数",
+            "type": "integer",
+            "required": false,
+            "description": "団体の現在の会員数、料金計算の基準となる"
+          },
+          {
+            "name": "契約開始日",
+            "type": "timestamp",
+            "required": false,
+            "description": "団体との契約開始日"
+          },
+          {
+            "name": "契約終了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "団体との契約終了日、nullの場合は継続中"
+          },
+          {
+            "name": "ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "団体のステータス：有効/休止/解約"
+          },
+          {
+            "name": "請求先",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "請求先の名称、代表者名と異なる場合に指定"
+          },
+          {
+            "name": "請求先住所",
+            "type": "text",
+            "required": false,
+            "description": "請求先の住所"
+          },
+          {
+            "name": "請求先電話番号",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "請求先の電話番号"
+          },
+          {
+            "name": "請求先メールアドレス",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "請求先のメールアドレス"
+          },
+          {
+            "name": "割引率",
+            "type": "integer",
+            "required": false,
+            "description": "団体に適用する割引率（パーセンテージ）"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "団体に関する特記事項や管理メモ"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "団体レコードの作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "団体レコードの最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "団体レコードを作成した施設管理者のID"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "団体レコードを最後に更新した施設管理者のID"
+          }
+        ]
+      },
+      {
+        "tableName": "予約申込",
+        "purpose": "施設管理者が利用者からの予約申込を管理し、料金計算・承認・キャンセル処理を行うためのトランザクションテーブル",
+        "columns": [
+          {
+            "name": "予約申込ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約申込の一意識別子"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約を申し込んだ利用者への外部キー参照"
+          },
+          {
+            "name": "団体ID",
+            "type": "uuid",
+            "required": false,
+            "description": "団体予約の場合の団体への外部キー参照"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約対象施設の管理者への外部キー参照"
+          },
+          {
+            "name": "予約状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "予約の状態コード(申込中/承認済/キャンセル/完了等)"
+          },
+          {
+            "name": "利用開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "施設利用の開始日時"
+          },
+          {
+            "name": "利用終了日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "施設利用の終了日時"
+          },
+          {
+            "name": "利用人数",
+            "type": "integer",
+            "required": true,
+            "description": "予約時の利用予定人数"
+          },
+          {
+            "name": "料金",
+            "type": "integer",
+            "required": true,
+            "description": "計算された予約料金(円)"
+          },
+          {
+            "name": "支払状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "支払い状態コード(未払/支払済/返金等)"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "予約に関する特記事項やリクエスト"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "予約申込が作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "予約申込が最後に更新された日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約申込を作成した利用者への外部キー参照"
+          }
+        ]
+      },
+      {
+        "tableName": "予約承認基準",
+        "purpose": "施設管理者が設定する予約申込の自動承認ルールを管理し、利用者の予約申込が承認基準を満たすかを判定するための基準値を保持する",
+        "columns": [
+          {
+            "name": "承認基準ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約承認基準の一意識別子"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "この承認基準を設定した施設管理者への外部キー"
+          },
+          {
+            "name": "基準名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "承認基準の名称（例：通常利用者向け、団体向け）"
+          },
+          {
+            "name": "対象利用者区分",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "この基準が適用される利用者区分（個人、団体など）"
+          },
+          {
+            "name": "最大予約日数",
+            "type": "integer",
+            "required": false,
+            "description": "一度の予約で申し込める最大日数"
+          },
+          {
+            "name": "最大同時予約件数",
+            "type": "integer",
+            "required": false,
+            "description": "同時に保有できる予約の最大件数"
+          },
+          {
+            "name": "予約可能日前日数",
+            "type": "integer",
+            "required": false,
+            "description": "予約申込から利用開始までの最小日数"
+          },
+          {
+            "name": "自動承認フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "この基準を満たす予約申込を自動承認するかどうか"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "この承認基準が現在有効かどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "承認基準の作成日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "承認基準を作成した施設管理者のID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "承認基準の最終更新日時"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "承認基準を最後に更新した施設管理者のID"
+          }
+        ]
+      },
+      {
+        "tableName": "料金ルール",
+        "purpose": "施設の利用料金体系を定義・管理し、予約申込時の料金計算に使用される料金パターンを一元管理する",
+        "columns": [
+          {
+            "name": "料金ルールID",
+            "type": "uuid",
+            "required": true,
+            "description": "料金ルールの一意識別子"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "この料金ルールを管理する施設管理者への外部キー"
+          },
+          {
+            "name": "ルール名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "料金ルールの名称（例：通常料金、団体割引、ピーク時料金）"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "料金ルールの詳細説明"
+          },
+          {
+            "name": "基本料金",
+            "type": "integer",
+            "required": true,
+            "description": "このルールの基本料金（円）"
+          },
+          {
+            "name": "単位時間",
+            "type": "integer",
+            "required": true,
+            "description": "料金計算の単位時間（分）"
+          },
+          {
+            "name": "適用開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "このルールが適用開始される日時"
+          },
+          {
+            "name": "適用終了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "このルールが適用終了される日時（NULLの場合は無期限）"
+          },
+          {
+            "name": "最小利用時間",
+            "type": "integer",
+            "required": false,
+            "description": "最小利用時間（分）"
+          },
+          {
+            "name": "最大利用時間",
+            "type": "integer",
+            "required": false,
+            "description": "最大利用時間（分、NULLの場合は無制限）"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "料金ルールが有効かどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "料金ルール作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "料金ルール最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "料金ルールを作成した施設管理者のID"
+          }
+        ]
+      },
+      {
+        "tableName": "割引マスタ",
+        "purpose": "施設管理者が定義・管理する割引ルールのマスタテーブル。予約申込時に料金計算に適用される割引条件（割引率、割引額、適用対象、有効期間等）を一元管理する。",
+        "columns": [
+          {
+            "name": "割引ID",
+            "type": "uuid",
+            "required": true,
+            "description": "割引ルールを一意に識別するプライマリキー"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "この割引ルールを管理する施設管理者のID。外部キー：施設管理者テーブル"
+          },
+          {
+            "name": "割引名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "割引ルールの名称（例：早期割引、団体割引、シニア割引）"
+          },
+          {
+            "name": "割引説明",
+            "type": "text",
+            "required": false,
+            "description": "割引の詳細説明や適用条件の補足"
+          },
+          {
+            "name": "割引タイプ",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "割引の種類（率引き、定額割引等）"
+          },
+          {
+            "name": "割引値",
+            "type": "integer",
+            "required": true,
+            "description": "割引率（%）または割引額（円）の数値"
+          },
+          {
+            "name": "適用対象",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "割引の適用対象（全利用者、団体のみ、特定利用者等）"
+          },
+          {
+            "name": "有効開始日",
+            "type": "timestamp",
+            "required": true,
+            "description": "割引ルールの適用開始日時"
+          },
+          {
+            "name": "有効終了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "割引ルールの適用終了日時。NULLの場合は無期限"
+          },
+          {
+            "name": "最小適用金額",
+            "type": "integer",
+            "required": false,
+            "description": "割引が適用される最小金額（円）"
+          },
+          {
+            "name": "最大割引額",
+            "type": "integer",
+            "required": false,
+            "description": "1回の予約で適用される最大割引額（円）"
+          },
+          {
+            "name": "優先度",
+            "type": "integer",
+            "required": false,
+            "description": "複数割引が適用可能な場合の優先順位。数値が小さいほど優先度が高い"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "割引ルールが有効かどうか。falseの場合は適用されない"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "割引ルールが作成された日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "割引ルールを作成した施設管理者のID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "割引ルールが最後に更新された日時"
+          },
+          {
+            "name": "更新者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "割引ルールを最後に更新した施設管理者のID"
+          }
+        ]
+      },
+      {
+        "tableName": "返金条件",
+        "purpose": "施設管理者が予約キャンセル時の返金ルールを定義・管理するためのマスタテーブル。キャンセル期限と返金率の対応関係を保持し、予約キャンセル処理時に参照される。",
+        "columns": [
+          {
+            "name": "返金条件ID",
+            "type": "uuid",
+            "required": true,
+            "description": "返金条件を一意に識別するプライマリキー"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "この返金条件を管理する施設管理者への外部キー"
+          },
+          {
+            "name": "条件名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "返金条件の名称（例：標準返金ルール、グループ向けルール）"
+          },
+          {
+            "name": "キャンセル期限日数",
+            "type": "integer",
+            "required": true,
+            "description": "利用予定日の何日前までのキャンセルに適用するか（例：7日前、3日前）"
+          },
+          {
+            "name": "返金率",
+            "type": "integer",
+            "required": true,
+            "description": "返金対象となる料金の割合（0～100のパーセンテージ）"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "返金条件の詳細説明や適用対象の補足"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "この返金条件が現在有効かどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "返金条件が作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "返金条件が最後に更新された日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "返金条件を作成した施設管理者のID"
+          }
+        ]
+      },
+      {
+        "tableName": "利用料金計算結果",
+        "purpose": "予約申込に基づいて計算された利用料金の詳細結果を記録し、施設管理者が料金内訳を確認・管理するための履歴テーブル",
+        "columns": [
+          {
+            "name": "料金計算結果ID",
+            "type": "uuid",
+            "required": true,
+            "description": "料金計算結果の一意識別子"
+          },
+          {
+            "name": "予約申込ID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応する予約申込への外部キー"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "利用者への外部キー"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "施設管理者への外部キー"
+          },
+          {
+            "name": "基本料金",
+            "type": "integer",
+            "required": true,
+            "description": "料金ルールに基づいて計算された基本料金（円）"
+          },
+          {
+            "name": "割引額",
+            "type": "integer",
+            "required": false,
+            "description": "割引マスタから適用された割引額（円）"
+          },
+          {
+            "name": "割引率",
+            "type": "integer",
+            "required": false,
+            "description": "適用された割引率（パーセンテージ）"
+          },
+          {
+            "name": "税金",
+            "type": "integer",
+            "required": false,
+            "description": "計算された税金額（円）"
+          },
+          {
+            "name": "合計料金",
+            "type": "integer",
+            "required": true,
+            "description": "基本料金から割引と税金を適用した最終合計料金（円）"
+          },
+          {
+            "name": "計算日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "料金が計算された日時"
+          },
+          {
+            "name": "計算ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "計算結果のステータス（成功/エラー/保留中など）"
+          },
+          {
+            "name": "計算備考",
+            "type": "text",
+            "required": false,
+            "description": "計算時の特記事項やエラーメッセージ"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者（施設管理者またはシステム）"
+          }
+        ]
+      },
+      {
+        "tableName": "収納状況",
+        "purpose": "施設管理者が予約に基づく利用料金の収納状況を追跡・管理し、未収金や返金処理の進捗を把握するためのテーブル",
+        "columns": [
+          {
+            "name": "収納状況ID",
+            "type": "uuid",
+            "required": true,
+            "description": "収納状況レコードの一意識別子"
+          },
+          {
+            "name": "予約申込ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する予約申込への外部キー"
+          },
+          {
+            "name": "利用料金計算結果ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する利用料金計算結果への外部キー"
+          },
+          {
+            "name": "請求金額",
+            "type": "integer",
+            "required": true,
+            "description": "利用者に請求する金額（円）"
+          },
+          {
+            "name": "収納済金額",
+            "type": "integer",
+            "required": true,
+            "description": "実際に収納された金額（円）"
+          },
+          {
+            "name": "未収金額",
+            "type": "integer",
+            "required": true,
+            "description": "未だ収納されていない金額（円）"
+          },
+          {
+            "name": "返金予定金額",
+            "type": "integer",
+            "required": false,
+            "description": "返金条件に基づいて返金予定の金額（円）"
+          },
+          {
+            "name": "返金済金額",
+            "type": "integer",
+            "required": false,
+            "description": "実際に返金された金額（円）"
+          },
+          {
+            "name": "収納状況ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "収納状況のステータス（未収納、部分収納、全額収納、返金待機、返金完了等）"
+          },
+          {
+            "name": "最終収納日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "最後に収納が行われた日時"
+          },
+          {
+            "name": "返金日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "返金が実行された日時"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "収納状況に関する追加情報やメモ"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコード作成者の施設管理者ID"
+          }
+        ]
+      },
+      {
+        "tableName": "利用実績",
+        "purpose": "施設の実際の利用状況を記録し、予約との照合、料金計算、利用統計の基礎データとなるトランザクションテーブル",
+        "columns": [
+          {
+            "name": "利用実績ID",
+            "type": "uuid",
+            "required": true,
+            "description": "利用実績を一意に識別するプライマリキー"
+          },
+          {
+            "name": "予約申込ID",
+            "type": "uuid",
+            "required": true,
+            "description": "対応する予約申込への外部キー参照"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "実際に利用した利用者への外部キー参照"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "当該施設を管理する施設管理者への外部キー参照"
+          },
+          {
+            "name": "団体ID",
+            "type": "uuid",
+            "required": false,
+            "description": "団体利用の場合の団体への外部キー参照"
+          },
+          {
+            "name": "利用開始日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "実際の利用開始日時"
+          },
+          {
+            "name": "利用終了日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "実際の利用終了日時"
+          },
+          {
+            "name": "利用時間分",
+            "type": "integer",
+            "required": true,
+            "description": "実際の利用時間を分単位で記録"
+          },
+          {
+            "name": "利用人数",
+            "type": "integer",
+            "required": true,
+            "description": "実際の利用人数"
+          },
+          {
+            "name": "利用料金計算結果ID",
+            "type": "uuid",
+            "required": false,
+            "description": "この利用実績に基づいて計算された料金結果への外部キー参照"
+          },
+          {
+            "name": "実績ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "利用実績のステータス(完了、キャンセル、未確定等)"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "利用実績に関する追加情報や特記事項"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "利用実績レコードの作成日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "利用実績を作成した施設管理者のID"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "利用実績レコードの最終更新日時"
+          },
+          {
+            "name": "更新者",
+            "type": "uuid",
+            "required": false,
+            "description": "利用実績を最後に更新した施設管理者のID"
+          }
+        ]
+      },
+      {
+        "tableName": "代行予約ログ",
+        "purpose": "施設管理者が利用者に代わって予約を作成・変更・キャンセルした操作履歴を記録し、監査証跡と代行権限の管理を実現する",
+        "columns": [
+          {
+            "name": "代行予約ログID",
+            "type": "uuid",
+            "required": true,
+            "description": "代行予約ログの一意識別子"
+          },
+          {
+            "name": "施設管理者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "代行操作を実行した施設管理者の識別子"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "代行予約の対象となる利用者の識別子"
+          },
+          {
+            "name": "予約申込ID",
+            "type": "uuid",
+            "required": true,
+            "description": "代行操作の対象となる予約申込の識別子"
+          },
+          {
+            "name": "操作種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "代行操作の種類(作成/変更/キャンセル等)"
+          },
+          {
+            "name": "操作内容",
+            "type": "text",
+            "required": false,
+            "description": "代行操作の詳細内容(変更前後の値等)"
+          },
+          {
+            "name": "代行理由",
+            "type": "text",
+            "required": false,
+            "description": "施設管理者が代行操作を実施した理由"
+          },
+          {
+            "name": "操作日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "代行操作が実行された日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ログレコードが作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ログレコードが最後に更新された日時"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "systemId": "itg-7",
+    "systemName": "公共施設オンライン予約・決済サービス",
+    "screens": [
+      {
+        "id": "scr-1788270636243",
+        "name": "施設検索・予約ワークスペース",
+        "purpose": "公共施設のオンライン検索、空き状況確認、予約・抽選申込、予約管理を一元的に行うメインワークスペース",
+        "items": [
+          "施設カテゴリ選択フィルター",
+          "施設名キーワード検索欄",
+          "施設一覧表示エリア",
+          "空き状況リアルタイム表示",
+          "利用時間帯選択パネル",
+          "予約申込ボタン",
+          "抽選申込ボタン",
+          "予約確認・変更・キャンセル機能",
+          "予約済み施設一覧",
+          "操作履歴表示エリア",
+          "決済情報表示",
+          "利用者認証ステータス表示"
+        ]
+      },
+      {
+        "id": "scr-1788270652698",
+        "name": "決済・予約確定画面",
+        "purpose": "利用者が施設予約の決済方法を選択し、オンライン決済を実行して予約を確定し、決済ステータスを確認して領収書・予約確認書を発行する画面",
+        "items": [
+          "予約内容確認セクション",
+          "施設名・利用日時表示",
+          "利用料金表示",
+          "決済方法選択ラジオボタン",
+          "クレジットカード決済オプション",
+          "銀行振込決済オプション",
+          "コンビニ決済オプション",
+          "その他決済方法オプション",
+          "決済実行ボタン",
+          "決済処理中インジケーター",
+          "決済ステータス表示",
+          "決済成功メッセージ"
+        ]
+      }
+    ],
+    "tableDefinitions": [
+      {
+        "tableName": "施設",
+        "purpose": "公共施設の基本情報を管理し、オンライン予約・決済サービスで利用可能な施設のマスタデータを保持する",
+        "columns": [
+          {
+            "name": "施設ID",
+            "type": "uuid",
+            "required": true,
+            "description": "施設を一意に識別するプライマリキー"
+          },
+          {
+            "name": "施設名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設の名称"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "施設の詳細説明"
+          },
+          {
+            "name": "住所",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設の所在地"
+          },
+          {
+            "name": "電話番号",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "施設の連絡先電話番号"
+          },
+          {
+            "name": "営業開始時間",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設の営業開始時刻"
+          },
+          {
+            "name": "営業終了時間",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設の営業終了時刻"
+          },
+          {
+            "name": "定員",
+            "type": "integer",
+            "required": true,
+            "description": "施設の最大収容人数"
+          },
+          {
+            "name": "利用料金",
+            "type": "integer",
+            "required": true,
+            "description": "施設の利用料金（円）"
+          },
+          {
+            "name": "予約可能フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "施設がオンライン予約可能かどうか"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "施設情報の作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "施設情報の最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "施設利用時間帯",
+        "purpose": "公共施設の営業時間や利用可能な時間帯を管理し、予約システムで利用可能な時間枠を制御するマスタテーブル",
+        "columns": [
+          {
+            "name": "時間帯ID",
+            "type": "uuid",
+            "required": true,
+            "description": "施設利用時間帯の一意識別子"
+          },
+          {
+            "name": "施設ID",
+            "type": "uuid",
+            "required": true,
+            "description": "施設テーブルへの外部キー参照"
+          },
+          {
+            "name": "曜日",
+            "type": "varchar(10)",
+            "required": true,
+            "description": "適用される曜日(月火水木金土日または0-6の数値)"
+          },
+          {
+            "name": "開始時刻",
+            "type": "varchar(5)",
+            "required": true,
+            "description": "利用可能な開始時刻(HH:MM形式)"
+          },
+          {
+            "name": "終了時刻",
+            "type": "varchar(5)",
+            "required": true,
+            "description": "利用可能な終了時刻(HH:MM形式)"
+          },
+          {
+            "name": "予約単位分",
+            "type": "integer",
+            "required": true,
+            "description": "予約の最小単位となる分数(例:30分、60分)"
+          },
+          {
+            "name": "最大予約時間分",
+            "type": "integer",
+            "required": false,
+            "description": "1回の予約で指定可能な最大時間(分単位)"
+          },
+          {
+            "name": "利用可能フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "この時間帯が予約可能かどうか"
+          },
+          {
+            "name": "適用開始日",
+            "type": "timestamp",
+            "required": false,
+            "description": "この時間帯設定の適用開始日時"
+          },
+          {
+            "name": "適用終了日",
+            "type": "timestamp",
+            "required": false,
+            "description": "この時間帯設定の適用終了日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者ID",
+            "type": "uuid",
+            "required": false,
+            "description": "レコード作成者の利用者ID"
+          }
+        ]
+      },
+      {
+        "tableName": "予約",
+        "purpose": "公共施設のオンライン予約を管理し、利用者による施設予約の申込、決済状況、予約状態を記録するトランザクションテーブル",
+        "columns": [
+          {
+            "name": "予約ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約の一意識別子"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約を行った利用者の外部キー"
+          },
+          {
+            "name": "施設ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約対象の施設の外部キー"
+          },
+          {
+            "name": "施設利用時間帯ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約する利用時間帯の外部キー"
+          },
+          {
+            "name": "予約日",
+            "type": "timestamp",
+            "required": true,
+            "description": "施設を利用する予定日"
+          },
+          {
+            "name": "予約状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "予約の状態(申込中、確定、キャンセル、利用完了等)"
+          },
+          {
+            "name": "決済状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "決済の状態(未決済、決済済、返金等)"
+          },
+          {
+            "name": "予約金額",
+            "type": "integer",
+            "required": true,
+            "description": "予約に対する利用料金(円)"
+          },
+          {
+            "name": "人数",
+            "type": "integer",
+            "required": false,
+            "description": "予約時の利用予定人数"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "予約に関する特記事項やリクエスト"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "予約が作成された日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "予約が最後に更新された日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "予約を作成した利用者ID"
+          }
+        ]
+      },
+      {
+        "tableName": "抽選申込",
+        "purpose": "公共施設の抽選方式の利用申込を管理し、申込情報、抽選結果、当選/落選状態を記録するテーブル",
+        "columns": [
+          {
+            "name": "抽選申込ID",
+            "type": "uuid",
+            "required": true,
+            "description": "抽選申込の一意識別子"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "申込を行った利用者の識別子、利用者テーブルへの外部キー"
+          },
+          {
+            "name": "施設ID",
+            "type": "uuid",
+            "required": true,
+            "description": "抽選対象の施設の識別子、施設テーブルへの外部キー"
+          },
+          {
+            "name": "施設利用時間帯ID",
+            "type": "uuid",
+            "required": true,
+            "description": "申込対象の利用時間帯の識別子、施設利用時間帯テーブルへの外部キー"
+          },
+          {
+            "name": "申込日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "抽選申込を行った日時"
+          },
+          {
+            "name": "抽選結果ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "抽選結果の状態、値は未抽選/当選/落選のいずれか"
+          },
+          {
+            "name": "抽選実施日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "抽選が実施された日時、未抽選の場合はNULL"
+          },
+          {
+            "name": "予約ID",
+            "type": "uuid",
+            "required": false,
+            "description": "当選時に自動生成された予約の識別子、予約テーブルへの外部キー、落選時はNULL"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "決済",
+        "purpose": "公共施設の利用予約に対する決済情報を管理し、支払い状況、金額、決済方法などを記録するトランザクションテーブル",
+        "columns": [
+          {
+            "name": "決済ID",
+            "type": "uuid",
+            "required": true,
+            "description": "決済レコードの一意識別子"
+          },
+          {
+            "name": "予約ID",
+            "type": "uuid",
+            "required": true,
+            "description": "関連する予約レコードへの外部キー"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "決済を行った利用者への外部キー"
+          },
+          {
+            "name": "決済金額",
+            "type": "integer",
+            "required": true,
+            "description": "決済対象の金額（円単位）"
+          },
+          {
+            "name": "決済方法",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "決済方法の種類（クレジットカード、銀行振込、現金など）"
+          },
+          {
+            "name": "決済ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "決済状態（未決済、決済済、キャンセル、返金など）"
+          },
+          {
+            "name": "決済日時",
+            "type": "timestamp",
+            "required": false,
+            "description": "実際の決済完了日時"
+          },
+          {
+            "name": "トランザクションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "決済ゲートウェイから返却される外部トランザクション識別子"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "決済に関する補足情報やエラーメッセージ"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "決済レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "決済レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "決済レコードを作成したユーザーまたはシステム"
+          }
+        ]
+      },
+      {
+        "tableName": "決済履歴",
+        "purpose": "公共施設の予約に対する決済トランザクションの記録と追跡を管理し、決済状態、金額、タイミングを監査可能に保持する",
+        "columns": [
+          {
+            "name": "決済履歴ID",
+            "type": "uuid",
+            "required": true,
+            "description": "決済履歴の一意識別子"
+          },
+          {
+            "name": "決済ID",
+            "type": "uuid",
+            "required": true,
+            "description": "決済テーブルへの外部キー参照"
+          },
+          {
+            "name": "予約ID",
+            "type": "uuid",
+            "required": true,
+            "description": "予約テーブルへの外部キー参照"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "利用者テーブルへの外部キー参照"
+          },
+          {
+            "name": "決済金額",
+            "type": "integer",
+            "required": true,
+            "description": "決済対象の金額（円単位）"
+          },
+          {
+            "name": "決済状態",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "決済の状態（未決済、決済済、キャンセル、返金等）"
+          },
+          {
+            "name": "決済方法",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "決済方法（クレジットカード、銀行振込、現金等）"
+          },
+          {
+            "name": "決済日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "実際の決済処理が完了した日時"
+          },
+          {
+            "name": "トランザクションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "外部決済ゲートウェイから返却されたトランザクション識別子"
+          },
+          {
+            "name": "備考",
+            "type": "text",
+            "required": false,
+            "description": "決済に関する追加情報やエラーメッセージ"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "決済履歴レコードの作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "決済履歴レコードの最終更新日時"
+          }
+        ]
+      },
+      {
+        "tableName": "キャンセル",
+        "purpose": "公共施設の予約キャンセル情報を管理し、キャンセル理由、手数料、払戻金額などのキャンセル処理に関する詳細を記録するテーブル",
+        "columns": [
+          {
+            "name": "キャンセルID",
+            "type": "uuid",
+            "required": true,
+            "description": "キャンセル情報の一意識別子"
+          },
+          {
+            "name": "予約ID",
+            "type": "uuid",
+            "required": true,
+            "description": "キャンセル対象の予約を特定する外部キー"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "キャンセルを実行した利用者の識別子"
+          },
+          {
+            "name": "キャンセル理由",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "キャンセル理由の分類コード（利用者都合、施設都合など）"
+          },
+          {
+            "name": "キャンセル理由詳細",
+            "type": "text",
+            "required": false,
+            "description": "キャンセル理由の詳細説明"
+          },
+          {
+            "name": "キャンセル手数料",
+            "type": "integer",
+            "required": true,
+            "description": "キャンセルに伴う手数料（円）"
+          },
+          {
+            "name": "払戻金額",
+            "type": "integer",
+            "required": true,
+            "description": "利用者に払い戻す金額（円）"
+          },
+          {
+            "name": "払戻ステータス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "払戻処理の状態（未処理、処理中、完了など）"
+          },
+          {
+            "name": "キャンセル日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "キャンセルが実行された日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "uuid",
+            "required": true,
+            "description": "レコードを作成したユーザーまたはシステムの識別子"
+          }
+        ]
+      },
+      {
+        "tableName": "施設カテゴリ",
+        "purpose": "公共施設の分類を管理するマスタテーブル。施設の種類（体育館、図書館、会議室など）を定義し、予約システムでの施設検索・フィルタリングに使用される。",
+        "columns": [
+          {
+            "name": "施設カテゴリID",
+            "type": "uuid",
+            "required": true,
+            "description": "施設カテゴリの一意識別子"
+          },
+          {
+            "name": "カテゴリ名",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "施設カテゴリの名称（例：体育館、図書館、会議室）"
+          },
+          {
+            "name": "説明",
+            "type": "text",
+            "required": false,
+            "description": "施設カテゴリの詳細説明"
+          },
+          {
+            "name": "表示順序",
+            "type": "integer",
+            "required": false,
+            "description": "UI上での表示順序"
+          },
+          {
+            "name": "有効フラグ",
+            "type": "boolean",
+            "required": true,
+            "description": "カテゴリが有効かどうか（削除の代わりに使用）"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード作成日時"
+          },
+          {
+            "name": "更新日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "レコード最終更新日時"
+          },
+          {
+            "name": "作成者",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "レコード作成者のユーザーID"
+          }
+        ]
+      },
+      {
+        "tableName": "利用者認証ログ",
+        "purpose": "利用者のログイン・ログアウト・認証失敗などの認証イベントを記録し、セキュリティ監査とユーザー行動分析に使用する",
+        "columns": [
+          {
+            "name": "認証ログID",
+            "type": "uuid",
+            "required": true,
+            "description": "認証ログの一意識別子"
+          },
+          {
+            "name": "利用者ID",
+            "type": "uuid",
+            "required": true,
+            "description": "認証を行った利用者の識別子"
+          },
+          {
+            "name": "認証種別",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証イベントの種類(ログイン、ログアウト、認証失敗、パスワード変更など)"
+          },
+          {
+            "name": "認証方法",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "使用された認証方法(メール・パスワード、ソーシャルログイン、多要素認証など)"
+          },
+          {
+            "name": "認証結果",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証の結果(成功、失敗、ブロック)"
+          },
+          {
+            "name": "失敗理由",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "認証失敗時の理由(パスワード不正、アカウントロック、セッション期限切れなど)"
+          },
+          {
+            "name": "IPアドレス",
+            "type": "varchar(100)",
+            "required": true,
+            "description": "認証リクエスト元のIPアドレス"
+          },
+          {
+            "name": "ユーザーエージェント",
+            "type": "text",
+            "required": false,
+            "description": "認証リクエスト元のブラウザ・デバイス情報"
+          },
+          {
+            "name": "セッションID",
+            "type": "varchar(100)",
+            "required": false,
+            "description": "認証後に発行されたセッションの識別子"
+          },
+          {
+            "name": "認証日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "認証イベントが発生した日時"
+          },
+          {
+            "name": "作成日時",
+            "type": "timestamp",
+            "required": true,
+            "description": "ログレコードが作成された日時"
+          }
+        ]
+      }
+    ]
   }
 ]

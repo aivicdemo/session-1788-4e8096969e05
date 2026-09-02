@@ -6,44 +6,118 @@
   <title>公共施設予約 - ログイン画面</title>
   <style>
     :root {
-      /* 県庁の落ち着いたトーン：深い紺と薄墨のコントラスト、公務的な厳正さ */
-      --primary: #2c3e50;
-      --primary-hover: #1a252f;
-      --bg-main: #f4f3f0;
-      --bg-card: #ebe8e3;
-      --bg-sidebar: #e8e5df;
-      --border: #d4cfc5;
-      --text: #1a1815;
+      /* ========== 色彩体系 ========== */
+      /* 県庁の落ち着いたトーン：深い紺と石色を基調に、公共性と信頼感を表現 */
+      --primary: #1e3a5f;
+      --primary-hover: #152a47;
+      --primary-light: #2d5a8c;
+      
+      /* 背景：薄い石灰色（公文書の紙質感を想起） */
+      --bg-main: #f0ede8;
+      --bg-card: #e8e5df;
+      --bg-sidebar: #ebe8e2;
+      --top-bar-bg: #1e3a5f;
+      --top-bar-border: #152a47;
+      
+      /* テキスト */
+      --text: #2a2520;
       --text-muted: #6b6560;
-      --top-bar-bg: #3a4a5e;
-      --top-bar-border: #2c3e50;
-      --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+      
+      /* 境界線：落ち着いた灰色、県庁の厳格さを表現 */
+      --border: #c9c4bc;
+      
+      /* ========== タイポグラフィ ========== */
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+      
+      /* ========== 寸法・間隔 ========== */
+      --space-unit: 8px;
+      --control-height: 40px;
+      --border-width: 1px;
+      
+      /* ========== 角丸 ========== */
+      /* 県庁の格調を損なわないよう、控えめな角丸 */
       --radius-card: 4px;
       --radius-control: 3px;
-      --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --border-width: 1px;
-      --control-height: 36px;
-      --space-unit: 8px;
-      --motion-duration: 0.2s;
       
-      /* 質感：和紙のような繊細さ、公文書の厳粛性 */
+      /* ========== 影 ========== */
+      /* 紙のような薄い影：公文書の積み重ねを暗示 */
+      --shadow-card: 0 2px 6px rgba(30, 58, 95, 0.08), 0 1px 2px rgba(30, 58, 95, 0.04);
+      
+      /* ========== 質感 ========== */
+      /* 和紙のような微細な織目を表現：公共施設の落ち着きと信頼感 */
       --surface-texture: 
         repeating-linear-gradient(
           90deg,
           transparent,
           transparent 2px,
-          rgba(0, 0, 0, 0.01) 2px,
-          rgba(0, 0, 0, 0.01) 4px
+          rgba(30, 58, 95, 0.02) 2px,
+          rgba(30, 58, 95, 0.02) 4px
         ),
         repeating-linear-gradient(
           0deg,
           transparent,
-          transparent 3px,
-          rgba(0, 0, 0, 0.008) 3px,
-          rgba(0, 0, 0, 0.008) 6px
+          transparent 2px,
+          rgba(30, 58, 95, 0.015) 2px,
+          rgba(30, 58, 95, 0.015) 4px
         );
       --surface-texture-size: 100% 100%;
       --surface-texture-position: 0 0;
+      
+      /* ========== モーション ========== */
+      /* 行政手続きの厳格さを保ちながら、適度な応答性 */
+      --motion-duration: 200ms;
+      
+      /* ========== セマンティック色 ========== */
+      --success: #2e7d32;
+      --success-light: #e8f5e9;
+      --warning: #f57c00;
+      --warning-light: #fff3e0;
+      --error: #c62828;
+      --error-light: #ffebee;
+      --info: #1565c0;
+      --info-light: #e3f2fd;
+      
+      /* ========== 追加の質感制御 ========== */
+      /* カード・パネルの微妙な立体感 */
+      --card-border-color: rgba(30, 58, 95, 0.06);
+      --divider-color: rgba(30, 58, 95, 0.08);
+      
+      /* フォーカス状態（キーボード操作時の視認性） */
+      --focus-outline: 2px solid #1e3a5f;
+      --focus-outline-offset: 2px;
+      
+      /* ========== 入力フィールド ========== */
+      --input-bg: #ffffff;
+      --input-border: #c9c4bc;
+      --input-border-focus: #1e3a5f;
+      --input-text: #2a2520;
+      --input-placeholder: #9a9490;
+      
+      /* ========== ボタン ========== */
+      --button-primary-bg: #1e3a5f;
+      --button-primary-text: #ffffff;
+      --button-primary-hover: #152a47;
+      --button-secondary-bg: #e8e5df;
+      --button-secondary-text: #2a2520;
+      --button-secondary-hover: #ddd9d1;
+      --button-disabled-bg: #d4cfc7;
+      --button-disabled-text: #9a9490;
+      
+      /* ========== サイドバー ========== */
+      --sidebar-item-hover: rgba(30, 58, 95, 0.08);
+      --sidebar-item-active-bg: rgba(30, 58, 95, 0.12);
+      --sidebar-item-active-border: #1e3a5f;
+      
+      /* ========== テーブル ========== */
+      --table-header-bg: #e8e5df;
+      --table-header-text: #2a2520;
+      --table-row-hover: rgba(30, 58, 95, 0.04);
+      --table-border: #c9c4bc;
+      
+      /* ========== ステータスバッジ ========== */
+      --badge-bg: #e8e5df;
+      --badge-text: #2a2520;
+      --badge-border: #c9c4bc;
     }
 
     * {
@@ -55,42 +129,54 @@
     html, body {
       width: 100%;
       height: 100%;
-      font-family: var(--font-family);
-      background-color: var(--bg-main);
-      background-image: var(--surface-texture);
-      background-size: var(--surface-texture-size);
-      background-position: var(--surface-texture-position);
-      color: var(--text);
     }
 
     body {
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, var(--bg-main) 0%, #e5dfd6 100%);
+      background-attachment: fixed;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: calc(var(--space-unit) * 2);
+      justify-content: center;
+      color: var(--text);
+      line-height: 1.6;
     }
 
     .login-container {
       width: 100%;
       max-width: 420px;
+      padding: var(--space-unit) * 2;
     }
 
     .login-card {
-      background-color: var(--bg-card);
+      background: var(--bg-card);
+      border: var(--border-width) solid var(--card-border-color);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: calc(var(--space-unit) * 6);
       background-image: var(--surface-texture);
       background-size: var(--surface-texture-size);
       background-position: var(--surface-texture-position);
-      border: var(--border-width) solid var(--border);
-      border-radius: var(--radius-card);
-      box-shadow: var(--shadow-card);
-      padding: calc(var(--space-unit) * 5);
     }
 
     .login-header {
-      margin-bottom: calc(var(--space-unit) * 4);
       text-align: center;
+      margin-bottom: calc(var(--space-unit) * 5);
+    }
+
+    .login-logo {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto calc(var(--space-unit) * 2);
+      background: var(--primary);
+      border-radius: var(--radius-control);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 24px;
+      box-shadow: 0 2px 4px rgba(30, 58, 95, 0.12);
     }
 
     .login-title {
@@ -98,13 +184,13 @@
       font-weight: 600;
       color: var(--primary);
       margin-bottom: calc(var(--space-unit) * 1);
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
     }
 
     .login-subtitle {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text-muted);
-      line-height: 1.5;
+      margin-bottom: 0;
     }
 
     .login-form {
@@ -116,87 +202,99 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: calc(var(--space-unit) * 1);
+      gap: calc(var(--space-unit) * 1.5);
     }
 
     .form-label {
       font-size: 13px;
       font-weight: 500;
       color: var(--text);
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     .form-input {
+      width: 100%;
       height: var(--control-height);
       padding: 0 calc(var(--space-unit) * 1.5);
-      font-size: 14px;
-      font-family: var(--font-family);
-      color: var(--text);
-      background-color: #ffffff;
-      background-image: var(--surface-texture);
-      background-size: var(--surface-texture-size);
-      background-position: var(--surface-texture-position);
-      border: var(--border-width) solid var(--border);
+      border: var(--border-width) solid var(--input-border);
       border-radius: var(--radius-control);
+      background: var(--input-bg);
+      color: var(--input-text);
+      font-family: var(--font-family);
+      font-size: 14px;
       transition: border-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
       outline: none;
     }
 
     .form-input::placeholder {
-      color: var(--text-muted);
-      opacity: 0.7;
+      color: var(--input-placeholder);
     }
 
     .form-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.08);
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
     }
 
     .form-input:hover:not(:focus) {
-      border-color: var(--text-muted);
+      border-color: #b8b3ab;
     }
 
     .login-button {
       height: var(--control-height);
-      margin-top: calc(var(--space-unit) * 1);
-      padding: 0 calc(var(--space-unit) * 2);
-      font-size: 14px;
-      font-weight: 600;
-      color: #ffffff;
-      background-color: var(--primary);
+      background: var(--button-primary-bg);
+      color: var(--button-primary-text);
       border: none;
       border-radius: var(--radius-control);
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       transition: background-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
       letter-spacing: 0.3px;
+      font-family: var(--font-family);
     }
 
     .login-button:hover {
-      background-color: var(--primary-hover);
-      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
+      background: var(--button-primary-hover);
+      box-shadow: 0 4px 8px rgba(30, 58, 95, 0.16);
     }
 
     .login-button:active {
-      background-color: var(--primary-hover);
-      box-shadow: 0 2px 4px rgba(44, 62, 80, 0.1);
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(30, 58, 95, 0.12);
     }
 
     .login-button:focus {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
+      outline: var(--focus-outline);
+      outline-offset: var(--focus-outline-offset);
     }
 
     .login-footer {
-      margin-top: calc(var(--space-unit) * 4);
+      margin-top: calc(var(--space-unit) * 5);
       padding-top: calc(var(--space-unit) * 3);
-      border-top: var(--border-width) solid var(--border);
+      border-top: var(--border-width) solid var(--divider-color);
+      text-align: center;
       font-size: 12px;
       color: var(--text-muted);
-      text-align: center;
-      line-height: 1.6;
+      line-height: 1.5;
+    }
+
+    .login-footer-text {
+      display: block;
+      margin-bottom: calc(var(--space-unit) * 1);
+    }
+
+    .system-info {
+      font-size: 11px;
+      color: #9a9490;
+      font-style: italic;
+      margin-top: calc(var(--space-unit) * 1);
     }
 
     @media (max-width: 480px) {
+      .login-container {
+        padding: var(--space-unit);
+      }
+
       .login-card {
         padding: calc(var(--space-unit) * 4);
       }
@@ -206,11 +304,7 @@
       }
 
       .login-subtitle {
-        font-size: 12px;
-      }
-
-      .form-input {
-        font-size: 16px;
+        font-size: 13px;
       }
     }
 
@@ -226,8 +320,9 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
+        <div class="login-logo">🏛️</div>
         <h1 class="login-title" data-testid="login-title">ログイン</h1>
-        <p class="login-subtitle">セキュリティインシデント対応・監査ログ分析システム</p>
+        <p class="login-subtitle">公共施設予約システム</p>
       </div>
 
       <form class="login-form" data-testid="login-form" novalidate>
@@ -257,13 +352,18 @@
           >
         </div>
 
-        <button class="login-button" type="submit" data-testid="login-button">
+        <button
+          class="login-button"
+          type="submit"
+          data-testid="login-button"
+        >
           ログイン
         </button>
       </form>
 
       <div class="login-footer">
-        <p>※ サンプル実装では、どの入力でもログインできます。</p>
+        <span class="login-footer-text">公共施設オンライン予約・決済サービス</span>
+        <span class="system-info">※ サンプル実装では、どの入力でもログインできます</span>
       </div>
     </div>
   </div>

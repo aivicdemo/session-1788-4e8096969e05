@@ -1,0 +1,1964 @@
+{
+  "systemId": "itg-7",
+  "systemName": "公共施設オンライン予約・決済サービス",
+  "cssTheme": "```css\n:root {\n  /* ========== 色彩体系 ========== */\n  /* 県庁の落ち着いたトーン：深い紺と石色を基調に、公共性と信頼感を表現 */\n  --primary: #1e3a5f;\n  --primary-hover: #152a47;\n  --primary-light: #2d5a8c;\n  \n  /* 背景：薄い石灰色（公文書の紙質感を想起） */\n  --bg-main: #f0ede8;\n  --bg-card: #e8e5df;\n  --bg-sidebar: #ebe8e2;\n  --top-bar-bg: #1e3a5f;\n  --top-bar-border: #152a47;\n  \n  /* テキスト */\n  --text: #2a2520;\n  --text-muted: #6b6560;\n  \n  /* 境界線：落ち着いた灰色、県庁の厳格さを表現 */\n  --border: #c9c4bc;\n  \n  /* ========== タイポグラフィ ========== */\n  --font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Hiragino Sans\", \"Yu Gothic\", sans-serif;\n  \n  /* ========== 寸法・間隔 ========== */\n  --space-unit: 8px;\n  --control-height: 40px;\n  --border-width: 1px;\n  \n  /* ========== 角丸 ========== */\n  /* 県庁の格調を損なわないよう、控えめな角丸 */\n  --radius-card: 4px;\n  --radius-control: 3px;\n  \n  /* ========== 影 ========== */\n  /* 紙のような薄い影：公文書の積み重ねを暗示 */\n  --shadow-card: 0 2px 6px rgba(30, 58, 95, 0.08), 0 1px 2px rgba(30, 58, 95, 0.04);\n  \n  /* ========== 質感 ========== */\n  /* 和紙のような微細な織目を表現：公共施設の落ち着きと信頼感 */\n  --surface-texture: \n    repeating-linear-gradient(\n      90deg,\n      transparent,\n      transparent 2px,\n      rgba(30, 58, 95, 0.02) 2px,\n      rgba(30, 58, 95, 0.02) 4px\n    ),\n    repeating-linear-gradient(\n      0deg,\n      transparent,\n      transparent 2px,\n      rgba(30, 58, 95, 0.015) 2px,\n      rgba(30, 58, 95, 0.015) 4px\n    );\n  --surface-texture-size: 100% 100%;\n  --surface-texture-position: 0 0;\n  \n  /* ========== モーション ========== */\n  /* 行政手続きの厳格さを保ちながら、適度な応答性 */\n  --motion-duration: 200ms;\n  \n  /* ========== セマンティック色 ========== */\n  --success: #2e7d32;\n  --success-light: #e8f5e9;\n  --warning: #f57c00;\n  --warning-light: #fff3e0;\n  --error: #c62828;\n  --error-light: #ffebee;\n  --info: #1565c0;\n  --info-light: #e3f2fd;\n  \n  /* ========== 追加の質感制御 ========== */\n  /* カード・パネルの微妙な立体感 */\n  --card-border-color: rgba(30, 58, 95, 0.06);\n  --divider-color: rgba(30, 58, 95, 0.08);\n  \n  /* フォーカス状態（キーボード操作時の視認性） */\n  --focus-outline: 2px solid #1e3a5f;\n  --focus-outline-offset: 2px;\n  \n  /* ========== 入力フィールド ========== */\n  --input-bg: #ffffff;\n  --input-border: #c9c4bc;\n  --input-border-focus: #1e3a5f;\n  --input-text: #2a2520;\n  --input-placeholder: #9a9490;\n  \n  /* ========== ボタン ========== */\n  --button-primary-bg: #1e3a5f;\n  --button-primary-text: #ffffff;\n  --button-primary-hover: #152a47;\n  --button-secondary-bg: #e8e5df;\n  --button-secondary-text: #2a2520;\n  --button-secondary-hover: #ddd9d1;\n  --button-disabled-bg: #d4cfc7;\n  --button-disabled-text: #9a9490;\n  \n  /* ========== サイドバー ========== */\n  --sidebar-item-hover: rgba(30, 58, 95, 0.08);\n  --sidebar-item-active-bg: rgba(30, 58, 95, 0.12);\n  --sidebar-item-active-border: #1e3a5f;\n  \n  /* ========== テーブル ========== */\n  --table-header-bg: #e8e5df;\n  --table-header-text: #2a2520;\n  --table-row-hover: rgba(30, 58, 95, 0.04);\n  --table-border: #c9c4bc;\n  \n  /* ========== ステータスバッジ ========== */\n  --badge-bg: #e8e5df;\n  --badge-text: #2a2520;\n  --badge-border: #c9c4bc;\n}\n```",
+  "screens": [
+    {
+      "id": "scr-1788270636243",
+      "name": "施設検索・予約ワークスペース",
+      "purpose": "公共施設のオンライン検索、空き状況確認、予約・抽選申込、予約管理を一元的に行うメインワークスペース",
+      "items": [
+        "施設カテゴリ選択フィルター",
+        "施設名キーワード検索欄",
+        "施設一覧表示エリア",
+        "空き状況リアルタイム表示",
+        "利用時間帯選択パネル",
+        "予約申込ボタン",
+        "抽選申込ボタン",
+        "予約確認・変更・キャンセル機能",
+        "予約済み施設一覧",
+        "操作履歴表示エリア",
+        "決済情報表示",
+        "利用者認証ステータス表示"
+      ]
+    },
+    {
+      "id": "scr-1788270652698",
+      "name": "決済・予約確定画面",
+      "purpose": "利用者が施設予約の決済方法を選択し、オンライン決済を実行して予約を確定し、決済ステータスを確認して領収書・予約確認書を発行する画面",
+      "items": [
+        "予約内容確認セクション",
+        "施設名・利用日時表示",
+        "利用料金表示",
+        "決済方法選択ラジオボタン",
+        "クレジットカード決済オプション",
+        "銀行振込決済オプション",
+        "コンビニ決済オプション",
+        "その他決済方法オプション",
+        "決済実行ボタン",
+        "決済処理中インジケーター",
+        "決済ステータス表示",
+        "決済成功メッセージ"
+      ]
+    }
+  ],
+  "screenPanels": [
+    {
+      "screenId": "scr-1788270636243",
+      "panelHtml": "<div style=\"display: flex; flex-direction: column; height: 100%; background: var(--bg-main); color: var(--text); font-family: var(--font-family);\">\n  \n  <!-- Breadcrumb / Sub-header -->\n  <div style=\"padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 13px; color: var(--text-muted);\">\n    公共施設予約 / 公共施設オンライン予約・決済サービス / 施設検索・予約ワークスペース\n  </div>\n\n  <!-- Main content area -->\n  <div style=\"display: flex; flex: 1; overflow: hidden; gap: 0;\">\n    \n    <!-- Left sidebar: Filters & Search -->\n    <div style=\"width: 280px; background: var(--bg-sidebar); border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px;\">\n      \n      <!-- Search box -->\n      <div>\n        <label style=\"display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;\">施設名検索</label>\n        <input \n          type=\"text\" \n          data-testid=\"facility-search-input\"\n          placeholder=\"施設名で検索\"\n          style=\"width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 14px; box-sizing: border-box;\"\n        />\n      </div>\n\n      <!-- Category filter -->\n      <div>\n        <label style=\"display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;\">施設カテゴリ</label>\n        <select \n          data-testid=\"category-filter-select\"\n          style=\"width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 14px; box-sizing: border-box; cursor: pointer;\"\n        >\n          <option value=\"\">全カテゴリ</option>\n          <option value=\"gym\">体育館</option>\n          <option value=\"library\">図書館</option>\n          <option value=\"meeting\">会議室</option>\n          <option value=\"sports\">スポーツ施設</option>\n          <option value=\"cultural\">文化施設</option>\n        </select>\n      </div>\n\n      <!-- Date picker -->\n      <div>\n        <label style=\"display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;\">利用日</label>\n        <input \n          type=\"date\" \n          data-testid=\"facility-date-input\"\n          style=\"width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 14px; box-sizing: border-box;\"\n        />\n      </div>\n\n      <!-- Time slot selection -->\n      <div>\n        <label style=\"display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;\">時間帯</label>\n        <div style=\"display: flex; flex-direction: column; gap: 6px;\">\n          <label style=\"display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;\">\n            <input type=\"radio\" name=\"time-slot\" value=\"morning\" data-testid=\"time-slot-morning\" style=\"accent-color: var(--primary);\" />\n            <span>09:00 ～ 12:00</span>\n          </label>\n          <label style=\"display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;\">\n            <input type=\"radio\" name=\"time-slot\" value=\"afternoon\" data-testid=\"time-slot-afternoon\" style=\"accent-color: var(--primary);\" />\n            <span>13:00 ～ 17:00</span>\n          </label>\n          <label style=\"display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;\">\n            <input type=\"radio\" name=\"time-slot\" value=\"evening\" data-testid=\"time-slot-evening\" style=\"accent-color: var(--primary);\" />\n            <span>18:00 ～ 21:00</span>\n          </label>\n        </div>\n      </div>\n\n      <!-- Search button -->\n      <button \n        data-testid=\"search-button\"\n        style=\"width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms;\"\n        onmouseover=\"this.style.background='var(--primary-hover)'\"\n        onmouseout=\"this.style.background='var(--primary)'\"\n      >\n        検索\n      </button>\n\n    </div>\n\n    <!-- Right main area: Facilities list & Bookings -->\n    <div style=\"flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px;\">\n      \n      <!-- Facilities list section -->\n      <div>\n        <h2 style=\"font-size: 16px; font-weight: 600; color: var(--text); margin: 0 0 12px 0;\">施設一覧</h2>\n        <div id=\"facilities-list\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px;\">\n          <!-- Facilities will be rendered here -->\n        </div>\n      </div>\n\n      <!-- Bookings section (collapsible) -->\n      <div style=\"border-top: 1px solid var(--border); padding-top: 16px;\">\n        <button \n          data-testid=\"bookings-toggle\"\n          style=\"display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 12px;\"\n          onclick=\"document.getElementById('bookings-panel').toggleAttribute('hidden')\"\n        >\n          <span id=\"bookings-toggle-icon\">▼</span>\n          <span>予約済み施設（<span id=\"bookings-count\">0</span>件）</span>\n        </button>\n        <div id=\"bookings-panel\" style=\"display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px;\">\n          <!-- Bookings will be rendered here -->\n        </div>\n      </div>\n\n    </div>\n\n  </div>\n\n</div>\n\n<!-- Modal: Reservation Details -->\n<div id=\"reservation-modal\" class=\"modal-overlay\" style=\"display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;\">\n  <div style=\"background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);\">\n    <div style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;\">\n      <h3 style=\"font-size: 16px; font-weight: 600; margin: 0;\">予約詳細</h3>\n      <button \n        onclick=\"document.getElementById('reservation-modal').style.display='none'\"\n        style=\"background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);\"\n      >×</button>\n    </div>\n    <div id=\"modal-content\" style=\"font-size: 14px; line-height: 1.6; margin-bottom: 20px;\">\n      <!-- Content will be populated -->\n    </div>\n    <div style=\"display: flex; gap: 8px; justify-content: flex-end;\">\n      <button \n        data-testid=\"modal-cancel-button\"\n        onclick=\"document.getElementById('reservation-modal').style.display='none'\"\n        style=\"padding: 10px 16px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text); font-size: 14px; cursor: pointer;\"\n      >\n        閉じる\n      </button>\n      <button \n        data-testid=\"modal-confirm-button\"\n        style=\"padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer;\"\n        onmouseover=\"this.style.background='var(--primary-hover)'\"\n        onmouseout=\"this.style.background='var(--primary)'\"\n      >\n        確認\n      </button>\n    </div>\n  </div>\n</div>\n\n<!-- Modal: Booking/Lottery confirmation -->\n<div id=\"action-modal\" class=\"modal-overlay\" style=\"display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;\">\n  <div style=\"background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);\">\n    <h3 id=\"action-modal-title\" style=\"font-size: 16px; font-weight: 600; margin: 0 0 16px 0;\">予約確認</h3>\n    <div id=\"action-modal-body\" style=\"font-size: 14px; line-height: 1.6; margin-bottom: 20px;\">\n      <!-- Content will be populated -->\n    </div>\n    <div style=\"display: flex; gap: 8px; justify-content: flex-end;\">\n      <button \n        onclick=\"document.getElementById('action-modal').style.display='none'\"\n        style=\"padding: 10px 16px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text); font-size: 14px; cursor: pointer;\"\n      >\n        キャンセル\n      </button>\n      <button \n        data-testid=\"action-confirm-button\"\n        style=\"padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer;\"\n        onmouseover=\"this.style.background='var(--primary-hover)'\"\n        onmouseout=\"this.style.background='var(--primary)'\"\n      >\n        確認\n      </button>\n    </div>\n  </div>\n</div>\n\n<!-- Modal: Cancel Booking -->\n<div id=\"cancel-modal\" class=\"modal-overlay\" style=\"display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;\">\n  <div style=\"background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);\">\n    <h3 style=\"font-size: 16px; font-weight: 600; margin: 0 0 16px 0;\">予約をキャンセル</h3>\n    <div style=\"font-size: 14px; line-height: 1.6; margin-bottom: 16px;\">\n      <p style=\"margin: 0 0 12px 0;\">キャンセル理由を選択してください</p>\n      <div style=\"display: flex; flex-direction: column; gap: 8px;\">\n        <label style=\"display: flex; align-items: center; gap: 8px; cursor: pointer;\">\n          <input type=\"radio\" name=\"cancel-reason\" value=\"user-convenience\" data-testid=\"cancel-reason-user\" style=\"accent-color: var(--primary);\" />\n          <span>利用者都合</span>\n        </label>\n        <label style=\"display: flex; align-items: center; gap: 8px; cursor: pointer;\">\n          <input type=\"radio\" name=\"cancel-reason\" value=\"facility-issue\" data-testid=\"cancel-reason-facility\" style=\"accent-color: var(--primary);\" />\n          <span>施設都合</span>\n        </label>\n      </div>\n      <textarea \n        data-testid=\"cancel-reason-detail\"\n        placeholder=\"詳細理由（任意）\"\n        style=\"width: 100%; padding: 8px 12px; margin-top: 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 13px; font-family: var(--font-family); box-sizing: border-box; min-height: 80px; resize: vertical;\"\n      ></textarea>\n    </div>\n    <div style=\"display: flex; gap: 8px; justify-content: flex-end;\">\n      <button \n        onclick=\"document.getElementById('cancel-modal').style.display='none'\"\n        style=\"padding: 10px 16px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text); font-size: 14px; cursor: pointer;\"\n      >\n        戻る\n      </button>\n      <button \n        data-testid=\"cancel-confirm-button\"\n        style=\"padding: 10px 16px; background: #c62828; color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer;\"\n        onmouseover=\"this.style.background='#a01e1e'\"\n        onmouseout=\"this.style.background='#c62828'\"\n      >\n        キャンセルする\n      </button>\n    </div>\n  </div>\n</div>",
+      "initJs": "function(container, apiUrl, tables) {\n  const facilitiesTableIndex = 0;\n  const timeSlotsTableIndex = 1;\n  const bookingsTableIndex = 2;\n  const categoriesTableIndex = 3;\n\n  let selectedFacilityId = null;\n  let selectedDate = null;\n  let selectedTimeSlot = null;\n  let currentAction = null; // 'book' or 'lottery'\n\n  // Initialize\n  async function init() {\n    await loadFacilities();\n    await loadBookings();\n    attachEventListeners();\n  }\n\n  // Load facilities\n  async function loadFacilities() {\n    const facilities = await window.aivicApi.list(facilitiesTableIndex);\n    if (!facilities) return;\n\n    const searchInput = container.querySelector('[data-testid=\"facility-search-input\"]');\n    const categoryFilter = container.querySelector('[data-testid=\"category-filter-select\"]');\n    const dateInput = container.querySelector('[data-testid=\"facility-date-input\"]');\n\n    const renderFacilities = () => {\n      const searchTerm = searchInput.value.toLowerCase();\n      const selectedCategory = categoryFilter.value;\n      const filtered = facilities.filter(f => {\n        const matchesSearch = f.施設名.toLowerCase().includes(searchTerm);\n        const matchesCategory = !selectedCategory || f.カテゴリ === selectedCategory;\n        return matchesSearch && matchesCategory;\n      });\n\n      const listContainer = container.querySelector('#facilities-list');\n      listContainer.innerHTML = filtered.map(facility => `\n        <div class=\"card\" data-id=\"${facility.施設ID}\" style=\"padding: 16px; cursor: pointer; transition: background 200ms; border-radius: var(--radius-card); background: var(--bg-card); border: 1px solid var(--border);\" \n          onmouseover=\"this.style.background='var(--sidebar-item-hover)'\"\n          onmouseout=\"this.style.background='var(--bg-card)'\"\n          onclick=\"selectFacility('${facility.施設ID}', '${facility.施設名}', ${facility.利用料金})\">\n          <div style=\"font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px;\">${facility.施設名}</div>\n          <div style=\"font-size: 13px; color: var(--text-muted); margin-bottom: 4px;\">📍 ${facility.住所}</div>\n          <div style=\"font-size: 13px; color: var(--text-muted); margin-bottom: 4px;\">🕐 ${facility.営業開始時間} ～ ${facility.営業終了時間}</div>\n          <div style=\"font-size: 13px; color: var(--text-muted); margin-bottom: 8px;\">定員: ${facility.定員}名</div>\n          <div style=\"font-size: 14px; font-weight: 600; color: var(--primary);\">¥${facility.利用料金.toLocaleString()}</div>\n          <div style=\"font-size: 12px; color: var(--text-muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);\">\n            ${facility.予約可能フラグ ? '✓ オンライン予約可能' : '予約受付中止'}\n          </div>\n        </div>\n      `).join('');\n    };\n\n    searchInput.addEventListener('input', renderFacilities);\n    categoryFilter.addEventListener('change', renderFacilities);\n    renderFacilities();\n  }\n\n  // Load bookings\n  async function loadBookings() {\n    const bookings = await window.aivicApi.list(bookingsTableIndex);\n    if (!bookings) return;\n\n    const bookingsPanel = container.querySelector('#bookings-panel');\n    const bookingsCount = container.querySelector('#bookings-count');\n    bookingsCount.textContent = bookings.length;\n\n    bookingsPanel.innerHTML = bookings.map(booking => `\n      <div class=\"card\" style=\"padding: 16px; border-radius: var(--radius-card); background: var(--bg-card); border: 1px solid var(--border);\">\n        <div style=\"font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px;\">${booking.施設名}</div>\n        <div style=\"font-size: 13px; color: var(--text-muted); margin-bottom: 4px;\">📅 ${booking.予約日}</div>\n        <div style=\"font-size: 13px; color: var(--text-muted); margin-bottom: 8px;\">💰 ¥${booking.予約金額.toLocaleString()}</div>\n        <div style=\"display: inline-block; padding: 4px 8px; background: var(--success-light); color: var(--success); border-radius: 3px; font-size: 12px; font-weight: 600; margin-bottom: 12px;\">\n          ${booking.予約状態}\n        </div>\n        <div style=\"display: flex; gap: 8px;\">\n          <button \n            class=\"edit-booking-btn\"\n            data-id=\"${booking.予約ID}\"\n            style=\"flex: 1; padding: 8px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text); font-size: 13px; cursor: pointer;\"\n          >\n            変更\n          </button>\n          <button \n            class=\"cancel-booking-btn\"\n            data-id=\"${booking.予約ID}\"\n            style=\"flex: 1; padding: 8px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-control); color: #c62828; font-size: 13px; cursor: pointer;\"\n          >\n            キャンセル\n          </button>\n        </div>\n      </div>\n    `).join('');\n  }\n\n  // Select facility\n  window.selectFacility = function(facilityId, facilityName, price) {\n    selectedFacilityId = facilityId;\n    const dateInput = container.querySelector('[data-testid=\"facility-date-input\"]');\n    selectedDate = dateInput.value;\n\n    if (!selectedDate) {\n      alert('利用日を選択してください');\n      return;\n    }\n\n    const timeSlotRadios = container.querySelectorAll('input[name=\"time-slot\"]');\n    selectedTimeSlot = Array.from(timeSlotRadios).find(r => r.checked)?.value;\n\n    if (!selectedTimeSlot) {\n      alert('時間帯を選択してください');\n      return;\n    }\n\n    // Show action modal\n    const actionModal = container.querySelector('#action-modal');\n    const actionModalTitle = container.querySelector('#action-modal-title');\n    const actionModalBody = container.querySelector('#action-modal-body');\n\n    actionModalTitle.textContent = '予約方法を選択';\n    actionModalBody.innerHTML = `\n      <div style=\"margin-bottom: 16px;\">\n        <p style=\"margin: 0 0 8px 0; font-weight: 600;\">${facilityName}</p>\n        <p style=\"margin: 0 0 8px 0; color: var(--text-muted);\">📅 ${selectedDate}</p>\n        <p style=\"margin: 0; color: var(--text-muted);\">💰 ¥${price.toLocaleString()}</p>\n      </div>\n      <div style=\"display: flex; flex-direction: column; gap: 8px;\">\n        <button \n          data-testid=\"book-button\"\n          style=\"padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-weight: 600; cursor: pointer;\"\n          onmouseover=\"this.style.background='var(--primary-hover)'\"\n          onmouseout=\"this.style.background='var(--primary)'\"\n          onclick=\"confirmBooking('book')\"\n        >\n          予約する\n        </button>\n        <button \n          data-testid=\"lottery-button\"\n          style=\"padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-control); color: var(--text); font-weight: 600; cursor: pointer;\"\n          onclick=\"confirmBooking('lottery')\"\n        >\n          抽選に申し込む\n        </button>\n      </div>\n    `;\n    actionModal.style.display = 'flex';\n  };\n\n  // Confirm booking/lottery\n  window.confirmBooking = async function(action) {\n    currentAction = action;\n    const actionModal = container.querySelector('#action-modal');\n    actionModal.style.display = 'none';\n\n    // Save booking or lottery\n    if (action === 'book') {\n      const newBooking = {\n        利用者ID: 'user-123',\n        施設ID: selectedFacilityId,\n        予約日: selectedDate,\n        予約状態: '確定',\n        決済状態: '未決済'\n      };\n      const saved = await window.aivicApi.save(bookingsTableIndex, newBooking);\n      if (saved) {\n        alert('予約が完了しました');\n        await loadBookings();\n      }\n    } else if (action === 'lottery') {\n      alert('抽選申込が完了しました');\n    }\n  };\n\n  // Edit booking\n  container.addEventListener('click', (e) => {\n    if (e.target.classList.contains('edit-booking-btn')) {\n      const bookingId = e.target.dataset.id;\n      const reservationModal = container.querySelector('#reservation-modal');\n      const modalContent = container.querySelector('#modal-content');\n      modalContent.innerHTML = `<p>予約ID: ${bookingId}</p><p>変更内容を入力してください</p>`;\n      reservationModal.style.display = 'flex';\n    }\n  });\n\n  // Cancel booking\n  container.addEventListener('click', (e) => {\n    if (e.target.classList.contains('cancel-booking-btn')) {\n      const bookingId = e.target.dataset.id;\n      const cancelModal = container.querySelector('#cancel-modal');\n      cancelModal.dataset.bookingId = bookingId;\n      cancelModal.style.display = 'flex';\n    }\n  });\n\n  // Confirm cancel\n  container.querySelector('[data-testid=\"cancel-confirm-button\"]').addEventListener('click', async () => {\n    const cancelModal = container.querySelector('#cancel-modal');\n    const bookingId = cancelModal.dataset.bookingId;\n    const reason = container.querySelector('input[name=\"cancel-reason\"]:checked')?.value;\n\n    if (!reason) {\n      alert('キャンセル理由を選択してください');\n      return;\n    }\n\n    const cancelData = {\n      予約ID: bookingId,\n      キャンセル理由: reason,\n      キャンセル日時: new Date().toISOString()\n    };\n\n    const saved = await window.aivicApi.save(5, cancelData); // Cancel table index\n    if (saved) {\n      alert('予約がキャンセルされました');\n      cancelModal.style.display = 'none';\n      await loadBookings();\n    }\n  });\n\n  // Close modals on backdrop click\n  const modals = container.querySelectorAll('.modal-overlay');\n  modals.forEach(modal => {\n    modal.addEventListener('click', (e) => {\n      if (e.target === modal) {\n        modal.style.display = 'none';\n      }\n    });\n  });\n\n  // Attach event listeners\n  function attachEventListeners() {\n    const searchBtn = container.querySelector('[data-testid=\"search-button\"]');\n    searchBtn.addEventListener('click', () => {\n      // Search is already handled by input event listeners\n    });\n  }\n\n  init();\n}",
+      "method": "ai"
+    },
+    {
+      "screenId": "scr-1788270652698",
+      "panelHtml": "<div style=\"display: flex; flex-direction: column; height: 100%; background: var(--bg-main);\">\n  <!-- Breadcrumb / Sub-header -->\n  <div style=\"padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 12px; color: var(--text-muted);\">\n    公共施設予約 / 公共施設オンライン予約・決済サービス / 決済・予約確定画面\n  </div>\n\n  <!-- Main Content -->\n  <div style=\"flex: 1; overflow-y: auto; padding: 24px 16px;\">\n    <div style=\"max-width: 600px; margin: 0 auto;\">\n\n      <!-- 予約内容確認セクション -->\n      <div class=\"card\" style=\"margin-bottom: 24px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; box-shadow: var(--shadow-card);\">\n        <h3 style=\"margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: var(--text);\">予約内容確認</h3>\n        \n        <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;\">\n          <div>\n            <label style=\"display: block; color: var(--text-muted); font-size: 11px; margin-bottom: 4px;\">施設名</label>\n            <div style=\"color: var(--text); font-weight: 500;\" data-testid=\"facility-name\">—</div>\n          </div>\n          <div>\n            <label style=\"display: block; color: var(--text-muted); font-size: 11px; margin-bottom: 4px;\">利用日</label>\n            <div style=\"color: var(--text); font-weight: 500;\" data-testid=\"reservation-date\">—</div>\n          </div>\n          <div>\n            <label style=\"display: block; color: var(--text-muted); font-size: 11px; margin-bottom: 4px;\">利用時間</label>\n            <div style=\"color: var(--text); font-weight: 500;\" data-testid=\"reservation-time\">—</div>\n          </div>\n          <div>\n            <label style=\"display: block; color: var(--text-muted); font-size: 11px; margin-bottom: 4px;\">利用人数</label>\n            <div style=\"color: var(--text); font-weight: 500;\" data-testid=\"reservation-people\">—</div>\n          </div>\n        </div>\n\n        <div style=\"margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);\">\n          <div style=\"display: flex; justify-content: space-between; align-items: baseline;\">\n            <span style=\"font-size: 13px; color: var(--text-muted);\">利用料金</span>\n            <div style=\"font-size: 24px; font-weight: 700; color: var(--primary);\" data-testid=\"total-amount\">¥0</div>\n          </div>\n        </div>\n      </div>\n\n      <!-- 決済方法選択 -->\n      <div class=\"card\" style=\"margin-bottom: 24px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; box-shadow: var(--shadow-card);\">\n        <h3 style=\"margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: var(--text);\">決済方法を選択</h3>\n\n        <!-- Credit Card Option -->\n        <div style=\"margin-bottom: 12px;\">\n          <label style=\"display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 3px; transition: background-color 0.15s;\">\n            <input type=\"radio\" name=\"payment-method\" value=\"credit-card\" data-testid=\"payment-method-credit\" style=\"margin-right: 8px; accent-color: var(--primary);\" checked />\n            <span style=\"font-size: 13px; color: var(--text); font-weight: 500;\">クレジットカード</span>\n          </label>\n          <div id=\"credit-card-form\" style=\"margin-top: 12px; padding: 12px; background: var(--bg-main); border-radius: 3px; display: none; transition: all 0.2s ease;\">\n            <div style=\"margin-bottom: 10px;\">\n              <label style=\"display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;\">カード番号</label>\n              <input type=\"text\" placeholder=\"1234 5678 9012 3456\" data-testid=\"card-number\" style=\"width: 100%; padding: 8px; border: 1px solid rgba(201, 196, 188, 0.6); border-radius: 3px; background: var(--input-bg); color: var(--text); font-size: 13px; box-sizing: border-box;\" />\n            </div>\n            <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 10px;\">\n              <div>\n                <label style=\"display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;\">有効期限</label>\n                <input type=\"text\" placeholder=\"MM/YY\" data-testid=\"card-expiry\" style=\"width: 100%; padding: 8px; border: 1px solid rgba(201, 196, 188, 0.6); border-radius: 3px; background: var(--input-bg); color: var(--text); font-size: 13px; box-sizing: border-box;\" />\n              </div>\n              <div>\n                <label style=\"display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;\">CVV</label>\n                <input type=\"text\" placeholder=\"123\" data-testid=\"card-cvv\" style=\"width: 100%; padding: 8px; border: 1px solid rgba(201, 196, 188, 0.6); border-radius: 3px; background: var(--input-bg); color: var(--text); font-size: 13px; box-sizing: border-box;\" />\n              </div>\n            </div>\n          </div>\n        </div>\n\n        <!-- Bank Transfer Option -->\n        <div style=\"margin-bottom: 12px;\">\n          <label style=\"display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 3px; transition: background-color 0.15s;\">\n            <input type=\"radio\" name=\"payment-method\" value=\"bank-transfer\" data-testid=\"payment-method-bank\" style=\"margin-right: 8px; accent-color: var(--primary);\" />\n            <span style=\"font-size: 13px; color: var(--text); font-weight: 500;\">銀行振込</span>\n          </label>\n          <div id=\"bank-transfer-info\" style=\"margin-top: 12px; padding: 12px; background: var(--bg-main); border-radius: 3px; display: none; transition: all 0.2s ease; font-size: 12px; color: var(--text);\">\n            <div style=\"margin-bottom: 8px;\"><strong>振込先銀行情報</strong></div>\n            <div style=\"line-height: 1.6; color: var(--text-muted);\">\n              銀行名：〇〇銀行<br/>\n              支店名：〇〇支店<br/>\n              口座種別：普通<br/>\n              口座番号：1234567<br/>\n              口座名義：公共施設予約サービス\n            </div>\n            <div style=\"margin-top: 8px; padding: 8px; background: var(--bg-card); border-left: 3px solid var(--primary); font-size: 11px; color: var(--text-muted);\">\n              ※ 振込手数料はご負担ください。振込確認後、予約が確定します。\n            </div>\n          </div>\n        </div>\n\n        <!-- Convenience Store Option -->\n        <div style=\"margin-bottom: 12px;\">\n          <label style=\"display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 3px; transition: background-color 0.15s;\">\n            <input type=\"radio\" name=\"payment-method\" value=\"convenience\" data-testid=\"payment-method-convenience\" style=\"margin-right: 8px; accent-color: var(--primary);\" />\n            <span style=\"font-size: 13px; color: var(--text); font-weight: 500;\">コンビニ決済</span>\n          </label>\n          <div id=\"convenience-form\" style=\"margin-top: 12px; padding: 12px; background: var(--bg-main); border-radius: 3px; display: none; transition: all 0.2s ease;\">\n            <label style=\"display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;\">コンビニを選択</label>\n            <select data-testid=\"convenience-store-select\" style=\"width: 100%; padding: 8px; border: 1px solid rgba(201, 196, 188, 0.6); border-radius: 3px; background: var(--input-bg); color: var(--text); font-size: 13px; box-sizing: border-box;\">\n              <option value=\"\">選択してください</option>\n              <option value=\"lawson\">ローソン</option>\n              <option value=\"familymart\">ファミリーマート</option>\n              <option value=\"ministop\">ミニストップ</option>\n              <option value=\"seveneleven\">セブン-イレブン</option>\n            </select>\n          </div>\n        </div>\n      </div>\n\n      <!-- Processing Indicator (hidden by default) -->\n      <div id=\"processing-indicator\" style=\"display: none; text-align: center; padding: 24px; margin-bottom: 24px;\">\n        <div style=\"width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px;\"></div>\n        <div style=\"font-size: 13px; color: var(--text-muted);\">処理中...</div>\n      </div>\n\n      <!-- Status Message (hidden by default) -->\n      <div id=\"status-message\" style=\"display: none; padding: 12px; border-radius: 4px; margin-bottom: 24px; font-size: 13px;\" data-testid=\"status-message\"></div>\n\n      <!-- Download Button (hidden by default) -->\n      <button id=\"download-button\" style=\"display: none; width: 100%; padding: 10px; margin-bottom: 12px; background: var(--primary); color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background-color 0.15s;\" data-testid=\"download-button\">\n        予約確認書をダウンロード\n      </button>\n\n      <!-- Back Link (hidden by default) -->\n      <a id=\"back-link\" style=\"display: none; text-align: center; color: var(--primary); text-decoration: none; font-size: 13px; cursor: pointer;\" data-testid=\"back-link\">\n        予約一覧に戻る\n      </a>\n\n    </div>\n  </div>\n\n  <!-- Sticky Action Bar -->\n  <div style=\"padding: 12px 16px; border-top: 1px solid var(--border); background: var(--bg-card); display: flex; gap: 8px; justify-content: flex-end;\">\n    <button id=\"cancel-button\" class=\"action-btn secondary\" style=\"padding: 8px 16px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 3px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s;\" data-testid=\"cancel-button\">\n      キャンセル\n    </button>\n    <button id=\"execute-payment-button\" class=\"action-btn\" style=\"padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background-color 0.15s;\" data-testid=\"execute-payment-button\">\n      決済を実行する\n    </button>\n  </div>\n</div>\n\n<style>\n  @keyframes spin {\n    to { transform: rotate(360deg); }\n  }\n  \n  input:focus, select:focus, textarea:focus {\n    outline: none;\n    border-color: var(--primary) !important;\n    box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.08);\n  }\n  \n  .card {\n    background-image: var(--surface-texture);\n    background-size: var(--surface-texture-size);\n    background-position: var(--surface-texture-position);\n  }\n</style>",
+      "initJs": "function(container, apiUrl, tables) {\n  const reservationData = {};\n  const paymentData = {};\n  let currentReservationId = null;\n\n  // DOM Elements\n  const facilityNameEl = container.querySelector('[data-testid=\"facility-name\"]');\n  const reservationDateEl = container.querySelector('[data-testid=\"reservation-date\"]');\n  const reservationTimeEl = container.querySelector('[data-testid=\"reservation-time\"]');\n  const reservationPeopleEl = container.querySelector('[data-testid=\"reservation-people\"]');\n  const totalAmountEl = container.querySelector('[data-testid=\"total-amount\"]');\n  \n  const paymentMethodRadios = container.querySelectorAll('input[name=\"payment-method\"]');\n  const creditCardForm = container.querySelector('#credit-card-form');\n  const bankTransferInfo = container.querySelector('#bank-transfer-info');\n  const convenienceForm = container.querySelector('#convenience-form');\n  \n  const processingIndicator = container.querySelector('#processing-indicator');\n  const statusMessage = container.querySelector('#status-message');\n  const downloadButton = container.querySelector('#download-button');\n  const backLink = container.querySelector('#back-link');\n  \n  const executePaymentButton = container.querySelector('#execute-payment-button');\n  const cancelButton = container.querySelector('#cancel-button');\n\n  // Payment method form visibility toggle\n  function updatePaymentFormVisibility(method) {\n    creditCardForm.style.display = method === 'credit-card' ? 'block' : 'none';\n    bankTransferInfo.style.display = method === 'bank-transfer' ? 'block' : 'none';\n    convenienceForm.style.display = method === 'convenience' ? 'block' : 'none';\n  }\n\n  paymentMethodRadios.forEach(radio => {\n    radio.addEventListener('change', (e) => {\n      updatePaymentFormVisibility(e.target.value);\n    });\n  });\n\n  // Initialize with first payment method visible\n  updatePaymentFormVisibility('credit-card');\n\n  // Load reservation data from URL params or session\n  async function loadReservationData() {\n    try {\n      // Get reservation ID from URL params (e.g., ?reservationId=xxx)\n      const params = new URLSearchParams(window.location.search);\n      currentReservationId = params.get('reservationId');\n\n      if (!currentReservationId && tables && tables[0]) {\n        // Fallback: use first reservation from table\n        const reservations = await window.aivicApi.list(0); // Assuming index 0 is reservations\n        if (reservations && reservations.length > 0) {\n          currentReservationId = reservations[0].id;\n        }\n      }\n\n      if (!currentReservationId) {\n        showError('予約情報が見つかりません');\n        return;\n      }\n\n      // Fetch full reservation details\n      const reservation = await window.aivicApi.list(0); // Get all reservations\n      const currentRes = reservation.find(r => r.id === currentReservationId);\n\n      if (!currentRes) {\n        showError('予約情報が見つかりません');\n        return;\n      }\n\n      // Fetch facility info\n      const facilities = await window.aivicApi.list(1); // Assuming index 1 is facilities\n      const facility = facilities.find(f => f.id === currentRes.施設ID);\n\n      if (!facility) {\n        showError('施設情報が見つかりません');\n        return;\n      }\n\n      // Populate reservation data\n      reservationData.id = currentRes.id;\n      reservationData.facilityId = facility.id;\n      reservationData.facilityName = facility.施設名;\n      reservationData.reservationDate = currentRes.予約日;\n      reservationData.startTime = currentRes.開始時刻 || '09:00';\n      reservationData.endTime = currentRes.終了時刻 || '10:00';\n      reservationData.people = currentRes.人数 || 1;\n      reservationData.amount = currentRes.予約金額 || facility.利用料金;\n\n      // Display reservation info\n      facilityNameEl.textContent = reservationData.facilityName;\n      reservationDateEl.textContent = new Date(reservationData.reservationDate).toLocaleDateString('ja-JP');\n      reservationTimeEl.textContent = `${reservationData.startTime}～${reservationData.endTime}`;\n      reservationPeopleEl.textContent = `${reservationData.people}名`;\n      totalAmountEl.textContent = `¥${reservationData.amount.toLocaleString()}`;\n\n    } catch (error) {\n      console.error('Failed to load reservation data:', error);\n      showError('予約情報の読み込みに失敗しました');\n    }\n  }\n\n  // Execute payment\n  executePaymentButton.addEventListener('click', async () => {\n    const selectedMethod = container.querySelector('input[name=\"payment-method\"]:checked').value;\n\n    // Validate payment method specific fields\n    if (selectedMethod === 'credit-card') {\n      const cardNumber = container.querySelector('[data-testid=\"card-number\"]').value.trim();\n      const cardExpiry = container.querySelector('[data-testid=\"card-expiry\"]').value.trim();\n      const cardCvv = container.querySelector('[data-testid=\"card-cvv\"]').value.trim();\n\n      if (!cardNumber || !cardExpiry || !cardCvv) {\n        showError('カード情報をすべて入力してください');\n        return;\n      }\n    } else if (selectedMethod === 'convenience') {\n      const convenience = container.querySelector('[data-testid=\"convenience-store-select\"]').value;\n      if (!convenience) {\n        showError('コンビニを選択してください');\n        return;\n      }\n    }\n\n    // Show processing indicator\n    processingIndicator.style.display = 'block';\n    executePaymentButton.disabled = true;\n    cancelButton.disabled = true;\n    statusMessage.style.display = 'none';\n\n    try {\n      // Simulate payment processing (2 seconds)\n      await new Promise(resolve => setTimeout(resolve, 2000));\n\n      // Create payment record\n      const paymentRecord = {\n        予約ID: currentReservationId,\n        利用者ID: 'user-' + Date.now(), // Placeholder\n        決済金額: reservationData.amount,\n        決済方法: selectedMethod,\n        決済ステータス: '決済済',\n        決済日時: new Date().toISOString(),\n        トランザクションID: 'TXN-' + Date.now(),\n        備考: ''\n      };\n\n      // Save payment record (assuming index 2 is payments table)\n      const saved = await window.aivicApi.save(2, paymentRecord);\n\n      if (!saved) {\n        throw new Error('Payment save failed');\n      }\n\n      // Update reservation status\n      const updatedReservation = {\n        予約状態: '確定',\n        決済状態: '決済済'\n      };\n      await window.aivicApi.update(0, currentReservationId, updatedReservation);\n\n      // Show success message\n      processingIndicator.style.display = 'none';\n      showSuccess('決済が完了しました。予約が確定しました。');\n      \n      // Show download button and back link\n      downloadButton.style.display = 'block';\n      backLink.style.display = 'block';\n      executePaymentButton.style.display = 'none';\n      cancelButton.style.display = 'none';\n\n    } catch (error) {\n      console.error('Payment execution failed:', error);\n      processingIndicator.style.display = 'none';\n      showError('決済処理に失敗しました。もう一度お試しください。');\n      executePaymentButton.disabled = false;\n      cancelButton.disabled = false;\n    }\n  });\n\n  // Cancel button\n  cancelButton.addEventListener('click', () => {\n    if (confirm('決済をキャンセルしますか？')) {\n      window.history.back();\n    }\n  });\n\n  // Download button\n  downloadButton.addEventListener('click', () => {\n    const csv = generateConfirmationCSV();\n    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });\n    const link = document.createElement('a');\n    link.href = URL.createObjectURL(blob);\n    link.download = `予約確認書_${currentReservationId}.csv`;\n    link.click();\n  });\n\n  // Back link\n  backLink.addEventListener('click', () => {\n    window.location.href = '/panels/reservations-list.html';\n  });\n\n  // Helper functions\n  function showError(message) {\n    statusMessage.textContent = message;\n    statusMessage.style.display = 'block';\n    statusMessage.style.background = 'var(--error-light)';\n    statusMessage.style.color = 'var(--error)';\n    statusMessage.style.borderLeft = '3px solid var(--error)';\n  }\n\n  function showSuccess(message) {\n    statusMessage.textContent = message;\n    statusMessage.style.display = 'block';\n    statusMessage.style.background = 'var(--success-light)';\n    statusMessage.style.color = 'var(--success)';\n    statusMessage.style.borderLeft = '3px solid var(--success)';\n  }\n\n  function generateConfirmationCSV() {\n    const bom = '\\uFEFF';\n    const headers = ['項目', '内容'];\n    const rows = [\n      ['予約ID', currentReservationId],\n      ['施設名', reservationData.facilityName],\n      ['利用日', new Date(reservationData.reservationDate).toLocaleDateString('ja-JP')],\n      ['利用時間', `${reservationData.startTime}～${reservationData.endTime}`],\n      ['利用人数', `${reservationData.people}名`],\n      ['利用料金', `¥${reservationData.amount.toLocaleString()}`],\n      ['決済日時', new Date().toLocaleString('ja-JP')],\n      ['決済方法', container.querySelector('input[name=\"payment-method\"]:checked').value]\n    ];\n\n    const csvContent = [\n      headers.join(','),\n      ...rows.map(row => row.map(cell => `\"${cell}\"`).join(','))\n    ].join('\\n');\n\n    return bom + csvContent;\n  }\n\n  // Initialize\n  loadReservationData();\n}",
+      "method": "ai"
+    }
+  ],
+  "tableDefinitions": [
+    {
+      "tableName": "施設",
+      "purpose": "公共施設の基本情報を管理し、オンライン予約・決済サービスで利用可能な施設のマスタデータを保持する",
+      "columns": [
+        {
+          "name": "施設ID",
+          "type": "uuid",
+          "required": true,
+          "description": "施設を一意に識別するプライマリキー"
+        },
+        {
+          "name": "施設名",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "施設の名称"
+        },
+        {
+          "name": "説明",
+          "type": "text",
+          "required": false,
+          "description": "施設の詳細説明"
+        },
+        {
+          "name": "住所",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "施設の所在地"
+        },
+        {
+          "name": "電話番号",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "施設の連絡先電話番号"
+        },
+        {
+          "name": "営業開始時間",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "施設の営業開始時刻"
+        },
+        {
+          "name": "営業終了時間",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "施設の営業終了時刻"
+        },
+        {
+          "name": "定員",
+          "type": "integer",
+          "required": true,
+          "description": "施設の最大収容人数"
+        },
+        {
+          "name": "利用料金",
+          "type": "integer",
+          "required": true,
+          "description": "施設の利用料金（円）"
+        },
+        {
+          "name": "予約可能フラグ",
+          "type": "boolean",
+          "required": true,
+          "description": "施設がオンライン予約可能かどうか"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "施設情報の作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "施設情報の最終更新日時"
+        }
+      ]
+    },
+    {
+      "tableName": "施設利用時間帯",
+      "purpose": "公共施設の営業時間や利用可能な時間帯を管理し、予約システムで利用可能な時間枠を制御するマスタテーブル",
+      "columns": [
+        {
+          "name": "時間帯ID",
+          "type": "uuid",
+          "required": true,
+          "description": "施設利用時間帯の一意識別子"
+        },
+        {
+          "name": "施設ID",
+          "type": "uuid",
+          "required": true,
+          "description": "施設テーブルへの外部キー参照"
+        },
+        {
+          "name": "曜日",
+          "type": "varchar(10)",
+          "required": true,
+          "description": "適用される曜日(月火水木金土日または0-6の数値)"
+        },
+        {
+          "name": "開始時刻",
+          "type": "varchar(5)",
+          "required": true,
+          "description": "利用可能な開始時刻(HH:MM形式)"
+        },
+        {
+          "name": "終了時刻",
+          "type": "varchar(5)",
+          "required": true,
+          "description": "利用可能な終了時刻(HH:MM形式)"
+        },
+        {
+          "name": "予約単位分",
+          "type": "integer",
+          "required": true,
+          "description": "予約の最小単位となる分数(例:30分、60分)"
+        },
+        {
+          "name": "最大予約時間分",
+          "type": "integer",
+          "required": false,
+          "description": "1回の予約で指定可能な最大時間(分単位)"
+        },
+        {
+          "name": "利用可能フラグ",
+          "type": "boolean",
+          "required": true,
+          "description": "この時間帯が予約可能かどうか"
+        },
+        {
+          "name": "適用開始日",
+          "type": "timestamp",
+          "required": false,
+          "description": "この時間帯設定の適用開始日時"
+        },
+        {
+          "name": "適用終了日",
+          "type": "timestamp",
+          "required": false,
+          "description": "この時間帯設定の適用終了日時"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード最終更新日時"
+        },
+        {
+          "name": "作成者ID",
+          "type": "uuid",
+          "required": false,
+          "description": "レコード作成者の利用者ID"
+        }
+      ]
+    },
+    {
+      "tableName": "予約",
+      "purpose": "公共施設のオンライン予約を管理し、利用者による施設予約の申込、決済状況、予約状態を記録するトランザクションテーブル",
+      "columns": [
+        {
+          "name": "予約ID",
+          "type": "uuid",
+          "required": true,
+          "description": "予約の一意識別子"
+        },
+        {
+          "name": "利用者ID",
+          "type": "uuid",
+          "required": true,
+          "description": "予約を行った利用者の外部キー"
+        },
+        {
+          "name": "施設ID",
+          "type": "uuid",
+          "required": true,
+          "description": "予約対象の施設の外部キー"
+        },
+        {
+          "name": "施設利用時間帯ID",
+          "type": "uuid",
+          "required": true,
+          "description": "予約する利用時間帯の外部キー"
+        },
+        {
+          "name": "予約日",
+          "type": "timestamp",
+          "required": true,
+          "description": "施設を利用する予定日"
+        },
+        {
+          "name": "予約状態",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "予約の状態(申込中、確定、キャンセル、利用完了等)"
+        },
+        {
+          "name": "決済状態",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "決済の状態(未決済、決済済、返金等)"
+        },
+        {
+          "name": "予約金額",
+          "type": "integer",
+          "required": true,
+          "description": "予約に対する利用料金(円)"
+        },
+        {
+          "name": "人数",
+          "type": "integer",
+          "required": false,
+          "description": "予約時の利用予定人数"
+        },
+        {
+          "name": "備考",
+          "type": "text",
+          "required": false,
+          "description": "予約に関する特記事項やリクエスト"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "予約が作成された日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "予約が最後に更新された日時"
+        },
+        {
+          "name": "作成者",
+          "type": "uuid",
+          "required": true,
+          "description": "予約を作成した利用者ID"
+        }
+      ]
+    },
+    {
+      "tableName": "抽選申込",
+      "purpose": "公共施設の抽選方式の利用申込を管理し、申込情報、抽選結果、当選/落選状態を記録するテーブル",
+      "columns": [
+        {
+          "name": "抽選申込ID",
+          "type": "uuid",
+          "required": true,
+          "description": "抽選申込の一意識別子"
+        },
+        {
+          "name": "利用者ID",
+          "type": "uuid",
+          "required": true,
+          "description": "申込を行った利用者の識別子、利用者テーブルへの外部キー"
+        },
+        {
+          "name": "施設ID",
+          "type": "uuid",
+          "required": true,
+          "description": "抽選対象の施設の識別子、施設テーブルへの外部キー"
+        },
+        {
+          "name": "施設利用時間帯ID",
+          "type": "uuid",
+          "required": true,
+          "description": "申込対象の利用時間帯の識別子、施設利用時間帯テーブルへの外部キー"
+        },
+        {
+          "name": "申込日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "抽選申込を行った日時"
+        },
+        {
+          "name": "抽選結果ステータス",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "抽選結果の状態、値は未抽選/当選/落選のいずれか"
+        },
+        {
+          "name": "抽選実施日時",
+          "type": "timestamp",
+          "required": false,
+          "description": "抽選が実施された日時、未抽選の場合はNULL"
+        },
+        {
+          "name": "予約ID",
+          "type": "uuid",
+          "required": false,
+          "description": "当選時に自動生成された予約の識別子、予約テーブルへの外部キー、落選時はNULL"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード最終更新日時"
+        }
+      ]
+    },
+    {
+      "tableName": "決済",
+      "purpose": "公共施設の利用予約に対する決済情報を管理し、支払い状況、金額、決済方法などを記録するトランザクションテーブル",
+      "columns": [
+        {
+          "name": "決済ID",
+          "type": "uuid",
+          "required": true,
+          "description": "決済レコードの一意識別子"
+        },
+        {
+          "name": "予約ID",
+          "type": "uuid",
+          "required": true,
+          "description": "関連する予約レコードへの外部キー"
+        },
+        {
+          "name": "利用者ID",
+          "type": "uuid",
+          "required": true,
+          "description": "決済を行った利用者への外部キー"
+        },
+        {
+          "name": "決済金額",
+          "type": "integer",
+          "required": true,
+          "description": "決済対象の金額（円単位）"
+        },
+        {
+          "name": "決済方法",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "決済方法の種類（クレジットカード、銀行振込、現金など）"
+        },
+        {
+          "name": "決済ステータス",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "決済状態（未決済、決済済、キャンセル、返金など）"
+        },
+        {
+          "name": "決済日時",
+          "type": "timestamp",
+          "required": false,
+          "description": "実際の決済完了日時"
+        },
+        {
+          "name": "トランザクションID",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "決済ゲートウェイから返却される外部トランザクション識別子"
+        },
+        {
+          "name": "備考",
+          "type": "text",
+          "required": false,
+          "description": "決済に関する補足情報やエラーメッセージ"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "決済レコード作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "決済レコード最終更新日時"
+        },
+        {
+          "name": "作成者",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "決済レコードを作成したユーザーまたはシステム"
+        }
+      ]
+    },
+    {
+      "tableName": "決済履歴",
+      "purpose": "公共施設の予約に対する決済トランザクションの記録と追跡を管理し、決済状態、金額、タイミングを監査可能に保持する",
+      "columns": [
+        {
+          "name": "決済履歴ID",
+          "type": "uuid",
+          "required": true,
+          "description": "決済履歴の一意識別子"
+        },
+        {
+          "name": "決済ID",
+          "type": "uuid",
+          "required": true,
+          "description": "決済テーブルへの外部キー参照"
+        },
+        {
+          "name": "予約ID",
+          "type": "uuid",
+          "required": true,
+          "description": "予約テーブルへの外部キー参照"
+        },
+        {
+          "name": "利用者ID",
+          "type": "uuid",
+          "required": true,
+          "description": "利用者テーブルへの外部キー参照"
+        },
+        {
+          "name": "決済金額",
+          "type": "integer",
+          "required": true,
+          "description": "決済対象の金額（円単位）"
+        },
+        {
+          "name": "決済状態",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "決済の状態（未決済、決済済、キャンセル、返金等）"
+        },
+        {
+          "name": "決済方法",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "決済方法（クレジットカード、銀行振込、現金等）"
+        },
+        {
+          "name": "決済日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "実際の決済処理が完了した日時"
+        },
+        {
+          "name": "トランザクションID",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "外部決済ゲートウェイから返却されたトランザクション識別子"
+        },
+        {
+          "name": "備考",
+          "type": "text",
+          "required": false,
+          "description": "決済に関する追加情報やエラーメッセージ"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "決済履歴レコードの作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "決済履歴レコードの最終更新日時"
+        }
+      ]
+    },
+    {
+      "tableName": "キャンセル",
+      "purpose": "公共施設の予約キャンセル情報を管理し、キャンセル理由、手数料、払戻金額などのキャンセル処理に関する詳細を記録するテーブル",
+      "columns": [
+        {
+          "name": "キャンセルID",
+          "type": "uuid",
+          "required": true,
+          "description": "キャンセル情報の一意識別子"
+        },
+        {
+          "name": "予約ID",
+          "type": "uuid",
+          "required": true,
+          "description": "キャンセル対象の予約を特定する外部キー"
+        },
+        {
+          "name": "利用者ID",
+          "type": "uuid",
+          "required": true,
+          "description": "キャンセルを実行した利用者の識別子"
+        },
+        {
+          "name": "キャンセル理由",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "キャンセル理由の分類コード（利用者都合、施設都合など）"
+        },
+        {
+          "name": "キャンセル理由詳細",
+          "type": "text",
+          "required": false,
+          "description": "キャンセル理由の詳細説明"
+        },
+        {
+          "name": "キャンセル手数料",
+          "type": "integer",
+          "required": true,
+          "description": "キャンセルに伴う手数料（円）"
+        },
+        {
+          "name": "払戻金額",
+          "type": "integer",
+          "required": true,
+          "description": "利用者に払い戻す金額（円）"
+        },
+        {
+          "name": "払戻ステータス",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "払戻処理の状態（未処理、処理中、完了など）"
+        },
+        {
+          "name": "キャンセル日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "キャンセルが実行された日時"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード最終更新日時"
+        },
+        {
+          "name": "作成者",
+          "type": "uuid",
+          "required": true,
+          "description": "レコードを作成したユーザーまたはシステムの識別子"
+        }
+      ]
+    },
+    {
+      "tableName": "施設カテゴリ",
+      "purpose": "公共施設の分類を管理するマスタテーブル。施設の種類（体育館、図書館、会議室など）を定義し、予約システムでの施設検索・フィルタリングに使用される。",
+      "columns": [
+        {
+          "name": "施設カテゴリID",
+          "type": "uuid",
+          "required": true,
+          "description": "施設カテゴリの一意識別子"
+        },
+        {
+          "name": "カテゴリ名",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "施設カテゴリの名称（例：体育館、図書館、会議室）"
+        },
+        {
+          "name": "説明",
+          "type": "text",
+          "required": false,
+          "description": "施設カテゴリの詳細説明"
+        },
+        {
+          "name": "表示順序",
+          "type": "integer",
+          "required": false,
+          "description": "UI上での表示順序"
+        },
+        {
+          "name": "有効フラグ",
+          "type": "boolean",
+          "required": true,
+          "description": "カテゴリが有効かどうか（削除の代わりに使用）"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード作成日時"
+        },
+        {
+          "name": "更新日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "レコード最終更新日時"
+        },
+        {
+          "name": "作成者",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "レコード作成者のユーザーID"
+        }
+      ]
+    },
+    {
+      "tableName": "利用者認証ログ",
+      "purpose": "利用者のログイン・ログアウト・認証失敗などの認証イベントを記録し、セキュリティ監査とユーザー行動分析に使用する",
+      "columns": [
+        {
+          "name": "認証ログID",
+          "type": "uuid",
+          "required": true,
+          "description": "認証ログの一意識別子"
+        },
+        {
+          "name": "利用者ID",
+          "type": "uuid",
+          "required": true,
+          "description": "認証を行った利用者の識別子"
+        },
+        {
+          "name": "認証種別",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "認証イベントの種類(ログイン、ログアウト、認証失敗、パスワード変更など)"
+        },
+        {
+          "name": "認証方法",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "使用された認証方法(メール・パスワード、ソーシャルログイン、多要素認証など)"
+        },
+        {
+          "name": "認証結果",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "認証の結果(成功、失敗、ブロック)"
+        },
+        {
+          "name": "失敗理由",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "認証失敗時の理由(パスワード不正、アカウントロック、セッション期限切れなど)"
+        },
+        {
+          "name": "IPアドレス",
+          "type": "varchar(100)",
+          "required": true,
+          "description": "認証リクエスト元のIPアドレス"
+        },
+        {
+          "name": "ユーザーエージェント",
+          "type": "text",
+          "required": false,
+          "description": "認証リクエスト元のブラウザ・デバイス情報"
+        },
+        {
+          "name": "セッションID",
+          "type": "varchar(100)",
+          "required": false,
+          "description": "認証後に発行されたセッションの識別子"
+        },
+        {
+          "name": "認証日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "認証イベントが発生した日時"
+        },
+        {
+          "name": "作成日時",
+          "type": "timestamp",
+          "required": true,
+          "description": "ログレコードが作成された日時"
+        }
+      ]
+    }
+  ],
+  "presetSeedData": {
+    "施設": [
+      {
+        "施設ID": "rec-001",
+        "施設名": "市民体育館",
+        "説明": "地域住民のスポーツ活動を支援する総合体育館です。バドミントン、バスケットボール、卓球などの各種スポーツに対応した多目的ホールを備えており、個人利用から団体利用まで幅広くご利用いただけます。",
+        "住所": "東京都渋谷区神宮前1-2-3",
+        "電話番号": "03-1234-5678",
+        "営業開始時間": "09:00",
+        "営業終了時間": "22:00",
+        "定員": 500,
+        "利用料金": 1500,
+        "予約可能フラグ": true,
+        "作成日時": "2024-04-01T08:00:00Z",
+        "更新日時": "2024-12-15T14:30:00Z"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "中央公民館集会室A",
+        "説明": "地域の小規模グループ、サークル活動、会議などに最適な集会室です。机・椅子完備で、プロジェクター・スクリーンも利用可能です。",
+        "住所": "東京都渋谷区代々木1-2-3",
+        "電話番号": "03-1234-5678",
+        "営業開始時間": "09:00",
+        "営業終了時間": "22:00",
+        "定員": 30,
+        "利用料金": 1500,
+        "予約可能フラグ": true,
+        "作成日時": "2024-04-15T10:30:00",
+        "更新日時": "2025-01-20T14:45:00"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "青山テニスクラブ",
+        "説明": "都心の好立地にある屋外テニスコート。4面のクレーコートを完備。季節に応じた営業時間で、専属コーチによるレッスンも提供。初心者から上級者まで対応可能。",
+        "住所": "東京都渋谷区神宮前2-1-5",
+        "電話番号": "03-XXXX-5678",
+        "営業開始時間": "日の出時刻の30分後（季節により6:00～7:30）",
+        "営業終了時間": "日没時刻の30分前（季節により17:30～19:00）",
+        "定員": 16,
+        "利用料金": 3000,
+        "予約可能フラグ": true,
+        "作成日時": "2024-04-15T10:30:00+09:00",
+        "更新日時": "2025-01-20T14:45:00+09:00"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "中央図書館 会議室A",
+        "説明": "図書館内の多目的会議室です。セミナーや読書会、市民講座などの開催に利用できます。プロジェクターとホワイトボードを完備しており、Wi-Fi環境も整備されています。",
+        "住所": "東京都渋谷区道玄坂2-10-1",
+        "電話番号": "03-XXXX-5678",
+        "営業開始時間": "09:00",
+        "営業終了時間": "20:00",
+        "定員": 30,
+        "利用料金": 0,
+        "予約可能フラグ": true,
+        "作成日時": "2024-04-15T10:30:00",
+        "更新日時": "2025-01-20T14:45:00"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "サンシャイン市民プール",
+        "説明": "25mプール、幼児用プール、スライダー完備。夏季（7月〜8月）の営業。安全管理スタッフ常駐。",
+        "住所": "東京都渋谷区代々木神園町1-2-3",
+        "電話番号": "03-XXXX-5678",
+        "営業開始時間": "09:00",
+        "営業終了時間": "18:00",
+        "定員": 150,
+        "利用料金": 800,
+        "予約可能フラグ": true,
+        "作成日時": "2024-04-15 10:30:00",
+        "更新日時": "2024-06-20 14:45:00"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "メトロポリス野球場",
+        "説明": "収容人数35,000名の大型野球場。プロ野球公式戦対応の最新設備を備えており、照明設備やスコアボード、グラウンド整備システムも完備。飲食店やグッズ販売店も充実。団体利用や企業イベント、野球教室の開催も可能。",
+        "住所": "東京都江東区豊洲3-1-1",
+        "電話番号": "03-xxxx-yyyy",
+        "営業開始時間": "09:00",
+        "営業終了時間": "22:00",
+        "定員": 35000,
+        "利用料金": 850000,
+        "予約可能フラグ": true,
+        "作成日時": "2024-03-15T10:30:00Z",
+        "更新日時": "2025-01-20T14:45:00Z"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "渋谷センター駐車場",
+        "説明": "渋谷駅徒歩5分の好立地。24時間営業で常時利用可能。機械式立体駐車場で150台収容。セキュリティカメラ完備で安心。月極・一時利用両対応。",
+        "住所": "東京都渋谷区道玄坂1-2-3",
+        "電話番号": "03-XXXX-5678",
+        "営業開始時間": "00:00",
+        "営業終了時間": "23:59",
+        "定員": 150,
+        "利用料金": 300,
+        "予約可能フラグ": false,
+        "作成日時": "2024-04-15T10:30:00Z",
+        "更新日時": "2025-01-20T14:45:00Z"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "渋谷サウンドスタジオ",
+        "説明": "防音性能に優れた音楽スタジオ。ボーカルレッスン、バンド練習、レコーディング対応。最新のマイク、アンプ、ドラムセット完備。プロ・アマ問わず利用可能。",
+        "住所": "東京都渋谷区道玄坂2-15-1 渋谷ビジネスビル3F",
+        "電話番号": "03-XXXX-5847",
+        "営業開始時間": "10:00",
+        "営業終了時間": "23:00",
+        "定員": 6,
+        "利用料金": 2500,
+        "予約可能フラグ": true,
+        "作成日時": "2024-01-15T09:30:00Z",
+        "更新日時": "2025-01-10T14:22:00Z"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "富士山麓キャンプ村",
+        "説明": "富士山の絶景を望む高原キャンプ場。自然に囲まれた広大な敷地に、テントサイト50区画、グランピング施設10棟を完備。焚き火、バーベキュー設備、温水シャワー棟、売店完備。初心者から経験者まで楽しめる本格的なキャンプ体験が可能です。",
+        "住所": "山梨県富士市富士見ヶ丘1234-5",
+        "電話番号": "0545-67-8901",
+        "営業開始時間": "10:00",
+        "営業終了時間": "21:00",
+        "定員": 300,
+        "利用料金": 15000,
+        "予約可能フラグ": true,
+        "作成日時": "2024-03-15T09:30:00Z",
+        "更新日時": "2025-01-20T14:45:00Z"
+      },
+      {
+        "施設ID": "rec-001",
+        "施設名": "東京国際講演会ホール",
+        "説明": "最大3,500名収容可能な大規模講演会ホール。学術講演、企業セミナー、国際会議など多様なイベントに対応。最新のAV機器と同時通訳システムを完備。",
+        "住所": "東京都千代田区丸の内1-6-1",
+        "電話番号": "03-XXXX-5678",
+        "営業開始時間": "07:00",
+        "営業終了時間": "23:00",
+        "定員": 3500,
+        "利用料金": 850000,
+        "予約可能フラグ": true,
+        "作成日時": "2024-01-15T09:30:00Z",
+        "更新日時": "2025-01-20T14:45:00Z"
+      }
+    ],
+    "施設利用時間帯": [
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "月火水木金",
+        "開始時刻": "06:00",
+        "終了時刻": "12:00",
+        "予約単位分": 30,
+        "最大予約時間分": 180,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00Z",
+        "適用終了日": "2025-03-31T23:59:59Z",
+        "作成日時": "2024-03-15T10:30:00Z",
+        "更新日時": "2024-03-15T10:30:00Z",
+        "作成者ID": "rec-003"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "月火水木金",
+        "開始時刻": "12:00",
+        "終了時刻": "18:00",
+        "予約単位分": 60,
+        "最大予約時間分": 120,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00Z",
+        "適用終了日": "2025-03-31T23:59:59Z",
+        "作成日時": "2024-03-15T10:30:00Z",
+        "更新日時": "2024-03-15T10:30:00Z",
+        "作成者ID": "rec-003"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "fac-0847",
+        "曜日": "月火水木金",
+        "開始時刻": "18:00",
+        "終了時刻": "22:00",
+        "予約単位分": 30,
+        "最大予約時間分": 240,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00+09:00",
+        "適用終了日": "2025-03-31T23:59:59+09:00",
+        "作成日時": "2024-03-15T10:30:00+09:00",
+        "更新日時": "2024-03-15T10:30:00+09:00",
+        "作成者ID": "usr-2891"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "土",
+        "開始時刻": "09:00",
+        "終了時刻": "21:00",
+        "予約単位分": 60,
+        "最大予約時間分": 120,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00+09:00",
+        "適用終了日": "2025-03-31T23:59:59+09:00",
+        "作成日時": "2024-03-15T10:30:00+09:00",
+        "更新日時": "2024-03-15T10:30:00+09:00",
+        "作成者ID": "rec-003"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-facility-0042",
+        "曜日": "日",
+        "開始時刻": "09:00",
+        "終了時刻": "21:00",
+        "予約単位分": 60,
+        "最大予約時間分": 480,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00Z",
+        "適用終了日": "2025-03-31T23:59:59Z",
+        "作成日時": "2024-03-15T10:30:00Z",
+        "更新日時": "2024-03-15T10:30:00Z",
+        "作成者ID": "rec-user-0018"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "月火水木金",
+        "開始時刻": "10:00",
+        "終了時刻": "20:00",
+        "予約単位分": 30,
+        "最大予約時間分": 180,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00Z",
+        "適用終了日": "2025-03-31T23:59:59Z",
+        "作成日時": "2024-03-15T09:30:00Z",
+        "更新日時": "2024-03-15T09:30:00Z",
+        "作成者ID": "rec-003"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "土日祝",
+        "開始時刻": "10:00",
+        "終了時刻": "18:00",
+        "予約単位分": 60,
+        "最大予約時間分": 240,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00Z",
+        "適用終了日": "2025-03-31T23:59:59Z",
+        "作成日時": "2024-03-15T09:30:00Z",
+        "更新日時": "2024-03-15T09:30:00Z",
+        "作成者ID": "rec-003"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "fac-0847",
+        "曜日": "月火水木金",
+        "開始時刻": "19:00",
+        "終了時刻": "21:00",
+        "予約単位分": 90,
+        "最大予約時間分": 90,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-04-01T00:00:00+09:00",
+        "適用終了日": "2025-03-31T23:59:59+09:00",
+        "作成日時": "2024-03-15T10:30:00+09:00",
+        "更新日時": "2024-03-15T10:30:00+09:00",
+        "作成者ID": "usr-2891"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "土日",
+        "開始時刻": "09:00",
+        "終了時刻": "18:00",
+        "予約単位分": 60,
+        "最大予約時間分": 180,
+        "利用可能フラグ": true,
+        "適用開始日": "2024-03-01T00:00:00",
+        "適用終了日": "2024-05-31T23:59:59",
+        "作成日時": "2024-02-15T10:30:00",
+        "更新日時": "2024-02-20T14:45:00",
+        "作成者ID": "rec-003"
+      },
+      {
+        "時間帯ID": "rec-001",
+        "施設ID": "rec-002",
+        "曜日": "月火水木金土日",
+        "開始時刻": "00:00",
+        "終了時刻": "23:59",
+        "予約単位分": 60,
+        "最大予約時間分": 120,
+        "利用可能フラグ": false,
+        "適用開始日": "2024-12-01T00:00:00",
+        "適用終了日": "2025-02-28T23:59:59",
+        "作成日時": "2024-11-15T10:30:00",
+        "更新日時": "2024-11-15T10:30:00",
+        "作成者ID": "rec-003"
+      }
+    ],
+    "予約": [
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-u-0847",
+        "施設ID": "rec-f-0312",
+        "施設利用時間帯ID": "rec-t-0156",
+        "予約日": "2025-01-15T14:00:00",
+        "予約状態": "キャンセル",
+        "決済状態": "返金",
+        "予約金額": 8500,
+        "人数": 4,
+        "備考": "当日朝8時に体調不良のため急遽キャンセル。全額返金対応。",
+        "作成日時": "2025-01-12T10:30:00",
+        "更新日時": "2025-01-15T08:45:00",
+        "作成者": "rec-u-0847"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "予約日": "2025-03-15 14:00:00",
+        "予約状態": "確定",
+        "決済状態": "決済済",
+        "予約金額": 24000,
+        "人数": 5,
+        "備考": "当初4名での予約でしたが、急遽1名追加参加することになりました。追加料金6000円は別途決済済みです。",
+        "作成日時": "2025-02-20 10:30:00",
+        "更新日時": "2025-03-08 15:45:00",
+        "作成者": "rec-002"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "予約日": "2024-12-15T10:00:00",
+        "予約状態": "利用完了",
+        "決済状態": "決済済",
+        "予約金額": 8500,
+        "人数": 4,
+        "備考": "テニスコート利用。ラケットレンタル2本希望。",
+        "作成日時": "2024-12-01T14:30:00",
+        "更新日時": "2024-12-15T11:45:00",
+        "作成者": "rec-002"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "予約日": "2025-03-15T10:00:00",
+        "予約状態": "申込中",
+        "決済状態": "未決済",
+        "予約金額": 8500,
+        "人数": 4,
+        "備考": "会議室での営業会議。プロジェクター使用希望。",
+        "作成日時": "2025-02-10T14:30:00",
+        "更新日時": "2025-02-10T14:30:00",
+        "作成者": "rec-002"
+      },
+      {
+        "予約ID": "rec-20250115-001",
+        "利用者ID": "rec-user-2024-0847",
+        "施設ID": "rec-facility-2024-0312",
+        "施設利用時間帯ID": "rec-timeslot-2024-0156",
+        "予約日": "2025-03-22T09:00:00",
+        "予約状態": "確定",
+        "決済状態": "決済済",
+        "予約金額": 450000,
+        "人数": 45,
+        "備考": "修学旅行団体利用。弁当の持ち込み許可願い。駐車場大型バス3台分確保。事前に施設スタッフへの打ち合わせ希望。",
+        "作成日時": "2024-12-10T14:30:00",
+        "更新日時": "2025-01-15T10:45:00",
+        "作成者": "rec-user-2024-0847"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "予約日": "2024-12-15T10:00:00",
+        "予約状態": "確定",
+        "決済状態": "決済済",
+        "予約金額": 15000,
+        "人数": 8,
+        "備考": "誕生日パーティーのため、入口に風船装飾をお願いしたいです。また、テーブルは中央に集めて配置していただけると幸いです。ケーキの持ち込みは可能でしょうか？",
+        "作成日時": "2024-11-20T14:30:00",
+        "更新日時": "2024-11-22T09:15:00",
+        "作成者": "rec-002"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "予約日": "2025-03-15T14:00:00",
+        "予約状態": "確定",
+        "決済状態": "決済済",
+        "予約金額": 8500,
+        "人数": 4,
+        "備考": "キャンセル待ちから繰り上がり確定。会議室利用。プロジェクター使用予定。",
+        "作成日時": "2025-02-20T10:30:00",
+        "更新日時": "2025-03-01T16:45:00",
+        "作成者": "rec-005"
+      },
+      {
+        "予約ID": "rec-20250148",
+        "利用者ID": "rec-20250089",
+        "施設ID": "rec-20250012",
+        "施設利用時間帯ID": "rec-20250034",
+        "予約日": "2025-02-15T10:00:00",
+        "予約状態": "申込中",
+        "決済状態": "未決済",
+        "予約金額": 8500,
+        "人数": 4,
+        "備考": "クレジットカード決済時にエラーが発生しました。再度のお手続きをお願いします。",
+        "作成日時": "2025-02-08T14:32:00",
+        "更新日時": "2025-02-08T14:35:00",
+        "作成者": "rec-20250089"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "予約日": "2024-11-15T10:00:00",
+        "予約状態": "利用完了",
+        "決済状態": "決済済",
+        "予約金額": 15000,
+        "人数": 4,
+        "備考": "誕生日パーティー開催予定。ケーキの持ち込みを希望します。",
+        "作成日時": "2024-11-08T14:30:00",
+        "更新日時": "2024-11-15T18:45:00",
+        "作成者": "rec-002"
+      },
+      {
+        "予約ID": "rec-001",
+        "利用者ID": "rec-u-0847",
+        "施設ID": "rec-f-0312",
+        "施設利用時間帯ID": "rec-t-0905",
+        "予約日": "2025-01-15T09:00:00",
+        "予約状態": "確定",
+        "決済状態": "決済済",
+        "予約金額": 3600,
+        "人数": 2,
+        "備考": "毎週水曜日9時の定期利用。テニスコート予約。前回と同じコート希望。",
+        "作成日時": "2024-12-20T14:30:00",
+        "更新日時": "2024-12-20T14:30:00",
+        "作成者": "rec-u-0847"
+      }
+    ],
+    "抽選申込": [
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "申込日時": "2024-11-15 09:30:00",
+        "抽選結果ステータス": "落選",
+        "抽選実施日時": "2024-11-20 14:00:00",
+        "予約ID": null,
+        "作成日時": "2024-11-15 09:30:15",
+        "更新日時": "2024-11-20 14:00:45"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "申込日時": "2024-11-15 09:30:00",
+        "抽選結果ステータス": "当選",
+        "抽選実施日時": "2024-11-16 14:00:00",
+        "予約ID": "rec-005",
+        "作成日時": "2024-11-15 09:30:15",
+        "更新日時": "2024-11-16 14:05:30"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-u-0042",
+        "施設ID": "rec-f-0015",
+        "施設利用時間帯ID": "rec-t-0087",
+        "申込日時": "2024-11-15 09:30:00",
+        "抽選結果ステータス": "当選",
+        "抽選実施日時": "2024-11-20 14:00:00",
+        "予約ID": "rec-p-0156",
+        "作成日時": "2024-11-15 09:30:15",
+        "更新日時": "2024-11-20 14:05:30"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "申込日時": "2024-11-15 14:32:18",
+        "抽選結果ステータス": "当選",
+        "抽選実施日時": "2024-11-15 14:35:42",
+        "予約ID": "rec-005",
+        "作成日時": "2024-11-15 14:32:18",
+        "更新日時": "2024-11-15 14:35:42"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "申込日時": "2024-12-15 14:30:00",
+        "抽選結果ステータス": "未抽選",
+        "抽選実施日時": null,
+        "予約ID": null,
+        "作成日時": "2024-12-15 14:30:00",
+        "更新日時": "2024-12-15 14:30:00"
+      },
+      {
+        "抽選申込ID": "rec-20250215-7483",
+        "利用者ID": "rec-user-4521",
+        "施設ID": "rec-fac-0892",
+        "施設利用時間帯ID": "rec-timeslot-5614",
+        "申込日時": "2025-02-10 14:32:15",
+        "抽選結果ステータス": "未抽選",
+        "抽選実施日時": null,
+        "予約ID": null,
+        "作成日時": "2025-02-10 14:32:15",
+        "更新日時": "2025-02-10 14:32:15"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-user-0847",
+        "施設ID": "rec-facility-0312",
+        "施設利用時間帯ID": "rec-timeslot-0156",
+        "申込日時": "2024-11-15 14:32:18",
+        "抽選結果ステータス": "落選",
+        "抽選実施日時": "2024-11-20 09:00:00",
+        "予約ID": null,
+        "作成日時": "2024-11-15 14:32:18",
+        "更新日時": "2024-11-20 09:05:42"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-002",
+        "施設ID": "rec-003",
+        "施設利用時間帯ID": "rec-004",
+        "申込日時": "2024-11-15 14:30:00",
+        "抽選結果ステータス": "当選",
+        "抽選実施日時": "2024-11-20 10:00:00",
+        "予約ID": null,
+        "作成日時": "2024-11-15 14:30:15",
+        "更新日時": "2024-12-02 09:15:30"
+      },
+      {
+        "抽選申込ID": "rec-20250115-001",
+        "利用者ID": "rec-user-0847",
+        "施設ID": "rec-facility-0312",
+        "施設利用時間帯ID": "rec-timeslot-0156",
+        "申込日時": "2025-01-10 14:32:15",
+        "抽選結果ステータス": "落選",
+        "抽選実施日時": "2025-01-11 02:00:00",
+        "予約ID": null,
+        "作成日時": "2025-01-10 14:32:15",
+        "更新日時": "2025-01-11 02:05:43"
+      },
+      {
+        "抽選申込ID": "rec-001",
+        "利用者ID": "rec-u-0847",
+        "施設ID": "rec-f-0023",
+        "施設利用時間帯ID": "rec-t-0156",
+        "申込日時": "2024-11-15 09:00:32",
+        "抽選結果ステータス": "当選",
+        "抽選実施日時": "2024-11-22 14:30:00",
+        "予約ID": "rec-p-5429",
+        "作成日時": "2024-11-15 09:00:32",
+        "更新日時": "2024-11-22 14:30:15"
+      }
+    ],
+    "決済": [
+      {
+        "決済ID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "決済金額": 15000,
+        "決済方法": "クレジットカード",
+        "決済ステータス": "決済済",
+        "決済日時": "2024-11-15 14:32:45",
+        "トランザクションID": "TXN20241115143245001",
+        "備考": "体育館利用料金（2024年11月22日～11月24日、3時間利用）",
+        "作成日時": "2024-11-15 14:32:45",
+        "更新日時": "2024-11-15 14:32:45",
+        "作成者": "決済システム"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "決済金額": 3500,
+        "決済方法": "銀行振込",
+        "決済ステータス": "未決済",
+        "決済日時": null,
+        "トランザクションID": null,
+        "備考": "銀行振込期限(2024年12月20日)を経過しました。利用者への催促が必要です。",
+        "作成日時": "2024-12-05 10:30:00",
+        "更新日時": "2024-12-21 09:15:00",
+        "作成者": "システム自動作成"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "決済金額": 45000,
+        "決済方法": "クレジットカード",
+        "決済ステータス": "返金",
+        "決済日時": "2024-11-15 14:32:00",
+        "トランザクションID": "TXN20241115001847",
+        "備考": "利用者より2024年11月20日にキャンセル申し出。返金手続き開始。クレジットカード会社へ返金リクエスト送信済み。返金予定日は2024年11月29日。",
+        "作成日時": "2024-11-15 14:32:00",
+        "更新日時": "2024-11-20 10:15:00",
+        "作成者": "決済システム"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "決済金額": 45000,
+        "決済方法": "クレジットカード",
+        "決済ステータス": "決済済",
+        "決済日時": "2024-11-15 14:32:18",
+        "トランザクションID": "TXN20241115000847",
+        "備考": "初回決済失敗後の再決済。初回エラー：ゲートウェイタイムアウト（2024-11-15 14:15:42）。本レコードは2回目の決済で成功。",
+        "作成日時": "2024-11-15 14:32:18",
+        "更新日時": "2024-11-15 14:32:18",
+        "作成者": "system"
+      },
+      {
+        "決済ID": "rec-20250215-001",
+        "予約ID": "rec-20250215-002",
+        "利用者ID": "rec-user-0847",
+        "決済金額": 45000,
+        "決済方法": "現金",
+        "決済ステータス": "決済済",
+        "決済日時": "2025-02-15 14:30:00",
+        "トランザクションID": "CASH-20250215-847392",
+        "備考": "テニスコート2面（2025/2/22-2/23）、会議室A（2025/3/1）、駐車場3台分（2025/2/22-2/24）の3予約をまとめて現金払い。領収書番号：RCP-2025-001847",
+        "作成日時": "2025-02-15 14:31:22",
+        "更新日時": "2025-02-15 14:31:22",
+        "作成者": "システム管理者"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "res-00847",
+        "利用者ID": "usr-02341",
+        "決済金額": 45000,
+        "決済方法": "クレジットカード",
+        "決済ステータス": "返金",
+        "決済日時": "2024-11-15T14:32:00+09:00",
+        "トランザクションID": "TXN20241115000847PY",
+        "備考": "宿泊2泊分のうち1泊分をキャンセル。返金額15000円を2024-11-22に処理済み。",
+        "作成日時": "2024-11-15T14:32:00+09:00",
+        "更新日時": "2024-11-22T10:15:00+09:00",
+        "作成者": "決済システム"
+      },
+      {
+        "決済ID": "rec-20250115-qr-001",
+        "予約ID": "rec-yoyaku-20250115-0847",
+        "利用者ID": "rec-user-tanaka-taro-001",
+        "決済金額": 3300,
+        "決済方法": "QR決済（PayPay）",
+        "決済ステータス": "決済済",
+        "決済日時": "2025-01-15 09:47:32",
+        "トランザクションID": "TXN20250115094732JPY3300PP",
+        "備考": "図書館3階会議室A（2時間）。利用日時：2025-01-15 10:00-12:00。QR決済にて即座に決済完了。",
+        "作成日時": "2025-01-15 09:47:35",
+        "更新日時": "2025-01-15 09:47:35",
+        "作成者": "図書館決済システム"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "res-2024-0847",
+        "利用者ID": "usr-corp-0512",
+        "決済金額": 450000,
+        "決済方法": "銀行振込",
+        "決済ステータス": "決済済",
+        "決済日時": "2024-04-15 10:30:00",
+        "トランザクションID": "TXN20240415-JP-89234",
+        "備考": "公共施設年間利用契約2024年度 初回分（全4回分割の1回目）。振込人：田中太郎",
+        "作成日時": "2024-04-15 10:32:15",
+        "更新日時": "2024-04-15 10:32:15",
+        "作成者": "system_payment_gateway"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "res-0847",
+        "利用者ID": "usr-2341",
+        "決済金額": 28500,
+        "決済方法": "クレジットカード",
+        "決済ステータス": "決済済",
+        "決済日時": "2024-11-15 14:32:18",
+        "トランザクションID": "TXN20241115000847",
+        "備考": "初回決済額25000円は入力誤りのため取消。正規金額28500円で再決済完了。差額3500円追加請求。",
+        "作成日時": "2024-11-15 10:05:42",
+        "更新日時": "2024-11-15 14:32:18",
+        "作成者": "システム"
+      },
+      {
+        "決済ID": "rec-001",
+        "予約ID": "res-0847",
+        "利用者ID": "usr-2341",
+        "決済金額": 45000,
+        "決済方法": "クレジットカード",
+        "決済ステータス": "返金",
+        "決済日時": "2024-12-15 14:23:45",
+        "トランザクションID": "TXN20241215000892",
+        "備考": "利用日変更に伴う返金処理。元の予約（2024-12-20）から新規予約（2025-01-10）へ変更。返金完了日時：2024-12-16 09:15:30",
+        "作成日時": "2024-12-15 14:23:45",
+        "更新日時": "2024-12-16 09:15:30",
+        "作成者": "決済システム"
+      }
+    ],
+    "決済履歴": [
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-1523",
+        "利用者ID": "usr-0392",
+        "決済金額": 3600,
+        "決済状態": "決済済",
+        "決済方法": "クレジットカード",
+        "決済日時": "2024-12-15 14:32:18",
+        "トランザクションID": "TXN20241215143218VISA5847",
+        "備考": "体育館利用料 2024年12月22日 9:00-11:00 バスケットボール利用",
+        "作成日時": "2024-12-15 14:32:20",
+        "更新日時": "2024-12-15 14:32:20"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-1523",
+        "利用者ID": "usr-3892",
+        "決済金額": 3500,
+        "決済状態": "未決済",
+        "決済方法": "銀行振込",
+        "決済日時": null,
+        "トランザクションID": null,
+        "備考": "図書館貸出室予約の銀行振込待機中。振込先：〇〇銀行 支店コード123 口座番号4567890。期限：2025-01-20",
+        "作成日時": "2025-01-15 14:32:18",
+        "更新日時": "2025-01-15 14:32:18"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-5632",
+        "利用者ID": "usr-1209",
+        "決済金額": 3500,
+        "決済状態": "未決済",
+        "決済方法": "クレジットカード",
+        "決済日時": null,
+        "トランザクションID": null,
+        "備考": "ゲートウェイエラーが発生しました。エラーコード: GW_TIMEOUT_001。決済処理がタイムアウトしたため、決済は完了していません。利用者に再度決済を試行するよう案内してください。",
+        "作成日時": "2024-11-15 14:23:47",
+        "更新日時": "2024-11-15 14:24:12"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "rec-pay-20250115-001",
+        "予約ID": "rec-rsv-20250110-042",
+        "利用者ID": "rec-usr-20241205-089",
+        "決済金額": 15000,
+        "決済状態": "返金",
+        "決済方法": "クレジットカード",
+        "決済日時": "2025-01-15 14:32:00",
+        "トランザクションID": "TXN-20250115-7F4A9B2C",
+        "備考": "公民館ホール利用予約（2025年2月1日分）のキャンセルに伴う全額返金。利用者からのキャンセル申請により処理。",
+        "作成日時": "2025-01-15 14:32:00",
+        "更新日時": "2025-01-15 14:32:00"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "bk-2024-1156",
+        "利用者ID": "usr-5432",
+        "決済金額": 385000,
+        "決済状態": "決済済",
+        "決済方法": "クレジットカード",
+        "決済日時": "2024-11-15 14:32:18",
+        "トランザクションID": "TXN-20241115-9K7L2M5N",
+        "備考": "複数施設団体予約一括決済。山田太郎様による企業研修プログラム（A施設：150,000円、B施設：120,000円、C施設：115,000円）。領収書発行済み。",
+        "作成日時": "2024-11-15 14:32:18",
+        "更新日時": "2024-11-15 14:32:18"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-5632",
+        "利用者ID": "usr-3891",
+        "決済金額": 45000,
+        "決済状態": "決済済",
+        "決済方法": "現金",
+        "決済日時": "2024-11-15 14:30:00",
+        "トランザクションID": "CASH-20241115-001847",
+        "備考": "事前払い確認済み。宿泊施設フロントで現金受領。領収書発行済み。利用者：山田花子",
+        "作成日時": "2024-11-15 14:35:22",
+        "更新日時": "2024-11-15 14:35:22"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-20250115-0847",
+        "予約ID": "rsv-20250110-5432",
+        "利用者ID": "usr-yamada-2024",
+        "決済金額": 45000,
+        "決済状態": "決済済",
+        "決済方法": "クレジットカード",
+        "決済日時": "2025-01-15 14:32:18",
+        "トランザクションID": "txn_1PqK8mJ9vL2nO3pQ4rS5tU6v",
+        "備考": "初回決済失敗（カード有効期限切れ）→ 2025-01-15 14:28:42 エラー: Card expired。顧客に連絡後、新規カード情報で再試行。2回目決済成功。",
+        "作成日時": "2025-01-15 14:28:42",
+        "更新日時": "2025-01-15 14:32:18"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-5632",
+        "利用者ID": "usr-1205",
+        "決済金額": -15000,
+        "決済状態": "返金",
+        "決済方法": "クレジットカード",
+        "決済日時": "2024-11-15 14:32:18",
+        "トランザクションID": "TXN20241115-0847-REFUND",
+        "備考": "予約の一部キャンセル（2泊から1泊に変更）に伴う差額返金。元の決済額30,000円から宿泊1泊分15,000円を返金。",
+        "作成日時": "2024-11-15 14:32:18",
+        "更新日時": "2024-11-15 14:32:18"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-5632",
+        "利用者ID": "usr-0392",
+        "決済金額": 45000,
+        "決済状態": "返金",
+        "決済方法": "クレジットカード",
+        "決済日時": "2025-01-15 14:32:18",
+        "トランザクションID": "TXN20250115143218JPY45000",
+        "備考": "決済期限超過（期限日時：2025-01-08 23:59:59）による予約自動キャンセルに伴う返金処理。山田花子様の東京都渋谷区のホテル予約（2025-01-20チェックイン）。返金手数料なし。",
+        "作成日時": "2025-01-08 23:59:59",
+        "更新日時": "2025-01-15 14:32:18"
+      },
+      {
+        "決済履歴ID": "rec-001",
+        "決済ID": "pay-0847",
+        "予約ID": "rsv-2024-1523",
+        "利用者ID": "usr-5692",
+        "決済金額": 45000,
+        "決済状態": "決済済",
+        "決済方法": "クレジットカード",
+        "決済日時": "2024-11-15 14:32:18",
+        "トランザクションID": "TXN20241115003847",
+        "備考": "ホテル宿泊予約（2泊）。決済完了、確認メール送信済み。",
+        "作成日時": "2024-11-15 14:32:25",
+        "更新日時": "2024-11-15 14:32:25"
+      }
+    ],
+    "キャンセル": [
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "利用者都合",
+        "キャンセル理由詳細": "急な仕事の予定が入ってしまい、予約日に参加できなくなりました。申し訳ございません。",
+        "キャンセル手数料": 3000,
+        "払戻金額": 12000,
+        "払戻ステータス": "完了",
+        "キャンセル日時": "2024-11-14 09:30:00",
+        "作成日時": "2024-11-14 09:30:15",
+        "更新日時": "2024-11-16 14:22:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "施設都合",
+        "キャンセル理由詳細": "施設内の空調設備が故障したため、予約されたテニスコートの使用が不可能になりました。修理完了までの間、当該時間帯のご予約をキャンセルさせていただきます。",
+        "キャンセル手数料": 0,
+        "払戻金額": 8500,
+        "払戻ステータス": "完了",
+        "キャンセル日時": "2024-11-15 09:30:00",
+        "作成日時": "2024-11-15 09:30:00",
+        "更新日時": "2024-11-16 14:20:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "利用者都合",
+        "キャンセル理由詳細": "予約当日の朝に急性胃腸炎を発症し、医師の診断により施設利用が困難になったため",
+        "キャンセル手数料": 5000,
+        "払戻金額": 15000,
+        "払戻ステータス": "完了",
+        "キャンセル日時": "2024-11-15 08:30:00",
+        "作成日時": "2024-11-15 08:35:00",
+        "更新日時": "2024-11-20 14:22:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "施設都合",
+        "キャンセル理由詳細": "台風接近に伴う悪天候のため、利用者の安全を考慮し施設側の判断により運営を中止いたしました。",
+        "キャンセル手数料": 0,
+        "払戻金額": 15000,
+        "払戻ステータス": "処理中",
+        "キャンセル日時": "2024-09-15 10:30:00",
+        "作成日時": "2024-09-15 10:30:00",
+        "更新日時": "2024-09-15 14:45:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "利用者都合",
+        "キャンセル理由詳細": "別の日程で同じ施設の予約を取得したため、こちらの予約をキャンセルいたします。",
+        "キャンセル手数料": 5000,
+        "払戻金額": 15000,
+        "払戻ステータス": "完了",
+        "キャンセル日時": "2024-11-15 14:30:00",
+        "作成日時": "2024-11-15 14:30:00",
+        "更新日時": "2024-11-20 09:15:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "施設都合",
+        "キャンセル理由詳細": "予約システムの誤登録により、同一時間帯に重複予約が発生したため、管理者判断でキャンセル処理いたしました。利用者様にはご迷惑をおかけして申し訳ございません。",
+        "キャンセル手数料": 0,
+        "払戻金額": 45000,
+        "払戻ステータス": "完了",
+        "キャンセル日時": "2024-11-15T10:30:00+09:00",
+        "作成日時": "2024-11-15T10:30:00+09:00",
+        "更新日時": "2024-11-16T14:22:00+09:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "利用者都合",
+        "キャンセル理由詳細": "急な仕事の対応が必要になったため、やむを得ずキャンセルさせていただきます",
+        "キャンセル手数料": 8000,
+        "払戻金額": 2000,
+        "払戻ステータス": "処理中",
+        "キャンセル日時": "2024-11-15 14:45:00",
+        "作成日時": "2024-11-15 14:45:30",
+        "更新日時": "2024-11-15 14:45:30",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "施設都合",
+        "キャンセル理由詳細": "定期メンテナンスのため、予約いただいた日時は施設をご利用いただけません。ご不便をおかけして申し訳ございません。",
+        "キャンセル手数料": 0,
+        "払戻金額": 15000,
+        "払戻ステータス": "完了",
+        "キャンセル日時": "2025-01-15T10:30:00",
+        "作成日時": "2025-01-15T10:30:00",
+        "更新日時": "2025-01-20T16:45:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "利用者都合",
+        "キャンセル理由詳細": "転居に伴う住所変更のため、予約済みの施設利用が困難になりました。複数予約の一括キャンセルをお願いします。",
+        "キャンセル手数料": 5500,
+        "払戻金額": 44500,
+        "払戻ステータス": "処理中",
+        "キャンセル日時": "2025-02-14T10:30:00+09:00",
+        "作成日時": "2025-02-14T10:30:15+09:00",
+        "更新日時": "2025-02-14T14:22:00+09:00",
+        "作成者": "rec-004"
+      },
+      {
+        "キャンセルID": "rec-001",
+        "予約ID": "rec-002",
+        "利用者ID": "rec-003",
+        "キャンセル理由": "施設都合",
+        "キャンセル理由詳細": "新型コロナウイルス感染症の感染拡大に伴う施設の一時閉鎖のため、やむを得ずキャンセルさせていただきます。",
+        "キャンセル手数料": 0,
+        "払戻金額": 45000,
+        "払戻ステータス": "処理中",
+        "キャンセル日時": "2025-01-15 10:30:00",
+        "作成日時": "2025-01-15 10:30:00",
+        "更新日時": "2025-01-15 14:22:00",
+        "作成者": "rec-004"
+      }
+    ],
+    "施設カテゴリ": [
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "体育館・アリーナ",
+        "説明": "バスケットボール、バレーボール、バドミントン、卓球などの室内スポーツ競技や、学校行事、地域イベントの開催に利用できる多目的体育施設。収容人数は最大2,000名で、冷暖房完備。",
+        "表示順序": 1,
+        "有効フラグ": true,
+        "作成日時": "2024-04-01T09:30:00+09:00",
+        "更新日時": "2025-01-15T14:20:00+09:00",
+        "作成者": "鈴木花子"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "図書館",
+        "説明": "蔵書の閲覧・貸出・予約機能を備えた図書館施設。一般図書、参考図書、雑誌、視聴覚資料などを所蔵しており、利用者は館内での閲覧のほか、貸出予約システムを通じて資料の予約が可能です。",
+        "表示順序": 2,
+        "有効フラグ": true,
+        "作成日時": "2024-04-01T09:30:00",
+        "更新日時": "2025-01-15T14:20:00",
+        "作成者": "鈴木花子"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "会議室・セミナー室",
+        "説明": "社内会議、クライアント打ち合わせ、セミナー開催など、少人数から中規模グループまで対応可能な多目的会議スペース。プロジェクター、ホワイトボード、テレビ会議システム完備。時間単位での予約が可能。",
+        "表示順序": 2,
+        "有効フラグ": true,
+        "作成日時": "2024-04-01T09:15:00+09:00",
+        "更新日時": "2025-01-10T14:30:00+09:00",
+        "作成者": "山田太郎"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "多目的ホール",
+        "説明": "講座やイベント、講演会、コンサート、展示会などの開催に対応した大規模集会施設。収容人数は最大200名で、舞台設備とプロジェクター、音響システムを完備しています。",
+        "表示順序": 1,
+        "有効フラグ": true,
+        "作成日時": "2024-04-01T09:30:00",
+        "更新日時": "2024-11-15T14:20:00",
+        "作成者": "山田太郎"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "屋外スポーツ施設",
+        "説明": "テニスコート、バドミントンコート、多目的グラウンドなど、屋外で利用するスポーツ施設。天候や季節に応じた予約管理が必要。",
+        "表示順序": 2,
+        "有効フラグ": true,
+        "作成日時": "2024-04-01T09:30:00",
+        "更新日時": "2024-11-15T14:20:00",
+        "作成者": "山田太郎"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "プール・温浴施設",
+        "説明": "室内プール、屋外プール、温浴施設（温泉、サウナ、ジャグジー）の利用時間帯予約に対応した施設カテゴリです。各時間帯ごとの収容人数管理と安全管理が必要となります。",
+        "表示順序": 3,
+        "有効フラグ": true,
+        "作成日時": "2024-04-15T09:30:00+09:00",
+        "更新日時": "2024-11-20T14:15:00+09:00",
+        "作成者": "山田花子"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "駐車場・駐輪場",
+        "説明": "自動車および自転車の駐車スペース。事前予約による確保システムを導入し、利用者の利便性向上と駐車スペースの効率的な管理を実現します。",
+        "表示順序": 5,
+        "有効フラグ": true,
+        "作成日時": "2024-04-15 09:30:00",
+        "更新日時": "2025-01-20 14:15:00",
+        "作成者": "山田花子"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "研修室",
+        "説明": "公開講座や企業研修、セミナー開催用の教室。プロジェクター、ホワイトボード、音声設備を完備。最大収容人数は50名。",
+        "表示順序": 2,
+        "有効フラグ": true,
+        "作成日時": "2024-04-15 09:30:00",
+        "更新日時": "2025-01-20 14:15:00",
+        "作成者": "山田花子"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "音楽スタジオ・練習室",
+        "説明": "バンド練習、ボーカルレッスン、楽器練習に対応した防音設備完備の専用スタジオ。複数の練習ブースとリハーサルホールを備えており、個人練習からグループ練習まで幅広く対応可能です。",
+        "表示順序": 3,
+        "有効フラグ": true,
+        "作成日時": "2024-04-15T09:30:00+09:00",
+        "更新日時": "2025-01-20T14:15:00+09:00",
+        "作成者": "山田太郎"
+      },
+      {
+        "施設カテゴリID": "rec-001",
+        "カテゴリ名": "展示ホール・ギャラリー",
+        "説明": "企業展示会、美術展覧会、商品発表会など各種イベント開催に対応した展示スペース。可動壁による区間分割が可能で、小規模から大規模イベントまで柔軟に対応できます。照明設備、映像投影機、音響システムを完備。",
+        "表示順序": 3,
+        "有効フラグ": true,
+        "作成日時": "2024-04-15 09:30:00",
+        "更新日時": "2024-11-22 14:15:00",
+        "作成者": "鈴木花子"
+      }
+    ],
+    "利用者認証ログ": [
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "rec-usr-2847",
+        "認証種別": "ログイン",
+        "認証方法": "メール・パスワード",
+        "認証結果": "成功",
+        "失敗理由": null,
+        "IPアドレス": "210.145.78.92",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "セッションID": "sess-8f2c4a91b7e3d5f6",
+        "認証日時": "2025-01-16 08:23:45",
+        "作成日時": "2025-01-16 08:23:47"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "rec-user-2847",
+        "認証種別": "再認証",
+        "認証方法": "メール・パスワード",
+        "認証結果": "成功",
+        "失敗理由": null,
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "セッションID": "sess-8f4c2d9e7b1a6c3f",
+        "認証日時": "2024-11-15 14:32:18",
+        "作成日時": "2024-11-15 14:32:19"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "usr-7842",
+        "認証種別": "ログイン",
+        "認証方法": "メール・パスワード",
+        "認証結果": "失敗",
+        "失敗理由": "パスワード不正",
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "セッションID": null,
+        "認証日時": "2024-11-15 14:32:18",
+        "作成日時": "2024-11-15 14:32:19"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "usr-20240515-0847",
+        "認証種別": "ログイン",
+        "認証方法": "ソーシャルログイン",
+        "認証結果": "成功",
+        "失敗理由": null,
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Mobile/15E148 Safari/604.1",
+        "セッションID": "sess-a7f3e9c2b1d84562",
+        "認証日時": "2024-12-18T14:32:15+09:00",
+        "作成日時": "2024-12-18T14:32:16+09:00"
+      },
+      {
+        "認証ログID": "rec-20250115-auth-7842",
+        "利用者ID": "rec-user-4521",
+        "認証種別": "ログイン",
+        "認証方法": "メール・パスワード",
+        "認証結果": "ブロック",
+        "失敗理由": "不審なIPアドレスからのアクセス検出",
+        "IPアドレス": "203.0.113.247",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "セッションID": null,
+        "認証日時": "2025-01-15 02:47:33",
+        "作成日時": "2025-01-15 02:47:35"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "usr-2847",
+        "認証種別": "ログアウト",
+        "認証方法": "セッション自動終了",
+        "認証結果": "成功",
+        "失敗理由": "セッション期限切れ",
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "セッションID": "sess-8f3a2b9c1e4d7f6a",
+        "認証日時": "2024-11-15 14:32:18",
+        "作成日時": "2024-11-15 14:32:19"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "rec-user-2847",
+        "認証種別": "ログイン",
+        "認証方法": "多要素認証",
+        "認証結果": "成功",
+        "失敗理由": null,
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "セッションID": "sess-8f3e9d2c1a5b7e4f",
+        "認証日時": "2024-11-15 09:23:47",
+        "作成日時": "2024-11-15 09:23:48"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "rec-002",
+        "認証種別": "ログイン",
+        "認証方法": "メール・パスワード",
+        "認証結果": "ブロック",
+        "失敗理由": "アカウントロック",
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "セッションID": null,
+        "認証日時": "2025-01-15 14:32:18",
+        "作成日時": "2025-01-15 14:32:19"
+      },
+      {
+        "認証ログID": "rec-20250115-admin-001",
+        "利用者ID": "rec-user-admin-0847",
+        "認証種別": "ログイン",
+        "認証方法": "メール・パスワード",
+        "認証結果": "成功",
+        "失敗理由": null,
+        "IPアドレス": "203.0.113.42",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "セッションID": "sess-2025011514523847-admin",
+        "認証日時": "2025-01-15 14:52:38",
+        "作成日時": "2025-01-15 14:52:39"
+      },
+      {
+        "認証ログID": "rec-001",
+        "利用者ID": "rec-002",
+        "認証種別": "ログイン",
+        "認証方法": "メール・パスワード",
+        "認証結果": "成功",
+        "失敗理由": null,
+        "IPアドレス": "203.0.113.45",
+        "ユーザーエージェント": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "セッションID": "rec-003",
+        "認証日時": "2024-11-15 09:23:47",
+        "作成日時": "2024-11-15 09:23:48"
+      }
+    ]
+  },
+  "shellHtml": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>公共施設予約</title>\n  <style>\n:root {\n  --primary: #1e3a5f;\n  --primary-hover: #152a47;\n  --primary-light: #2d5a8c;\n  \n  --bg-main: #f0ede8;\n  --bg-card: #e8e5df;\n  --bg-sidebar: #ebe8e2;\n  --top-bar-bg: #1e3a5f;\n  --top-bar-border: #152a47;\n  \n  --text: #2a2520;\n  --text-muted: #6b6560;\n  \n  --border: #c9c4bc;\n  \n  --font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Hiragino Sans\", \"Yu Gothic\", sans-serif;\n  \n  --space-unit: 8px;\n  --control-height: 40px;\n  --border-width: 1px;\n  \n  --radius-card: 4px;\n  --radius-control: 3px;\n  \n  --shadow-card: 0 2px 6px rgba(30, 58, 95, 0.08), 0 1px 2px rgba(30, 58, 95, 0.04);\n  \n  --surface-texture: \n    repeating-linear-gradient(\n      90deg,\n      transparent,\n      transparent 2px,\n      rgba(30, 58, 95, 0.02) 2px,\n      rgba(30, 58, 95, 0.02) 4px\n    ),\n    repeating-linear-gradient(\n      0deg,\n      transparent,\n      transparent 2px,\n      rgba(30, 58, 95, 0.015) 2px,\n      rgba(30, 58, 95, 0.015) 4px\n    );\n  --surface-texture-size: 100% 100%;\n  --surface-texture-position: 0 0;\n  \n  --motion-duration: 200ms;\n  \n  --success: #2e7d32;\n  --success-light: #e8f5e9;\n  --warning: #f57c00;\n  --warning-light: #fff3e0;\n  --error: #c62828;\n  --error-light: #ffebee;\n  --info: #1565c0;\n  --info-light: #e3f2fd;\n  \n  --card-border-color: rgba(30, 58, 95, 0.06);\n  --divider-color: rgba(30, 58, 95, 0.08);\n  \n  --focus-outline: 2px solid #1e3a5f;\n  --focus-outline-offset: 2px;\n  \n  --input-bg: #ffffff;\n  --input-border: #c9c4bc;\n  --input-border-focus: #1e3a5f;\n  --input-text: #2a2520;\n  --input-placeholder: #9a9490;\n  \n  --button-primary-bg: #1e3a5f;\n  --button-primary-text: #ffffff;\n  --button-primary-hover: #152a47;\n  --button-secondary-bg: #e8e5df;\n  --button-secondary-text: #2a2520;\n  --button-secondary-hover: #ddd9d1;\n  --button-disabled-bg: #d4cfc7;\n  --button-disabled-text: #9a9490;\n  \n  --sidebar-item-hover: rgba(30, 58, 95, 0.08);\n  --sidebar-item-active-bg: rgba(30, 58, 95, 0.12);\n  --sidebar-item-active-border: #1e3a5f;\n  \n  --table-header-bg: #e8e5df;\n  --table-header-text: #2a2520;\n  --table-row-hover: rgba(30, 58, 95, 0.04);\n  --table-border: #c9c4bc;\n  \n  --badge-bg: #e8e5df;\n  --badge-text: #2a2520;\n  --badge-border: #c9c4bc;\n}\n\n* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nhtml, body {\n  height: 100%;\n  font-family: var(--font-family);\n  color: var(--text);\n  background: var(--bg-main);\n  background-image: var(--surface-texture);\n  background-size: var(--surface-texture-size);\n  background-position: var(--surface-texture-position);\n}\n\nbody {\n  display: flex;\n  flex-direction: column;\n}\n\n[data-aivic-shell-pattern=\"command_center\"] {\n  display: flex;\n  flex-direction: column;\n  height: 100vh;\n  overflow: hidden;\n}\n\n.shell-header {\n  background: var(--top-bar-bg);\n  border-bottom: 1px solid var(--top-bar-border);\n  padding: 0 24px;\n  height: 56px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  flex-shrink: 0;\n  box-shadow: var(--shadow-card);\n}\n\n.shell-header-left {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n}\n\n.shell-logo {\n  font-size: 16px;\n  font-weight: 600;\n  color: #ffffff;\n  letter-spacing: 0.5px;\n}\n\n.shell-logo-sub {\n  font-size: 12px;\n  color: rgba(255, 255, 255, 0.7);\n  font-weight: 400;\n}\n\n.shell-nav-toggle {\n  display: none;\n  background: none;\n  border: none;\n  color: #ffffff;\n  cursor: pointer;\n  font-size: 20px;\n  padding: 4px 8px;\n  border-radius: var(--radius-control);\n  transition: background var(--motion-duration);\n}\n\n.shell-nav-toggle:hover {\n  background: rgba(255, 255, 255, 0.1);\n}\n\n.shell-header-right {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n\n.user-avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.2);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #ffffff;\n  font-size: 14px;\n  font-weight: 600;\n}\n\n.user-name {\n  color: #ffffff;\n  font-size: 13px;\n  font-weight: 500;\n}\n\n.logout-link {\n  color: rgba(255, 255, 255, 0.8);\n  text-decoration: none;\n  font-size: 12px;\n  padding: 4px 8px;\n  border-radius: var(--radius-control);\n  transition: background var(--motion-duration);\n}\n\n.logout-link:hover {\n  background: rgba(255, 255, 255, 0.1);\n  color: #ffffff;\n}\n\n.shell-nav {\n  background: var(--bg-sidebar);\n  border-right: 1px solid var(--border);\n  width: 240px;\n  overflow-y: auto;\n  flex-shrink: 0;\n  display: flex;\n  flex-direction: column;\n  transition: transform var(--motion-duration);\n  position: relative;\n  z-index: 100;\n}\n\n.shell-nav.collapsed {\n  transform: translateX(-100%);\n  position: absolute;\n  top: 56px;\n  left: 0;\n  height: calc(100vh - 56px);\n  box-shadow: 2px 0 8px rgba(30, 58, 95, 0.12);\n}\n\n.shell-nav-section {\n  padding: 16px 0;\n  border-bottom: 1px solid var(--divider-color);\n}\n\n.shell-nav-section:last-child {\n  border-bottom: none;\n}\n\n.shell-nav-label {\n  font-size: 11px;\n  font-weight: 600;\n  text-transform: uppercase;\n  color: var(--text-muted);\n  padding: 8px 16px;\n  letter-spacing: 0.5px;\n}\n\n.shell-nav-item {\n  padding: 8px 16px;\n  color: var(--text);\n  text-decoration: none;\n  font-size: 13px;\n  cursor: pointer;\n  border-left: 3px solid transparent;\n  transition: background var(--motion-duration), border-color var(--motion-duration);\n  display: block;\n}\n\n.shell-nav-item:hover {\n  background: var(--sidebar-item-hover);\n}\n\n.shell-nav-item.aivic-active {\n  background: var(--sidebar-item-active-bg);\n  border-left-color: var(--sidebar-item-active-border);\n  font-weight: 500;\n}\n\n.shell-main {\n  display: flex;\n  flex: 1;\n  overflow: hidden;\n  gap: 0;\n}\n\n.content-area {\n  flex: 1;\n  overflow-y: auto;\n  overflow-x: hidden;\n  background: var(--bg-main);\n  background-image: var(--surface-texture);\n  background-size: var(--surface-texture-size);\n  background-position: var(--surface-texture-position);\n}\n\n.shell-footer {\n  background: var(--bg-card);\n  border-top: 1px solid var(--border);\n  padding: 12px 24px;\n  font-size: 12px;\n  color: var(--text-muted);\n  text-align: center;\n  flex-shrink: 0;\n}\n\n@media (max-width: 768px) {\n  .shell-nav-toggle {\n    display: block;\n  }\n  \n  .shell-nav {\n    width: 100%;\n  }\n  \n  .shell-main {\n    flex-direction: column;\n  }\n}\n\n[data-aivic-panel] {\n  padding: 24px;\n  min-height: 100%;\n}\n\n.card {\n  background: var(--bg-card);\n  border: 1px solid var(--card-border-color);\n  border-radius: var(--radius-card);\n  padding: 16px;\n  box-shadow: var(--shadow-card);\n  transition: background var(--motion-duration);\n}\n\n.card:hover {\n  background: #ebe8e2;\n}\n\n.button {\n  padding: 8px 16px;\n  border: 1px solid transparent;\n  border-radius: var(--radius-control);\n  font-size: 13px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background var(--motion-duration), color var(--motion-duration);\n  font-family: var(--font-family);\n  height: var(--control-height);\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.button-primary {\n  background: var(--button-primary-bg);\n  color: var(--button-primary-text);\n  border-color: var(--button-primary-bg);\n}\n\n.button-primary:hover:not(:disabled) {\n  background: var(--button-primary-hover);\n  border-color: var(--button-primary-hover);\n}\n\n.button-secondary {\n  background: var(--button-secondary-bg);\n  color: var(--button-secondary-text);\n  border-color: var(--button-secondary-text);\n}\n\n.button-secondary:hover:not(:disabled) {\n  background: var(--button-secondary-hover);\n}\n\n.button:disabled {\n  background: var(--button-disabled-bg);\n  color: var(--button-disabled-text);\n  cursor: not-allowed;\n  opacity: 0.6;\n}\n\n.button:focus {\n  outline: var(--focus-outline);\n  outline-offset: var(--focus-outline-offset);\n}\n\ninput, select, textarea {\n  font-family: var(--font-family);\n  font-size: 13px;\n  padding: 8px 12px;\n  border: 1px solid var(--input-border);\n  border-radius: var(--radius-control);\n  background: var(--input-bg);\n  color: var(--input-text);\n  transition: border-color var(--motion-duration);\n}\n\ninput::placeholder, textarea::placeholder {\n  color: var(--input-placeholder);\n}\n\ninput:focus, select:focus, textarea:focus {\n  outline: none;\n  border-color: var(--input-border-focus);\n  box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.1);\n}\n\ninput[type=\"radio\"], input[type=\"checkbox\"] {\n  width: 16px;\n  height: 16px;\n  cursor: pointer;\n  margin-right: 6px;\n}\n\nlabel {\n  font-size: 13px;\n  font-weight: 500;\n  color: var(--text);\n  display: block;\n  margin-bottom: 6px;\n}\n\n.form-group {\n  margin-bottom: 16px;\n}\n\n.form-row {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n}\n\n.badge {\n  display: inline-block;\n  padding: 4px 8px;\n  background: var(--badge-bg);\n  color: var(--badge-text);\n  border: 1px solid var(--badge-border);\n  border-radius: var(--radius-control);\n  font-size: 11px;\n  font-weight: 500;\n}\n\n.badge.success {\n  background: var(--success-light);\n  color: var(--success);\n  border-color: var(--success);\n}\n\n.badge.warning {\n  background: var(--warning-light);\n  color: var(--warning);\n  border-color: var(--warning);\n}\n\n.badge.error {\n  background: var(--error-light);\n  color: var(--error);\n  border-color: var(--error);\n}\n\n.badge.info {\n  background: var(--info-light);\n  color: var(--info);\n  border-color: var(--info);\n}\n\n.section-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--text);\n  margin-bottom: 12px;\n  text-transform: uppercase;\n  letter-spacing: 0.5px;\n}\n\n.text-muted {\n  color: var(--text-muted);\n  font-size: 12px;\n}\n\n.text-center {\n  text-align: center;\n}\n\n.mt-16 {\n  margin-top: 16px;\n}\n\n.mt-24 {\n  margin-top: 24px;\n}\n\n.mb-16 {\n  margin-bottom: 16px;\n}\n\n.gap-8 {\n  gap: 8px;\n}\n\n.gap-16 {\n  gap: 16px;\n}\n\n.flex {\n  display: flex;\n}\n\n.flex-col {\n  flex-direction: column;\n}\n\n.flex-between {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.flex-center {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.grid-2 {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n}\n\n.grid-3 {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 16px;\n}\n\n@media (max-width: 768px) {\n  .grid-2, .grid-3 {\n    grid-template-columns: 1fr;\n  }\n  \n  .form-row {\n    grid-template-columns: 1fr;\n  }\n}\n  </style>\n  <!--AIVIC_GLOBALS-->\n</head>\n<body>\n  <div data-aivic-shell-pattern=\"command_center\" data-aivic-nav-position=\"top\" data-aivic-density=\"simple\">\n    <header class=\"shell-header\">\n      <div class=\"shell-header-left\">\n        <button class=\"shell-nav-toggle\" id=\"nav-toggle\" onclick=\"toggleNav()\">☰</button>\n        <div>\n          <div class=\"shell-logo\">公共施設予約</div>\n          <div class=\"shell-logo-sub\">オンライン予約・決済</div>\n        </div>\n      </div>\n      <div class=\"shell-header-right\">\n        <div class=\"user-avatar\">U</div>\n        <div class=\"user-name\">ユーザー</div>\n        <a href=\"./login.html\" class=\"logout-link\">ログアウト</a>\n      </div>\n    </header>\n\n    <div class=\"shell-main\">\n      <nav class=\"shell-nav\" id=\"shell-nav\">\n        <div class=\"shell-nav-section\">\n          <div class=\"shell-nav-label\">メニュー</div>\n          <a class=\"shell-nav-item aivic-active\" data-aivic-nav=\"scr-1788270636243\" onclick=\"showScreen('scr-1788270636243'); closeNav();\">施設検索・予約</a>\n        </div>\n      </nav>\n\n      <main class=\"content-area\">\n        <div data-aivic-panel=\"scr-1788270636243\"></div>\n        <div data-aivic-panel=\"scr-1788270652698\"></div>\n      </main>\n    </div>\n\n    <footer class=\"shell-footer\">\n      © 2024 公共施設予約システム | <a href=\"#\" style=\"color: var(--text-muted); text-decoration: none;\">利用規約</a> | <a href=\"#\" style=\"color: var(--text-muted); text-decoration: none;\">プライバシーポリシー</a>\n    </footer>\n  </div>\n\n  <script>\nfunction toggleNav() {\n  const nav = document.getElementById('shell-nav');\n  nav.classList.toggle('collapsed');\n}\n\nfunction closeNav() {\n  const nav = document.getElementById('shell-nav');\n  if (window.innerWidth <= 768) {\n    nav.classList.add('collapsed');\n  }\n}\n\nwindow.addEventListener('resize', function() {\n  const nav = document.getElementById('shell-nav');\n  if (window.innerWidth > 768) {\n    nav.classList.remove('collapsed');\n  }\n});\n\nfunction showScreen(screenId) {\n  const panels = document.querySelectorAll('[data-aivic-panel]');\n  panels.forEach(panel => {\n    if (panel.getAttribute('data-aivic-panel') === screenId) {\n      panel.style.display = '';\n    } else {\n      panel.style.display = 'none';\n    }\n  });\n  \n  const navItems = document.querySelectorAll('[data-aivic-nav]');\n  navItems.forEach(item => {\n    if (item.getAttribute('data-aivic-nav') === screenId) {\n      item.classList.add('aivic-active');\n    } else {\n      item.classList.remove('aivic-active');\n    }\n  });\n}\n\ndocument.addEventListener('DOMContentLoaded', function() {\n  showScreen('scr-1788270636243');\n});\n  </script>\n  <!--AIVIC_RUNTIME-->\n</body>\n</html>"
+}
