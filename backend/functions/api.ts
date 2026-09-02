@@ -19,204 +19,82 @@ import {
   ValidationError,
 } from './rbac';
 
-const client = new DynamoDBClient({});
+const client = new DynamoDBClient({ region: process.env.AWS_REGION || 'ap-northeast-1' });
 const docClient = DynamoDBDocumentClient.from(client);
-const TABLE_NAME = process.env.MAIN_TABLE || 'public-facility-service';
+const TABLE_NAME = process.env.MAIN_TABLE || 'PublicFacilityDB';
 
 interface AuditLog {
   pk: string;
   sk: string;
+  operationId: string;
   userId: string;
-  action: string;
-  resourceType: string;
-  resourceId: string;
-  timestamp: number;
-  details: Record<string, unknown>;
+  operationType: string;
+  targetResourceType: string;
+  targetResourceId: string;
+  operationContent?: string;
+  operationStatus: string;
+  errorMessage?: string;
+  executionStartTime: string;
+  executionEndTime?: string;
+  executionTimeSeconds?: number;
+  ipAddress?: string;
+  sessionId?: string;
+  createdAt: string;
 }
 
 interface Resource {
+  pk: string;
+  sk: string;
   id: string;
-  name: string;
-  description?: string;
-  type: string;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
+  [key: string]: unknown;
+  createdAt: string;
+  updatedAt: string;
 }
 
-interface User {
-  id: string;
-  email: string;
-  passwordHash: string;
-  name: string;
-  phone: string;
-  address?: string;
-  status: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-interface Facility {
-  id: string;
-  name: string;
-  description?: string;
-  address: string;
-  phone?: string;
-  operatingStartTime: string;
-  operatingEndTime: string;
-  capacity: number;
-  usageFee: number;
-  reservableFlag: boolean;
-  createdAt: number;
-  updatedAt: number;
-}
-
-interface TimeSlot {
-  id: string;
-  facilityId: string;
-  dayOfWeek: string;
-  startTime: string;
-  endTime: string;
-  reservationUnitMinutes: number;
-  maxReservationMinutes?: number;
-  availableFlag: boolean;
-  applicableStartDate?: number;
-  applicableEndDate?: number;
-  createdAt: number;
-  updatedAt: number;
-  createdBy?: string;
-}
-
-interface Reservation {
-  id: string;
-  userId: string;
-  facilityId: string;
-  timeSlotId: string;
-  reservationDate: number;
-  status: string;
-  paymentStatus: string;
-  amount: number;
-  numberOfPeople?: number;
-  notes?: string;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-}
-
-interface Lottery {
-  id: string;
-  userId: string;
-  facilityId: string;
-  timeSlotId: string;
-  applicationDate: number;
-  resultStatus: string;
-  drawDate?: number;
-  reservationId?: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-interface Payment {
-  id: string;
-  reservationId: string;
-  userId: string;
-  amount: number;
-  method: string;
-  status: string;
-  paymentDate?: number;
-  transactionId?: string;
-  notes?: string;
-  createdAt: number;
-  updatedAt: number;
-  createdBy?: string;
-}
-
-interface PaymentHistory {
-  id: string;
-  paymentId: string;
-  reservationId: string;
-  userId: string;
-  amount: number;
-  status: string;
-  method: string;
-  paymentDate: number;
-  transactionId?: string;
-  notes?: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-interface Cancellation {
-  id: string;
-  reservationId: string;
-  userId: string;
-  reason: string;
-  reasonDetail?: string;
-  cancellationFee: number;
-  refundAmount: number;
-  refundStatus: string;
-  cancellationDate: number;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  displayOrder?: number;
-  activeFlag: boolean;
-  createdAt: number;
-  updatedAt: number;
-  createdBy?: string;
-}
-
-interface AuthLog {
-  id: string;
-  userId: string;
-  authType: string;
-  authMethod: string;
-  result: string;
-  failureReason?: string;
-  ipAddress: string;
-  userAgent?: string;
-  sessionId?: string;
-  authDate: number;
-  createdAt: number;
-}
-
-const TABLE_CONFIGS: Record<string, { pk: string; sk?: string }> = {
-  '0': { pk: 'RESOURCE', sk: 'id' },
-  '1': { pk: 'USER', sk: 'id' },
-  '2': { pk: 'FACILITY', sk: 'id' },
-  '3': { pk: 'TIMESLOT', sk: 'id' },
-  '4': { pk: 'RESERVATION', sk: 'id' },
-  '5': { pk: 'LOTTERY', sk: 'id' },
-  '6': { pk: 'PAYMENT', sk: 'id' },
-  '7': { pk: 'PAYMENTHISTORY', sk: 'id' },
-  '8': { pk: 'CANCELLATION', sk: 'id' },
-  '9': { pk: 'CATEGORY', sk: 'id' },
-  '10': { pk: 'AUTHLOG', sk: 'id' },
+const TABLE_INDICES: Record<number, { name: string; pk: string; sk: string }> = {
+  0: { name: 'users', pk: 'USER', sk: 'id' },
+  1: { name: 'facilities', pk: 'FACILITY', sk: 'id' },
+  2: { name: 'timeslots', pk: 'TIMESLOT', sk: 'id' },
+  3: { name: 'reservations', pk: 'RESERVATION', sk: 'id' },
+  4: { name: 'lotteries', pk: 'LOTTERY', sk: 'id' },
+  5: { name: 'payments', pk: 'PAYMENT', sk: 'id' },
+  6: { name: 'paymenthistory', pk: 'PAYMENTHISTORY', sk: 'id' },
+  7: { name: 'cancellations', pk: 'CANCELLATION', sk: 'id' },
+  8: { name: 'categories', pk: 'CATEGORY', sk: 'id' },
+  9: { name: 'authlogs', pk: 'AUTHLOG', sk: 'id' },
 };
 
 async function createAuditLog(
   userId: string,
-  action: string,
-  resourceType: string,
-  resourceId: string,
-  details: Record<string, unknown>
+  operationType: string,
+  targetResourceType: string,
+  targetResourceId: string,
+  operationStatus: string,
+  operationContent?: string,
+  errorMessage?: string,
+  ipAddress?: string,
+  sessionId?: string
 ): Promise<void> {
+  const now = new Date().toISOString();
   const auditLog: AuditLog = {
     pk: 'AUDIT',
-    sk: `${Date.now()}#${randomUUID()}`,
+    sk: `${now}#${randomUUID()}`,
+    operationId: randomUUID(),
     userId,
-    action,
-    resourceType,
-    resourceId,
-    timestamp: Date.now(),
-    details,
+    operationType,
+    targetResourceType,
+    targetResourceId,
+    operationStatus,
+    executionStartTime: now,
+    executionEndTime: now,
+    executionTimeSeconds: 0,
+    createdAt: now,
   };
+
+  if (operationContent) auditLog.operationContent = operationContent;
+  if (errorMessage) auditLog.errorMessage = errorMessage;
+  if (ipAddress) auditLog.ipAddress = ipAddress;
+  if (sessionId) auditLog.sessionId = sessionId;
 
   await docClient.send(
     new PutCommand({
@@ -226,31 +104,15 @@ async function createAuditLog(
   );
 }
 
-function errorResponse(
-  statusCode: number,
-  message: string
-): APIGatewayProxyResult {
-  return {
-    statusCode,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ error: message }),
-  };
+function getClientIp(event: APIGatewayProxyEvent): string {
+  return event.requestContext?.identity?.sourceIp || 'unknown';
 }
 
-function successResponse(
-  statusCode: number,
-  data: unknown
-): APIGatewayProxyResult {
-  return {
-    statusCode,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  };
+function getSessionId(event: APIGatewayProxyEvent): string {
+  return event.requestContext?.requestId || 'unknown';
 }
 
-async function handleGetResources(
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> {
+async function handleGetResources(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     const auth = extractAuthContext(event);
     requirePermission(auth, 'resources:read');
@@ -258,67 +120,84 @@ async function handleGetResources(
     const result = await docClient.send(
       new ScanCommand({
         TableName: TABLE_NAME,
-        FilterExpression: 'pk = :pk',
-        ExpressionAttributeValues: { ':pk': 'RESOURCE' },
+        FilterExpression: 'attribute_exists(id)',
       })
     );
 
-    return successResponse(200, { resources: result.Items || [] });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        data: result.Items || [],
+        count: result.Count || 0,
+      }),
+    };
   } catch (error) {
     if (error instanceof ForbiddenError) {
-      return errorResponse(403, error.message);
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
-    console.error('Error fetching resources:', error);
-    return errorResponse(500, 'Internal server error');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
 }
 
 async function handleBulkImport(
   event: APIGatewayProxyEvent,
-  tableIndex: string
+  tableIndex: number
 ): Promise<APIGatewayProxyResult> {
   try {
     const auth = extractAuthContext(event);
-    const tableConfig = TABLE_CONFIGS[tableIndex];
+    const tableConfig = TABLE_INDICES[tableIndex];
 
     if (!tableConfig) {
-      return errorResponse(400, 'Invalid table index');
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: 'Table not found' }),
+      };
     }
 
-    requirePermission(auth, `${tableConfig.pk.toLowerCase()}:bulk`);
+    const permission = `${tableConfig.name}:bulk`;
+    requirePermission(auth, permission);
 
     const body = JSON.parse(event.body || '{}');
-    const items = body.items || [];
+    const items: Record<string, unknown>[] = body.items || [];
 
     if (!Array.isArray(items)) {
-      return errorResponse(400, 'Items must be an array');
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: 'items must be an array' }),
+      };
     }
 
-    const now = Date.now();
-    const processedItems = items.map((item: Record<string, unknown>) => ({
-      ...item,
+    const now = new Date().toISOString();
+    const processedItems: Resource[] = items.map((item) => ({
       pk: tableConfig.pk,
-      sk: item.id || randomUUID(),
-      id: item.id || randomUUID(),
-      createdAt: item.createdAt || now,
-      updatedAt: item.updatedAt || now,
+      sk: (item.id as string) || randomUUID(),
+      id: (item.id as string) || randomUUID(),
+      ...item,
+      createdAt: now,
+      updatedAt: now,
     }));
 
-    const errors: string[] = [];
-    let imported = 0;
-    let failed = 0;
-
+    const chunks: Resource[][] = [];
     for (let i = 0; i < processedItems.length; i += 25) {
-      const batch = processedItems.slice(i, i + 25);
-      const requestItems: Record<string, unknown>[] = [];
+      chunks.push(processedItems.slice(i, i + 25));
+    }
 
-      for (const item of batch) {
-        requestItems.push({
-          PutRequest: {
-            Item: item,
-          },
-        });
-      }
+    let imported = 0;
+    const errors: string[] = [];
+
+    for (const chunk of chunks) {
+      const requestItems: Record<string, unknown>[] = chunk.map((item) => ({
+        PutRequest: {
+          Item: item,
+        },
+      }));
 
       try {
         await docClient.send(
@@ -328,62 +207,78 @@ async function handleBulkImport(
             },
           })
         );
-        imported += batch.length;
-      } catch (batchError) {
-        failed += batch.length;
-        errors.push(
-          `Batch ${Math.floor(i / 25)} failed: ${(batchError as Error).message}`
-        );
+        imported += chunk.length;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        errors.push(errorMsg);
       }
     }
 
     await createAuditLog(
       auth.userId,
       'BULK_IMPORT',
-      tableConfig.pk,
-      'bulk',
-      {
-        imported,
-        failed,
-        totalItems: processedItems.length,
-      }
+      tableConfig.name,
+      `bulk_${randomUUID()}`,
+      errors.length === 0 ? 'SUCCESS' : 'PARTIAL_SUCCESS',
+      `Imported ${imported} items to ${tableConfig.name}`,
+      errors.length > 0 ? errors.join('; ') : undefined,
+      getClientIp(event),
+      getSessionId(event)
     );
 
-    return successResponse(200, {
-      imported,
-      failed,
-      errors,
-    });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        imported,
+        failed: items.length - imported,
+        errors,
+      }),
+    };
   } catch (error) {
     if (error instanceof ForbiddenError) {
-      return errorResponse(403, error.message);
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
     if (error instanceof ValidationError) {
-      return errorResponse(400, error.message);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
-    console.error('Error in bulk import:', error);
-    return errorResponse(500, 'Internal server error');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
 }
 
-async function handleGetById(
+async function handleGetResource(
   event: APIGatewayProxyEvent,
-  tableIndex: string
+  tableIndex: number
 ): Promise<APIGatewayProxyResult> {
   try {
     const auth = extractAuthContext(event);
-    const tableConfig = TABLE_CONFIGS[tableIndex];
+    const tableConfig = TABLE_INDICES[tableIndex];
 
     if (!tableConfig) {
-      return errorResponse(400, 'Invalid table index');
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: 'Table not found' }),
+      };
     }
 
-    const resourceType = tableConfig.pk.toLowerCase();
-    requirePermission(auth, `${resourceType}:read`);
+    const permission = `${tableConfig.name}:read`;
+    requirePermission(auth, permission);
 
     const id = event.pathParameters?.id;
     if (!id) {
-      return errorResponse(400, 'ID parameter is required');
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: 'ID is required' }),
+      };
     }
 
     const result = await docClient.send(
@@ -397,46 +292,59 @@ async function handleGetById(
     );
 
     if (!result.Item) {
-      return errorResponse(404, 'Resource not found');
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: 'Resource not found' }),
+      };
     }
 
-    return successResponse(200, result.Item);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, data: result.Item }),
+    };
   } catch (error) {
     if (error instanceof ForbiddenError) {
-      return errorResponse(403, error.message);
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
-    console.error('Error fetching resource:', error);
-    return errorResponse(500, 'Internal server error');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
 }
 
-async function handleCreate(
+async function handleCreateResource(
   event: APIGatewayProxyEvent,
-  tableIndex: string
+  tableIndex: number
 ): Promise<APIGatewayProxyResult> {
   try {
     const auth = extractAuthContext(event);
-    const tableConfig = TABLE_CONFIGS[tableIndex];
+    const tableConfig = TABLE_INDICES[tableIndex];
 
     if (!tableConfig) {
-      return errorResponse(400, 'Invalid table index');
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: 'Table not found' }),
+      };
     }
 
-    const resourceType = tableConfig.pk.toLowerCase();
-    requirePermission(auth, `${resourceType}:create`);
+    const permission = `${tableConfig.name}:create`;
+    requirePermission(auth, permission);
 
     const body = JSON.parse(event.body || '{}');
-    const now = Date.now();
-    const id = randomUUID();
+    const now = new Date().toISOString();
+    const id = body.id || randomUUID();
 
-    const item = {
-      ...body,
+    const item: Resource = {
       pk: tableConfig.pk,
       sk: id,
       id,
+      ...body,
       createdAt: now,
       updatedAt: now,
-      createdBy: auth.userId,
     };
 
     await docClient.send(
@@ -446,54 +354,87 @@ async function handleCreate(
       })
     );
 
-    await createAuditLog(auth.userId, 'CREATE', tableConfig.pk, id, body);
+    await createAuditLog(
+      auth.userId,
+      'CREATE',
+      tableConfig.name,
+      id,
+      'SUCCESS',
+      `Created ${tableConfig.name} with ID ${id}`,
+      undefined,
+      getClientIp(event),
+      getSessionId(event)
+    );
 
-    return successResponse(201, item);
+    return {
+      statusCode: 201,
+      body: JSON.stringify({ success: true, data: item }),
+    };
   } catch (error) {
     if (error instanceof ForbiddenError) {
-      return errorResponse(403, error.message);
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
     if (error instanceof ValidationError) {
-      return errorResponse(400, error.message);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
-    console.error('Error creating resource:', error);
-    return errorResponse(500, 'Internal server error');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
 }
 
-async function handleUpdate(
+async function handleUpdateResource(
   event: APIGatewayProxyEvent,
-  tableIndex: string
+  tableIndex: number
 ): Promise<APIGatewayProxyResult> {
   try {
     const auth = extractAuthContext(event);
-    const tableConfig = TABLE_CONFIGS[tableIndex];
+    const tableConfig = TABLE_INDICES[tableIndex];
 
     if (!tableConfig) {
-      return errorResponse(400, 'Invalid table index');
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: 'Table not found' }),
+      };
     }
 
-    const resourceType = tableConfig.pk.toLowerCase();
-    requirePermission(auth, `${resourceType}:update`);
+    const permission = `${tableConfig.name}:update`;
+    requirePermission(auth, permission);
 
     const id = event.pathParameters?.id;
     if (!id) {
-      return errorResponse(400, 'ID parameter is required');
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: 'ID is required' }),
+      };
     }
 
     const body = JSON.parse(event.body || '{}');
-    const now = Date.now();
+    const now = new Date().toISOString();
 
     const updateExpression = Object.keys(body)
-      .map((key, index) => `${key} = :val${index}`)
+      .filter((key) => key !== 'pk' && key !== 'sk' && key !== 'id')
+      .map((key) => `${key} = :${key}`)
       .join(', ');
 
     const expressionAttributeValues: Record<string, unknown> = {};
-    Object.entries(body).forEach(([key, value], index) => {
-      expressionAttributeValues[`:val${index}`] = value;
+    Object.entries(body).forEach(([key, value]) => {
+      if (key !== 'pk' && key !== 'sk' && key !== 'id') {
+        expressionAttributeValues[`:${key}`] = value;
+      }
     });
     expressionAttributeValues[':updatedAt'] = now;
-    expressionAttributeValues[':updatedBy'] = auth.userId;
+
+    const finalUpdateExpression = updateExpression
+      ? `${updateExpression}, updatedAt = :updatedAt`
+      : 'updatedAt = :updatedAt';
 
     const result = await docClient.send(
       new UpdateCommand({
@@ -502,42 +443,72 @@ async function handleUpdate(
           pk: tableConfig.pk,
           sk: id,
         },
-        UpdateExpression: `SET ${updateExpression}, updatedAt = :updatedAt, updatedBy = :updatedBy`,
+        UpdateExpression: finalUpdateExpression,
         ExpressionAttributeValues: expressionAttributeValues,
         ReturnValues: 'ALL_NEW',
       })
     );
 
-    await createAuditLog(auth.userId, 'UPDATE', tableConfig.pk, id, body);
+    await createAuditLog(
+      auth.userId,
+      'UPDATE',
+      tableConfig.name,
+      id,
+      'SUCCESS',
+      `Updated ${tableConfig.name} with ID ${id}`,
+      undefined,
+      getClientIp(event),
+      getSessionId(event)
+    );
 
-    return successResponse(200, result.Attributes);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, data: result.Attributes }),
+    };
   } catch (error) {
     if (error instanceof ForbiddenError) {
-      return errorResponse(403, error.message);
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
-    console.error('Error updating resource:', error);
-    return errorResponse(500, 'Internal server error');
+    if (error instanceof ValidationError) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
+    }
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
 }
 
-async function handleDelete(
+async function handleDeleteResource(
   event: APIGatewayProxyEvent,
-  tableIndex: string
+  tableIndex: number
 ): Promise<APIGatewayProxyResult> {
   try {
     const auth = extractAuthContext(event);
-    const tableConfig = TABLE_CONFIGS[tableIndex];
+    const tableConfig = TABLE_INDICES[tableIndex];
 
     if (!tableConfig) {
-      return errorResponse(400, 'Invalid table index');
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: 'Table not found' }),
+      };
     }
 
-    const resourceType = tableConfig.pk.toLowerCase();
-    requirePermission(auth, `${resourceType}:delete`);
+    const permission = `${tableConfig.name}:delete`;
+    requirePermission(auth, permission);
 
     const id = event.pathParameters?.id;
     if (!id) {
-      return errorResponse(400, 'ID parameter is required');
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, error: 'ID is required' }),
+      };
     }
 
     await docClient.send(
@@ -550,21 +521,37 @@ async function handleDelete(
       })
     );
 
-    await createAuditLog(auth.userId, 'DELETE', tableConfig.pk, id, {});
+    await createAuditLog(
+      auth.userId,
+      'DELETE',
+      tableConfig.name,
+      id,
+      'SUCCESS',
+      `Deleted ${tableConfig.name} with ID ${id}`,
+      undefined,
+      getClientIp(event),
+      getSessionId(event)
+    );
 
-    return successResponse(204, null);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, message: 'Resource deleted' }),
+    };
   } catch (error) {
     if (error instanceof ForbiddenError) {
-      return errorResponse(403, error.message);
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ success: false, error: error.message }),
+      };
     }
-    console.error('Error deleting resource:', error);
-    return errorResponse(500, 'Internal server error');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
 }
 
-export async function handler(
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> {
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const path = event.path || '';
   const method = event.httpMethod || 'GET';
 
@@ -575,32 +562,43 @@ export async function handler(
 
     const bulkMatch = path.match(/^\/api\/(\d+)\/bulk$/);
     if (bulkMatch && method === 'POST') {
-      return await handleBulkImport(event, bulkMatch[1]);
+      const tableIndex = parseInt(bulkMatch[1], 10);
+      return await handleBulkImport(event, tableIndex);
     }
 
-    const getByIdMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
-    if (getByIdMatch && method === 'GET') {
-      return await handleGetById(event, getByIdMatch[1]);
+    const getMatch = path.match(/^\/api\/(\d+)\/(\w+)$/);
+    if (getMatch && method === 'GET') {
+      const tableIndex = parseInt(getMatch[1], 10);
+      return await handleGetResource(event, tableIndex);
     }
 
     const createMatch = path.match(/^\/api\/(\d+)$/);
     if (createMatch && method === 'POST') {
-      return await handleCreate(event, createMatch[1]);
+      const tableIndex = parseInt(createMatch[1], 10);
+      return await handleCreateResource(event, tableIndex);
     }
 
-    const updateMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
+    const updateMatch = path.match(/^\/api\/(\d+)\/(\w+)$/);
     if (updateMatch && method === 'PUT') {
-      return await handleUpdate(event, updateMatch[1]);
+      const tableIndex = parseInt(updateMatch[1], 10);
+      return await handleUpdateResource(event, tableIndex);
     }
 
-    const deleteMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
+    const deleteMatch = path.match(/^\/api\/(\d+)\/(\w+)$/);
     if (deleteMatch && method === 'DELETE') {
-      return await handleDelete(event, deleteMatch[1]);
+      const tableIndex = parseInt(deleteMatch[1], 10);
+      return await handleDeleteResource(event, tableIndex);
     }
 
-    return errorResponse(404, 'Endpoint not found');
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ success: false, error: 'Endpoint not found' }),
+    };
   } catch (error) {
     console.error('Unhandled error:', error);
-    return errorResponse(500, 'Internal server error');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: 'Internal server error' }),
+    };
   }
-}
+};
