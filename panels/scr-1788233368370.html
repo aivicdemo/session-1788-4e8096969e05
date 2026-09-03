@@ -3,46 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>料金・返金ルール管理・検証システム | 公共施設予約</title>
+  <title>料金・返金ルール管理・検証システム - 公共施設予約</title>
   <style>
 :root {
   --primary: #2c3e50;
   --primary-hover: #1a252f;
-  --bg-main: #f0ede8;
-  --bg-card: #e8e5e0;
-  --bg-sidebar: #ebe8e3;
-  --top-bar-bg: #2c3e50;
-  --top-bar-border: #1a252f;
-  --border: #c9c5bd;
-  --text: #1a1f26;
-  --text-muted: #6b7280;
-  --success: #3d7e4a;
-  --warning: #a67c52;
-  --error: #8b4545;
-  --info: #4a6fa5;
-  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
-  --space-unit: 8px;
-  --control-height: 40px;
-  --radius-card: 4px;
-  --radius-control: 3px;
+  --bg-main: #0f1419;
+  --bg-card: #1a1f28;
+  --bg-sidebar: #151a22;
+  --border: #2a3142;
+  --text: #e8eaed;
+  --text-muted: #9ca3af;
+  --top-bar-bg: #1f2937;
+  --top-bar-border: #374151;
+  --top-bar-text: #f3f4f6;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --radius-card: 6px;
+  --radius-control: 4px;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
   --border-width: 1px;
-  --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
+  --control-height: 36px;
+  --space-unit: 8px;
   --motion-duration: 200ms;
-  --surface-texture: 
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(172, 167, 154, 0.03) 2px,
-      rgba(172, 167, 154, 0.03) 4px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(172, 167, 154, 0.02) 2px,
-      rgba(172, 167, 154, 0.02) 4px
-    );
+  --surface-texture: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.02) 2px, rgba(255, 255, 255, 0.02) 4px), repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 4px);
   --surface-texture-size: 100% 100%;
   --surface-texture-position: 0 0;
 }
@@ -59,7 +42,7 @@ html, body {
   font-family: var(--font-family);
   background: var(--bg-main);
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 body {
@@ -67,9 +50,10 @@ body {
   flex-direction: column;
 }
 
-[data-aivic-shell-pattern] {
+[data-aivic-shell-pattern="command_center"] {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
 }
@@ -81,94 +65,153 @@ body {
   height: 56px;
   background: var(--top-bar-bg);
   border-bottom: var(--border-width) solid var(--top-bar-border);
-  padding: 0 calc(var(--space-unit) * 3);
+  padding: 0 24px;
   flex-shrink: 0;
-  box-shadow: var(--shadow-card);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
 }
 
 .shell-header-left {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 3);
+  gap: 24px;
 }
 
 .shell-logo {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
-
-.shell-logo-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 2px;
-}
-
-.shell-nav-top {
   display: flex;
-  gap: calc(var(--space-unit) * 2);
-  list-style: none;
-}
-
-.shell-nav-item {
-  position: relative;
-}
-
-.shell-nav-link {
-  display: block;
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  color: var(--top-bar-text);
   text-decoration: none;
-  cursor: pointer;
-  transition: color var(--motion-duration) ease;
-  border-bottom: 2px solid transparent;
 }
 
-.shell-nav-link:hover {
-  color: #ffffff;
+.shell-logo-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: var(--radius-control);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  font-weight: 700;
 }
 
-.shell-nav-link.aivic-active {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
+.shell-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.shell-logo-system {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--top-bar-text);
+}
+
+.shell-logo-app {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-muted);
 }
 
 .shell-header-right {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 2);
+  gap: 16px;
+}
+
+.shell-user-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .shell-user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  color: white;
+  font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
 }
 
 .shell-user-name {
   font-size: 13px;
-  color: #ffffff;
+  color: var(--top-bar-text);
 }
 
-.shell-logout {
+.shell-user-logout {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   text-decoration: none;
-  transition: color var(--motion-duration) ease;
+  transition: color var(--motion-duration);
 }
 
-.shell-logout:hover {
-  color: #ffffff;
+.shell-user-logout:hover {
+  color: var(--top-bar-text);
+}
+
+.shell-nav-bar {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  background: var(--bg-main);
+  border-bottom: var(--border-width) solid var(--border);
+  padding: 0 24px;
+  gap: 0;
+  flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
+}
+
+.shell-nav-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.shell-nav-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shell-nav-bar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.shell-nav-item {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--motion-duration);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.shell-nav-item:hover {
+  color: var(--text);
+}
+
+.shell-nav-item.aivic-active {
+  color: var(--text);
+  border-bottom-color: var(--primary);
 }
 
 .shell-body {
@@ -180,521 +223,97 @@ body {
 .content-area {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--bg-main);
   background-image: var(--surface-texture);
   background-size: var(--surface-texture-size);
   background-position: var(--surface-texture-position);
 }
 
+.content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
 [data-aivic-panel] {
-  padding: calc(var(--space-unit) * 3);
-  min-height: 100%;
-}
-
-.page-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1);
-  letter-spacing: 0.3px;
-}
-
-.page-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: calc(var(--space-unit) * 3);
-  font-weight: 500;
-}
-
-.section-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 2);
-  letter-spacing: 0.3px;
-}
-
-.section-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-  font-weight: 500;
-}
-
-.card {
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 3);
-  box-shadow: var(--shadow-card);
-}
-
-.card-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-}
-
-.card-content {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.6;
-}
-
-.form-group {
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.form-label {
   display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.75);
-}
-
-.form-input,
-.form-select,
-.form-textarea {
   width: 100%;
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
-  font-size: 13px;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-control);
-  background: #ffffff;
-  color: var(--text);
-  font-family: var(--font-family);
-  transition: border-color var(--motion-duration) ease;
-}
-
-.form-input,
-.form-select {
-  height: var(--control-height);
-}
-
-.form-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-.btn {
-  height: var(--control-height);
-  padding: 0 calc(var(--space-unit) * 2);
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: all var(--motion-duration) ease;
-  font-family: var(--font-family);
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover);
-}
-
-.btn-secondary {
-  background: var(--bg-card);
-  color: var(--text);
-  border: var(--border-width) solid var(--border);
-}
-
-.btn-secondary:hover {
-  background: #ffffff;
-}
-
-.btn-sm {
-  height: 32px;
-  padding: 0 calc(var(--space-unit) * 1.5);
-  font-size: 12px;
-}
-
-.btn-danger {
-  background: var(--error);
-  color: #ffffff;
-}
-
-.btn-danger:hover {
-  background: #6b3333;
-}
-
-.btn-success {
-  background: var(--success);
-  color: #ffffff;
-}
-
-.btn-success:hover {
-  background: #2d6339;
-}
-
-.btn-group {
-  display: flex;
-  gap: calc(var(--space-unit) * 1);
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.btn-group .btn {
-  flex: 1;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.table thead {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-.table th {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
-  text-align: left;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.3px;
-}
-
-.table td {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
-  border-top: var(--border-width) solid var(--border);
-}
-
-.table tbody tr:hover {
-  background: rgba(44, 62, 80, 0.02);
-  cursor: pointer;
-}
-
-.badge {
-  display: inline-block;
-  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 2px;
-  white-space: nowrap;
-}
-
-.badge-success {
-  background: rgba(61, 126, 74, 0.15);
-  color: var(--success);
-}
-
-.badge-warning {
-  background: rgba(166, 124, 82, 0.15);
-  color: var(--warning);
-}
-
-.badge-error {
-  background: rgba(139, 69, 69, 0.15);
-  color: var(--error);
-}
-
-.badge-info {
-  background: rgba(74, 111, 165, 0.15);
-  color: var(--info);
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.stat-box {
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  text-align: center;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-bottom: calc(var(--space-unit) * 1);
-}
-
-.stat-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.collapsible-section {
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  margin-bottom: calc(var(--space-unit) * 2);
-  overflow: hidden;
-}
-
-.collapsible-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(var(--space-unit) * 2);
-  background: var(--bg-card);
-  cursor: pointer;
-  user-select: none;
-  transition: background-color var(--motion-duration) ease;
-}
-
-.collapsible-header:hover {
-  background: #ddd9d0;
-}
-
-.collapsible-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.collapsible-toggle {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--text-muted);
-  transition: transform var(--motion-duration) ease;
-}
-
-.collapsible-section.open .collapsible-toggle {
-  transform: rotate(180deg);
-}
-
-.collapsible-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--motion-duration) ease;
-}
-
-.collapsible-section.open .collapsible-content {
-  max-height: 2000px;
-}
-
-.collapsible-body {
-  padding: calc(var(--space-unit) * 2);
-  border-top: var(--border-width) solid var(--border);
-}
-
-.split-layout {
-  display: grid;
-  grid-template-columns: 60% 40%;
-  gap: calc(var(--space-unit) * 3);
-}
-
-.split-left {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-unit) * 2);
-}
-
-.split-right {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-unit) * 2);
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: calc(var(--space-unit) * 1.5);
-  border-bottom: var(--border-width) solid var(--border);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-}
-
-.panel-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.alert {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
-  border-radius: var(--radius-card);
-  font-size: 12px;
-  margin-bottom: calc(var(--space-unit) * 2);
-  border-left: 3px solid;
-}
-
-.alert-success {
-  background: rgba(61, 126, 74, 0.1);
-  border-left-color: var(--success);
-  color: var(--success);
-}
-
-.alert-warning {
-  background: rgba(166, 124, 82, 0.1);
-  border-left-color: var(--warning);
-  color: var(--warning);
-}
-
-.alert-error {
-  background: rgba(139, 69, 69, 0.1);
-  border-left-color: var(--error);
-  color: var(--error);
-}
-
-.alert-info {
-  background: rgba(74, 111, 165, 0.1);
-  border-left-color: var(--info);
-  color: var(--info);
-}
-
-.comparison-table {
-  width: 100%;
-  font-size: 12px;
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.comparison-table tr {
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.comparison-table td {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
-}
-
-.comparison-table td:first-child {
-  font-weight: 600;
-  color: var(--primary);
-  width: 30%;
-  background: rgba(44, 62, 80, 0.02);
-}
-
-.comparison-before {
-  background: rgba(139, 69, 69, 0.05);
-}
-
-.comparison-after {
-  background: rgba(61, 126, 74, 0.05);
-}
-
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-overlay.active {
-  display: flex;
-}
-
-.modal {
-  background: #ffffff;
-  border-radius: var(--radius-card);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  padding: calc(var(--space-unit) * 2);
-  border-bottom: var(--border-width) solid var(--border);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.modal-body {
-  padding: calc(var(--space-unit) * 2);
-}
-
-.modal-footer {
-  padding: calc(var(--space-unit) * 2);
-  border-top: var(--border-width) solid var(--border);
-  display: flex;
-  gap: calc(var(--space-unit) * 1);
-  justify-content: flex-end;
-}
-
-.modal-footer .btn {
-  margin: 0;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  padding: calc(var(--space-unit) * 1) 0;
-  font-size: 12px;
-  border-bottom: var(--border-width) solid var(--border);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-label {
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.info-value {
-  color: var(--text);
-  font-weight: 500;
-}
-
-@media (max-width: 1200px) {
-  .split-layout {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {
-  .grid-2,
-  .grid-3 {
-    grid-template-columns: 1fr;
+  .shell-header {
+    padding: 0 16px;
   }
 
-  .shell-nav-top {
-    flex-direction: column;
-    gap: 0;
+  .shell-header-left {
+    gap: 12px;
   }
 
-  .shell-nav-link {
-    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
+  .shell-logo-text {
+    display: none;
+  }
+
+  .shell-nav-bar {
+    padding: 0 16px;
+  }
+
+  .shell-nav-item {
+    padding: 0 12px;
     font-size: 12px;
+  }
+
+  .shell-user-name {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .shell-header {
+    height: 48px;
+    padding: 0 12px;
+  }
+
+  .shell-logo-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .shell-logo-system {
+    font-size: 11px;
+  }
+
+  .shell-user-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .shell-header-right {
+    gap: 12px;
+  }
+
+  .shell-nav-bar {
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .shell-nav-item {
+    height: 44px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 }
   </style>
@@ -705,344 +324,621 @@ window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "料金・返金ルール管理・検証システム";
 window.AIVIC_TABLES = [{"tableName":"ログインユーザー","purpose":"料金・返金ルール管理・検証システムにおけるユーザー認証・認可を管理し、ユーザーの基本情報とアクセス権限を保持する","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ログイン用メールアドレス、システム内で一意"},{"name":"パスワードハッシュ","type":"varchar(100)","required":true,"description":"ハッシュ化されたパスワード"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ユーザーの表示名"},{"name":"ロール","type":"varchar(100)","required":true,"description":"ユーザーの権限レベル（管理者、担当者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効、無効、一時停止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"最後にログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーアカウント作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザー情報最終更新日時"},{"name":"作成者","type":"varchar(100)","required":false,"description":"ユーザーアカウント作成者のユーザーID"}]}];
-window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"山田太郎","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-01T08:00:00+09:00","更新日時":"2025-01-15T09:30:00+09:00","作成者":"system"},{"ユーザーID":"rec-001","メールアドレス":"tanaka.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOP","ユーザー名":"田中花子","ロール":"料金ルール管理担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:30","更新日時":"2025-01-10 16:45:20","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"refund.tanaka@company.jp","パスワードハッシュ":"$2b$12$K8vN9mL4pQ2xR5sT7uV8wOzY1aB3cD4eF5gH6iJ7kL8mN9oP0qR1s","ユーザー名":"田中花子","ロール":"返金処理担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"sales-billing@example.co.jp","パスワードハッシュ":"$2b$12$8kL9mN2pQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh","ユーザー名":"営業部請求確認用","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-04-01 09:00:00","更新日時":"2025-01-10 10:15:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001-kaikei-kessan-2024","メールアドレス":"kessan-kensho@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ","ユーザー名":"決算検証用システム","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-03-01 14:00:00","更新日時":"2024-12-20 16:45:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"shinjin.yamada@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","ユーザー名":"山田太郎（研修）","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2025-01-06 14:20:00","更新日時":"2025-01-15 09:30:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$K8vN3pQmL9xR2jF5wE1dZuM4oP6sT8vX9yA0bC1dE2fG3hI4jK5lM","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-08-15 09:30:00","作成日時":"2022-04-01 10:00:00","更新日時":"2025-01-20 14:15:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"山田花子","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2025-01-15 17:30:45","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-20 14:22:18","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.tanaka@external-auditor.co.jp","パスワードハッシュ":"$2b$12$8kJ9mL2pQr5vN3xZ7hF4e.uY6tW9sA2bC5dE8fG1hI4jK7lM0nO9p","ユーザー名":"田中監査役","ロール":"監査担当者","ステータス":"一時停止予定","最終ログイン日時":"2025-01-15T14:32:00+09:00","作成日時":"2024-12-10T09:15:00+09:00","更新日時":"2025-01-15T14:32:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"support-vendor@techsupport.co.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/R1m","ユーザー名":"システム保守部 技術サポート","ロール":"技術サポート","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-04-10 09:00:00","更新日時":"2025-01-10 16:45:00","作成者":"rec-admin-001"}]};
+window.AIVIC_PRESET_SEED = {"ログインユーザー":[{"ユーザーID":"rec-001","メールアドレス":"admin@company.local","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqr","ユーザー名":"システム管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15T09:30:00+09:00","作成日時":"2024-04-01T10:00:00+09:00","更新日時":"2025-01-15T09:30:00+09:00","作成者":"rec-001"},{"ユーザーID":"rec-001","メールアドレス":"yamamoto.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山本花子","ロール":"部門長","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/1Cm","ユーザー名":"鈴木花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木花子","ロール":"営業承認者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 16:45:30","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.yuki@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"鈴木由紀","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"suzuki.hanako@company.co.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQ","ユーザー名":"鈴木花子","ロール":"担当者（試用期間）","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-12-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/LLm","ユーザー名":"山田花子","ロール":"担当者","ステータス":"一時停止","最終ログイン日時":"2024-12-15 09:45:00","作成日時":"2023-04-10 14:20:00","更新日時":"2025-01-06 16:30:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"tanaka.taro@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"田中太郎","ロール":"担当者","ステータス":"無効","最終ログイン日時":"2024-08-15T17:45:32+09:00","作成日時":"2022-04-01T09:00:00+09:00","更新日時":"2025-01-20T14:30:15+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"audit.yamamoto@external-audit-firm.jp","パスワードハッシュ":"$2b$12$8kN9mL2pQr5vX3jH6tY8uOw4zB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0","ユーザー名":"山本監査官","ロール":"監査人","ステータス":"一時停止予定","最終ログイン日時":"2025-01-15T14:32:00+09:00","作成日時":"2024-12-20T09:15:00+09:00","更新日時":"2025-01-15T14:32:00+09:00","作成者":"rec-admin-001"},{"ユーザーID":"rec-001","メールアドレス":"yamada.hanako@company.jp","パスワードハッシュ":"$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQR","ユーザー名":"山田花子","ロール":"担当者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:45","作成日時":"2024-10-20 14:22:18","更新日時":"2025-01-10 16:45:32","作成者":"rec-9999"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788233368370";
 window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<nav data-aivic-system-switcher style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg);color:#ffffff;border-bottom:1px solid var(--top-bar-border,var(--border));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:#ffffff;white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:1;border-bottom:2px solid currentColor;font-weight:600;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788271057677.html" data-aivic-nav-system="itg-8" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">施設管理者向け予約・料金管理機能</a><a href="./scr-1788270636243.html" data-aivic-nav-system="itg-7" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">公共施設オンライン予約・決済サービス</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
+<nav data-aivic-system-switcher style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg);color:var(--top-bar-text);border-bottom:1px solid var(--top-bar-border,var(--border));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--top-bar-text);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:1;border-bottom:2px solid currentColor;font-weight:600;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788271057677.html" data-aivic-nav-system="itg-8" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">施設管理者向け予約・料金管理機能</a><a href="./scr-1788270636243.html" data-aivic-nav-system="itg-7" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">公共施設オンライン予約・決済サービス</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
   <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
     <header class="shell-header">
       <div class="shell-header-left">
-        <div class="shell-logo">
-          <div>料金・返金ルール管理</div>
-          <div class="shell-logo-sub">公共施設予約</div>
-        </div>
-        <nav>
-          <ul class="shell-nav-top">
-            <li class="shell-nav-item">
-              <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">ルール管理</a>
-            </li>
-            <li class="shell-nav-item">
-              <a class="shell-nav-link" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">異常検出・分析</a>
-            </li>
-          </ul>
-        </nav>
+        <a href="#" class="shell-logo">
+          <div class="shell-logo-icon">料</div>
+          <div class="shell-logo-text">
+            <div class="shell-logo-system">料金・返金ルール管理</div>
+            <div class="shell-logo-app">公共施設予約</div>
+          </div>
+        </a>
       </div>
       <div class="shell-header-right">
-        <div class="shell-user-avatar">U</div>
-        <div class="shell-user-name">ユーザー</div>
-        <a class="shell-logout" href="./login.html">ログアウト</a>
+        <div class="shell-user-area">
+          <div class="shell-user-avatar">U</div>
+          <span class="shell-user-name">ユーザー</span>
+          <a href="./login.html" class="shell-user-logout">ログアウト</a>
+        </div>
       </div>
     </header>
+
+    <nav class="shell-nav-bar">
+      <a class="shell-nav-item aivic-active" data-aivic-nav="scr-1788233353960" href="./scr-1788233353960.html">料金ルール・返金条件管理</a>
+      <a class="shell-nav-item" data-aivic-nav="scr-1788233368370" href="./scr-1788233368370.html">料金計算異常検出・分析</a>
+    </nav>
+
     <div class="shell-body">
       <main class="content-area">
         <div data-aivic-panel="scr-1788233353960" style="display:none"></div>
         <div data-aivic-panel="scr-1788233368370" style="display:block"><div style="display: flex; flex-direction: column; gap: 24px; padding: 20px; background: var(--bg-main); color: var(--text); font-family: var(--font-family); min-height: 100vh;">
   
   <!-- Breadcrumb / Sub-header -->
-  <div style="font-size: 13px; color: var(--text-muted); margin-bottom: -16px;">
-    公共施設予約 · 料金・返金ルール管理・検証システム · 料金計算異常検出・分析画面
+  <div style="font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px;">
+    公共施設予約 / 料金・返金ルール管理・検証システム / 料金計算異常検出・分析画面
   </div>
 
-  <!-- ========== Section 1: 計算実行エリア ========== -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end;">
-    <!-- 計算対象期間選択 -->
-    <div>
-      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;">計算対象期間</label>
+  <!-- ========== 上段：計算実行エリア ========== -->
+  <div class="card" style="padding: 16px; display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <label style="font-size: 12px; color: var(--text-muted); font-weight: 500;">計算対象期間</label>
       <input 
         type="month" 
-        data-testid="billing-period-input"
-        style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 14px; box-sizing: border-box;"
+        data-testid="calculation-period-input"
+        id="calc-period"
+        style="
+          padding: 8px 12px;
+          background: var(--bg-card);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: var(--radius-control);
+          color: var(--text);
+          font-family: var(--font-family);
+          font-size: 14px;
+          min-width: 160px;
+        "
       />
     </div>
-    <!-- 月次料金計算実行ボタン -->
+    
     <button 
       data-testid="execute-calculation-button"
-      style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms; height: var(--control-height);"
-      onmouseover="this.style.background = 'var(--primary-hover)'"
-      onmouseout="this.style.background = 'var(--primary)'"
+      id="btn-execute-calc"
+      class="action-btn"
+      style="
+        padding: 8px 20px;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-control);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background var(--motion-duration);
+      "
     >
       月次料金計算を実行
     </button>
+
+    <button 
+      data-testid="cancel-calculation-button"
+      id="btn-cancel-calc"
+      class="action-btn secondary"
+      style="
+        padding: 8px 20px;
+        background: transparent;
+        color: var(--text);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: var(--radius-control);
+        font-size: 14px;
+        cursor: pointer;
+        display: none;
+      "
+    >
+      キャンセル
+    </button>
+
+    <div id="calc-progress" style="display: none; flex: 1; min-width: 200px;">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">処理中...</div>
+      <div style="
+        width: 100%;
+        height: 4px;
+        background: var(--bg-card);
+        border-radius: 2px;
+        overflow: hidden;
+      ">
+        <div id="progress-bar" style="
+          height: 100%;
+          background: var(--primary);
+          width: 0%;
+          transition: width 0.3s ease;
+        "></div>
+      </div>
+    </div>
   </div>
 
-  <!-- ========== Section 2: 計算結果サマリー（4列カード） ========== -->
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-    <!-- 対象予約件数 -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">対象予約件数</div>
-      <div data-testid="kpi-reservation-count" style="font-size: 24px; font-weight: 700; color: var(--primary);">0</div>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">件</div>
+  <!-- ========== 中段：計算結果サマリー ========== -->
+  <div id="summary-section" style="display: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+    <div class="card" style="padding: 16px; border-left: 3px solid var(--primary);">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">処理件数</div>
+      <div data-testid="kpi-processed-count" style="font-size: 24px; font-weight: 600; color: var(--text);">0</div>
     </div>
-    <!-- 総料金 -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">総料金</div>
-      <div data-testid="kpi-total-revenue" style="font-size: 24px; font-weight: 700; color: var(--primary);">¥0</div>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">（税抜）</div>
+    <div class="card" style="padding: 16px; border-left: 3px solid var(--primary);">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">合計金額</div>
+      <div data-testid="kpi-total-amount" style="font-size: 24px; font-weight: 600; color: var(--text);">¥0</div>
     </div>
-    <!-- 手数料 -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">手数料</div>
-      <div data-testid="kpi-fee-amount" style="font-size: 24px; font-weight: 700; color: var(--primary);">¥0</div>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">（税抜）</div>
+    <div class="card" style="padding: 16px; border-left: 3px solid #d97706;">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">異常件数</div>
+      <div data-testid="kpi-anomaly-count" style="font-size: 24px; font-weight: 600; color: #fbbf24;">0</div>
     </div>
-    <!-- 返金額 -->
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">返金額</div>
-      <div data-testid="kpi-refund-amount" style="font-size: 24px; font-weight: 700; color: var(--error);">¥0</div>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">（税抜）</div>
+    <div class="card" style="padding: 16px; border-left: 3px solid #d97706;">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">異常金額影響</div>
+      <div data-testid="kpi-anomaly-amount" style="font-size: 24px; font-weight: 600; color: #fbbf24;">¥0</div>
     </div>
   </div>
 
-  <!-- ========== Section 3: 異常検出結果一覧 + 詳細パネル（2列レイアウト） ========== -->
-  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; min-height: 400px;">
+  <!-- ========== 下段：2カラムレイアウト ========== -->
+  <div style="display: grid; grid-template-columns: 60% 40%; gap: 24px; min-height: 400px;">
     
-    <!-- 左：異常検出結果一覧 -->
-    <div style="display: flex; flex-direction: column; gap: 8px;">
+    <!-- 左側：異常検出結果一覧 -->
+    <div style="display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
       <div style="font-size: 13px; font-weight: 600; color: var(--text);">異常検出結果</div>
-      <div class="table-wrap" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg-card);">
-        <table data-testid="anomaly-list" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-          <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
+      
+      <div style="
+        flex: 1;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-card);
+        background: var(--bg-card);
+      ">
+        <table data-testid="anomaly-list" style="
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 13px;
+        ">
+          <thead style="
+            background: var(--bg-main);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+          ">
             <tr>
-              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">予約ID</th>
-              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">異常種別</th>
-              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600;">金額差</th>
+              <th style="
+                padding: 10px 12px;
+                text-align: left;
+                color: var(--text);
+                font-weight: 600;
+                border-right: 1px solid var(--border);
+              ">異常タイプ</th>
+              <th style="
+                padding: 10px 12px;
+                text-align: center;
+                color: var(--text);
+                font-weight: 600;
+                border-right: 1px solid var(--border);
+                width: 60px;
+              ">件数</th>
+              <th style="
+                padding: 10px 12px;
+                text-align: right;
+                color: var(--text);
+                font-weight: 600;
+              ">影響金額</th>
             </tr>
           </thead>
-          <tbody data-testid="anomaly-tbody" id="anomaly-tbody">
-            <tr style="border-bottom: 1px solid var(--border); cursor: pointer; transition: background 150ms;" onmouseover="this.style.background = 'rgba(44, 62, 80, 0.04)'" onmouseout="this.style.background = 'transparent'">
-              <td style="padding: 10px 12px; border-right: 1px solid var(--border);">—</td>
-              <td style="padding: 10px 12px; border-right: 1px solid var(--border); color: var(--text-muted);">（計算待機中）</td>
-              <td style="padding: 10px 12px;">—</td>
+          <tbody id="anomaly-tbody">
+            <tr style="
+              background: var(--bg-card);
+              border-bottom: 1px solid var(--border);
+              cursor: pointer;
+              transition: background var(--motion-duration);
+            ">
+              <td style="padding: 10px 12px; border-right: 1px solid var(--border);">ルール不適用</td>
+              <td style="padding: 10px 12px; text-align: center; border-right: 1px solid var(--border);">0</td>
+              <td style="padding: 10px 12px; text-align: right;">¥0</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- 右：異常項目詳細表示パネル -->
-    <div style="display: flex; flex-direction: column; gap: 8px;">
-      <div style="font-size: 13px; font-weight: 600; color: var(--text);">異常詳細</div>
-      <div class="card" style="flex: 1; padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow-y: auto; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-        <div id="anomaly-detail-panel" style="font-size: 13px; color: var(--text-muted);">
-          <div style="text-align: center; padding: 40px 0;">異常を選択してください</div>
+    <!-- 右側：詳細パネル群 -->
+    <div style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
+      
+      <!-- 異常項目詳細 -->
+      <div id="detail-panel" class="card" style="padding: 14px; display: none;">
+        <div style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">異常詳細</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+          <div>
+            <div style="color: var(--text-muted); margin-bottom: 2px;">予約ID</div>
+            <div id="detail-reservation-id" style="color: var(--text); font-weight: 500;">—</div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); margin-bottom: 2px;">利用者</div>
+            <div id="detail-user" style="color: var(--text); font-weight: 500;">—</div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); margin-bottom: 2px;">計算値</div>
+            <div id="detail-calculated" style="color: var(--text); font-weight: 500;">¥0</div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); margin-bottom: 2px;">期待値</div>
+            <div id="detail-expected" style="color: var(--text); font-weight: 500;">¥0</div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); margin-bottom: 2px;">差異</div>
+            <div id="detail-difference" style="color: #fbbf24; font-weight: 600;">¥0</div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- ========== Section 4: 適用ルール確認 + ルール検証 ========== -->
-  <div style="display: grid; grid-template-columns: 1fr 200px; gap: 16px; align-items: start;">
-    <div style="display: flex; flex-direction: column; gap: 8px;">
-      <div style="font-size: 13px; font-weight: 600; color: var(--text);">適用ルール確認</div>
-      <div class="card" style="padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); font-size: 12px; color: var(--text-muted); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-        <div id="applied-rules-panel" style="line-height: 1.6;">
-          <div>ルール版：—</div>
-          <div style="margin-top: 8px; color: var(--text-muted);">（計算実行後に表示）</div>
-        </div>
+      <!-- 適用ルール確認 -->
+      <div id="rule-panel" class="card" style="padding: 14px; display: none;">
+        <div style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">適用ルール</div>
+        <div id="rule-content" style="
+          font-size: 12px;
+          color: var(--text);
+          line-height: 1.5;
+          padding: 8px;
+          background: var(--bg-main);
+          border-radius: var(--radius-control);
+          border-left: 2px solid var(--primary);
+        ">—</div>
+        <button 
+          data-testid="verify-rule-button"
+          id="btn-verify-rule"
+          style="
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-control);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--motion-duration);
+          "
+        >
+          ルール検証を実行
+        </button>
+      </div>
+
+      <!-- 原因分析レポート -->
+      <div id="analysis-panel" class="card" style="padding: 14px; display: none;">
+        <div style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">原因分析</div>
+        <div id="analysis-content" style="
+          font-size: 12px;
+          color: var(--text);
+          line-height: 1.6;
+          max-height: 150px;
+          overflow-y: auto;
+        ">—</div>
       </div>
     </div>
-    <button 
-      data-testid="validate-rules-button"
-      style="padding: 10px 14px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 150ms; height: fit-content; margin-top: 24px;"
-      onmouseover="this.style.borderColor = 'var(--primary)'; this.style.color = 'var(--primary)'"
-      onmouseout="this.style.borderColor = 'var(--border)'; this.style.color = 'var(--text)'"
-    >
-      ルール検証を実行
-    </button>
   </div>
 
-  <!-- ========== Section 5: 異常原因分析レポート ========== -->
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="font-size: 13px; font-weight: 600; color: var(--text);">異常原因分析</div>
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); font-size: 12px; line-height: 1.6; color: var(--text); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div id="analysis-report-panel" style="color: var(--text-muted);">
-        <div>分類：—</div>
-        <div style="margin-top: 6px;">原因：—</div>
-        <div style="margin-top: 6px;">影響範囲：—</div>
-        <div style="margin-top: 8px; color: var(--text-muted); font-size: 11px;">（計算実行後に表示）</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== Section 6: 補正データ入力フォーム ========== -->
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="font-size: 13px; font-weight: 600; color: var(--text);">補正データ入力</div>
-    <div class="card" style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-        <!-- 補正対象予約ID -->
-        <div>
-          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正対象予約ID</label>
+  <!-- ========== 最下段：補正・返金処理エリア ========== -->
+  <div id="correction-section" style="display: none; display: flex; flex-direction: column; gap: 24px;">
+    
+    <!-- 補正データ入力フォーム -->
+    <div class="card" style="padding: 16px;">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px;">補正データ入力</div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 12px; color: var(--text-muted); font-weight: 500;">補正金額</label>
           <input 
-            type="text" 
-            data-testid="correction-reservation-id"
-            placeholder="自動入力"
-            readonly
-            style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text-muted); font-size: 12px; box-sizing: border-box;"
-          />
-        </div>
-        <!-- 補正金額 -->
-        <div>
-          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正金額（¥）</label>
-          <input 
-            type="number" 
-            data-testid="correction-amount"
+            type="number"
+            data-testid="correction-amount-input"
+            id="correction-amount"
             placeholder="0"
-            style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 12px; box-sizing: border-box;"
+            style="
+              padding: 8px 12px;
+              background: var(--bg-main);
+              border: 1px solid rgba(255,255,255,0.12);
+              border-radius: var(--radius-control);
+              color: var(--text);
+              font-family: var(--font-family);
+              font-size: 14px;
+            "
           />
         </div>
-        <!-- 補正理由 -->
-        <div>
-          <label style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">補正理由</label>
+        
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 12px; color: var(--text-muted); font-weight: 500;">補正理由</label>
           <select 
             data-testid="correction-reason-select"
-            style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-card); color: var(--text); font-size: 12px; box-sizing: border-box; accent-color: var(--primary);"
+            id="correction-reason"
+            style="
+              padding: 8px 12px;
+              background: var(--bg-main);
+              border: 1px solid rgba(255,255,255,0.12);
+              border-radius: var(--radius-control);
+              color: var(--text);
+              font-family: var(--font-family);
+              font-size: 14px;
+              cursor: pointer;
+            "
           >
             <option value="">選択してください</option>
-            <option value="rule-error">ルール適用誤り</option>
-            <option value="data-error">データ入力誤り</option>
-            <option value="system-error">システムエラー</option>
-            <option value="manual-adjustment">手動調整</option>
+            <option value="rule_error">ルール適用誤り</option>
+            <option value="data_error">データ入力誤り</option>
+            <option value="system_error">システムエラー</option>
+            <option value="manual_adjustment">手動調整</option>
           </select>
         </div>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+
+      <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;">
+        <label style="font-size: 12px; color: var(--text-muted); font-weight: 500;">補正対象者</label>
+        <input 
+          type="text"
+          data-testid="correction-target-input"
+          id="correction-target"
+          placeholder="予約ID または ユーザーID"
+          style="
+            padding: 8px 12px;
+            background: var(--bg-main);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-control);
+            color: var(--text);
+            font-family: var(--font-family);
+            font-size: 14px;
+          "
+        />
+      </div>
+
+      <div style="display: flex; gap: 10px;">
         <button 
           data-testid="confirm-correction-button"
-          style="padding: 10px 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 150ms;"
-          onmouseover="this.style.background = 'var(--primary-hover)'"
-          onmouseout="this.style.background = 'var(--primary)'"
+          id="btn-confirm-correction"
+          class="action-btn"
+          style="
+            flex: 1;
+            padding: 10px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-control);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--motion-duration);
+          "
         >
-          補正内容を確認
+          補正内容を確認・反映
         </button>
         <button 
-          data-testid="apply-correction-button"
-          style="padding: 10px 14px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 150ms;"
-          onmouseover="this.style.borderColor = 'var(--primary)'; this.style.color = 'var(--primary)'"
-          onmouseout="this.style.borderColor = 'var(--border)'; this.style.color = 'var(--text)'"
+          data-testid="clear-correction-button"
+          id="btn-clear-correction"
+          class="action-btn secondary"
+          style="
+            padding: 10px 20px;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-control);
+            font-size: 14px;
+            cursor: pointer;
+          "
         >
-          補正を反映
+          クリア
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- ========== Section 7: 返金対象者リスト + 返金金額計算結果 + 返金実行 ========== -->
-  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
-    
-    <!-- 左：返金対象者リスト -->
-    <div style="display: flex; flex-direction: column; gap: 8px;">
-      <div style="font-size: 13px; font-weight: 600; color: var(--text);">返金対象者リスト</div>
-      <div class="table-wrap" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--bg-card); max-height: 300px;">
-        <table data-testid="refund-list" style="width: 100%; border-collapse: collapse; font-size: 12px;">
-          <thead style="position: sticky; top: 0; background: var(--bg-card); border-bottom: 1px solid var(--border);">
+    <!-- 返金対象者リスト -->
+    <div class="card" style="padding: 16px;">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px;">返金対象者リスト</div>
+      
+      <div style="
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-card);
+        background: var(--bg-main);
+      ">
+        <table data-testid="refund-list" style="
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 12px;
+        ">
+          <thead style="
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+          ">
             <tr>
-              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">利用者ID</th>
-              <th style="padding: 10px 12px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">返金理由</th>
-              <th style="padding: 10px 12px; text-align: right; color: var(--text); font-weight: 600;">返金額</th>
+              <th style="
+                padding: 8px 12px;
+                text-align: left;
+                color: var(--text);
+                font-weight: 600;
+                border-right: 1px solid var(--border);
+              ">ユーザーID</th>
+              <th style="
+                padding: 8px 12px;
+                text-align: left;
+                color: var(--text);
+                font-weight: 600;
+                border-right: 1px solid var(--border);
+              ">返金金額</th>
+              <th style="
+                padding: 8px 12px;
+                text-align: left;
+                color: var(--text);
+                font-weight: 600;
+              ">返金方法</th>
             </tr>
           </thead>
-          <tbody data-testid="refund-tbody" id="refund-tbody">
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 10px 12px; border-right: 1px solid var(--border); color: var(--text-muted);">—</td>
-              <td style="padding: 10px 12px; border-right: 1px solid var(--border); color: var(--text-muted);">—</td>
-              <td style="padding: 10px 12px; text-align: right; color: var(--text-muted);">¥0</td>
+          <tbody id="refund-tbody">
+            <tr style="background: var(--bg-main); border-bottom: 1px solid var(--border);">
+              <td style="padding: 8px 12px; border-right: 1px solid var(--border);">—</td>
+              <td style="padding: 8px 12px; border-right: 1px solid var(--border);">¥0</td>
+              <td style="padding: 8px 12px;">—</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- 右：返金金額計算結果 + 返金実行 -->
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="font-size: 13px; font-weight: 600; color: var(--text);">返金計算結果</div>
-        <div class="card" style="padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); font-size: 12px; background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">
-            <span style="color: var(--text-muted);">返金対象者数</span>
-            <span data-testid="refund-count" style="font-weight: 600; color: var(--text);">0 人</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="color: var(--text-muted);">合計返金額</span>
-            <span data-testid="total-refund-amount" style="font-weight: 600; color: var(--error);">¥0</span>
-          </div>
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: var(--text-muted);">返金手数料</span>
-            <span data-testid="refund-fee" style="font-weight: 600; color: var(--text);">¥0</span>
-          </div>
-        </div>
+    <!-- 返金金額計算結果 -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div class="card" style="padding: 14px; border-left: 3px solid var(--primary);">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">返金総額</div>
+        <div data-testid="kpi-total-refund" style="font-size: 20px; font-weight: 600; color: var(--text);">¥0</div>
       </div>
-      <button 
-        data-testid="execute-refund-button"
-        style="padding: 12px 14px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer; transition: background 150ms; width: 100%;"
-        onmouseover="this.style.background = 'var(--primary-hover)'"
-        onmouseout="this.style.background = 'var(--primary)'"
-      >
-        返金処理を実行
-      </button>
+      <div class="card" style="padding: 14px; border-left: 3px solid var(--primary);">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">返金件数</div>
+        <div data-testid="kpi-refund-count" style="font-size: 20px; font-weight: 600; color: var(--text);">0</div>
+      </div>
+      <div class="card" style="padding: 14px; border-left: 3px solid var(--primary);">
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">返金方法</div>
+        <div data-testid="kpi-refund-method" style="font-size: 14px; font-weight: 500; color: var(--text);">—</div>
+      </div>
     </div>
-  </div>
 
+    <!-- 返金実行ボタン -->
+    <button 
+      data-testid="execute-refund-button"
+      id="btn-execute-refund"
+      class="action-btn"
+      style="
+        width: 100%;
+        padding: 12px;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-control);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background var(--motion-duration);
+      "
+    >
+      返金処理を実行
+    </button>
+  </div>
 </div>
 
-<!-- ========== 確認ダイアログ（補正内容確認） ========== -->
-<div id="correction-confirm-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">補正内容確認</div>
-    <div style="font-size: 13px; line-height: 1.8; margin-bottom: 20px; color: var(--text);">
-      <div style="margin-bottom: 8px;"><strong>予約ID：</strong><span id="confirm-res-id">—</span></div>
-      <div style="margin-bottom: 8px;"><strong>補正金額：</strong><span id="confirm-amount">¥0</span></div>
-      <div style="margin-bottom: 8px;"><strong>補正理由：</strong><span id="confirm-reason">—</span></div>
+<!-- ========== 確認ダイアログ（補正） ========== -->
+<div id="modal-confirm-correction" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="
+    background: var(--bg-card);
+    color: var(--text);
+    padding: 24px;
+    border-radius: var(--radius-card);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  ">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">補正内容の確認</div>
+    <div style="
+      background: var(--bg-main);
+      padding: 12px;
+      border-radius: var(--radius-control);
+      margin-bottom: 16px;
+      font-size: 13px;
+      line-height: 1.6;
+    ">
+      <div style="margin-bottom: 8px;">
+        <span style="color: var(--text-muted);">補正金額：</span>
+        <span id="confirm-correction-amount" style="color: var(--text); font-weight: 600;">¥0</span>
+      </div>
+      <div style="margin-bottom: 8px;">
+        <span style="color: var(--text-muted);">補正理由：</span>
+        <span id="confirm-correction-reason" style="color: var(--text); font-weight: 600;">—</span>
+      </div>
+      <div>
+        <span style="color: var(--text-muted);">補正対象者：</span>
+        <span id="confirm-correction-target" style="color: var(--text); font-weight: 600;">—</span>
+      </div>
     </div>
-    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
       <button 
-        data-testid="cancel-correction-button"
-        style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
-        onclick="document.getElementById('correction-confirm-modal').style.display = 'none'"
+        id="btn-cancel-correction-dialog"
+        style="
+          padding: 10px 20px;
+          background: transparent;
+          color: var(--text);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: var(--radius-control);
+          font-size: 14px;
+          cursor: pointer;
+        "
       >
         キャンセル
       </button>
       <button 
-        data-testid="confirm-correction-ok-button"
-        style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
-        onmouseover="this.style.background = 'var(--primary-hover)'"
-        onmouseout="this.style.background = 'var(--primary)'"
+        data-testid="apply-correction-button"
+        id="btn-apply-correction"
+        style="
+          padding: 10px 20px;
+          background: var(--primary);
+          color: #fff;
+          border: none;
+          border-radius: var(--radius-control);
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+        "
       >
-        確認して反映
+        反映する
       </button>
     </div>
   </div>
 </div>
 
-<!-- ========== 確認ダイアログ（返金実行確認） ========== -->
-<div id="refund-confirm-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">返金処理実行確認</div>
-    <div style="font-size: 13px; line-height: 1.8; margin-bottom: 20px; color: var(--text);">
-      <div style="margin-bottom: 8px;"><strong>返金対象者数：</strong><span id="confirm-refund-count">0</span> 人</div>
-      <div style="margin-bottom: 8px;"><strong>合計返金額：</strong><span id="confirm-total-refund" style="color: var(--error); font-weight: 600;">¥0</span></div>
-      <div style="margin-top: 16px; padding: 12px; background: var(--bg-main); border-left: 3px solid var(--warning); border-radius: 3px; font-size: 12px; color: var(--text);">
-        この操作は取り消せません。内容をご確認の上、実行してください。
+<!-- ========== 確認ダイアログ（返金） ========== -->
+<div id="modal-confirm-refund" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="
+    background: var(--bg-card);
+    color: var(--text);
+    padding: 24px;
+    border-radius: var(--radius-card);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  ">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">返金処理の確認</div>
+    <div style="
+      background: var(--bg-main);
+      padding: 12px;
+      border-radius: var(--radius-control);
+      margin-bottom: 16px;
+      font-size: 13px;
+      line-height: 1.6;
+    ">
+      <div style="margin-bottom: 8px;">
+        <span style="color: var(--text-muted);">返金総額：</span>
+        <span id="confirm-refund-amount" style="color: var(--text); font-weight: 600;">¥0</span>
+      </div>
+      <div>
+        <span style="color: var(--text-muted);">返金件数：</span>
+        <span id="confirm-refund-count" style="color: var(--text); font-weight: 600;">0件</span>
       </div>
     </div>
-    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
       <button 
-        data-testid="cancel-refund-button"
-        style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
-        onclick="document.getElementById('refund-confirm-modal').style.display = 'none'"
+        id="btn-cancel-refund-dialog"
+        style="
+          padding: 10px 20px;
+          background: transparent;
+          color: var(--text);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: var(--radius-control);
+          font-size: 14px;
+          cursor: pointer;
+        "
       >
         キャンセル
       </button>
       <button 
-        data-testid="confirm-refund-ok-button"
-        style="padding: 10px 16px; background: var(--error); color: #fff; border: none; border-radius: var(--radius-control); font-size: 12px; font-weight: 600; cursor: pointer;"
-        onmouseover="this.style.background = '#6b3535'"
-        onmouseout="this.style.background = 'var(--error)'"
+        data-testid="execute-refund-confirm-button"
+        id="btn-execute-refund-confirm"
+        style="
+          padding: 10px 20px;
+          background: var(--primary);
+          color: #fff;
+          border: none;
+          border-radius: var(--radius-control);
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+        "
       >
-        返金処理を実行
+        実行する
       </button>
     </div>
   </div>
@@ -1050,54 +946,6 @@ window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
       </main>
     </div>
   </div>
-
-  <div id="confirmModal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">確認</div>
-      <div class="modal-body">
-        <p id="confirmMessage" style="font-size: 13px; color: var(--text); margin-bottom: calc(var(--space-unit) * 2);"></p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" onclick="closeConfirmModal()">キャンセル</button>
-        <button class="btn btn-primary btn-sm" onclick="confirmAction()">実行</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let pendingAction = null;
-
-    function showConfirmModal(message, action) {
-      document.getElementById('confirmMessage').textContent = message;
-      pendingAction = action;
-      document.getElementById('confirmModal').classList.add('active');
-    }
-
-    function closeConfirmModal() {
-      document.getElementById('confirmModal').classList.remove('active');
-      pendingAction = null;
-    }
-
-    function confirmAction() {
-      if (pendingAction && typeof pendingAction === 'function') {
-        pendingAction();
-      }
-      closeConfirmModal();
-    }
-
-    document.querySelectorAll('.collapsible-header').forEach(header => {
-      header.addEventListener('click', function() {
-        const section = this.closest('.collapsible-section');
-        section.classList.toggle('open');
-      });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.collapsible-section').forEach(section => {
-        section.classList.add('open');
-      });
-    });
-  </script>
 
   
 <script>
