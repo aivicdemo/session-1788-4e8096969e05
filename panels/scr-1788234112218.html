@@ -3,46 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>セキュリティ認証対応ダッシュボード | 公共施設予約</title>
+  <title>セキュリティ認証対応・コンプライアンス管理システム - 公共施設予約</title>
   <style>
 :root {
   --primary: #2c3e50;
   --primary-hover: #1a252f;
-  --bg-main: #f0ede8;
-  --bg-card: #e8e5e0;
-  --bg-sidebar: #ebe8e3;
-  --top-bar-bg: #2c3e50;
-  --top-bar-border: #1a252f;
-  --border: #c9c5bd;
-  --text: #1a1f26;
-  --text-muted: #6b7280;
-  --success: #3d7e4a;
-  --warning: #a67c52;
-  --error: #8b4545;
-  --info: #4a6fa5;
-  --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
-  --space-unit: 8px;
-  --control-height: 40px;
-  --radius-card: 4px;
-  --radius-control: 3px;
+  --bg-main: #0f1419;
+  --bg-card: #1a1f28;
+  --bg-sidebar: #151a22;
+  --border: #2a3142;
+  --text: #e8eaed;
+  --text-muted: #9ca3af;
+  --top-bar-bg: #1f2937;
+  --top-bar-border: #374151;
+  --top-bar-text: #f3f4f6;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --radius-card: 6px;
+  --radius-control: 4px;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
   --border-width: 1px;
-  --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
+  --control-height: 36px;
+  --space-unit: 8px;
   --motion-duration: 200ms;
-  --surface-texture: 
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(172, 167, 154, 0.03) 2px,
-      rgba(172, 167, 154, 0.03) 4px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(172, 167, 154, 0.02) 2px,
-      rgba(172, 167, 154, 0.02) 4px
-    );
+  --surface-texture: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.02) 2px, rgba(255, 255, 255, 0.02) 4px), repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 4px);
   --surface-texture-size: 100% 100%;
   --surface-texture-position: 0 0;
 }
@@ -67,9 +50,10 @@ body {
   flex-direction: column;
 }
 
-[data-aivic-shell-pattern] {
+[data-aivic-shell-pattern="command_center"] {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
 }
@@ -81,94 +65,150 @@ body {
   height: 56px;
   background: var(--top-bar-bg);
   border-bottom: var(--border-width) solid var(--top-bar-border);
-  padding: 0 calc(var(--space-unit) * 3);
+  padding: 0 24px;
   flex-shrink: 0;
-  box-shadow: var(--shadow-card);
+  background-image: var(--surface-texture);
+  background-size: var(--surface-texture-size);
+  background-position: var(--surface-texture-position);
 }
 
 .shell-header-left {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 3);
+  gap: 24px;
 }
 
 .shell-logo {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
-
-.shell-logo-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 2px;
-}
-
-.shell-nav-top {
   display: flex;
-  gap: calc(var(--space-unit) * 2);
-  list-style: none;
-}
-
-.shell-nav-item {
-  position: relative;
-}
-
-.shell-nav-link {
-  display: block;
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  color: var(--top-bar-text);
   text-decoration: none;
-  cursor: pointer;
-  transition: color var(--motion-duration) ease;
-  border-bottom: 2px solid transparent;
 }
 
-.shell-nav-link:hover {
-  color: #ffffff;
+.shell-logo-icon {
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: var(--radius-control);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  font-weight: 700;
 }
 
-.shell-nav-link.aivic-active {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
+.shell-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.shell-logo-system {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--top-bar-text);
+}
+
+.shell-logo-app {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-muted);
 }
 
 .shell-header-right {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-unit) * 2);
+  gap: 16px;
+}
+
+.shell-user-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .shell-user-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  color: white;
+  font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
 }
 
 .shell-user-name {
   font-size: 13px;
-  color: #ffffff;
+  color: var(--top-bar-text);
 }
 
-.shell-logout {
+.shell-user-logout {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   text-decoration: none;
-  transition: color var(--motion-duration) ease;
+  transition: color var(--motion-duration);
 }
 
-.shell-logout:hover {
-  color: #ffffff;
+.shell-user-logout:hover {
+  color: var(--top-bar-text);
+}
+
+.shell-nav-bar {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  background: var(--bg-main);
+  border-bottom: var(--border-width) solid var(--border);
+  padding: 0 24px;
+  gap: 0;
+  flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.shell-nav-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.shell-nav-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shell-nav-bar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.shell-nav-item {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--motion-duration);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.shell-nav-item:hover {
+  color: var(--text);
+}
+
+.shell-nav-item.aivic-active {
+  color: var(--text);
+  border-bottom-color: var(--primary);
 }
 
 .shell-body {
@@ -180,362 +220,97 @@ body {
 .content-area {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--bg-main);
   background-image: var(--surface-texture);
   background-size: var(--surface-texture-size);
   background-position: var(--surface-texture-position);
 }
 
-[data-aivic-panel] {
-  padding: calc(var(--space-unit) * 3);
-  min-height: 100%;
+.content-area::-webkit-scrollbar {
+  width: 8px;
 }
 
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 2);
-  letter-spacing: 0.3px;
+.content-area::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.section-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-  font-weight: 500;
-}
-
-.card {
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  margin-bottom: calc(var(--space-unit) * 3);
-  box-shadow: var(--shadow-card);
-}
-
-.card-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1.5);
-}
-
-.card-content {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.6;
-}
-
-.form-group {
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.form-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.75);
-}
-
-.form-input,
-.form-select {
-  width: 100%;
-  height: var(--control-height);
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
-  font-size: 13px;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-control);
-  background: #ffffff;
-  color: var(--text);
-  font-family: var(--font-family);
-  transition: border-color var(--motion-duration) ease;
-}
-
-.form-input:focus,
-.form-select:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-.btn {
-  height: var(--control-height);
-  padding: 0 calc(var(--space-unit) * 2);
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: all var(--motion-duration) ease;
-  font-family: var(--font-family);
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover);
-}
-
-.btn-secondary {
-  background: var(--bg-card);
-  color: var(--text);
-  border: var(--border-width) solid var(--border);
-}
-
-.btn-secondary:hover {
-  background: #ffffff;
-}
-
-.btn-sm {
-  height: 32px;
-  padding: 0 calc(var(--space-unit) * 1.5);
-  font-size: 12px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-}
-
-.table thead {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-.table th {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
-  text-align: left;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.3px;
-}
-
-.table td {
-  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
-  border-top: var(--border-width) solid var(--border);
-}
-
-.table tbody tr:hover {
-  background: rgba(44, 62, 80, 0.02);
-  cursor: pointer;
-}
-
-.badge {
-  display: inline-block;
-  padding: calc(var(--space-unit) * 0.5) calc(var(--space-unit) * 1);
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 2px;
-  white-space: nowrap;
-}
-
-.badge-success {
-  background: rgba(61, 126, 74, 0.15);
-  color: var(--success);
-}
-
-.badge-warning {
-  background: rgba(166, 124, 82, 0.15);
-  color: var(--warning);
-}
-
-.badge-error {
-  background: rgba(139, 69, 69, 0.15);
-  color: var(--error);
-}
-
-.badge-info {
-  background: rgba(74, 111, 165, 0.15);
-  color: var(--info);
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.stat-box {
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2);
-  text-align: center;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-bottom: calc(var(--space-unit) * 1);
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.progress-bar {
-  width: 100%;
-  height: 8px;
+.content-area::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: calc(var(--space-unit) * 1);
+  border-radius: 4px;
 }
 
-.progress-fill {
-  height: 100%;
-  background: var(--success);
-  transition: width var(--motion-duration) ease;
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
-.filter-tabs {
-  display: flex;
-  gap: calc(var(--space-unit) * 1);
-  margin-bottom: calc(var(--space-unit) * 2);
+[data-aivic-panel] {
+  display: block;
+  width: 100%;
 }
 
-.filter-tab {
-  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 2);
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--bg-card);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: all var(--motion-duration) ease;
-  color: var(--text-muted);
-}
-
-.filter-tab:hover {
-  background: #ffffff;
-  color: var(--text);
-}
-
-.filter-tab.active {
-  background: var(--primary);
-  color: #ffffff;
-  border-color: var(--primary);
-}
-
-.filter-badge {
-  display: inline-block;
-  margin-left: calc(var(--space-unit) * 0.5);
-  padding: 0 calc(var(--space-unit) * 0.75);
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.search-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: calc(var(--space-unit) * 2);
-  align-items: flex-end;
-  margin-bottom: calc(var(--space-unit) * 3);
-}
-
-.search-form .form-group {
-  margin-bottom: 0;
-}
-
-.summary-panel {
-  background: #ffffff;
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-card);
-  padding: calc(var(--space-unit) * 2.5);
-  margin-bottom: calc(var(--space-unit) * 3);
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: calc(var(--space-unit) * 3);
-  box-shadow: var(--shadow-card);
-}
-
-.summary-item {
-  text-align: center;
-}
-
-.summary-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-bottom: calc(var(--space-unit) * 1);
-}
-
-.summary-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--primary);
-  margin-bottom: calc(var(--space-unit) * 1);
-}
-
-.summary-detail {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.category-progress {
-  margin-bottom: calc(var(--space-unit) * 2);
-}
-
-.category-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: calc(var(--space-unit) * 0.75);
-  display: flex;
-  justify-content: space-between;
-}
-
-.category-percent {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.action-buttons {
-  display: flex;
-  gap: calc(var(--space-unit) * 2);
-  margin-top: calc(var(--space-unit) * 3);
-  padding-top: calc(var(--space-unit) * 3);
-  border-top: var(--border-width) solid var(--border);
-}
-
-.action-buttons .btn {
-  flex: 1;
-}
-
-@media (max-width: 1024px) {
-  .grid-2,
-  .grid-3 {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .shell-header {
+    padding: 0 16px;
   }
-  .summary-panel {
-    grid-template-columns: 1fr;
+
+  .shell-header-left {
+    gap: 12px;
   }
-  .search-form {
-    grid-template-columns: 1fr;
+
+  .shell-logo-text {
+    display: none;
+  }
+
+  .shell-nav-bar {
+    padding: 0 16px;
+  }
+
+  .shell-nav-item {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .shell-user-name {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .shell-header {
+    height: 48px;
+    padding: 0 12px;
+  }
+
+  .shell-logo-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .shell-logo-system {
+    font-size: 11px;
+  }
+
+  .shell-user-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .shell-header-right {
+    gap: 12px;
+  }
+
+  .shell-nav-bar {
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .shell-nav-item {
+    height: 44px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 }
   </style>
@@ -546,214 +321,309 @@ window.AIVIC_APP_ID = "session-1788160285336";
 window.AIVIC_APPLICATION_NAME = "公共施設予約";
 window.AIVIC_SYSTEM_NAME = "セキュリティ認証対応・コンプライアンス管理システム";
 window.AIVIC_TABLES = [{"tableName":"ユーザー","purpose":"セキュリティインシデント対応・監査ログ分析システムにおけるユーザー情報の管理と認証・アクセス制御の基盤となるマスタテーブル","columns":[{"name":"ユーザーID","type":"uuid","required":true,"description":"ユーザーの一意識別子"},{"name":"ユーザー名","type":"varchar(100)","required":true,"description":"ログイン時に使用するユーザー名"},{"name":"メールアドレス","type":"varchar(100)","required":true,"description":"ユーザーの連絡先メールアドレス"},{"name":"部門","type":"varchar(100)","required":false,"description":"ユーザーが属する部門名"},{"name":"役職","type":"varchar(100)","required":false,"description":"ユーザーの役職"},{"name":"ロール","type":"varchar(100)","required":true,"description":"システム内のアクセス権限レベル（管理者/分析者/閲覧者等）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"ユーザーの状態（有効/無効/休止等）"},{"name":"最終ログイン日時","type":"timestamp","required":false,"description":"ユーザーが最後にシステムにログインした日時"},{"name":"作成日時","type":"timestamp","required":true,"description":"ユーザーレコードが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"ユーザーレコードが最後に更新された日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"ユーザーレコードを作成したユーザーまたはシステム"},{"name":"更新者","type":"varchar(100)","required":false,"description":"ユーザーレコードを最後に更新したユーザーまたはシステム"}]},{"tableName":"監査ログ","purpose":"セキュリティインシデント対応と監査のため、システム内のすべてのセキュリティ関連イベント、ユーザーアクション、脆弱性スキャン結果の変更を記録・追跡する","columns":[{"name":"監査ログID","type":"uuid","required":true,"description":"監査ログの一意識別子"},{"name":"イベント種別","type":"varchar(100)","required":true,"description":"ログイベントの種類（ユーザーアクション、脆弱性検出、スキャン実行、インシデント報告等）"},{"name":"ユーザーID","type":"uuid","required":false,"description":"アクションを実行したユーザーの識別子"},{"name":"対象リソース種別","type":"varchar(100)","required":true,"description":"ログの対象となるリソースの種類（脆弱性、スキャン結果、インシデント等）"},{"name":"対象リソースID","type":"uuid","required":false,"description":"対象リソースの識別子"},{"name":"操作内容","type":"text","required":true,"description":"実行された操作の詳細説明"},{"name":"変更前値","type":"text","required":false,"description":"変更があった場合の変更前の値"},{"name":"変更後値","type":"text","required":false,"description":"変更があった場合の変更後の値"},{"name":"IPアドレス","type":"varchar(100)","required":false,"description":"アクションを実行したクライアントのIPアドレス"},{"name":"セッションID","type":"varchar(100)","required":false,"description":"ユーザーセッションの識別子"},{"name":"重要度","type":"varchar(100)","required":true,"description":"ログイベントの重要度レベル（低、中、高、緊急）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"イベントの処理状態（未処理、処理中、完了、却下）"},{"name":"作成日時","type":"timestamp","required":true,"description":"監査ログが記録された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"監査ログが最後に更新された日時"}]},{"tableName":"レポート","purpose":"セキュリティインシデント対応と脆弱性管理の進捗状況をまとめたレポートを管理し、経営層や監査対象者への報告資料として機能する","columns":[{"name":"レポートID","type":"uuid","required":true,"description":"レポートの一意識別子"},{"name":"レポート名","type":"varchar(100)","required":true,"description":"レポートのタイトル"},{"name":"レポート種別","type":"varchar(100)","required":true,"description":"レポートの種類（月次サマリー、インシデント報告、脆弱性スキャン結果、対応状況など）"},{"name":"対象期間開始日","type":"timestamp","required":true,"description":"レポートが対象とする期間の開始日時"},{"name":"対象期間終了日","type":"timestamp","required":true,"description":"レポートが対象とする期間の終了日時"},{"name":"発見脆弱性数","type":"integer","required":false,"description":"対象期間内に発見された脆弱性の総数"},{"name":"対応完了脆弱性数","type":"integer","required":false,"description":"対象期間内に対応が完了した脆弱性の数"},{"name":"インシデント発生件数","type":"integer","required":false,"description":"対象期間内に発生したセキュリティインシデントの件数"},{"name":"重大度別集計","type":"text","required":false,"description":"脆弱性を重大度別に集計した結果の詳細情報"},{"name":"レポート内容","type":"text","required":false,"description":"レポートの本文内容、分析結果、推奨事項など"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"レポートの状態（作成中、完成、承認待ち、承認済み、配布済みなど）"},{"name":"作成者ID","type":"uuid","required":true,"description":"レポートを作成したユーザーの識別子"},{"name":"承認者ID","type":"uuid","required":false,"description":"レポートを承認したユーザーの識別子"},{"name":"配布対象者リスト","type":"text","required":false,"description":"レポートの配布対象となるユーザーやグループの情報"},{"name":"作成日時","type":"timestamp","required":true,"description":"レポートが作成された日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レポートが最後に更新された日時"},{"name":"承認日時","type":"timestamp","required":false,"description":"レポートが承認された日時"},{"name":"配布日時","type":"timestamp","required":false,"description":"レポートが配布された日時"}]},{"tableName":"対応状況履歴","purpose":"セキュリティインシデント対応チケットの状態遷移と対応履歴を時系列で記録し、対応プロセスの追跡と監査証跡を提供する","columns":[{"name":"対応状況履歴ID","type":"uuid","required":true,"description":"対応状況履歴レコードの一意識別子"},{"name":"脆弱性対応チケットID","type":"uuid","required":true,"description":"関連する脆弱性対応チケットへの外部キー参照"},{"name":"変更前状態","type":"varchar(100)","required":true,"description":"状態遷移前のチケット状態コード"},{"name":"変更後状態","type":"varchar(100)","required":true,"description":"状態遷移後のチケット状態コード"},{"name":"対応内容","type":"text","required":false,"description":"実施した対応内容の詳細説明"},{"name":"対応者ID","type":"uuid","required":true,"description":"対応を実施したユーザーへの外部キー参照"},{"name":"作成日時","type":"timestamp","required":true,"description":"対応状況履歴レコードが作成された日時"},{"name":"備考","type":"text","required":false,"description":"対応に関する追加情報やコメント"}]},{"tableName":"認証基準","purpose":"セキュリティ認証対応・コンプライアンス管理システムにおいて、組織が遵守すべき認証基準・要件を定義・管理するマスタテーブル。ユーザーの認証レベル判定、監査ログの基準チェック、対応状況の評価に使用される。","columns":[{"name":"認証基準ID","type":"uuid","required":true,"description":"認証基準を一意に識別するプライマリキー"},{"name":"基準コード","type":"varchar(100)","required":true,"description":"認証基準の業務上の識別コード（例：AUTH-001、COMP-SEC-02）"},{"name":"基準名","type":"varchar(100)","required":true,"description":"認証基準の名称"},{"name":"説明","type":"text","required":false,"description":"認証基準の詳細説明・背景・適用範囲"},{"name":"カテゴリ","type":"varchar(100)","required":true,"description":"認証基準の分類（例：多要素認証、アクセス制御、暗号化、監査ログ）"},{"name":"重要度レベル","type":"varchar(100)","required":true,"description":"基準の重要度（例：Critical、High、Medium、Low）"},{"name":"適用対象","type":"varchar(100)","required":true,"description":"基準が適用される対象（例：全ユーザー、管理者、特定部門）"},{"name":"要件内容","type":"text","required":true,"description":"具体的な要件・チェック項目の詳細"},{"name":"コンプライアンス規格","type":"varchar(100)","required":false,"description":"関連するコンプライアンス規格（例：ISO27001、NIST、GDPR）"},{"name":"有効開始日","type":"timestamp","required":true,"description":"認証基準の適用開始日時"},{"name":"有効終了日","type":"timestamp","required":false,"description":"認証基準の廃止予定日時（廃止予定がない場合はNULL）"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"基準の状態（例：有効、無効、廃止予定）"},{"name":"作成日時","type":"timestamp","required":true,"description":"認証基準レコードの作成日時"},{"name":"作成者","type":"varchar(100)","required":true,"description":"認証基準を作成したユーザーID"},{"name":"更新日時","type":"timestamp","required":true,"description":"認証基準レコードの最終更新日時"},{"name":"更新者","type":"varchar(100)","required":true,"description":"認証基準を最後に更新したユーザーID"}]},{"tableName":"認証対応状況","purpose":"セキュリティ認証基準に対する各ユーザー・システムの対応状況を管理し、コンプライアンス要件への適合性を追跡・監査するためのマスタテーブル","columns":[{"name":"認証対応状況ID","type":"uuid","required":true,"description":"認証対応状況レコードの一意識別子"},{"name":"ユーザーID","type":"uuid","required":true,"description":"対応状況の対象となるユーザーの外部キー参照"},{"name":"認証基準ID","type":"uuid","required":true,"description":"適用される認証基準の外部キー参照"},{"name":"対応状況","type":"varchar(100)","required":true,"description":"現在の対応状況コード（未対応・進行中・完了・例外等）"},{"name":"対応期限日","type":"timestamp","required":false,"description":"要件への対応が必要な期限日時"},{"name":"完了日時","type":"timestamp","required":false,"description":"対応が完了した日時"},{"name":"対応内容","type":"text","required":false,"description":"実施した対応内容の詳細説明"},{"name":"リスク評価レベル","type":"varchar(100)","required":false,"description":"未対応時のリスク評価レベル（高・中・低等）"},{"name":"例外承認フラグ","type":"boolean","required":true,"description":"コンプライアンス例外として承認されているかどうか"},{"name":"例外承認者ID","type":"uuid","required":false,"description":"例外を承認したユーザーの外部キー参照"},{"name":"例外理由","type":"text","required":false,"description":"例外承認の理由説明"},{"name":"作成日時","type":"timestamp","required":true,"description":"レコード作成日時"},{"name":"更新日時","type":"timestamp","required":true,"description":"レコード最終更新日時"},{"name":"作成者ID","type":"uuid","required":true,"description":"レコード作成者のユーザーID"},{"name":"更新者ID","type":"uuid","required":true,"description":"レコード最終更新者のユーザーID"}]},{"tableName":"コンプライアンス要件","purpose":"セキュリティ認証対応・コンプライアンス管理システムにおいて、組織が遵守すべき法令・規制・内部ポリシーなどのコンプライアンス要件を一元管理し、対応状況の追跡と監査を支援するマスタテーブル","columns":[{"name":"要件ID","type":"uuid","required":true,"description":"コンプライアンス要件を一意に識別するプライマリキー"},{"name":"要件名","type":"varchar(100)","required":true,"description":"コンプライアンス要件の名称"},{"name":"要件説明","type":"text","required":true,"description":"コンプライアンス要件の詳細説明および背景"},{"name":"要件カテゴリ","type":"varchar(100)","required":true,"description":"要件の分類（例：法令遵守、セキュリティ、プライバシー、監査）"},{"name":"適用対象","type":"varchar(100)","required":true,"description":"要件が適用される対象部門・システム・ユーザー区分"},{"name":"優先度","type":"varchar(100)","required":true,"description":"要件の優先度レベル（例：高、中、低）"},{"name":"期限日","type":"timestamp","required":false,"description":"コンプライアンス要件の対応期限"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"要件の現在のステータス（例：未対応、進行中、完了、保留）"},{"name":"関連規格","type":"varchar(100)","required":false,"description":"関連する認証基準・規格コード（例：ISO27001、PCI-DSS）"},{"name":"作成日時","type":"timestamp","required":true,"description":"要件レコードの作成日時"},{"name":"作成者","type":"uuid","required":true,"description":"要件を作成したユーザーID"},{"name":"更新日時","type":"timestamp","required":true,"description":"要件レコードの最終更新日時"},{"name":"更新者","type":"uuid","required":true,"description":"要件を最後に更新したユーザーID"}]},{"tableName":"認証基準カテゴリ","purpose":"認証基準を分類・管理するためのカテゴリマスタテーブル。セキュリティ認証対応やコンプライアンス管理において、複数の認証基準を体系的に整理し、監査・レポーティング時の検索・フィルタリングを効率化する。","columns":[{"name":"カテゴリID","type":"uuid","required":true,"description":"認証基準カテゴリの一意識別子。主キー。"},{"name":"カテゴリ名","type":"varchar(100)","required":true,"description":"認証基準カテゴリの名称。例：ISO27001、GDPR、個人情報保護法など。"},{"name":"説明","type":"text","required":false,"description":"カテゴリの詳細説明。対象範囲や適用背景などを記載。"},{"name":"ステータス","type":"varchar(100)","required":true,"description":"カテゴリの状態。有効/無効など。"},{"name":"表示順序","type":"integer","required":false,"description":"UI表示時のカテゴリ並び順。"},{"name":"作成日時","type":"timestamp","required":true,"description":"カテゴリ作成日時。"},{"name":"更新日時","type":"timestamp","required":true,"description":"カテゴリ最終更新日時。"},{"name":"作成者","type":"uuid","required":true,"description":"カテゴリを作成したユーザーID。ユーザーテーブルへの外部キー。"},{"name":"更新者","type":"uuid","required":true,"description":"カテゴリを最後に更新したユーザーID。ユーザーテーブルへの外部キー。"}]}];
-window.AIVIC_PRESET_SEED = {"ユーザー":[{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"taro.tanaka@company.jp","部門":"セキュリティ部門","役職":"部門長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:45","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:30","作成者":"system","更新者":"山田花子"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.jiro","メールアドレス":"tanaka.jiro@company.jp","部門":"IT運用チーム","役職":"インシデント対応担当者","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:23:45","作成日時":"2024-04-10 14:30:00","更新日時":"2025-01-10 11:15:30","作成者":"system","更新者":"鈴木花子"},{"ユーザーID":"rec-001","ユーザー名":"audit_viewer_001","メールアドレス":"suzuki.hanako@company.jp","部門":"監査部門","役職":"監査員","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-10 14:20:00","更新日時":"2025-01-10 11:45:00","作成者":"system","更新者":"鈴木花子"},{"ユーザーID":"550e8400-e29b-41d4-a716-446655440000","ユーザー名":"yamamoto.security","メールアドレス":"yamamoto.takeshi@company.jp","部門":"セキュリティ運用センター","役職":"セキュリティアナリスト","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15T22:45:30+09:00","作成日時":"2024-04-10T09:15:00+09:00","更新日時":"2025-01-10T14:20:15+09:00","作成者":"admin.system","更新者":"山田花子"},{"ユーザーID":"rec-001","ユーザー名":"yamamoto.hanako","メールアドレス":"yamamoto.hanako@company.jp","部門":"経営企画室","役職":"常務執行役員","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2024-04-01 10:00:00","更新日時":"2024-12-20 14:15:00","作成者":"system","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.co.jp","部門":"営業部","役職":"新入社員","ロール":"閲覧者","ステータス":"有効","最終ログイン日時":"2024-12-19 14:32:00","作成日時":"2024-12-02 09:15:00","更新日時":"2024-12-19 14:32:00","作成者":"admin_system","更新者":"suzuki.hanako"},{"ユーザーID":"rec-001-7843","ユーザー名":"suzuki.hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"営業企画部","役職":"課長代理","ロール":"分析者","ステータス":"休止","最終ログイン日時":"2024-06-14 09:32:00","作成日時":"2022-04-01 10:15:00","更新日時":"2024-09-01 14:20:00","作成者":"system","更新者":"yamada.taro"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2024-10-15 14:32:00","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-31 10:15:00","作成者":"system","更新者":"yamada.hanako"},{"ユーザーID":"rec-001","ユーザー名":"security_consultant_yamada","メールアドレス":"yamada.taro@external-security.jp","部門":"外部コンサルタント","役職":"セキュリティコンサルタント","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-11-20 09:15:00","更新日時":"2025-01-10 16:45:00","作成者":"admin_suzuki","更新者":"admin_suzuki"},{"ユーザーID":"rec-001","ユーザー名":"system_admin_script","メールアドレス":"system-admin@company.jp","部門":"情報システム部","役職":"システム管理者","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 03:45:22","作成日時":"2024-04-10 09:30:00","更新日時":"2025-01-10 14:20:15","作成者":"system","更新者":"佐藤次郎"}],"監査ログ":[{"監査ログID":"rec-20250215-0847","イベント種別":"スキャン実行","ユーザーID":"rec-user-0342","対象リソース種別":"スキャン結果","対象リソースID":"rec-scan-2025-0156","操作内容":"セキュリティ脆弱性スキャンを手動実行。対象システム: 本社基幹システム本番環境。スキャンエンジン: Nessus Professional v10.5.2。スキャン範囲: 192.168.10.0/24。実行時間: 約2時間15分。検出脆弱性数: 23件（高リスク3件、中リスク8件、低リスク12件）。","変更前値":"スキャン未実行","変更後値":"スキャン完了 - 脆弱性23件検出","IPアドレス":"203.0.113.45","セッションID":"sess-8f4c2d9e1b7a5","重要度":"高","ステータス":"完了","作成日時":"2025-02-15 08:47:32","更新日時":"2025-02-15 11:15:48"},{"監査ログID":"rec-20250215-001","イベント種別":"脆弱性検出","ユーザーID":"rec-user-0847","対象リソース種別":"脆弱性","対象リソースID":"rec-vuln-5423","操作内容":"CVE-2024-12847に関連する脆弱性の重要度レベルを中から高に変更しました。リモートコード実行の可能性が確認されたため、リスク評価を再実施し重要度を引き上げました。","変更前値":"中","変更後値":"高","IPアドレス":"192.168.100.54","セッションID":"sess-8f2e9c1a7b4d","重要度":"高","ステータス":"処理中","作成日時":"2025-02-15 14:23:47","更新日時":"2025-02-15 14:23:47"},{"監査ログID":"rec-20250215-audit-8472","イベント種別":"インシデント報告","ユーザーID":"rec-user-0342","対象リソース種別":"インシデント","対象リソースID":"rec-incident-5891","操作内容":"セキュリティインシデント（SQLインジェクション脆弱性悪用）のステータスを未処理から処理中に更新。対応チームへの割り当てを実施。","変更前値":"未処理","変更後値":"処理中","IPアドレス":"203.0.113.45","セッションID":"sess-7d3a9c1e2f5b8642","重要度":"高","ステータス":"完了","作成日時":"2025-02-15 09:23:47","更新日時":"2025-02-15 09:23:47"},{"監査ログID":"rec-20250215-8472","イベント種別":"セッション強制終了","ユーザーID":"rec-user-5891","対象リソース種別":"セッション","対象リソースID":"rec-session-3247","操作内容":"不正アクセス試行を検出したため、ユーザー鈴木健一のセッションを強制終了しました。複数回の認証失敗後、異なるIPアドレスからのアクセスが確認されたため、セキュリティ上の理由により管理者権限で即座に終了処理を実施。","変更前値":"セッションステータス: アクティブ、ログイン時刻: 2025-02-15 09:32:15、IPアドレス: 203.0.113.45","変更後値":"セッションステータス: 強制終了、終了時刻: 2025-02-15 10:18:42、終了理由: 不正アクセス試行検出","IPアドレス":"192.168.1.100","セッションID":"rec-admin-session-9156","重要度":"緊急","ステータス":"完了","作成日時":"2025-02-15T10:18:42+09:00","更新日時":"2025-02-15T10:19:05+09:00"},{"監査ログID":"rec-20250215-audit-001","イベント種別":"脆弱性検出","ユーザーID":"rec-user-0847","対象リソース種別":"脆弱性","対象リソースID":"rec-vuln-batch-2025-02","操作内容":"2025年2月定期セキュリティ監査により、リスク評価の結果、低リスク脆弱性23件が一括却下された。対象：CVE-2024-1847、CVE-2024-1848、CVE-2024-1849ほか。却下理由：ビジネスリスク許容範囲内、修正コスト対効果不適切、代替対策により軽減確認。","変更前値":"ステータス：未処理、重要度：低","変更後値":"ステータス：却下、重要度：低、却下日時：2025-02-15T14:32:00Z、却下者：佐藤美咲","IPアドレス":"192.168.100.45","セッションID":"sess-2025021514-7a8c9d","重要度":"中","ステータス":"完了","作成日時":"2025-02-15T14:32:15Z","更新日時":"2025-02-15T14:32:15Z"},{"監査ログID":"rec-20250215-00847","イベント種別":"コンプライアンス設定変更","ユーザーID":"rec-user-00156","対象リソース種別":"コンプライアンス認証設定","対象リソースID":"rec-compliance-00089","操作内容":"ISO27001認証ステータスの更新及び監査実施予定日の変更を実行しました","変更前値":"{\"認証ステータス\": \"更新待機中\", \"監査実施予定日\": \"2025-04-15\", \"認証有効期限\": \"2024-12-31\"}","変更後値":"{\"認証ステータス\": \"認証取得済み\", \"監査実施予定日\": \"2025-06-20\", \"認証有効期限\": \"2027-12-31\"}","IPアドレス":"192.168.1.45","セッションID":"sess-a7f2d9c1e4b6","重要度":"高","ステータス":"完了","作成日時":"2025-02-15 14:32:18","更新日時":"2025-02-15 14:35:42"},{"監査ログID":"rec-20250215-001","イベント種別":"ユーザーアクション","ユーザーID":"rec-user-4782","対象リソース種別":"セッション認証","対象リソースID":"rec-session-9156","操作内容":"外部IPアドレス(210.156.89.34)からの異常なログイン試行を検出。短時間に複数回のパスワード入力エラーが発生。セキュリティシステムにより自動ブロック実施。","変更前値":"ログイン状態: 未認証","変更後値":"ログイン状態: ブロック(疑わしいアクティビティ)","IPアドレス":"210.156.89.34","セッションID":"sess_8b7e2f4c9a1d5e6","重要度":"緊急","ステータス":"処理中","作成日時":"2025-02-15 03:47:23","更新日時":"2025-02-15 03:52:18"},{"監査ログID":"rec-20250115-0847","イベント種別":"スキャン実行","ユーザーID":"rec-user-0324","対象リソース種別":"スキャン結果","対象リソースID":"rec-scan-5891","操作内容":"セキュリティパッチ適用後の脆弱性再スキャンを実行。パッチ適用前のスキャン結果（脆弱性件数：23件）と比較して、パッチ適用後のスキャン結果で脆弱性件数が18件に減少したことを確認。CVE-2024-1234、CVE-2024-5678の2件の高リスク脆弱性が解決されたことを検証。","変更前値":"脆弱性件数: 23件（高: 2件、中: 8件、低: 13件）","変更後値":"脆弱性件数: 18件（高: 0件、中: 6件、低: 12件）","IPアドレス":"192.168.10.45","セッションID":"sess-8d2f9c1e7a4b","重要度":"高","ステータス":"完了","作成日時":"2025-01-15 08:47:32","更新日時":"2025-01-15 09:12:18"},{"監査ログID":"rec-20250215-8472","イベント種別":"アクセス権限変更","ユーザーID":"rec-user-0156","対象リソース種別":"脆弱性管理システム","対象リソースID":"rec-resource-0892","操作内容":"ユーザー『佐藤花子』に対して、脆弱性管理システムへの閲覧・編集権限を削除しました。権限削除理由は部門異動に伴う業務変更です。削除対象権限：VULN_VIEW、VULN_EDIT、REPORT_EXPORT。","変更前値":"権限レベル: 管理者（ADMIN）、有効期限: 2025-12-31、スコープ: 全脆弱性、レポート出力可","変更後値":"権限レベル: なし（削除）、有効期限: 2025-02-15、スコープ: アクセス不可、レポート出力不可","IPアドレス":"192.168.45.78","セッションID":"sess-admin-20250215-5634","重要度":"高","ステータス":"完了","作成日時":"2025-02-15 14:32:18","更新日時":"2025-02-15 14:35:02"},{"監査ログID":"rec-20250115-0847","イベント種別":"脆弱性検出","ユーザーID":"rec-sys-auto","対象リソース種別":"脆弱性","対象リソースID":"rec-vuln-2025-0342","操作内容":"定期脆弱性スキャン(毎週日曜02:00実行)により、WebアプリケーションサーバーのOpenSSL脆弱性CVE-2024-50264が検出され、システムに自動登録されました。対象サーバー: prod-web-server-03、重要度: 高、CVSS v3.1スコア: 7.5","変更前値":null,"変更後値":"脆弱性ID: rec-vuln-2025-0342, 脆弱性名: OpenSSL Timing Attack脆弱性, 検出日時: 2025-01-15T02:47:33Z, ステータス: 未対応","IPアドレス":"192.168.100.50","セッションID":"auto-scan-session-20250115","重要度":"高","ステータス":"完了","作成日時":"2025-01-15T02:47:45+09:00","更新日時":"2025-01-15T02:47:45+09:00"}],"レポート":[{"レポートID":"rec-20240201-001","レポート名":"2024年1月度 セキュリティ月次サマリーレポート","レポート種別":"月次サマリー","対象期間開始日":"2024-01-01T00:00:00+09:00","対象期間終了日":"2024-01-31T23:59:59+09:00","発見脆弱性数":47,"対応完了脆弱性数":32,"インシデント発生件数":3,"重大度別集計":"緊急(Critical): 2件、高(High): 12件、中(Medium): 23件、低(Low): 10件。緊急度の脆弱性は全て対応完了。高度の脆弱性は10件対応完了、2件対応中。","レポート内容":"1月度のセキュリティ運用概況：本月は合計47件の脆弱性を検出し、うち32件(68%)の対応が完了しました。セキュリティインシデントは3件発生し、全て軽微なレベルで迅速に対応済みです。脆弱性スキャンの結果、社内システムの定期パッチ適用により緊急度の高い脆弱性への対応は良好に進捗しています。引き続き、残存する中度脆弱性への対応を2月中に完了予定です。従業員のセキュリティ意識向上研修を実施し、フィッシング対策の強化を行いました。","ステータス":"配布済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0102","配布対象者リスト":"代表取締役、CFO、CIO、経営企画室、監査役、情報セキュリティ委員会メンバー","作成日時":"2024-02-05T09:30:00+09:00","更新日時":"2024-02-07T14:15:00+09:00","承認日時":"2024-02-07T16:45:00+09:00","配布日時":"2024-02-08T08:00:00+09:00"},{"レポートID":"rec-20250215-001","レポート名":"本社ネットワーク重大度高脆弱性インシデント報告書（2025年2月）","レポート種別":"インシデント報告","対象期間開始日":"2025-02-10T09:00:00+09:00","対象期間終了日":"2025-02-14T17:30:00+09:00","発見脆弱性数":7,"対応完了脆弱性数":2,"インシデント発生件数":1,"重大度別集計":"【重大度高】7件：CVE-2025-1234（リモートコード実行、CVSS 9.8）、CVE-2025-5678（認証回避、CVSS 9.1）、CVE-2025-9012（権限昇格、CVSS 8.8）、CVE-2025-3456（情報漏洩、CVSS 8.5）、CVE-2025-7890（DoS攻撃、CVSS 8.2）、CVE-2025-2345（SQLインジェクション、CVSS 8.9）、CVE-2025-6789（クロスサイトスクリプティング、CVSS 8.1）","レポート内容":"2025年2月10日、本社ネットワークのセキュリティスキャンにより、Webアプリケーションサーバーに重大度高の脆弱性7件が検出されました。特にCVE-2025-1234は外部からのリモートコード実行が可能な状態にあり、即座の対応が必要です。2月12日夜間、当該サーバーへの不正アクセス試行が1件検知されましたが、ファイアウォール設定により侵入は防止されました。現在、脆弱性対応チームにより緊急パッチの適用準備が進められており、2月16日の本番環境への適用を予定しています。","ステータス":"承認済み","作成者ID":"usr-20240101-0847","承認者ID":"usr-20240101-0523","配布対象者リスト":"情報セキュリティ部門（部長：山田花子）、本社システム部門（部長：佐藤次郎）、経営管理室（室長：鈴木美咲）、監査室（室長：伊藤健一）","作成日時":"2025-02-14T11:20:00+09:00","更新日時":"2025-02-14T16:45:00+09:00","承認日時":"2025-02-14T17:15:00+09:00","配布日時":"2025-02-15T09:00:00+09:00"},{"レポートID":"rec-20250115-001","レポート名":"2024年第4四半期 外部ペネトレーションテスト結果報告書","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2024-10-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":38,"インシデント発生件数":2,"重大度別集計":"緊急(CVSS 9.0以上):3件、高(CVSS 7.0-8.9):12件、中(CVSS 4.0-6.9):24件、低(CVSS 0.1-3.9):8件","レポート内容":"本四半期の外部ペネトレーションテストにより、47件の脆弱性が検出されました。主な発見事項として、Webアプリケーションの入力値検証不備による SQL インジェクション脆弱性3件、認証機構の実装不備2件が確認されました。インシデント発生件数は2件で、いずれも中程度の脆弱性に起因するものです。対応状況は良好で、緊急度の高い脆弱性については全て対応が完了しております。引き続き、残存する9件の脆弱性について次四半期中の対応完了を推奨します。","ステータス":"配布済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0102","配布対象者リスト":"情報セキュリティ委員会、システム運用部門、経営層","作成日時":"2025-01-10T14:30:00Z","更新日時":"2025-01-15T09:45:00Z","承認日時":"2025-01-14T16:20:00Z","配布日時":"2025-01-15T10:00:00Z"},{"レポートID":"rec-001","レポート名":"2024年10月～12月 セキュリティ対応状況改善進捗報告書","レポート種別":"月次サマリー","対象期間開始日":"2024-10-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":38,"インシデント発生件数":3,"重大度別集計":"緊急度：高(CVSS 9.0以上)：3件、高(CVSS 7.0～8.9)：12件、中(CVSS 4.0～6.9)：22件、低(CVSS 0.1～3.9)：10件。前四半期比で高度脆弱性の発見が15%減少。対応完了率は80.9%で前期比8.2ポイント向上。","レポート内容":"本報告書は過去3ヶ月間のセキュリティ対応状況と改善進捗をまとめたものです。\n\n【主要な成果】\n・脆弱性対応完了率が72.7%から80.9%に改善\n・緊急度高の脆弱性は3件すべて対応完了\n・インシデント対応時間が平均4.2時間から2.8時間に短縮\n\n【課題と対策】\n・未対応脆弱性9件については、システム更新スケジュール調整により2025年1月末までの完了を予定\n・インシデント3件（フィッシング2件、不正アクセス試行1件）については、従業員セキュリティ教育の強化と多要素認証導入により再発防止を図る\n・ペネトレーションテスト結果に基づき、ファイアウォールルール見直しを実施\n\n【推奨事項】\n1. 継続的な脆弱性スキャンの実施と優先度付けプロセスの確立\n2. セキュリティ意識向上研修の四半期ごと実施\n3. インシデント対応手順書の更新と訓練実施\n4. クラウド環境のセキュリティ設定監査の実施","ステータス":"承認済み","作成者ID":"rec-u-045","承認者ID":"rec-u-012","配布対象者リスト":"経営層（CTO、CISO）、情報システム部門全員、セキュリティ委員会メンバー、各部門長","作成日時":"2025-01-06T10:30:00Z","更新日時":"2025-01-08T14:15:00Z","承認日時":"2025-01-09T09:45:00Z","配布日時":"2025-01-10T08:00:00Z"},{"レポートID":"rec-20250115-audit-001","レポート名":"2024年度情報セキュリティ監査対応レポート","レポート種別":"監査対応報告","対象期間開始日":"2024-01-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":43,"インシデント発生件数":3,"重大度別集計":"緊急度A（Critical）: 2件、緊急度B（High）: 8件、中程度（Medium）: 18件、低程度（Low）: 19件。対応率: 緊急度A 100%（2/2）、緊急度B 87.5%（7/8）、中程度 88.9%（16/18）、低程度 84.2%（16/19）","レポート内容":"本レポートは外部監査法人による2024年度情報セキュリティ監査への対応状況をまとめたものです。対象期間中、脆弱性スキャンにより47件の脆弱性を発見し、そのうち43件について対応を完了いたしました。インシデントについては3件の発生を報告し、全て適切に対応済みです。緊急度Aの脆弱性については100%の対応完了率を達成しており、セキュリティ体制の継続的な強化に努めています。未対応の脆弱性4件については、対応スケジュールを別紙にて提示いたします。","ステータス":"配布済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0312","配布対象者リスト":"監査法人セキュリティ監査部（山田太郎部長、佐藤次郎シニアマネージャー）、当社取締役会、情報セキュリティ委員会、経営企画室","作成日時":"2025-01-10T09:30:00Z","更新日時":"2025-01-14T16:45:00Z","承認日時":"2025-01-15T10:20:00Z","配布日時":"2025-01-15T14:00:00Z"},{"レポートID":"rec-20250115-001","レポート名":"本番環境中程度脆弱性一括対応完了報告書（2025年1月）","レポート種別":"対応状況","対象期間開始日":"2024-12-01T00:00:00Z","対象期間終了日":"2025-01-15T23:59:59Z","発見脆弱性数":23,"対応完了脆弱性数":23,"インシデント発生件数":2,"重大度別集計":"高: 0件、中: 23件、低: 0件。対象期間内に検出された23件の中程度脆弱性について、全て対応完了。主な脆弱性カテゴリはSQL インジェクション対策不備（8件）、認証機構の不備（7件）、暗号化通信未実装（5件）、入力値検証不足（3件）。","レポート内容":"本報告書は、本番環境で検出された中程度脆弱性23件の一括対応完了について報告するものです。2024年12月から2025年1月にかけて実施した対応作業により、全23件の脆弱性について修正パッチの適用、コード改善、設定変更を完了いたしました。対応期間中、2件のセキュリティインシデントが発生しましたが、いずれも脆弱性の悪用ではなく、アクセス制御の一時的な不具合が原因でした。今後は、本報告書の内容を踏まえ、定期的な脆弱性診断の実施と開発プロセスへのセキュリティレビュー導入を推奨いたします。","ステータス":"配布済み","作成者ID":"rec-user-2847","承認者ID":"rec-user-1563","配布対象者リスト":"情報セキュリティ委員会、本番システム運用チーム、開発部門長、経営層","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-16T14:22:00Z","承認日時":"2025-01-16T11:45:00Z","配布日時":"2025-01-16T16:00:00Z"},{"レポートID":"rec-20250115-001","レポート名":"2025年1月 クラウドインフラストラクチャ月次コンプライアンスチェック結果","レポート種別":"月次サマリー","対象期間開始日":"2025-01-01T00:00:00Z","対象期間終了日":"2025-01-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":38,"インシデント発生件数":2,"重大度別集計":"Critical: 3件, High: 12件, Medium: 22件, Low: 10件。Criticalレベルの脆弱性については全て対応完了。Highレベルについては10件対応完了、2件対応中。","レポート内容":"本月次チェックではAWS環境およびAzure環境を対象に包括的なセキュリティスキャンを実施しました。IAMポリシーの過剰権限付与が3件、暗号化設定不備が8件検出されました。インシデントとしてはS3バケットの一時的な公開設定ミスと、VPC Flow Logsの無効化が報告されています。全体的なコンプライアンス達成率は80.9%で、前月比で2.3ポイント向上しました。引き続き定期的なアクセス権限レビューと自動スキャンの強化を推奨します。","ステータス":"配布済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0512","配布対象者リスト":"セキュリティ部門責任者: 山田花子、インフラストラクチャチーム: 佐藤次郎、中村美咲、経営層セキュリティ委員会、内部監査部門","作成日時":"2025-02-01T09:30:00Z","更新日時":"2025-02-03T14:15:00Z","承認日時":"2025-02-03T16:45:00Z","配布日時":"2025-02-04T08:00:00Z"},{"レポートID":"rec-20250215-001","レポート名":"2025年1月セキュリティインシデント多発原因分析レポート","レポート種別":"インシデント報告","対象期間開始日":"2025-01-01T00:00:00Z","対象期間終了日":"2025-01-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":28,"インシデント発生件数":12,"重大度別集計":"【Critical】3件（OS認証回避、データベース不正アクセス、ネットワーク侵入）【High】8件（権限昇格、SQLインジェクション、クロスサイトスクリプティング）【Medium】18件（設定不備、暗号化不足）【Low】18件（情報開示、ログ記録不備）","レポート内容":"1月は過去12ヶ月で最多となる12件のセキュリティインシデントが発生しました。原因分析の結果、以下の3点が主要因と判明しました：(1)新規クラウド環境への移行に伴うセキュリティ設定の不備（5件）、(2)従業員へのセキュリティ教育不足による社会工学的攻撃への脆弱性（4件）、(3)脆弱性管理プロセスの遅延（3件）。対策として、クラウド環境の全面的なセキュリティ監査実施、全従業員向けセキュリティ意識向上研修の実施、脆弱性管理体制の強化と自動化ツール導入を推奨します。","ステータス":"承認済み","作成者ID":"rec-user-0847","承認者ID":"rec-user-0523","配布対象者リスト":"経営層（CEO、CFO）、セキュリティ委員会委員長、情報セキュリティ部長、各部門長（営業部、システム部、企画部）、外部監査人","作成日時":"2025-02-03T09:30:00Z","更新日時":"2025-02-10T14:15:00Z","承認日時":"2025-02-12T11:00:00Z","配布日時":"2025-02-14T08:00:00Z"},{"レポートID":"rec-20250115-iso27001-h1","レポート名":"ISO27001認証更新に向けた2024年度下半期セキュリティ評価報告書","レポート種別":"月次サマリー","対象期間開始日":"2024-07-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":43,"インシデント発生件数":2,"重大度別集計":"【重大】3件、【高】12件、【中】18件、【低】14件。重大度別の対応状況：重大3件は全て対応完了、高リスク12件中11件対応完了（1件は追加検証中）、中リスク18件中18件対応完了、低リスク14件中11件対応完了（3件は優先度低として計画中）","レポート内容":"ISO27001認証更新審査に向け、2024年度下半期のセキュリティ態勢を総合評価した。脆弱性管理プロセスは適切に機能しており、発見された47件の脆弱性のうち43件（91.5%）の対応が完了している。インシデント対応体制の強化により、検出から対応までの平均時間が前期比で35%短縮された。ただし、クラウドインフラのアクセス制御ログ監視体制については、さらなる自動化の余地がある。全体的には認証更新基準を満たす水準にあると判断される。","ステータス":"承認済み","作成者ID":"usr-20240601-yamada","承認者ID":"usr-20240315-suzuki","配布対象者リスト":"経営層（代表取締役、CFO）、情報セキュリティ委員会メンバー、各部門長（営業、技術、人事、財務）、ISO27001推進チーム、内部監査部門","作成日時":"2025-01-10T09:30:00Z","更新日時":"2025-01-15T14:20:00Z","承認日時":"2025-01-15T16:45:00Z","配布日時":"2025-01-16T08:00:00Z"},{"レポートID":"rec-20250115-dev-vuln-001","レポート名":"開発環境脆弱性修正状況進捗トラッキングレポート（2025年1月）","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2025-01-01T00:00:00Z","対象期間終了日":"2025-01-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":32,"インシデント発生件数":2,"重大度別集計":"Critical: 3件（対応完了3件）、High: 12件（対応完了11件、対応中1件）、Medium: 22件（対応完了15件、対応中7件）、Low: 10件（対応完了3件、対応中7件）","レポート内容":"開発環境におけるセキュリティスキャンの結果、1月度は計47件の脆弱性が検出されました。このうち32件（68.1%）の修正が完了し、15件が現在対応中です。Critical脆弱性3件については全て修正完了し、本番環境への昇格に向けた検証を進めています。High以上の脆弱性については優先度を上げて対応を継続しており、月末までに90%以上の修正完了を目指しています。検出されたインシデントは認証情報の誤設定2件で、いずれも即座に対応・改善されています。開発チームの脆弱性対応意識が向上しており、修正リードタイムは前月比で平均3.2日短縮されました。","ステータス":"配布済み","作成者ID":"rec-user-2024-001","承認者ID":"rec-user-2024-015","配布対象者リスト":"開発部長 山田花子、セキュリティ責任者 佐藤次郎、開発チームリード 鈴木美咲、情報セキュリティ委員会","作成日時":"2025-02-01T09:30:00Z","更新日時":"2025-02-03T14:15:00Z","承認日時":"2025-02-03T16:45:00Z","配布日時":"2025-02-04T08:00:00Z"}],"対応状況履歴":[{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-002","変更前状態":"未対応","変更後状態":"初期対応中","対応内容":"Critical脆弱性(CVE-2024-12345)が報告されました。影響範囲の確認および初期調査を開始いたします。本脆弱性はシステムの認証機構に関わるものであり、緊急対応が必要と判断されます。","対応者ID":"rec-003","作成日時":"2024-11-15T09:30:00+09:00","備考":"報告者：山田セキュリティ研究所。CVSS Score 9.8。本社システム部長・鈴木一郎に報告済み。対応チームの招集完了。"},{"対応状況履歴ID":"rec-0847-5f2b-9c1d","脆弱性対応チケットID":"rec-0523-3a7e-4b6f","変更前状態":"未確認","変更後状態":"確認中","対応内容":"セキュリティチームにて脆弱性の検証作業を開始。対象システム(Webアプリケーション)の影響範囲を調査し、CVE-2024-12847に該当することを確認。本番環境での再現性を検証中。","対応者ID":"rec-0192-8c4a-2e7f","作成日時":"2024-11-15T09:30:45+09:00","備考":"検証担当者：佐藤健一。予想される修正難度は中程度。修正パッチの入手状況を並行して確認中。次回レビュー予定日：2024年11月22日"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-0847","変更前状態":"未対応","変更後状態":"進行中","対応内容":"開発チームに修正対応を割り当てました。SQLインジェクション脆弱性の修正について、バックエンド開発チーム（リーダー：山田太郎）にタスクを配置し、実装スケジュールを2025年2月15日までに設定しました。","対応者ID":"rec-1203","作成日時":"2025-01-22T09:30:00+09:00","備考":"優先度：高。顧客システムの本番環境に影響を与える可能性があるため、早急な対応が必要です。開発チームとの初回ミーティングは2025年1月23日に実施予定。"},{"対応状況履歴ID":"rec-001-a7f2-4c9e-b1d3","脆弱性対応チケットID":"rec-002-e5b8-3a2f-c7d1","変更前状態":"対応中","変更後状態":"一時的緩和実装済","対応内容":"SQLインジェクション脆弱性（CVSS 7.5）に対して、入力値の厳密なバリデーション処理をアプリケーション層に追加実装しました。具体的には、ユーザー入力に対してホワイトリスト方式の検証ロジックを導入し、許可された文字種のみを受け入れるように制御しました。また、データベースクエリの実行時にはプリペアドステートメントを使用することで、SQLコマンドの混入を防止する二重の対策を講じています。本対応は暫定的な緩和策であり、今後の定期メンテナンスサイクルでORMの導入による根本的な改善を予定しています。","対応者ID":"rec-003-f2a1-5b7c-d8e9","作成日時":"2024-11-15T14:32:47+09:00","備考":"対応者: 山田花子（開発チームリード）。テスト環境での動作確認済み。本番環境への適用は2024年11月22日の定期メンテナンスウィンドウで実施予定。セキュリティチーム（佐藤健一）による検証レビュー待ち。"},{"対応状況履歴ID":"rec-001-20250115-0847","脆弱性対応チケットID":"rec-vuln-2024-1203-5621","変更前状態":"テスト中","変更後状態":"本番適用準備中","対応内容":"修正パッチ(CVE-2024-12345対応)の結合テスト環境でのテストが完了しました。機能テスト、回帰テスト、パフォーマンステストすべてで合格基準を達成。本番環境への適用に向けて、適用計画書の作成とリスク評価を開始します。適用予定日時は2025年1月22日(水)22:00～23:30の保守時間帯です。","対応者ID":"rec-user-2024-0156","作成日時":"2025-01-15 08:47:32","備考":"テスト結果報告書(DOC-2025-001156)を参照。本番適用前に関係部門への通知と承認取得が必要。適用時の自動ロールバック手順も確認済み。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-042","変更前状態":"対応中","変更後状態":"検証待ち","対応内容":"本番環境(ap-prod-01～ap-prod-03)に対してセキュリティパッチ(CVE-2024-12345対応版)を適用完了。全3台のアプリケーションサーバーにおいて脆弱性スキャンツール(Nessus)による事前検証を実施し、対象の脆弱性が解消されたことを確認。本番環境での動作確認テストも実施し、既存機能への影響がないことを確認した。","対応者ID":"rec-015","作成日時":"2024-11-22T16:45:30+09:00","備考":"鈴木花子さんによる検証作業の実施をお願いします。テスト環境での検証結果は別紙「検証レポート_20241122.pdf」を参照。本番適用は計画通り完了し、ダウンタイムはなし。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-002","変更前状態":"修正中","変更後状態":"解決済み","対応内容":"セキュリティチームによる修正検証が完了しました。本番環境へのパッチ適用を確認し、脆弱性スキャンツール(OpenVAS)による再検査を実施した結果、対象の脆弱性(CVE-2024-12345)は完全に解決されていることが確認されました。修正内容はWebアプリケーションのSQLインジェクション対策としてプリペアドステートメントの導入、およびセッション管理の強化です。","対応者ID":"rec-003","作成日時":"2024-12-15T14:30:00+09:00","備考":"修正検証レポートはセキュリティポータルに保存済み(Report_ID: SEC-2024-1547)。本件は2024年度第4四半期の脆弱性対応完了案件として報告予定。"},{"対応状況履歴ID":"rec-001-a7f3-4b2e-9c1d","脆弱性対応チケットID":"rec-vuln-2024-0847","変更前状態":"対応実施中","変更後状態":"承認待ち","対応内容":"セキュリティパッチの適用完了。対象システムはWindows Server 2019で、CVE-2024-21894の脆弱性に対応。パッチレベルを4月度に更新。テスト環境での動作確認を完了し、本番環境への適用準備が整った。","対応者ID":"rec-user-yamada-0521","作成日時":"2024-04-15T14:32:00+09:00","備考":"情報セキュリティ部門による最終確認が必要。適用前のシステムバックアップは完了済み。ダウンタイムは予定なし。承認者：佐藤花子（セキュリティ責任者）"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-a7f3","変更前状態":"対応中","変更後状態":"優先対応中","対応内容":"CVSS v3.1スコアの再評価により、重大度が7.2から8.6に上昇したため、優先度を『中』から『高』に引き上げた。対応期限を2025年2月15日から2025年2月5日に変更し、チーム内の対応リソースを増配置した。","対応者ID":"rec-b2e1","作成日時":"2025-01-28T14:35:22+09:00","備考":"セキュリティベンダーの新規公開情報により、該当脆弱性の悪用事例が報告されたため、再評価を実施。本番環境への影響度が当初予想より大きいと判定。対応チーム長・佐藤美咲と協議の上、優先度変更を決定。"},{"対応状況履歴ID":"rec-20250214-001","脆弱性対応チケットID":"rec-20250101-vulnticket-042","変更前状態":"保留中","変更後状態":"再開","対応内容":"セキュリティ委員会より対応期限延長の承認を取得。当初の期限2025年2月28日から2025年3月31日への延長が認可された。これに伴い、チケットステータスを保留中から再開に変更し、開発チームによる脆弱性修正作業を再開する。","対応者ID":"rec-user-佐藤花子","作成日時":"2025-02-14 10:45:00","備考":"承認者：山田次郎（セキュリティ委員会委員長）。延長理由：関連する他システムの統合テスト完了待ち。修正内容はOSSライブラリのバージョンアップによるXXE脆弱性の排除。"}],"認証基準":[{"認証基準ID":"rec-001","基準コード":"AUTH-MFA-001","基準名":"全ユーザー対象の多要素認証(MFA)による本人確認要件","説明":"情報セキュリティの強化を目的として、全ユーザーを対象に多要素認証(MFA)の導入を義務化する。パスワード単独での認証では不十分であり、第二要素（OTP、生体認証、セキュリティキーなど）の組み合わせにより本人確認の確実性を向上させる。本要件は全社員、契約社員、派遣社員、外部アクセス者に適用される。","カテゴリ":"多要素認証","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"1. 全ユーザーは社内システムへのログイン時にMFAを有効化すること。2. 第一要素はパスワード、第二要素は以下のいずれかとする：時間ベースのワンタイムパスワード(TOTP)、SMS送信によるOTP、生体認証(指紋・顔認証)、またはハードウェアセキュリティキー。3. MFA設定の初期化から30日以内に全ユーザーが登録完了すること。4. 紛失・変更時の再設定手続きを24時間以内に完了すること。5. 管理者は月次でMFA有効化状況を監視し、未登録ユーザーに対して警告を発行すること。","コンプライアンス規格":"ISO27001、NIST Cybersecurity Framework、FISC安全基準","有効開始日":"2025-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-11-15T10:30:00Z","作成者":"佐藤花子","更新日時":"2024-12-10T14:45:00Z","更新者":"山田次郎"},{"認証基準ID":"rec-001","基準コード":"AUTH-ADM-PWD-001","基準名":"管理者権限ユーザーパスワード複雑性・定期変更基準","説明":"管理者権限を保有するユーザーに対し、システムセキュリティ侵害を防止するため、強力なパスワードポリシーの遵守を義務付ける。パスワードの複雑性要件と定期的な変更を通じて、不正アクセスリスクを最小化し、組織の重要資産を保護する。","カテゴリ":"アクセス制御","重要度レベル":"Critical","適用対象":"管理者","要件内容":"1. パスワード最小文字数: 14文字以上。2. 必須文字種: 大文字・小文字・数字・特殊文字（!@#$%^&*）をすべて含む。3. 変更周期: 90日以内に1回以上の変更。4. 変更履歴保持: 過去12回分のパスワードと同一内容での設定禁止。5. パスワード有効期限超過時は強制ロック。6. 初期パスワードは一時的なもので、初回ログイン時に必ず変更を強制。7. 連続した数字・文字列（例：12345、abcde）の使用禁止。","コンプライアンス規格":"ISO27001, NIST SP 800-63B, 個人情報保護方針","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田花子","更新日時":"2024-11-20T14:15:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"ENC-TLS-001","基準名":"機密データアクセス時のTLS暗号化通信強制基準","説明":"機密データベースおよび個人情報を含むシステムへのアクセスにおいて、TLS 1.2以上による暗号化通信を強制し、平文通信を禁止する。本基準はデータ保護規制（GDPR、個人情報保護法）への準拠およびサイバーセキュリティ対策の強化を目的とする。全社員、契約社員、外部パートナーが対象。","カテゴリ":"暗号化","重要度レベル":"Critical","適用対象":"全ユーザー、管理者、外部パートナー","要件内容":"1. 機密データへのアクセスはTLS 1.2以上で暗号化されたHTTPS接続のみ許可\n2. HTTP接続は自動的にHTTPSにリダイレクト\n3. 証明書は信頼された認証局から取得し、有効期限内であること\n4. TLSハンドシェイク時の暗号スイートはNIST推奨のものを使用\n5. 定期的な脆弱性診断（四半期ごと）を実施\n6. 違反検知時はアクセスログに記録し、セキュリティチームに通知","コンプライアンス規格":"ISO27001、NIST Cybersecurity Framework、GDPR","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"佐藤花子","更新日時":"2024-12-20T14:15:00Z","更新者":"鈴木次郎"},{"認証基準ID":"rec-001","基準コード":"AUDIT-LOG-001","基準名":"監査ログの記録・保管・改ざん防止基準","説明":"システムにおけるすべてのユーザーアクション、管理者操作、セキュリティイベントを監査ログとして記録し、改ざん防止措置を講じた上で適切に保管することで、コンプライアンス要件を満たし、セキュリティインシデント発生時の原因究明を可能とする。本基準は全社システムに適用される。","カテゴリ":"監査ログ","重要度レベル":"Critical","適用対象":"全ユーザー、管理者、全システム","要件内容":"1. すべてのシステムアクセス、データ操作、権限変更を監査ログに記録すること。2. ログ記録には日時、ユーザーID、操作内容、対象リソース、結果を含むこと。3. ログファイルはタンパープルーフ（改ざん防止）機能を備えた専用ストレージに保管すること。4. ログ保管期間は最低3年間とし、法的要件に応じて延長すること。5. ログアクセス権限は最小権限の原則に基づき制限すること。6. 定期的なログ整合性チェック（ハッシュ値検証）を実施すること。7. ログ削除・変更操作については管理者の承認と二重認証を必須とすること。","コンプライアンス規格":"ISO27001、NIST SP 800-53、個人情報保護方針","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"鈴木花子","更新日時":"2024-11-20T14:45:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"AUTH-FIN-HR-001","基準名":"財務・人事部門向け多要素認証の実装基準","説明":"財務データおよび人事情報へのアクセスに対する追加認証レイヤーの導入。機密性の高い給与情報、決算データ、採用情報等を扱う財務部門および人事部門のユーザーに対して、パスワード認証に加えて生体認証またはハードウェアトークンによる二段階認証を義務付ける。本基準は2024年度の情報セキュリティ強化方針に基づき策定された。","カテゴリ":"多要素認証","重要度レベル":"Critical","適用対象":"財務部門、人事部門の全従業員および契約社員","要件内容":"1. 財務・人事システムへのログイン時に必ず多要素認証を実施する\n2. 認証方式は以下のいずれかを採用：(1)生体認証（指紋認証、顔認証）、(2)ハードウェアセキュリティキー、(3)ワンタイムパスワード（OTP）\n3. 認証失敗時は3回までとし、4回目以降は30分間ロックアウト\n4. 認証ログは最低1年間保持し、月次で監査対象とする\n5. リモートアクセス時はVPN接続に加えて多要素認証を必須とする\n6. 新規ユーザーの認証デバイス登録は情報セキュリティ部門による承認が必要","コンプライアンス規格":"ISO27001、個人情報保護方針、金融機関向けセキュリティ基準","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-02-15T09:30:00Z","作成者":"山田花子","更新日時":"2024-03-20T14:15:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-20250156","基準コード":"VENDOR-ACCESS-03","基準名":"外部ベンダー・派遣社員のアクセス権限最小化","説明":"外部ベンダーおよび派遣社員に対して、業務遂行に必要最小限のシステムアクセス権限のみを付与することを義務づける。契約期間終了時の即時権限剥奪、定期的な権限レビューを実施し、情報漏洩リスクを低減する。","カテゴリ":"アクセス制御","重要度レベル":"High","適用対象":"外部ベンダー、派遣社員、業務委託先","要件内容":"1. アクセス権限申請時に業務必要性の文書化を必須とする 2. 権限付与は職務に必要な最小限に限定（最小権限の原則） 3. 90日ごとの権限レビューと承認を実施 4. 契約終了日の翌営業日までに全システムへのアクセス権限を剥奪 5. VPN接続は多要素認証を必須とする 6. アクセスログは6ヶ月間保管し監査対象とする 7. 機密情報へのアクセスは禁止、例外は部長級以上の承認が必須","コンプライアンス規格":"ISO27001、NIST SP 800-53","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T09:30:00Z","作成者":"佐藤花子","更新日時":"2025-01-10T14:20:00Z","更新者":"山田次郎"},{"認証基準ID":"rec-001","基準コード":"SEC-EDU-001","基準名":"定期的なセキュリティ意識教育・研修の実施義務","説明":"全従業員を対象とした定期的なセキュリティ意識教育・研修の実施を義務化する基準。情報セキュリティの重要性、脅威の認識、適切な対応方法に関する知識習得を目的とする。年1回以上の実施を要件とし、新入社員には入社時研修として実施する。","カテゴリ":"セキュリティ意識向上","重要度レベル":"High","適用対象":"全ユーザー","要件内容":"1. 年1回以上のセキュリティ意識教育を実施すること。2. 新入社員は入社時に必ず実施すること。3. 研修内容はフィッシング対策、パスワード管理、情報保護、インシデント報告を含むこと。4. 研修実施記録（実施日時、参加者名簿、研修資料）を保管すること。5. 研修受講状況を四半期ごとに確認し、未受講者に対して督促すること。6. 研修実施後、理解度テストを実施し、合格基準を80点以上とすること。","コンプライアンス規格":"ISO27001、個人情報保護方針","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田太郎","更新日時":"2024-10-20T14:45:00Z","更新者":"佐藤花子"},{"認証基準ID":"rec-001-incident-response","基準コード":"INC-RPT-001","基準名":"インシデント報告・対応手順の標準化","説明":"セキュリティインシデント発生時における迅速かつ適切な報告体制と対応手順を確立する。インシデント検知から初期対応、エスカレーション、復旧までの各段階における責任者、連絡先、実施内容を明確に定義し、組織全体の対応能力を強化する。本基準は全部門のセキュリティインシデント対応に適用される。","カテゴリ":"インシデント管理","重要度レベル":"Critical","適用対象":"全ユーザー、システム管理者、情報セキュリティチーム","要件内容":"1. インシデント検知時の初期報告は30分以内に情報セキュリティ部門へ報告すること。2. 報告フォーマットは統一フォーム（別紙様式第3号）を使用し、事象内容・影響範囲・検知時刻を記載すること。3. 重要度レベル判定後、Critical/Highは1時間以内に経営層への報告を実施すること。4. インシデント対応チームの編成と各メンバーの役割分担を明確にすること。5. 対応状況は6時間ごとにステータスレポートとして記録すること。6. インシデント終結後30日以内に事後報告書を作成し、再発防止策を提示すること。","コンプライアンス規格":"ISO27035、NIST SP 800-61","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田花子","更新日時":"2024-12-10T14:45:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"AUDIT-LOG-001","基準名":"システムアクセスログ保管要件","説明":"セキュリティインシデント対応、コンプライアンス監査、不正アクセス調査の目的で、全システムのアクセスログを最低90日間以上保管することを義務付ける。ログには認証成功・失敗、権限変更、重要操作の実行記録を含める。","カテゴリ":"監査ログ","重要度レベル":"High","適用対象":"全ユーザー","要件内容":"1. 全システムアクセスログを90日以上保管すること\n2. ログには以下を記録：ユーザーID、アクセス日時、操作内容、IPアドレス、認証結果\n3. ログの改ざん防止措置を実施すること\n4. ログ保管先は冗長化されたストレージとすること\n5. 月次でログ保管状況を確認し、記録を残すこと\n6. 90日超過分のログはアーカイブ保管すること","コンプライアンス規格":"ISO27001、FISC安全基準、個人情報保護方針","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"佐藤次郎","更新日時":"2024-12-20T14:45:00Z","更新者":"鈴木美咲"},{"認証基準ID":"rec-001-vuln-audit-2024","基準コード":"VULN-AUDIT-001","基準名":"年次脆弱性診断実施基準","説明":"組織全体のシステムとアプリケーションに対して、年1回以上の包括的な脆弱性診断を実施することを義務付ける基準。外部セキュリティ診断企業による第三者診断と内部診断の組み合わせにより、既知および未知の脆弱性を特定し、リスク評価と改善計画の策定を行う。本基準は情報セキュリティ基本方針に基づき、全システム資産の保護を目的とする。","カテゴリ":"脆弱性管理","重要度レベル":"High","適用対象":"全ユーザー・全システム管理者","要件内容":"1. 年1回以上の外部脆弱性診断を実施すること\n2. 診断範囲は本番環境の全Webアプリケーション、API、ネットワークインフラを含むこと\n3. 診断結果報告書を30日以内に経営層へ報告すること\n4. 重大度Critical/Highの脆弱性は90日以内に改善すること\n5. 診断実施前に診断スコープ、方法論を文書化し、承認を得ること\n6. 診断後の改善状況を追跡管理し、3ヶ月後の再診断を実施すること","コンプライアンス規格":"ISO27001,NIST SP 800-53,PCI-DSS","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-02-15T09:30:00Z","作成者":"山田花子","更新日時":"2024-03-20T14:15:00Z","更新者":"佐藤次郎"}],"認証対応状況":[{"認証対応状況ID":"rec-001-mfa-20250115","ユーザーID":"rec-user-002847","認証基準ID":"rec-std-mfa-001","対応状況":"進行中","対応期限日":"2025-02-28T23:59:59+09:00","完了日時":null,"対応内容":"Microsoft Authenticatorアプリケーションの導入およびテスト環境での検証実施中。全従業員への展開予定は2月中旬。現在、IT部門内での先行導入フェーズにて動作確認を進めており、2月初旬にはパイロットグループでの本番環境テストを予定している。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2025-01-15T14:22:00+09:00","作成者ID":"rec-user-000521","更新者ID":"rec-user-000521"},{"認証対応状況ID":"rec-001-20250115-iso27001-policy","ユーザーID":"rec-user-002-yamada","認証基準ID":"rec-standard-iso27001-001","対応状況":"完了","対応期限日":"2025-02-28T17:00:00+09:00","完了日時":"2025-01-15T14:30:00+09:00","対応内容":"ISO27001認証取得に向けた情報セキュリティポリシーの策定を完了しました。情報セキュリティの基本方針、アクセス管理、インシデント対応、従業員教育プログラムを含む包括的なポリシードキュメントを作成し、経営層による承認を取得いたしました。全従業員への周知研修も実施済みです。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-11-20T09:15:00+09:00","更新日時":"2025-01-15T14:30:00+09:00","作成者ID":"rec-user-001-suzuki","更新者ID":"rec-user-002-yamada"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"未対応","対応期限日":"2024-09-30T23:59:59+09:00","完了日時":null,"対応内容":"決済システムのアクセス制御対応は未実施。PCI-DSS v3.2.1の要件3.2.1に基づく管理者権限の厳格化、多要素認証の導入、アクセスログの記録が必要。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-08-15T10:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"例外","対応期限日":"2024-06-30T23:59:59Z","完了日時":"2024-05-15T14:30:00Z","対応内容":"GDPR個人情報保護規制への対応として、顧客データベースの暗号化処理を実施。ただし、レガシーシステムとの互換性維持が必要なため、段階的な移行計画を策定し、法務部門の承認を得た上で例外措置として運用継続。","リスク評価レベル":"高","例外承認フラグ":true,"例外承認者ID":"rec-004","例外理由":"当社のERP基幹システムは2030年までの契約期間があり、完全な暗号化対応には多大な開発コストと運用リスクが生じる。法務部門の判断により、現行のセキュリティ強化措置と定期的な監査体制の構築を条件に、24ヶ月の段階的対応計画を承認した。","作成日時":"2024-04-10T09:15:00Z","更新日時":"2024-05-15T14:30:00Z","作成者ID":"rec-005","更新者ID":"rec-006"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"完了","対応期限日":"2024-11-30T17:00:00+09:00","完了日時":"2024-11-15T14:30:00+09:00","対応内容":"内部監査で指摘されたWebアプリケーションの入力値検証脆弱性について、サーバーサイド入力値チェックロジックの実装およびテストを実施。SQLインジェクション対策としてプリペアドステートメントの導入、XSS対策としてHTML特殊文字のエスケープ処理を追加実装し、セキュリティテストで脆弱性が解消されたことを確認した。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-10-20T09:15:00+09:00","更新日時":"2024-11-15T14:35:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"完了","対応期限日":"2025-04-30T17:00:00+09:00","完了日時":"2025-03-15T14:30:00+09:00","対応内容":"新入社員向けセキュリティ教育プログラムを受講し、情報セキュリティポリシー、パスワード管理、フィッシング対策、データ取扱方法に関する全講義を修了。修了試験に合格（スコア: 92点）。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2025-04-01T09:00:00+09:00","更新日時":"2025-03-15T15:45:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-102","認証基準ID":"rec-203","対応状況":"進行中","対応期限日":"2025-03-31T23:59:59+09:00","完了日時":null,"対応内容":"取引先システムA社に対する内部統制監査を実施中。システムのアクセス制御、データ暗号化、ログ記録機能の確認を進めており、現在は第2段階の詳細調査を実施予定。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2025-01-22T14:15:00+09:00","作成者ID":"rec-501","更新者ID":"rec-502"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"完了","対応期限日":"2025-03-31T17:00:00+09:00","完了日時":"2025-02-14T14:30:00+09:00","対応内容":"クラウドサービス移行に伴うセキュリティ認証の再評価を実施。AWS環境へのシステム移行完了に伴い、ISO 27001及びPCI DSS v3.2.1の要件適合性を確認。ネットワークセグメンテーション、暗号化通信、アクセス制御、ログ監視の各項目について再評価を完了し、すべての基準を満たすことを確認した。","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-12-10T09:15:00+09:00","更新日時":"2025-02-14T14:35:00+09:00","作成者ID":"rec-004","更新者ID":"rec-005"},{"認証対応状況ID":"rec-20250047","ユーザーID":"rec-20250001","認証基準ID":"rec-20250012","対応状況":"進行中","対応期限日":"2025-02-28T23:59:59+09:00","完了日時":null,"対応内容":"定期的なアクセス権限レビューにて、営業部門ユーザーが財務システムへの不適切なアクセス権限を保有していることが検出されました。現在、権限の段階的な削除と業務上必要な最小限の権限への変更を進めています。IT部門との協議により、2月中の完了を目指しています。","リスク評価レベル":"中","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2025-01-15T09:30:00+09:00","更新日時":"2025-01-22T14:15:00+09:00","作成者ID":"rec-20250089","更新者ID":"rec-20250091"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-0847","認証基準ID":"rec-s-0312","対応状況":"例外","対応期限日":"2025-03-31T17:00:00+09:00","完了日時":null,"対応内容":"情報セキュリティ基準における多要素認証の導入について、既存システムとの互換性問題により技術的な実装期間が必要なため、経営層の承認のもと一時的な例外措置として認める。2025年3月31日までに完全実装を目指す。","リスク評価レベル":"高","例外承認フラグ":true,"例外承認者ID":"rec-u-0001","例外理由":"基幹システム全体のセキュリティ強化プロジェクト進行中。多要素認証の導入は2025年度第1四半期内に完了予定であり、それまでの間は現行のアクセス制御強化により対応する。取締役会で承認済み。","作成日時":"2024-11-15T09:30:00+09:00","更新日時":"2024-11-20T14:15:00+09:00","作成者ID":"rec-u-0523","更新者ID":"rec-u-0001"}],"コンプライアンス要件":[{"要件ID":"rec-001","要件名":"顧客データの暗号化対応","要件説明":"個人情報保護方針に基づき、顧客管理システムに保存されるすべての個人情報（氏名、住所、電話番号、メールアドレス、クレジットカード情報等）に対して、AES-256による暗号化を実装する必要があります。データベースレベルでの暗号化およびトランスポート層での暗号化を含めた包括的な対応を求めます。","要件カテゴリ":"プライバシー","適用対象":"営業部門、カスタマーサポート部門、顧客管理システム利用者","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001、個人情報保護方針第5条","作成日時":"2024-10-15T09:30:00Z","作成者":"user-uuid-001","更新日時":"2024-12-10T14:45:00Z","更新者":"user-uuid-002"},{"要件ID":"rec-001","要件名":"情報セキュリティポリシーの策定と周知","要件説明":"ISO27001認証取得に向けて、組織全体の情報セキュリティ基本方針を策定し、全従業員に対して周知・教育を実施する。情報資産の分類、アクセス制御、インシデント対応等の基本原則を明文化する必要がある。","要件カテゴリ":"法令遵守","適用対象":"全社員・全部門","優先度":"高","期限日":"2024-06-30T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001","作成日時":"2024-01-15T09:30:00Z","作成者":"usr-2024-001","更新日時":"2024-03-20T14:45:00Z","更新者":"usr-2024-002"},{"要件ID":"rec-001","要件名":"PCI-DSS v3.2.1準拠によるクレジットカード決済情報の暗号化","要件説明":"決済システムで取り扱うクレジットカード情報（PAN、CVV等）について、PCI-DSS v3.2.1の要件3.2および3.4に基づき、転送中および保存時の暗号化を実装する必要があります。特に顧客決済ゲートウェイとの通信、カード情報の保管データベースについてAES-256以上の暗号化を適用し、鍵管理体制を整備することが求められます。","要件カテゴリ":"セキュリティ","適用対象":"決済システム部門、EC事業部、システム運用チーム","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"PCI-DSS","作成日時":"2024-04-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2024-11-20T14:45:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"金融庁監督指針に基づく内部統制ドキュメント整備","要件説明":"金融庁の監督指針（平成29年金融庁監督指針）に対応し、経営陣による内部統制の基本方針、リスク管理体制、コンプライアンス体制に関するドキュメントを整備・更新する。特に、与信管理、市場リスク管理、システムリスク管理に関する内部統制ドキュメントの充実を図る。","要件カテゴリ":"法令遵守","適用対象":"全部門（特にリスク管理部、コンプライアンス部、営業部）","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"金融庁監督指針、内部監査基準","作成日時":"2024-04-15T09:30:00Z","作成者":"usr-20240415-001","更新日時":"2024-11-20T14:45:00Z","更新者":"usr-20241120-002"},{"要件ID":"rec-001","要件名":"GDPR個人データ削除・ポータビリティ機能の実装","要件説明":"EU一般データ保護規則（GDPR）第17条（削除権）および第20条（データポータビリティ権）に基づき、ユーザーが自身の個人データの削除を請求でき、また構造化された機械可読形式でのデータ移行を可能にする機能を実装する必要がある。本要件では、削除要求の処理フロー、データ抽出機能、監査ログ記録の整備を含む。","要件カテゴリ":"プライバシー","適用対象":"全社員・顧客管理システム・マーケティングプラットフォーム","優先度":"高","期限日":"2025-06-30T23:59:59Z","ステータス":"進行中","関連規格":"GDPR、ISO27701","作成日時":"2024-11-15T09:30:00Z","作成者":"user-uuid-0001","更新日時":"2025-01-20T14:45:30Z","更新者":"user-uuid-0002"},{"要件ID":"rec-001","要件名":"監査法人指摘事項への改善措置と証跡管理の実施","要件説明":"2024年度監査法人による監査で指摘された内部統制の不備に対し、改善措置を実施し、その実行状況および有効性の確認に関する証跡を適切に管理・保管することが求められている。具体的には、決算プロセスにおける承認フロー、取引記録の照合、月次決算の締切管理に関する改善措置の実施と、その実施状況を示す文書・ログ・メール等の証跡を整理し、監査対応可能な状態で保管すること。","要件カテゴリ":"監査","適用対象":"経理部門、財務管理システム、決算関連業務担当者","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"監査基準、内部統制フレームワーク","作成日時":"2024-06-15T09:30:00Z","作成者":"usr-a7f2b1c9","更新日時":"2024-12-20T14:45:30Z","更新者":"usr-d3e8f5a2"},{"要件ID":"rec-001","要件名":"取引先との秘密保持契約締結とアクセス権限管理","要件説明":"新規取引先との業務開始に伴い、機密情報の保護を目的とした秘密保持契約（NDA）の締結を必須とする。併せて、取引先担当者に対するシステムアクセス権限の付与時には、契約締結確認とセキュリティ教育受講を前提条件とし、アクセスレベルは最小権限の原則に基づいて設定すること。","要件カテゴリ":"法令遵守","適用対象":"営業部、システム管理部、全取引先","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001","作成日時":"2024-10-15T09:30:00Z","作成者":"usr-2024-001","更新日時":"2024-12-20T14:15:00Z","更新者":"usr-2024-002"},{"要件ID":"rec-001","要件名":"定期的なセキュリティ脆弱性診断の実施と報告","要件説明":"全社のシステムおよびネットワークインフラに対して、最低でも年2回の包括的なセキュリティ脆弱性診断を実施し、その結果を経営層および関連部門に報告する。診断結果に基づいて、発見された脆弱性に対する改善計画を策定し、リスク評価に従って対応を進める。","要件カテゴリ":"セキュリティ","適用対象":"情報システム部、ネットワーク運用チーム、全事業部門","優先度":"高","期限日":"2025-06-30T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001、NIST Cybersecurity Framework","作成日時":"2024-04-15T09:30:00Z","作成者":"usr-20240415-001","更新日時":"2024-11-20T14:45:00Z","更新者":"usr-20241120-002"},{"要件ID":"rec-001","要件名":"全従業員コンプライアンス研修の年1回実施と修了管理","要件説明":"法令遵守およびコンプライアンス意識向上を目的として、全従業員を対象にコンプライアンス研修を年1回以上実施し、修了状況を適切に管理・記録する必要がある。研修内容は法令遵守、情報セキュリティ、個人情報保護、ハラスメント防止等を含むものとする。","要件カテゴリ":"法令遵守","適用対象":"全従業員・契約社員・派遣社員","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001、個人情報保護方針","作成日時":"2024-04-15T09:30:00Z","作成者":"usr-admin-001","更新日時":"2024-11-20T14:15:00Z","更新者":"usr-compliance-002"},{"要件ID":"rec-001","要件名":"システムログの一定期間保管と監査証跡の確保","要件説明":"全社システムにおいて、セキュリティインシデント対応および法的証拠保全の観点から、システムログ、アクセスログ、操作ログを最低7年間保管する必要がある。監査人による事後検証を可能にするため、ログの改ざん防止機構を実装し、完全性と信頼性を確保すること。","要件カテゴリ":"監査","適用対象":"全社システム部門、情報セキュリティ部門、監査対象システム全般","優先度":"高","期限日":"2025-06-30T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001、金融庁ガイドライン、個人情報保護方針","作成日時":"2024-04-15T09:30:00Z","作成者":"rec-user-0042","更新日時":"2024-11-20T14:22:00Z","更新者":"rec-user-0078"}],"認証基準カテゴリ":[{"カテゴリID":"rec-001","カテゴリ名":"ISO27001","説明":"情報セキュリティマネジメントシステムの国際標準規格。組織の情報資産を保護するための包括的なセキュリティ管理体系を規定し、機密性・完全性・可用性の確保を目的とする。日本国内外の企業における認証取得の需要が高い。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-12-10T14:45:00+09:00","作成者":"rec-user-001","更新者":"rec-user-002"},{"カテゴリID":"rec-001","カテゴリ名":"GDPR","説明":"EU一般データ保護規則（General Data Protection Regulation）。EU域内の個人データ保護を規制し、企業による個人情報の取扱い、同意管理、データ主体の権利保護などを厳密に定める。EU域内で事業を行う全ての組織に適用される国際的な個人データ保護規制。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"カテゴリID":"rec-001","カテゴリ名":"個人情報保護法","説明":"日本国内における個人情報の保護に関する法律。個人情報取扱事業者が遵守すべき個人情報の適正な取扱い、本人の権利保護、および個人情報保護委員会による監督に関する基準。2022年改正法の要件を含む。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0003"},{"カテゴリID":"rec-001","カテゴリ名":"ISO/IEC 27001:2022","説明":"クラウドサービスプロバイダーの情報セキュリティマネジメントシステムに関する国際標準規格。データ保護、アクセス制御、暗号化、インシデント管理などの要件を定義し、クラウド環境におけるセキュリティ対策の実装と継続的改善を要求する。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-10T14:22:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0087"},{"カテゴリID":"rec-001","カテゴリ名":"医療機関個人情報保護基準","説明":"医療機関における患者の個人情報及び医療記録の保護を目的とした認証基準。個人情報保護法、医療法、感染症法等の関連法規への準拠を要求し、患者情報の機密性、完全性、可用性の確保を実現する。電子カルテシステムのセキュリティ管理、職員の情報セキュリティ教育、インシデント対応体制の構築を含む。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0087"},{"カテゴリID":"rec-001","カテゴリ名":"金融機関向け情報セキュリティ管理基準","説明":"金融庁の監督指針に基づき、銀行・証券会社・保険会社等の金融機関が実施すべき情報セキュリティ対策の基準。顧客情報の保護、システムの可用性・完全性の確保、サイバー攻撃への対応体制の構築を対象範囲とする。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"user-rec-0001","更新者":"user-rec-0002"},{"カテゴリID":"rec-001","カテゴリ名":"サプライチェーンセキュリティ基準","説明":"サプライチェーン全体における情報セキュリティ要件を定義するカテゴリ。仕入先、製造拠点、流通業者を含む関連企業間でのデータ保護、アクセス制御、インシデント報告体制の構築を対象とする。特に個人情報、営業秘密、製造技術情報の漏洩防止に重点を置く。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0087"},{"カテゴリID":"rec-001","カテゴリ名":"個人番号取扱事業者の安全管理措置基準","説明":"マイナンバー法に基づき、個人番号を取り扱う事業者が実施すべき安全管理措置の基準。特定個人情報保護方針の策定、従業員教育、アクセス制御、暗号化、監査ログ管理などの技術的・組織的措置を規定。対象は行政機関等個人番号利用事業者および民間事業者。","ステータス":"有効","表示順序":3,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-user-0042","更新者":"rec-user-0078"},{"カテゴリID":"rec-001","カテゴリ名":"個人情報保護方針認証基準","説明":"日本国内における個人情報の適切な取扱いと保護を実現するための認証基準。個人情報保護法（APPI）およびその施行規則に準拠し、個人情報取扱事業者が講ずべき安全管理措置、従業者監督、委託先管理などを規定する。金融機関、医療機関、通販事業者など全業種の事業者を対象とした国内標準基準である。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者":"rec-user-001","更新者":"rec-user-002"},{"カテゴリID":"rec-001","カテゴリ名":"NIST サイバーセキュリティフレームワーク","説明":"米国国立標準技術研究所（NIST）が策定したサイバーセキュリティフレームワーク。組織の情報セキュリティ成熟度を5段階で評価し、識別・防御・検知・対応・復旧の5つの機能を通じて、情報資産の保護体制を総合的に診断する基準。日本企業の情報セキュリティ体制構築における国際標準として採用。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"}]};
+window.AIVIC_PRESET_SEED = {"ユーザー":[{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"セキュリティ部門","役職":"部門長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:32:00","作成日時":"2024-04-01 10:00:00","更新日時":"2025-01-10 14:20:00","作成者":"system","更新者":"admin"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"インシデント対応チーム","役職":"シニア分析者","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2023-06-20 09:00:00","更新日時":"2025-01-10 10:15:00","作成者":"system","更新者":"鈴木花子"},{"ユーザーID":"rec-001","ユーザー名":"suzuki.yuki","メールアドレス":"suzuki.yuki@company.jp","部門":"内部監査部","役職":"監査スタッフ","ロール":"監査ログ閲覧者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:23:45","作成日時":"2024-04-10 14:30:00","更新日時":"2025-01-10 16:45:30","作成者":"admin","更新者":"system"},{"ユーザーID":"rec-001","ユーザー名":"yamada_hanako","メールアドレス":"hanako.yamada@company.jp","部門":"営業部","役職":"営業事務","ロール":"閲覧者","ステータス":"無効","最終ログイン日時":null,"作成日時":"2025-01-15 09:30:00","更新日時":"2025-01-15 14:20:00","作成者":"system","更新者":"佐藤次郎"},{"ユーザーID":"rec-001","ユーザー名":"yamamoto.security","メールアドレス":"yamamoto.takeshi@company.jp","部門":"情報セキュリティ部","役職":"情報セキュリティエンジニア","ロール":"分析者","ステータス":"休止","最終ログイン日時":"2024-12-15 17:45:00","作成日時":"2023-04-10 09:30:00","更新日時":"2024-12-20 14:20:00","作成者":"admin.user","更新者":"hr.system"},{"ユーザーID":"rec-001","ユーザー名":"tanaka.taro","メールアドレス":"tanaka.taro@company.jp","部門":"営業部","役職":"営業課長","ロール":"分析者","ステータス":"無効","最終ログイン日時":"2025-01-20 14:35:00","作成日時":"2022-04-01 09:00:00","更新日時":"2025-01-31 10:15:00","作成者":"system","更新者":"suzuki.hanako"},{"ユーザーID":"rec-001","ユーザー名":"audit_security_2024","メールアドレス":"audit@securitybody.jp","部門":"外部セキュリティ監査企業","役職":"セキュリティ監査担当者","ロール":"監査者","ステータス":"有効","最終ログイン日時":"2025-01-15 14:32:00","作成日時":"2024-11-20 09:15:00","更新日時":"2025-01-15 14:32:00","作成者":"システム","更新者":"佐藤花子"},{"ユーザーID":"rec-001","ユーザー名":"system_service_account","メールアドレス":"system-service@company.jp","部門":"システム管理部","役職":"サービスアカウント","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 03:45:22","作成日時":"2024-04-01 09:00:00","更新日時":"2025-01-15 03:45:22","作成者":"システム","更新者":"システム"},{"ユーザーID":"rec-001","ユーザー名":"suzuki_hanako","メールアドレス":"hanako.suzuki@company.jp","部門":"営業企画部","役職":"課長","ロール":"管理者","ステータス":"有効","最終ログイン日時":"2025-01-15 09:30:00","作成日時":"2023-06-20 14:15:00","更新日時":"2025-01-10 16:45:00","作成者":"system","更新者":"tanaka_taro"},{"ユーザーID":"rec-001","ユーザー名":"suzuki_hanako","メールアドレス":"suzuki.hanako@company.jp","部門":"営業企画部","役職":"主任","ロール":"分析者","ステータス":"有効","最終ログイン日時":"2024-02-14 09:23:00","作成日時":"2022-08-10 14:30:00","更新日時":"2024-02-14 09:23:00","作成者":"admin_system","更新者":"suzuki_hanako"}],"監査ログ":[{"監査ログID":"rec-001","イベント種別":"ユーザーアクション","ユーザーID":"rec-u-0042","対象リソース種別":"ユーザーセキュリティロール","対象リソースID":"rec-usr-0156","操作内容":"システムユーザー鈴木花子のセキュリティロールを標準ユーザーから管理者に昇格させた","変更前値":"標準ユーザー","変更後値":"管理者","IPアドレス":"192.168.1.105","セッションID":"sess-20250115-a7f2d9e1","重要度":"高","ステータス":"完了","作成日時":"2025-01-15T14:32:47+09:00","更新日時":"2025-01-15T14:32:47+09:00"},{"監査ログID":"rec-001-vuln-20250115-0847","イベント種別":"脆弱性検出","ユーザーID":"rec-user-2024-0156","対象リソース種別":"脆弱性","対象リソースID":"rec-vuln-2025-0089","操作内容":"自動脆弱性スキャンにより、対象サーバーのOpenSSLライブラリにCVSS 9.2の重大脆弱性が検出され、システムに登録されました。","変更前値":"なし","変更後値":"CVSS:9.2, CVE-2025-1234, リモートコード実行可能, 対象バージョン:OpenSSL 3.0.0～3.0.7","IPアドレス":"192.168.10.45","セッションID":"sess-auto-scan-20250115","重要度":"緊急","ステータス":"未処理","作成日時":"2025-01-15 08:47:32","更新日時":"2025-01-15 08:47:32"},{"監査ログID":"rec-001","イベント種別":"インシデント報告","ユーザーID":"rec-u-042","対象リソース種別":"インシデント","対象リソースID":"rec-i-0157","操作内容":"インシデントのステータスを未処理から処理中に変更","変更前値":"未処理","変更後値":"処理中","IPアドレス":"192.168.1.105","セッションID":"sess-2024-11-28-8b4a2f","重要度":"高","ステータス":"完了","作成日時":"2024-11-28T14:32:15+09:00","更新日時":"2024-11-28T14:32:15+09:00"},{"監査ログID":"rec-001","イベント種別":"ユーザーアクション","ユーザーID":"rec-u-0847","対象リソース種別":"管理画面","対象リソースID":"rec-admin-panel-001","操作内容":"通常と異なるIPアドレスからの管理画面ログイン試行を検出","変更前値":"ログイン状態: 未認証","変更後値":"ログイン状態: 多要素認証待機中","IPアドレス":"210.145.78.92","セッションID":"sess-2024-11-15-8743a9c2","重要度":"高","ステータス":"処理中","作成日時":"2024-11-15 14:32:17","更新日時":"2024-11-15 14:35:42"},{"監査ログID":"rec-001","イベント種別":"スキャン実行","ユーザーID":"rec-usr-0847","対象リソース種別":"スキャン結果","対象リソースID":"rec-scan-2024-1205","操作内容":"定期セキュリティスキャン(月次)が自動実行され、脆弱性スキャンが完了した","変更前値":"ステータス: 実行中","変更後値":"ステータス: 完了、検出件数: 12件（高: 2件、中: 5件、低: 5件）","IPアドレス":"192.168.100.50","セッションID":"sess-auto-scan-20250105","重要度":"高","ステータス":"完了","作成日時":"2025-01-05T02:15:00+09:00","更新日時":"2025-01-05T02:45:30+09:00"},{"監査ログID":"rec-001","イベント種別":"ユーザーアクション","ユーザーID":"rec-u-042","対象リソース種別":"監査ログ","対象リソースID":"rec-audit-batch-2024-q4","操作内容":"2024年Q4監査ログ一式をCSV形式でダウンロード","変更前値":null,"変更後値":null,"IPアドレス":"203.0.113.45","セッションID":"sess-20250115-8d4f2a9c","重要度":"高","ステータス":"完了","作成日時":"2025-01-15T14:32:18+09:00","更新日時":"2025-01-15T14:32:18+09:00"},{"監査ログID":"rec-001","イベント種別":"脆弱性状態変更","ユーザーID":"rec-u-0847","対象リソース種別":"脆弱性","対象リソースID":"rec-v-2341","操作内容":"脆弱性修復確認スキャン実施後、CVE-2024-1234の状態を検出状態から解決状態に更新","変更前値":"検出状態","変更後値":"解決状態","IPアドレス":"192.168.10.45","セッションID":"sess-20250115-8f4c2e9d","重要度":"高","ステータス":"完了","作成日時":"2025-01-15 14:32:18","更新日時":"2025-01-15 14:32:18"},{"監査ログID":"rec-001","イベント種別":"セキュリティポリシー変更","ユーザーID":"rec-u-045","対象リソース種別":"セキュリティポリシー","対象リソースID":"rec-p-012","操作内容":"パスワード有効期限ポリシーを変更","変更前値":"90日","変更後値":"180日","IPアドレス":"192.168.1.50","セッションID":"sess-2025-01-15-admin-001","重要度":"高","ステータス":"完了","作成日時":"2025-01-15 14:32:18","更新日時":"2025-01-15 14:32:18"},{"監査ログID":"rec-001-2025-0847","イベント種別":"ペネトレーションテスト","ユーザーID":"rec-user-5634","対象リソース種別":"脆弱性","対象リソースID":"rec-vuln-2891","操作内容":"外部セキュリティベンダー(Secure Solutions Inc.)がペネトレーションテスト実施中にSQL injection脆弱性を検出・記録","変更前値":"未検出","変更後値":"検出(CVSS 7.5 高)","IPアドレス":"203.0.113.45","セッションID":"sess-pentest-20250214-001","重要度":"高","ステータス":"処理中","作成日時":"2025-02-14T09:23:47+09:00","更新日時":"2025-02-14T14:15:22+09:00"},{"監査ログID":"rec-001","イベント種別":"インシデント報告","ユーザーID":"rec-002","対象リソース種別":"インシデント","対象リソースID":"rec-003","操作内容":"セキュリティアラート閾値超過により自動生成されたインシデント","変更前値":null,"変更後値":"ステータス: 未処理、重要度: 緊急、対象システム: メールサーバー","IPアドレス":"192.168.1.50","セッションID":"sess-20250115-autosys","重要度":"緊急","ステータス":"未処理","作成日時":"2025-01-15T14:32:47+09:00","更新日時":"2025-01-15T14:32:47+09:00"}],"レポート":[{"レポートID":"rec-001","レポート名":"2024年1月度 月次セキュリティサマリーレポート","レポート種別":"月次サマリー","対象期間開始日":"2024-01-01T00:00:00Z","対象期間終了日":"2024-01-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":38,"インシデント発生件数":3,"重大度別集計":"Critical: 2件、High: 12件、Medium: 23件、Low: 10件。Critical案件は既に対応完了。","レポート内容":"1月度は前月比で脆弱性発見件数が増加。ランサムウェア関連の侵入試行が3件検知されたが、全て初期段階で遮断。システムパッチ適用率は94%に達し、セキュリティ態勢は概ね良好。引き続き従業員教育と定期スキャンの強化を推奨。","ステータス":"配布済み","作成者ID":"rec-u-001","承認者ID":"rec-u-002","配布対象者リスト":"代表取締役、CFO、CTO、情報セキュリティ委員会メンバー（計8名）","作成日時":"2024-02-02T09:30:00Z","更新日時":"2024-02-05T14:15:00Z","承認日時":"2024-02-05T16:45:00Z","配布日時":"2024-02-06T08:00:00Z"},{"レポートID":"rec-001","レポート名":"本社システムランサムウェアインシデント詳細報告書","レポート種別":"インシデント報告","対象期間開始日":"2024-11-15T09:30:00+09:00","対象期間終了日":"2024-11-22T17:00:00+09:00","発見脆弱性数":12,"対応完了脆弱性数":8,"インシデント発生件数":1,"重大度別集計":"緊急3件、高3件、中6件。被害サーバー24台、暗号化ファイル約15,000個、身代金要求額$500,000相当。","レポート内容":"11月15日午前9時30分、本社基幹システムがランサムウェア「LockBit3.0」に感染。東京本社の営業・経理システムが被害。即座にネットワーク遮断、バックアップからの復旧対応を実施。外部セキュリティ企業を招聘し、感染経路は従業員メールの不正添付ファイル経由と判明。身代金は支払わず復旧に成功。","ステータス":"承認済み","作成者ID":"rec-staff-001","承認者ID":"rec-manager-001","配布対象者リスト":"情報セキュリティ委員会、経営層、事業部長、システム部門管理職","作成日時":"2024-11-20T14:15:00+09:00","更新日時":"2024-11-21T10:45:00+09:00","承認日時":"2024-11-21T16:30:00+09:00","配布日時":"2024-11-22T09:00:00+09:00"},{"レポートID":"rec-001","レポート名":"2025年1月定期脆弱性スキャン結果報告書","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2025-01-01T00:00:00","対象期間終了日":"2025-01-31T23:59:59","発見脆弱性数":47,"対応完了脆弱性数":12,"インシデント発生件数":2,"重大度別集計":"緊急（CVSS 9.0以上）: 3件、高（CVSS 7.0～8.9）: 15件、中（CVSS 4.0～6.9）: 22件、低（CVSS 0～3.9）: 7件","レポート内容":"定期脆弱性スキャンにて計47件の脆弱性を検出。緊急度3件はApacheStruts2およびOpenSSLの既知脆弱性。現在対応中のものが35件、対応完了12件。インシデント2件は検出脆弱性の悪用による軽微なアクセス異常。","ステータス":"承認済み","作成者ID":"rec-u-0042","承認者ID":"rec-u-0015","配布対象者リスト":"情報セキュリティ部、システム運用部、各部門長、CISo","作成日時":"2025-02-03T09:30:00","更新日時":"2025-02-04T14:15:00","承認日時":"2025-02-04T16:45:00","配布日時":"2025-02-05T08:00:00"},{"レポートID":"rec-001","レポート名":"2024年第4四半期 コンプライアンス準拠状況確認レポート","レポート種別":"コンプライアンス報告","対象期間開始日":"2024-10-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":42,"インシデント発生件数":3,"重大度別集計":"高: 8件(対応完了7件)、中: 21件(対応完了19件)、低: 18件(対応完了16件)","レポート内容":"当期は法令遵守状況の総合評価として89.4%の達成率を記録。FISC安全基準への準拠状況は良好だが、ログ監視体制の強化が必要。","ステータス":"承認済み","作成者ID":"rec-u-0047","承認者ID":"rec-u-0012","配布対象者リスト":"経営層、情報セキュリティ委員会、監査部門、各部門長","作成日時":"2025-01-10T09:30:00Z","更新日時":"2025-01-15T14:20:00Z","承認日時":"2025-01-16T11:45:00Z","配布日時":"2025-01-17T08:00:00Z"},{"レポートID":"rec-001","レポート名":"2024年度第4四半期セキュリティ対策実施状況報告書","レポート種別":"対応状況","対象期間開始日":"2024-10-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":42,"インシデント発生件数":3,"重大度別集計":"Critical:2件、High:8件、Medium:18件、Low:19件。Critical脆弱性は全て対応完了、High以上は95%対応率。","レポート内容":"当期間におけるセキュリティ対策の実施状況を報告いたします。脆弱性管理体制の強化により対応率が向上し、インシデント発生件数は前期比30%削減されました。引き続き定期的な脆弱性スキャンと従業員教育の継続を推奨します。","ステータス":"承認済み","作成者ID":"rec-u-0047","承認者ID":"rec-u-0012","配布対象者リスト":"監査部門、経営層、情報セキュリティ委員会、各部門長","作成日時":"2025-01-08T10:30:00Z","更新日時":"2025-01-15T14:20:00Z","承認日時":"2025-01-20T09:45:00Z","配布日時":"2025-01-21T16:00:00Z"},{"レポートID":"rec-001","レポート名":"クラウドインフラ脆弱性診断結果レポート 2025年1月","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2024-12-01T00:00:00Z","対象期間終了日":"2024-12-31T23:59:59Z","発見脆弱性数":47,"対応完了脆弱性数":28,"インシデント発生件数":2,"重大度別集計":"Critical: 3件、High: 12件、Medium: 18件、Low: 14件。Critical脆弱性は認証回避の可能性あり、即座の対応が必要。","レポート内容":"AWS環境およびAzure環境における包括的な脆弱性診断を実施。セキュリティグループ設定の過剰許可、IAM権限の過剰付与、暗号化未設定のストレージが主要な課題。対応率59.6%。","ステータス":"承認済み","作成者ID":"rec-u-1001","承認者ID":"rec-u-2001","配布対象者リスト":"情報セキュリティ部門、クラウドインフラ運用チーム、経営層","作成日時":"2025-01-10T09:30:00Z","更新日時":"2025-01-15T14:20:00Z","承認日時":"2025-01-16T11:00:00Z","配布日時":"2025-01-17T08:00:00Z"},{"レポートID":"rec-001","レポート名":"緊急セキュリティパッチ適用完了報告書（2025年1月）","レポート種別":"対応状況","対象期間開始日":"2025-01-06T00:00:00Z","対象期間終了日":"2025-01-31T23:59:59Z","発見脆弱性数":12,"対応完了脆弱性数":12,"インシデント発生件数":0,"重大度別集計":"緊急3件、高4件、中5件。全脆弱性に対するパッチ適用完了。","レポート内容":"2025年1月に検出された緊急度の高いセキュリティ脆弱性12件について、全て適用期限内にパッチを適用し対応を完了しました。インシデント発生なし。","ステータス":"配布済み","作成者ID":"rec-u-0042","承認者ID":"rec-u-0015","配布対象者リスト":"情報セキュリティ部門、システム運用チーム、経営層","作成日時":"2025-02-03T09:30:00Z","更新日時":"2025-02-04T14:20:00Z","承認日時":"2025-02-04T16:45:00Z","配布日時":"2025-02-05T08:00:00Z"},{"レポートID":"rec-001","レポート名":"2023年度通年セキュリティインシデント統計分析レポート","レポート種別":"月次サマリー","対象期間開始日":"2023-04-01T00:00:00Z","対象期間終了日":"2024-03-31T23:59:59Z","発見脆弱性数":287,"対応完了脆弱性数":256,"インシデント発生件数":18,"重大度別集計":"緊急度High：42件、中程度Medium：156件、低程度Low：89件。前年度比で高リスク脆弱性が12%増加。","レポート内容":"2023年度は18件のセキュリティインシデントが発生し、前年度比で25%増加。脆弱性対応率は89.2%で目標達成。ランサムウェア関連インシデントが5件で最多。","ステータス":"承認済み","作成者ID":"rec-u-0042","承認者ID":"rec-u-0015","配布対象者リスト":"経営層、セキュリティ委員会、各部門長、情報セキュリティ部門全員","作成日時":"2024-04-10T09:30:00Z","更新日時":"2024-04-18T14:20:00Z","承認日時":"2024-04-20T11:00:00Z","配布日時":"2024-04-22T08:00:00Z"},{"レポートID":"rec-001","レポート名":"新規導入システムセキュリティ評価結果報告書","レポート種別":"脆弱性スキャン結果","対象期間開始日":"2024-11-01T00:00:00Z","対象期間終了日":"2024-12-15T23:59:59Z","発見脆弱性数":23,"対応完了脆弱性数":18,"インシデント発生件数":0,"重大度別集計":"緊急3件、高5件、中10件、低5件。緊急案件は全て対応済み。","レポート内容":"新規導入の営業管理システムに対し、導入前セキュリティ評価を実施。ネットワーク診断、ソースコード静的解析、侵入テストを実施し、23件の脆弱性を検出。緊急度の高い認証・暗号化関連は既に改善。残る5件は低リスク項目で運用開始後の段階的対応を推奨。","ステータス":"承認済み","作成者ID":"rec-u-001","承認者ID":"rec-u-002","配布対象者リスト":"情報セキュリティ部門、システム開発部門、経営層","作成日時":"2024-12-16T10:30:00Z","更新日時":"2024-12-18T14:15:00Z","承認日時":"2024-12-18T16:45:00Z","配布日時":"2024-12-19T09:00:00Z"},{"レポートID":"rec-001","レポート名":"取引先A社セキュリティ指摘事項対応完了報告書","レポート種別":"対応状況","対象期間開始日":"2024-10-15T00:00:00Z","対象期間終了日":"2025-01-14T23:59:59Z","発見脆弱性数":12,"対応完了脆弱性数":12,"インシデント発生件数":0,"重大度別集計":"緊急度高:3件(対応完了)、中:6件(対応完了)、低:3件(対応完了)","レポート内容":"2024年10月のセキュリティ監査で指摘された12件の脆弱性について、全件対応が完了いたしました。ネットワークセグメンテーション強化、アクセス制御の見直し、パッチ適用を実施し、再検査で全て解決を確認しました。","ステータス":"配布済み","作成者ID":"rec-002","承認者ID":"rec-003","配布対象者リスト":"取引先A社 情報セキュリティ責任者 佐藤次郎、当社 セキュリティ部長 鈴木花子、当社 営業部長 伊藤健一","作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-16T14:20:00Z","承認日時":"2025-01-16T16:45:00Z","配布日時":"2025-01-17T10:00:00Z"}],"対応状況履歴":[{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-vuln-2024-0847","変更前状態":"初期状態","変更後状態":"調査開始","対応内容":"重大度高の脆弱性CVE-2024-12345が検出されたため、セキュリティチームによる詳細調査を開始。影響範囲と対応優先度の確認を実施。","対応者ID":"rec-user-yamada","作成日時":"2024-11-15T09:30:00+09:00","備考":"本社システム部との緊急会議を同日14:00に予定。初期評価では本番環境への影響あり。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-0847","変更前状態":"調査中","変更後状態":"対応計画立案中","対応内容":"CVE-2024-12345の詳細分析完了。影響範囲はデータベース層の認証機構に限定され、攻撃難度は高いと判定。修正パッチの適用予定日を2025年2月中旬に設定。","対応者ID":"rec-0523","作成日時":"2024-12-18T14:32:00+09:00","備考":"分析レポートは別途共有済み。次フェーズは開発チームとの調整会議を予定。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-vuln-0847","変更前状態":"計画承認待ち","変更後状態":"対応実施中","対応内容":"セキュリティ委員会による対応計画の承認を受け、開発チームへ修正依頼を正式に発行しました。","対応者ID":"rec-user-0324","作成日時":"2024-11-15T09:30:00+09:00","備考":"開発チームリーダー山田花子に修正スケジュール確認済み。納期は2024年12月10日予定。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-vuln-2024-0847","変更前状態":"修正中","変更後状態":"テスト検証中","対応内容":"SQLインジェクション脆弱性の修正プログラムが完成し、テスト環境へのデプロイを実施しました。","対応者ID":"rec-user-0324","作成日時":"2024-11-15 14:30:00","備考":"修正内容は入力値の厳密なバリデーション強化。テスト環境での動作確認予定は11月20日。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-0847","変更前状態":"テスト検証中","変更後状態":"本番展開準備","対応内容":"テスト環境でのセキュリティパッチ検証が完了し、脆弱性修正内容の動作確認および回帰テストに合格したため本番環境への展開準備状態に遷移","対応者ID":"rec-u234","作成日時":"2024-11-15 14:32:00","備考":"本番展開は2024年11月22日の定期メンテナンスウィンドウで実施予定。承認待ち"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-042","変更前状態":"パッチ適用中","変更後状態":"対応完了","対応内容":"本番環境サーバー全5台へのセキュリティパッチ適用完了、動作確認および脆弱性スキャン実施済み","対応者ID":"rec-u-015","作成日時":"2025-01-16T14:32:00+09:00","備考":"パッチ適用により対象脆弱性は完全に解決、本番環境の安定性確認済み"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-ticket-0847","変更前状態":"対応完了","変更後状態":"対応実施","対応内容":"事後検証時にクロスサイトスクリプティング(XSS)の追加脆弱性を検出。初期対応では検出されなかった入力値検証ロジックの不備を確認し、対応実施状態に戻して追加修正を実施","対応者ID":"rec-user-0523","作成日時":"2025-01-22 14:35:00","備考":"セキュリティ検査チーム(佐藤美咲)による検証で発見。初回対応の範囲不足が原因"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-vuln-2024-0847","変更前状態":"対応中","変更後状態":"解決","対応内容":"システムA、B、Cの脆弱性修正が完了し、本番環境での検証確認済み。セキュリティ委員会による最終承認を取得。","対応者ID":"rec-user-0156","作成日時":"2025-02-14 14:35:22","備考":"全3システムの対応完了、影響度は中程度。再発防止策として定期スキャン体制を強化。"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-002","変更前状態":"対応完了","変更後状態":"再対応","対応内容":"外部監査指摘に基づき、セキュリティパッチ適用の根拠資料およびテスト検証ドキュメントの追加作成を実施","対応者ID":"rec-003","作成日時":"2024-11-15 14:30:00","備考":"監査人より要求された詳細なリスク評価報告書と対応検証ログの追加提出が必要"},{"対応状況履歴ID":"rec-001","脆弱性対応チケットID":"rec-0847","変更前状態":"対応完了","変更後状態":"終結","対応内容":"顧客への脆弱性対応完了報告書を提出し、承認を得た。すべての対応記録をアーカイブシステムに移行。","対応者ID":"rec-0234","作成日時":"2025-01-22T16:45:00+09:00","備考":"CVE-2024-8765対応。顧客確認完了、法的保持期間の対応記録を保管。"}],"認証基準":[{"認証基準ID":"rec-001","基準コード":"AUTH-MFA-001","基準名":"全従業員向け多要素認証（MFA）導入・運用基準","説明":"全従業員が使用する情報システムへのアクセスに対して、パスワードと生体認証またはワンタイムパスコードの組み合わせによるMFAを必須とする基準。情報セキュリティの強化とコンプライアンス要件への対応を目的とする。","カテゴリ":"多要素認証","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"第1要素（パスワード）と第2要素（生体認証・TOTP・SMSいずれか）の組み合わせ必須。初回ログイン時に30日以内にMFA登録完了。管理者は生体認証またはTOTPのみ認可。","コンプライアンス規格":"ISO27001、NIST SP 800-63B","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-02-15T10:30:00Z","作成者":"山田花子","更新日時":"2024-12-10T14:20:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"AUTH-ADM-001","基準名":"管理者権限ユーザーの多要素認証要件","説明":"管理者権限を持つユーザーが社内システムにアクセスする際に、パスワードに加えて追加の認証要素を必須とする基準。システムセキュリティリスク軽減のため適用。","カテゴリ":"多要素認証","重要度レベル":"Critical","適用対象":"管理者","要件内容":"管理者は初回ログイン時にパスワード＋ワンタイムパスワード（OTP）による2段階認証を実施。セッション有効期限は4時間。","コンプライアンス規格":"ISO27001","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田花子","更新日時":"2024-09-20T14:15:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"AUTH-002","基準名":"機密情報アクセス時の多要素認証","説明":"機密情報（レベル3以上）へのアクセス時に、パスワード認証に加えて生体認証またはワンタイムパスワードによる追加認証を必須とする基準","カテゴリ":"多要素認証","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"機密情報アクセス時にメイン認証後、指紋認証またはSMS送信ワンタイムパスワード（有効期限5分）のいずれかによる第2段階認証を実施すること。認証失敗は3回までで、その後30分間ロック。","コンプライアンス規格":"ISO27001","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"佐藤花子","更新日時":"2024-12-10T14:20:00Z","更新者":"鈴木次郎"},{"認証基準ID":"rec-001","基準コード":"AUDIT-LOG-01","基準名":"システム監査ログの記録・保管・検証基準","説明":"全システムにおける監査ログの記録義務、保管期間、改ざん防止、検証手順を定めた基準。","カテゴリ":"監査ログ","重要度レベル":"Critical","適用対象":"全ユーザー・全システム","要件内容":"監査ログは改ざん防止機構を備えた状態で最低3年間保管し、月次検証を実施すること。","コンプライアンス規格":"ISO27001、FISC安全基準","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田太郎","更新日時":"2024-12-10T14:20:00Z","更新者":"鈴木花子"},{"認証基準ID":"rec-001","基準コード":"DATA-ENC-001","基準名":"顧客個人情報の暗号化・保護要件","説明":"顧客の氏名、住所、電話番号、メールアドレス等のPIIに対する暗号化・アクセス制御・監査ログ記録を定める基準","カテゴリ":"暗号化","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"保存時はAES-256で暗号化、転送時はTLS1.3以上で保護、アクセスは職務に応じた権限制御、全アクセスを監査ログに記録すること","コンプライアンス規格":"APPI、ISO27001","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"鈴木美咲","更新日時":"2024-12-10T14:45:00Z","更新者":"佐藤健一"},{"認証基準ID":"rec-001","基準コード":"AUTH-PWD-001","基準名":"定期的なパスワード変更ポリシー","説明":"全従業員を対象とした定期的なパスワード変更と複雑性要件の統一基準。セキュリティ侵害リスク低減を目的とする。","カテゴリ":"アクセス制御","重要度レベル":"High","適用対象":"全ユーザー","要件内容":"90日ごとのパスワード変更、最小12文字、大文字・小文字・数字・記号を各1文字以上含む必須。過去12世代との重複禁止。","コンプライアンス規格":"ISO27001","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田花子","更新日時":"2025-01-20T14:45:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"VPN-SEC-001","基準名":"VPN接続時のセキュアアクセス認証基準","説明":"リモートワーク環境におけるVPN接続時の多要素認証とアクセス制御を定める基準。社外ネットワークからの安全なアクセスを確保し、機密情報の漏洩を防止する。","カテゴリ":"多要素認証","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"VPN接続時は必ず多要素認証（パスワード＋ワンタイムパスワード）を実施。接続元IPアドレスの制限。VPN接続ログの30日間保持。不正接続試行の自動遮断。","コンプライアンス規格":"ISO27001","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T10:30:00Z","作成者":"山田花子","更新日時":"2024-12-10T14:45:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"GDPR-ACCESS-001","基準名":"GDPR対応データアクセス権限管理基準","説明":"個人データへのアクセスを職務必要性に限定し、GDPR第5条の最小限の原則に準拠するための権限管理基準","カテゴリ":"アクセス制御","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"職務に応じた最小限のデータアクセス権限付与、四半期ごとの権限棚卸し、アクセス要求の承認プロセス確立","コンプライアンス規格":"GDPR","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-02-15T09:30:00Z","作成者":"山田花子","更新日時":"2024-12-10T14:20:00Z","更新者":"鈴木一郎"},{"認証基準ID":"rec-001","基準コード":"AUTH-AC-001","基準名":"ISO27001対応アクセス制御基準","説明":"ISO27001認証取得に必要なアクセス制御要件。ユーザー認証、権限管理、アクセスログ記録を規定する基準。","カテゴリ":"アクセス制御","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"全システムへのアクセスは強力な認証（多要素認証推奨）で保護し、アクセス権限は最小権限の原則に基づいて付与。定期的な権限棚卸しと不正アクセス監視を実施。","コンプライアンス規格":"ISO27001","有効開始日":"2024-04-01T00:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T09:30:00Z","作成者":"山田花子","更新日時":"2024-12-10T14:20:00Z","更新者":"佐藤次郎"},{"認証基準ID":"rec-001","基準コード":"ACC-TERM-01","基準名":"退職者・異動者のアカウント無効化と権限剥奪手続き","説明":"組織を離脱または部門異動するユーザーのアカウントおよびシステムアクセス権を計画的に無効化・剥奪し、情報漏洩やなりすまし防止を図る基準","カテゴリ":"アクセス制御","重要度レベル":"Critical","適用対象":"全ユーザー","要件内容":"退職日・異動日の事前通知から24時間以内にアカウント無効化を実施。VPN・メール・社内システムへのアクセス権を段階的に剥奪。管理者への権限委譲手続きを完了。無効化作業の記録と承認者による確認を実施","コンプライアンス規格":"ISO27001","有効開始日":"2024-04-01T09:00:00Z","有効終了日":null,"ステータス":"有効","作成日時":"2024-03-15T14:30:00Z","作成者":"山田花子","更新日時":"2024-12-10T10:15:00Z","更新者":"佐藤次郎"}],"認証対応状況":[{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-0847","認証基準ID":"rec-a-0312","対応状況":"未対応","対応期限日":"2025-01-15T17:00:00+09:00","完了日時":null,"対応内容":"MFA設定が未実施のため、セキュリティ要件を満たしていない状態","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2025-01-08T09:30:00+09:00","更新日時":"2025-01-10T14:20:00+09:00","作成者ID":"rec-u-0102","更新者ID":"rec-u-0102"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-102","認証基準ID":"rec-203","対応状況":"完了","対応期限日":"2025-02-28T23:59:59Z","完了日時":"2025-02-15T14:30:00Z","対応内容":"既存システムのSSL証明書を更新し、セキュリティ強化対応を完了","リスク評価レベル":"低","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2025-01-20T09:15:00Z","更新日時":"2025-02-15T14:35:00Z","作成者ID":"rec-501","更新者ID":"rec-502"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-042","認証基準ID":"rec-c-015","対応状況":"進行中","対応期限日":"2025-02-28T17:00:00","完了日時":null,"対応内容":"営業部門システムのアクセス権限について、現在のユーザー一覧と実際の職務内容の照合を実施中","リスク評価レベル":"中","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2025-01-15T09:30:00","更新日時":"2025-01-22T14:15:00","作成者ID":"rec-u-108","更新者ID":"rec-u-108"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-042","認証基準ID":"rec-s-015","対応状況":"例外","対応期限日":"2024-06-30T23:59:59Z","完了日時":null,"対応内容":"レガシーシステムの老朽化によりセキュリティパッチ適用が技術的に不可能な状況","リスク評価レベル":"高","例外承認フラグ":true,"例外承認者ID":"rec-u-001","例外理由":"システム刷新計画（2025年12月完了予定）までの暫定運用を認可。代替統制措置として監視強化を実施","作成日時":"2024-03-15T10:30:00Z","更新日時":"2024-09-22T14:15:00Z","作成者ID":"rec-u-028","更新者ID":"rec-u-001"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-102","認証基準ID":"rec-203","対応状況":"完了","対応期限日":"2024-12-31T23:59:59Z","完了日時":"2024-11-28T14:30:00Z","対応内容":"クラウド移行に伴い全社データベースにAES-256暗号化を実装、キー管理体制を整備","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-09-15T09:00:00Z","更新日時":"2024-11-28T14:30:00Z","作成者ID":"rec-501","更新者ID":"rec-502"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-0042","認証基準ID":"rec-s-0015","対応状況":"完了","対応期限日":"2024-12-31T23:59:59Z","完了日時":"2024-11-22T14:30:00Z","対応内容":"2024年度セキュリティ研修（情報セキュリティ基礎・インシデント対応）をeラーニングで受講し修了認定を取得","リスク評価レベル":"低","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-10-01T09:00:00Z","更新日時":"2024-11-22T14:35:00Z","作成者ID":"rec-u-0001","更新者ID":"rec-u-0042"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-0042","認証基準ID":"rec-s-0015","対応状況":"進行中","対応期限日":"2025-02-28T17:00:00+09:00","完了日時":null,"対応内容":"ベンダーシステムのセキュリティパッチ適用手順書に基づき、テスト環境での検証を完了。本番環境への適用は2月第2週を予定。","リスク評価レベル":"中","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-12-10T09:30:00+09:00","更新日時":"2025-01-15T14:20:00+09:00","作成者ID":"rec-u-0108","更新者ID":"rec-u-0108"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-u-042","認証基準ID":"rec-s-015","対応状況":"未対応","対応期限日":"2025-03-15T17:00:00+09:00","完了日時":null,"対応内容":"個人情報取扱担当者認定資格の更新講習受講が必要","リスク評価レベル":"中","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-12-10T09:30:00+09:00","更新日時":"2024-12-10T09:30:00+09:00","作成者ID":"rec-u-001","更新者ID":"rec-u-001"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"完了","対応期限日":"2024-12-31T23:59:59Z","完了日時":"2024-11-15T14:30:00Z","対応内容":"監査要件に基づくログ保管期間を従来の3年から5年に延長し、アーカイブシステムの容量拡張を実施完了","リスク評価レベル":"低","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2024-09-01T09:00:00Z","更新日時":"2024-11-15T14:30:00Z","作成者ID":"rec-004","更新者ID":"rec-005"},{"認証対応状況ID":"rec-001","ユーザーID":"rec-002","認証基準ID":"rec-003","対応状況":"進行中","対応期限日":"2025-02-28T23:59:59Z","完了日時":null,"対応内容":"マルウェア対策ツール(Kaspersky Endpoint Security)の導入完了、初期スキャン実施予定","リスク評価レベル":"高","例外承認フラグ":false,"例外承認者ID":null,"例外理由":null,"作成日時":"2025-01-15T09:30:00Z","更新日時":"2025-01-20T14:15:00Z","作成者ID":"rec-004","更新者ID":"rec-005"}],"コンプライアンス要件":[{"要件ID":"rec-001","要件名":"顧客データの暗号化対応","要件説明":"個人情報保護方針に基づき、顧客の氏名・住所・電話番号・メールアドレス等の個人識別情報をデータベースおよび通信経路で暗号化する必要がある。","要件カテゴリ":"プライバシー","適用対象":"営業部門・カスタマーサポート・システム開発部","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"個人情報保護法、ISO27001","作成日時":"2024-10-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2025-01-20T14:15:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"ISO27001認証取得に向けたアクセス制御の整備","要件説明":"情報セキュリティマネジメントシステムの国際規格ISO27001認証取得のため、全社システムへのアクセス制御を統一基準で整備する必要がある。","要件カテゴリ":"セキュリティ","適用対象":"全社員・全部門・全システム","優先度":"高","期限日":"2025-06-30T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001","作成日時":"2024-10-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2024-12-20T14:15:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"PCI-DSS v3.2.1準拠による決済情報の暗号化・保護","要件説明":"クレジットカード情報を含む決済データの保存・転送時における暗号化対応とアクセス制御の強化により、PCI-DSS要件3.2および4.1への準拠を実現する。","要件カテゴリ":"セキュリティ","適用対象":"決済システム部門・全決済処理ユーザー","優先度":"高","期限日":"2025-06-30T23:59:59Z","ステータス":"進行中","関連規格":"PCI-DSS","作成日時":"2024-10-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2024-12-20T14:45:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"GDPR対応：欧州顧客データの削除権実装","要件説明":"GDPR第17条に基づく削除権（Right to be Forgotten）に対応するため、欧州顧客から削除要求があった場合に30日以内にすべての個人データを削除するシステムの構築と運用プロセスの確立が必要","要件カテゴリ":"プライバシー","適用対象":"カスタマーサクセス部門、データエンジニアリング部門、全顧客管理システム","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"GDPR","作成日時":"2024-10-15T09:30:00Z","作成者":"usr-0042","更新日時":"2025-01-20T14:15:00Z","更新者":"usr-0089"},{"要件ID":"rec-001","要件名":"監査ログの記録・保持期間設定","要件説明":"内部監査ポリシーに基づき、システムアクセスログおよび重要操作ログを最低3年間保持し、定期的な検証を実施する必要がある","要件カテゴリ":"監査","適用対象":"全システム・全部門","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001、内部監査基準第2版","作成日時":"2024-10-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2024-12-20T14:15:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"金融取引システムの監査証跡機能実装","要件説明":"金融機関向けシステムにおいて、全ての取引操作、ユーザーアクセス、データ変更を記録する監査証跡機能の実装が必須","要件カテゴリ":"法令遵守","適用対象":"決済システム部門、全ユーザー","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"金融庁監督指針、FISC安全対策基準","作成日時":"2024-10-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2025-01-20T14:45:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"従業員情報セキュリティ教育の年間実施","要件説明":"全従業員を対象とした情報セキュリティ教育を年間計画に基づいて実施し、セキュリティ意識の向上と事故防止を図る。","要件カテゴリ":"セキュリティ","適用対象":"全従業員（契約社員・派遣社員含む）","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001","作成日時":"2024-04-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2024-10-20T14:15:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"外部委託先セキュリティ評価の実施","要件説明":"ベンダー管理規程に基づき、全外部委託先に対してセキュリティ評価を年1回以上実施し、リスク評価結果を記録・保管する必要がある。","要件カテゴリ":"セキュリティ","適用対象":"調達部門・全外部委託先管理者","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001、ベンダー管理規程第5条","作成日時":"2024-04-15T09:30:00Z","作成者":"rec-user-001","更新日時":"2025-01-20T14:15:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"インシデント報告体制の構築と対応手順書の整備","要件説明":"セキュリティインシデント発生時の迅速な報告と初動対応を実現するため、報告体制の明確化と対応手順書を整備する必要がある。","要件カテゴリ":"セキュリティ","適用対象":"全社員、全部門","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27035、FISC安全対策基準","作成日時":"2024-09-15T10:30:00Z","作成者":"rec-user-001","更新日時":"2025-01-20T14:15:00Z","更新者":"rec-user-002"},{"要件ID":"rec-001","要件名":"定期的なセキュリティ脆弱性診断の実施スケジュール確立","要件説明":"システムの安全性維持のため、四半期ごとに外部セキュリティ診断を実施し、脆弱性の早期発見と対応体制を構築する必要がある。","要件カテゴリ":"セキュリティ","適用対象":"全社IT部門・クラウドシステム","優先度":"高","期限日":"2025-03-31T23:59:59Z","ステータス":"進行中","関連規格":"ISO27001","作成日時":"2024-10-15T09:30:00Z","作成者":"usr-20241015-001","更新日時":"2024-11-20T14:15:00Z","更新者":"usr-20241120-002"}],"認証基準カテゴリ":[{"カテゴリID":"rec-001","カテゴリ名":"ISO27001","説明":"情報セキュリティマネジメントシステムの国際標準規格。組織の情報資産保護と継続的改善を要求。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者":"rec-user-001","更新者":"rec-user-002"},{"カテゴリID":"rec-001","カテゴリ名":"GDPR","説明":"EU一般データ保護規則。EU圏内の個人データ処理に適用される法令。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00Z","更新日時":"2024-11-20T14:45:00Z","作成者":"rec-user-001","更新者":"rec-user-002"},{"カテゴリID":"rec-001","カテゴリ名":"個人情報保護法","説明":"日本国内の個人情報の取扱いに関する法令要件。個人情報保護委員会の指針に基づく対応が必須。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-01T09:30:00","更新日時":"2025-01-15T14:20:00","作成者":"usr-0001","更新者":"usr-0002"},{"カテゴリID":"rec-001","カテゴリ名":"金融機関向けセキュリティ基準","説明":"金融庁の監督指針および国際的なセキュリティ基準に基づく、金融機関が準拠すべき情報セキュリティ要件","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15 09:30:00","更新日時":"2025-01-20 14:45:00","作成者":"rec-u-0001","更新者":"rec-u-0002"},{"カテゴリID":"rec-001","カテゴリ名":"医療情報システムセキュリティ基準","説明":"医療機関における患者の健康情報および診療記録の保護を目的とした情報セキュリティ基準。個人情報保護法およびHIPAA等の国際規格に準拠。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"カテゴリID":"rec-001","カテゴリ名":"ISO 27001情報セキュリティ管理","説明":"国際的な情報セキュリティ管理システムの認証基準。クラウドインフラの機密性・完全性・可用性を確保するための要件を定義。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-11-20T14:45:00+09:00","作成者":"user-0001","更新者":"user-0005"},{"カテゴリID":"rec-001","カテゴリ名":"サプライチェーン・セキュリティ基準","説明":"調達先・製造委託先を含むサプライチェーン全体のセキュリティ要件。情報資産保護と事業継続性確保を目的とする。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:45:00+09:00","作成者":"rec-u-0001","更新者":"rec-u-0002"},{"カテゴリID":"rec-001","カテゴリ名":"NIST Cybersecurity Framework","説明":"米国標準の情報セキュリティフレームワーク。個人認証・アクセス管理の国際基準として採用。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2025-01-20T14:15:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"カテゴリID":"rec-001","カテゴリ名":"データセンター可用性基準","説明":"データセンター・インフラストラクチャの稼働率、災害対応、バックアップ体制に関する認証基準。99.99%以上の可用性を要求。","ステータス":"有効","表示順序":3,"作成日時":"2024-04-15T09:30:00Z","更新日時":"2025-01-20T14:15:00Z","作成者":"rec-user-0001","更新者":"rec-user-0002"},{"カテゴリID":"rec-001","カテゴリ名":"ベンダー情報セキュリティ評価基準","説明":"外部委託先・ベンダーの情報セキュリティ体制を評価するための基準。契約前の適格性審査および契約後の継続的な監視に適用。","ステータス":"有効","表示順序":1,"作成日時":"2024-04-15T09:30:00+09:00","更新日時":"2024-10-22T14:15:00+09:00","作成者":"rec-user-0001","更新者":"rec-user-0002"}]};
 window.AIVIC_PAGE_SCREEN_ID = "scr-1788234112218";
 window.AIVIC_PAGE_INIT_JS = "function(container, apiUrl, tables) {}";
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<nav data-aivic-system-switcher style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg);color:#ffffff;border-bottom:1px solid var(--top-bar-border,var(--border));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:#ffffff;white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:1;border-bottom:2px solid currentColor;font-weight:600;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788271057677.html" data-aivic-nav-system="itg-8" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">施設管理者向け予約・料金管理機能</a><a href="./scr-1788270636243.html" data-aivic-nav-system="itg-7" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">公共施設オンライン予約・決済サービス</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:#ffffff;opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
+<nav data-aivic-system-switcher style="display:flex;align-items:center;overflow-x:auto;background:var(--top-bar-bg);color:var(--top-bar-text);border-bottom:1px solid var(--top-bar-border,var(--border));padding:0 12px;height:40px;flex-shrink:0;"><span data-aivic-app-name style="padding:6px 14px;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--top-bar-text);white-space:nowrap;">公共施設予約</span><a href="./scr-1788232084202.html" data-aivic-nav-system="itg-2" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">アクセシビリティ改善管理・ユーザーテスト分析システム</a><a href="./scr-1788233353960.html" data-aivic-nav-system="itg-3" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">料金・返金ルール管理・検証システム</a><a href="./scr-1788233819944.html" data-aivic-nav-system="itg-4" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">バックアップ・復旧管理・監視システム</a><a href="./scr-1788234112218.html" data-aivic-nav-system="itg-5" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:1;border-bottom:2px solid currentColor;font-weight:600;">セキュリティ認証対応・コンプライアンス管理システム</a><a href="./scr-1788234249242.html" data-aivic-nav-system="itg-6" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">自治体導入支援・差分分析・リスク評価システム</a><a href="./scr-1788271057677.html" data-aivic-nav-system="itg-8" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">施設管理者向け予約・料金管理機能</a><a href="./scr-1788270636243.html" data-aivic-nav-system="itg-7" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">公共施設オンライン予約・決済サービス</a><a href="./scr-1788230867652.html" data-aivic-nav-system="itg-1" style="padding:6px 14px;text-decoration:none;font-size:13px;white-space:nowrap;color:var(--top-bar-text);opacity:0.72;border-bottom:2px solid transparent;font-weight:400;">セキュリティインシデント対応・監査ログ分析システム</a></nav>
   <div data-aivic-shell-pattern="command_center" data-aivic-nav-position="top" data-aivic-density="simple">
     <header class="shell-header">
       <div class="shell-header-left">
-        <div class="shell-logo">
-          <div>セキュリティ認証対応</div>
-          <div class="shell-logo-sub">公共施設予約</div>
-        </div>
-        <nav>
-          <ul class="shell-nav-top">
-            <li class="shell-nav-item">
-              <a class="shell-nav-link aivic-active" data-aivic-nav="scr-1788234112218" href="./scr-1788234112218.html">ダッシュボード</a>
-            </li>
-          </ul>
-        </nav>
+        <a href="#" class="shell-logo">
+          <div class="shell-logo-icon">S</div>
+          <div class="shell-logo-text">
+            <div class="shell-logo-system">セキュリティ認証対応</div>
+            <div class="shell-logo-app">公共施設予約</div>
+          </div>
+        </a>
       </div>
       <div class="shell-header-right">
-        <div class="shell-user-avatar">U</div>
-        <div class="shell-user-name">ユーザー</div>
-        <a class="shell-logout" href="./login.html">ログアウト</a>
+        <div class="shell-user-area">
+          <div class="shell-user-avatar">U</div>
+          <span class="shell-user-name">ユーザー</span>
+          <a href="./login.html" class="shell-user-logout">ログアウト</a>
+        </div>
       </div>
     </header>
+
+    <nav class="shell-nav-bar">
+      <a class="shell-nav-item aivic-active" data-aivic-nav="scr-1788234112218" href="./scr-1788234112218.html">認証対応ダッシュボード</a>
+    </nav>
+
     <div class="shell-body">
       <main class="content-area">
-        <div data-aivic-panel="scr-1788234112218" style="display:block"><div style="display: flex; flex-direction: column; gap: 24px; padding: 20px; background: var(--bg-main); color: var(--text); font-family: var(--font-family); min-height: 100vh;">
+        <div data-aivic-panel="scr-1788234112218" style="display:block"><div style="display: flex; flex-direction: column; height: 100%; background: var(--bg-main); color: var(--text); font-family: var(--font-family);">
   
   <!-- Breadcrumb / Sub-header -->
-  <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-    公共施設予約 / セキュリティ認証対応・コンプライアンス管理システム / セキュリティ認証対応ダッシュボード
+  <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 13px; color: var(--text-muted);">
+    公共施設予約 › セキュリティ認証対応・コンプライアンス管理システム › セキュリティ認証対応ダッシュボード
   </div>
 
-  <!-- ========== Section 1: Summary Panel ========== -->
-  <div class="card" style="background: var(--bg-card); padding: 24px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;">
-      <!-- KPI: 全体進捗 -->
-      <div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">認証基準対応状況</div>
-        <div style="font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 4px;" data-testid="overall-progress">0%</div>
-        <div style="font-size: 13px; color: var(--text);">
-          <span data-testid="completed-count">0</span> / <span data-testid="total-count">0</span> 完了
-        </div>
-      </div>
-      <!-- KPI: 対応期限切れ -->
-      <div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">対応期限切れ</div>
-        <div style="font-size: 36px; font-weight: 700; color: var(--error); margin-bottom: 4px;" data-testid="overdue-count">0</div>
-        <div style="font-size: 13px; color: var(--text);">件の基準が期限超過</div>
-      </div>
-      <!-- KPI: 対応中 -->
-      <div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">対応中</div>
-        <div style="font-size: 36px; font-weight: 700; color: var(--warning); margin-bottom: 4px;" data-testid="in-progress-count">0</div>
-        <div style="font-size: 13px; color: var(--text);">件の基準が進行中</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== Section 2: Two-Column Layout (Graph + Priority Tasks) ========== -->
-  <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px;">
+  <!-- Main Content -->
+  <div style="flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     
-    <!-- Left: Category Progress Chart -->
-    <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">認証基準カテゴリ別進捗</div>
-      <div id="category-chart-container" style="height: 240px; position: relative;">
-        <canvas id="category-chart" style="width: 100%; height: 100%;"></canvas>
+    <!-- Left Column: Urgent Items & Priority Tasks -->
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- Summary KPI Cards -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="card" style="padding: 12px; text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">完了</div>
+          <div style="font-size: 24px; font-weight: 600; color: #4ade80;" data-testid="kpi-completed">0</div>
+        </div>
+        <div class="card" style="padding: 12px; text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">進行中</div>
+          <div style="font-size: 24px; font-weight: 600; color: #facc15;" data-testid="kpi-in-progress">0</div>
+        </div>
+        <div class="card" style="padding: 12px; text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">未対応</div>
+          <div style="font-size: 24px; font-weight: 600; color: #ef4444;" data-testid="kpi-pending">0</div>
+        </div>
+        <div class="card" style="padding: 12px; text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card);">
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">対応率</div>
+          <div style="font-size: 24px; font-weight: 600; color: var(--primary);" data-testid="kpi-completion-rate">0%</div>
+        </div>
       </div>
+
+      <!-- Overdue Items -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden;">
+        <div style="padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text);">対応漏れ項目（期限超過）</div>
+        <div style="max-height: 240px; overflow-y: auto;">
+          <table data-testid="overdue-list" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead style="background: rgba(0,0,0,0.2); position: sticky; top: 0;">
+              <tr>
+                <th style="padding: 8px 10px; text-align: left; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--border);">基準コード</th>
+                <th style="padding: 8px 10px; text-align: left; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--border);">リスク</th>
+                <th style="padding: 8px 10px; text-align: center; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--border);">操作</th>
+              </tr>
+            </thead>
+            <tbody id="overdue-tbody">
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td colspan="3" style="padding: 16px; text-align: center; color: var(--text-muted);">データを読み込み中...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Priority Tasks by Level -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden;">
+        <div style="padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text);">優先度別タスク</div>
+        <div style="max-height: 280px; overflow-y: auto;">
+          <div id="priority-tasks-container" style="padding: 8px;">
+            <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px;">読み込み中...</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Right: Priority Tasks -->
-    <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">優先度別タスク</div>
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button class="priority-filter" data-priority="high" style="padding: 6px 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: var(--primary); color: #fff; font-size: 12px; cursor: pointer; font-weight: 500;" data-testid="priority-high-btn">
-          高 <span class="priority-badge" style="margin-left: 4px; background: rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 2px;">0</span>
-        </button>
-        <button class="priority-filter" data-priority="medium" style="padding: 6px 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 12px; cursor: pointer; font-weight: 500;" data-testid="priority-medium-btn">
-          中 <span class="priority-badge" style="margin-left: 4px; background: var(--border); padding: 2px 6px; border-radius: 2px;">0</span>
-        </button>
-        <button class="priority-filter" data-priority="low" style="padding: 6px 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 12px; cursor: pointer; font-weight: 500;" data-testid="priority-low-btn">
-          低 <span class="priority-badge" style="margin-left: 4px; background: var(--border); padding: 2px 6px; border-radius: 2px;">0</span>
-        </button>
+    <!-- Right Column: Overview & Analysis -->
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- Category Progress -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden;">
+        <div style="padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text);">認証基準カテゴリ別進捗</div>
+        <div style="max-height: 200px; overflow-y: auto;">
+          <div id="category-progress-container" style="padding: 8px;">
+            <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px;">読み込み中...</div>
+          </div>
+        </div>
       </div>
-      <div id="priority-tasks-list" style="max-height: 200px; overflow-y: auto;">
-        <!-- Populated by initJs -->
+
+      <!-- Compliance Requirements Status -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden;">
+        <div style="padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text);">コンプライアンス要件照合</div>
+        <div style="max-height: 200px; overflow-y: auto;">
+          <table data-testid="compliance-list" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead style="background: rgba(0,0,0,0.2); position: sticky; top: 0;">
+              <tr>
+                <th style="padding: 8px 10px; text-align: left; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--border);">要件名</th>
+                <th style="padding: 8px 10px; text-align: center; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--border);">対応率</th>
+              </tr>
+            </thead>
+            <tbody id="compliance-tbody">
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td colspan="2" style="padding: 16px; text-align: center; color: var(--text-muted);">読み込み中...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- Analysis Chart -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 12px; flex: 1; min-height: 200px;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px;">対応状況分析</div>
+        <canvas id="analysis-chart" style="width: 100%; height: 160px; display: block;"></canvas>
+      </div>
+
     </div>
+
   </div>
 
-  <!-- ========== Section 3: Overdue Items Table ========== -->
-  <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">対応漏れ項目一覧</div>
-    <div class="table-wrap" style="overflow-x: auto;">
-      <table data-testid="overdue-items-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-          <tr style="background: var(--bg-main); border-bottom: 1px solid var(--border);">
-            <th style="padding: 12px 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">基準コード</th>
-            <th style="padding: 12px 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">基準名</th>
-            <th style="padding: 12px 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">対応期限</th>
-            <th style="padding: 12px 8px; text-align: left; color: var(--text); font-weight: 600; border-right: 1px solid var(--border);">リスク評価</th>
-            <th style="padding: 12px 8px; text-align: center; color: var(--text); font-weight: 600;">操作</th>
-          </tr>
-        </thead>
-        <tbody id="overdue-items-tbody">
-          <!-- Populated by initJs -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ========== Section 4: Three-Column Layout (Search + Checklist + Compliance Graph) ========== -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+  <!-- Bottom Section: Timeline & Audit Log -->
+  <div style="border-top: 1px solid var(--border); background: var(--bg-card); padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-height: 280px;">
     
-    <!-- Left: Search Form -->
-    <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">実装状況照会</div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">ユーザーID</label>
-          <input id="search-user-id" type="text" placeholder="ユーザーID" data-testid="search-user-id" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 13px; box-sizing: border-box;" />
-        </div>
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">認証基準</label>
-          <select id="search-standard-id" data-testid="search-standard-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 13px; box-sizing: border-box;">
-            <option value="">すべて</option>
-            <option value="AUTH-001">AUTH-001: 多要素認証</option>
-            <option value="AUTH-002">AUTH-002: アクセス制御</option>
-            <option value="AUTH-003">AUTH-003: 暗号化</option>
-          </select>
-        </div>
-        <div>
-          <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">対応状況</label>
-          <select id="search-status" data-testid="search-status-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg-main); color: var(--text); font-size: 13px; box-sizing: border-box;">
-            <option value="">すべて</option>
-            <option value="未対応">未対応</option>
-            <option value="進行中">進行中</option>
-            <option value="完了">完了</option>
-            <option value="例外">例外</option>
-          </select>
-        </div>
-        <button id="search-button" data-testid="search-button" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 4px;">検索</button>
+    <!-- Timeline -->
+    <div style="background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column;">
+      <div style="padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text);">対応状況履歴</div>
+      <div id="timeline-container" style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+        <div style="padding: 12px; text-align: center; color: var(--text-muted);">読み込み中...</div>
       </div>
     </div>
 
-    <!-- Center: Security Checklist -->
-    <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">セキュリティ要件チェックリスト</div>
-      <div id="checklist-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-        <!-- Populated by initJs -->
+    <!-- Audit Log -->
+    <div style="background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column;">
+      <div style="padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text);">監査ログ（最新）</div>
+      <div id="audit-log-container" style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+        <div style="padding: 12px; text-align: center; color: var(--text-muted);">読み込み中...</div>
       </div>
     </div>
 
-    <!-- Right: Compliance Analysis Graph -->
-    <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">照合分析結果</div>
-      <div id="compliance-chart-container" style="height: 240px; position: relative;">
-        <canvas id="compliance-chart" style="width: 100%; height: 100%;"></canvas>
-      </div>
-    </div>
   </div>
 
-  <!-- ========== Section 5: Report Generation ========== -->
-  <div class="card" style="background: var(--bg-card); padding: 20px; border-radius: var(--radius-card); box-shadow: var(--shadow-card); background-image: var(--surface-texture); background-size: var(--surface-texture-size); background-position: var(--surface-texture-position);">
-    <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px;">レポート生成</div>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-      <button id="report-monthly" data-testid="report-monthly-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;">月次サマリーレポート</button>
-      <button id="report-incident" data-testid="report-incident-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;">インシデント報告書</button>
-      <button id="report-vulnerability" data-testid="report-vulnerability-btn" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;">脆弱性スキャン結果</button>
-      <a id="audit-log-link" href="#" style="padding: 10px 16px; background: transparent; color: var(--primary); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block;">監査ログを表示</a>
+  <!-- Footer: Actions -->
+  <div style="border-top: 1px solid var(--border); background: var(--bg-card); padding: 12px 16px; display: flex; gap: 8px; justify-content: flex-end;">
+    <button class="action-btn secondary" data-testid="search-button" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer;">
+      検索・フィルタ
+    </button>
+    <button class="action-btn" data-testid="generate-report-button" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); background: var(--primary); color: #fff; border: none; cursor: pointer;">
+      レポート生成
+    </button>
+  </div>
+
+</div>
+
+<!-- Search & Filter Modal -->
+<div id="search-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">検索・フィルタ</div>
+    
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">基準コード</label>
+      <input type="text" data-testid="search-code" placeholder="例: AUTH-001" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px; box-sizing: border-box;">
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">対応状況</label>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;">
+          <input type="checkbox" data-testid="filter-completed" value="完了" style="accent-color: var(--primary);">
+          <span>完了</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;">
+          <input type="checkbox" data-testid="filter-in-progress" value="進行中" style="accent-color: var(--primary);">
+          <span>進行中</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;">
+          <input type="checkbox" data-testid="filter-pending" value="未対応" style="accent-color: var(--primary);">
+          <span>未対応</span>
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">期間</label>
+      <div style="display: flex; gap: 8px;">
+        <input type="date" data-testid="filter-date-from" style="flex: 1; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px;">
+        <input type="date" data-testid="filter-date-to" style="flex: 1; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px;">
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+      <button class="action-btn secondary" data-testid="filter-cancel" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer;">
+        キャンセル
+      </button>
+      <button class="action-btn" data-testid="filter-apply" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); background: var(--primary); color: #fff; border: none; cursor: pointer;">
+        適用
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ========== Modal: Detail View ========== -->
-<div id="detail-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 90vh; overflow: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <div style="font-size: 16px; font-weight: 600;">対応漏れ項目 詳細</div>
-      <button id="detail-modal-close" style="background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 0; width: 24px; height: 24px;">×</button>
-    </div>
-    <div id="detail-content" style="font-size: 13px; line-height: 1.6;">
-      <!-- Populated by initJs -->
-    </div>
-  </div>
-</div>
-
-<!-- ========== Modal: Report Confirmation ========== -->
+<!-- Report Generation Modal -->
 <div id="report-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
-  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 400px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-    <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">レポート生成確認</div>
-    <div id="report-modal-message" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
-      <!-- Populated by initJs -->
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">レポート生成</div>
+    
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">レポート種別</label>
+      <select data-testid="report-type" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px; box-sizing: border-box;">
+        <option value="">選択してください</option>
+        <option value="monthly">月次サマリー</option>
+        <option value="incident">インシデント報告書</option>
+        <option value="vulnerability">脆弱性スキャン結果</option>
+        <option value="compliance">コンプライアンス評価</option>
+      </select>
     </div>
-    <div style="display: flex; gap: 12px; justify-content: flex-end;">
-      <button id="report-modal-cancel" class="action-btn secondary" style="padding: 10px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;">キャンセル</button>
-      <button id="report-modal-confirm" class="action-btn" style="padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;">生成</button>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">対象期間</label>
+      <div style="display: flex; gap: 8px;">
+        <input type="date" data-testid="report-date-from" style="flex: 1; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px;">
+        <input type="date" data-testid="report-date-to" style="flex: 1; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px;">
+      </div>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">配布対象</label>
+      <textarea data-testid="report-recipients" placeholder="メールアドレスをカンマ区切りで入力" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px; box-sizing: border-box; min-height: 60px; font-family: var(--font-family);"></textarea>
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+      <button class="action-btn secondary" data-testid="report-cancel" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer;">
+        キャンセル
+      </button>
+      <button class="action-btn" data-testid="report-generate" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); background: var(--primary); color: #fff; border: none; cursor: pointer;">
+        生成
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Status Update Modal -->
+<div id="status-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center;">
+  <div style="background: var(--bg-card); color: var(--text); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">対応状況更新</div>
+    
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">基準コード</label>
+      <div id="status-code" style="padding: 8px 10px; background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-control); font-size: 12px; color: var(--text);">-</div>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">対応状況</label>
+      <select data-testid="status-select" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px; box-sizing: border-box;">
+        <option value="">選択してください</option>
+        <option value="未対応">未対応</option>
+        <option value="進行中">進行中</option>
+        <option value="完了">完了</option>
+        <option value="例外">例外</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">対応内容</label>
+      <textarea data-testid="status-content" placeholder="実施した対応内容を記入" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: var(--radius-control); font-size: 12px; box-sizing: border-box; min-height: 80px; font-family: var(--font-family);"></textarea>
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+      <button class="action-btn secondary" data-testid="status-cancel" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer;">
+        キャンセル
+      </button>
+      <button class="action-btn" data-testid="status-save" style="padding: 8px 16px; font-size: 12px; border-radius: var(--radius-control); background: var(--primary); color: #fff; border: none; cursor: pointer;">
+        保存
+      </button>
     </div>
   </div>
 </div></div>
       </main>
     </div>
   </div>
+
   
 <script>
 (function() {
