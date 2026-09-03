@@ -12,6 +12,7 @@ export interface RBACContext {
     reportGenerate: boolean;
     assetManage: boolean;
     permissionDelete: boolean;
+    bulkImport: boolean;
   };
 }
 
@@ -23,6 +24,7 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: true,
     assetManage: true,
     permissionDelete: true,
+    bulkImport: true,
   },
   operator: {
     auditLogView: true,
@@ -31,6 +33,7 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: true,
     assetManage: true,
     permissionDelete: false,
+    bulkImport: true,
   },
   viewer: {
     auditLogView: true,
@@ -39,31 +42,47 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: false,
     assetManage: false,
     permissionDelete: false,
+    bulkImport: false,
   },
 };
 
 export function extractRBACContext(event: APIGatewayProxyEvent): RBACContext {
   const authHeader = event.headers['Authorization'] || '';
-  const roleHeader = event.headers['X-User-Role'] || 'viewer';
-  const userIdHeader = event.headers['X-User-Id'] || 'unknown';
+  const [, token] = authHeader.split(' ');
 
-  const role = (roleHeader as Role) || 'viewer';
-  const permissions = rolePermissions[role] || rolePermissions.viewer;
+  if (!token) {
+    throw new Error('Missing authorization token');
+  }
 
+  let decoded: { userId: string; role: Role };
+  try {
+    const payload = Buffer.from(token, 'base64').toString('utf-8');
+    decoded = JSON.parse(payload);
+  } catch {
+    throw new Error('Invalid token format');
+  }
+
+  if (!decoded.userId || !decoded.role) {
+    throw new Error('Invalid token payload');
+  }
+
+  if (!['admin', 'operator', 'viewer'].includes(decoded.role)) {
+    throw new Error('Invalid role');
+  }
+
+  const role = decoded.role as Role;
   return {
-    userId: userIdHeader,
+    userId: decoded.userId,
     role,
-    permissions,
+    permissions: rolePermissions[role],
   };
 }
 
 export function requirePermission(
   context: RBACContext,
   permission: keyof RBACContext['permissions']
-): boolean {
-  return context.permissions[permission];
-}
-
-export function requireRole(context: RBACContext, allowedRoles: Role[]): boolean {
-  return allowedRoles.includes(context.role);
+): void {
+  if (!context.permissions[permission]) {
+    throw new Error(`Forbidden: ${permission} not allowed for role ${context.role}`);
+  }
 }
