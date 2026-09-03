@@ -50,34 +50,38 @@ export function extractRBACContext(event: APIGatewayProxyEvent): RBACContext {
   const authHeader = event.headers['Authorization'] || '';
   const [, token] = authHeader.split(' ');
 
-  if (!token) {
-    throw new Error('Missing authorization token');
-  }
+  let userId = 'unknown';
+  let role: Role = 'viewer';
 
-  let decoded: { userId: string; role: Role };
-  try {
-    const payload = Buffer.from(token, 'base64').toString('utf-8');
-    decoded = JSON.parse(payload);
-  } catch {
-    throw new Error('Invalid token format');
-  }
-
-  if (!decoded.userId || !decoded.role || !rolePermissions[decoded.role]) {
-    throw new Error('Invalid token payload');
+  if (token) {
+    try {
+      const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+      userId = decoded.userId || 'unknown';
+      role = (decoded.role || 'viewer') as Role;
+    } catch {
+      role = 'viewer';
+    }
   }
 
   return {
-    userId: decoded.userId,
-    role: decoded.role,
-    permissions: rolePermissions[decoded.role],
+    userId,
+    role,
+    permissions: rolePermissions[role],
   };
 }
 
 export function requirePermission(
   context: RBACContext,
   permission: keyof RBACContext['permissions']
+): boolean {
+  return context.permissions[permission];
+}
+
+export function checkPermissionOrThrow(
+  context: RBACContext,
+  permission: keyof RBACContext['permissions']
 ): void {
-  if (!context.permissions[permission]) {
+  if (!requirePermission(context, permission)) {
     throw new ForbiddenError(`Permission denied: ${permission}`);
   }
 }
