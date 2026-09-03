@@ -89,7 +89,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: var(--space-unit) * 2;
+      padding: var(--space-unit);
       background-image: var(--surface-texture);
       background-size: var(--surface-texture-size);
       background-position: var(--surface-texture-position);
@@ -114,7 +114,7 @@
       width: 48px;
       height: 48px;
       margin: 0 auto;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
       border-radius: var(--radius-card);
       display: flex;
       align-items: center;
@@ -127,9 +127,9 @@
 
     .login-title {
       font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
+      font-weight: 600;
       letter-spacing: -0.5px;
+      color: var(--text);
     }
 
     .login-subtitle {
@@ -157,32 +157,27 @@
 
     .form-label {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .form-input {
-      width: 100%;
       height: var(--control-height);
       padding: 0 calc(var(--space-unit) * 1.5);
       background-color: var(--bg-main);
       border: var(--border-width) solid var(--border);
       border-radius: var(--radius-control);
-      font-family: var(--font-family);
-      font-size: 14px;
       color: var(--text);
+      font-size: 14px;
+      font-family: var(--font-family);
       transition: all var(--motion-duration) ease;
       outline: none;
     }
 
     .form-input::placeholder {
       color: var(--text-muted);
-    }
-
-    .form-input:hover {
-      border-color: var(--primary);
     }
 
     .form-input:focus {
@@ -192,31 +187,28 @@
     }
 
     .login-button {
-      width: 100%;
       height: var(--control-height);
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
       border: none;
       border-radius: var(--radius-control);
-      font-family: var(--font-family);
+      color: var(--text);
       font-size: 14px;
       font-weight: 600;
-      color: var(--text);
+      letter-spacing: 0.5px;
       cursor: pointer;
       transition: all var(--motion-duration) ease;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-card);
     }
 
     .login-button:hover {
-      background: linear-gradient(135deg, var(--primary-hover) 0%, #0d1419 100%);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.5);
     }
 
     .login-button:active {
       transform: translateY(0);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-card);
     }
 
     .login-footer {
@@ -225,14 +217,16 @@
       color: var(--text-muted);
       line-height: 1.6;
       padding-top: calc(var(--space-unit) * 1);
-      border-top: var(--border-width) solid var(--border);
     }
 
     .login-footer-note {
+      background-color: rgba(44, 62, 80, 0.15);
+      border: var(--border-width) solid rgba(44, 62, 80, 0.3);
+      border-radius: var(--radius-control);
+      padding: calc(var(--space-unit) * 1.5);
+      margin-top: calc(var(--space-unit) * 1);
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: calc(var(--space-unit) * 1.5);
-      font-style: italic;
     }
 
     @media (max-width: 480px) {
@@ -248,10 +242,6 @@
         padding: calc(var(--space-unit) * 2);
         gap: calc(var(--space-unit) * 1.5);
       }
-
-      .login-subtitle {
-        font-size: 13px;
-      }
     }
   </style>
 </head>
@@ -259,8 +249,8 @@
   <div class="login-container">
     <div class="login-header">
       <div class="login-logo">🔐</div>
-      <h1 class="login-title" data-testid="login-title">セキュリティ監査</h1>
-      <p class="login-subtitle">インシデント対応・監査ログ分析システム</p>
+      <h1 class="login-title" data-testid="login-title">ログイン</h1>
+      <p class="login-subtitle">セキュリティインシデント対応・監査ログ分析システム</p>
     </div>
 
     <div class="login-card">
@@ -273,7 +263,8 @@
             id="username"
             name="username"
             data-testid="username"
-            placeholder="ユーザーIDを入力"
+            placeholder="ユーザー名を入力"
+            autocomplete="username"
           >
         </div>
 
@@ -286,6 +277,7 @@
             name="password"
             data-testid="password"
             placeholder="パスワードを入力"
+            autocomplete="current-password"
           >
         </div>
 
@@ -297,13 +289,13 @@
           ログイン
         </button>
       </form>
-    </div>
 
-    <div class="login-footer">
-      <p>公共施設予約システム</p>
-      <p class="login-footer-note">
-        ※ サンプル実装ではどの入力でもログインできます
-      </p>
+      <div class="login-footer">
+        <p>セキュリティシステムへようこそ</p>
+        <div class="login-footer-note">
+          ℹ️ サンプル実装ではどの入力でもログインできます
+        </div>
+      </div>
     </div>
   </div>
 
