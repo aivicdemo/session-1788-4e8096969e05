@@ -6,68 +6,66 @@
   <title>公共施設予約 - ログイン画面</title>
   <style>
     :root {
-      /* ========== 色彩体系 ========== */
-      /* 県庁の落ち着いたトーン：深い紺と石灰色を基調に、公務的な信頼感と厳格性を表現 */
+      /* ========== 色彩基盤 ========== */
+      /* 県庁の落ち着いたトーン：深い紺と薄い灰白を基調に、
+         公共機関の信頼感と厳粛性を表現。
+         暗めの背景に白文字で、長時間の監査業務に対応。 */
+      
       --primary: #2c3e50;
       --primary-hover: #1a252f;
-      
-      /* 背景：薄い石灰色（公文書のような質感）に微かな緑味を加えた落ち着き */
-      --bg-main: #f0ede8;
-      --bg-card: #e8e5e0;
-      --bg-sidebar: #ebe8e3;
-      --top-bar-bg: #2c3e50;
-      --top-bar-border: #1a252f;
-      
-      /* 境界線：石灰色系で統一、やや濃いめで公式感を強調 */
-      --border: #c9c5bd;
-      
-      /* テキスト：深い紺で、落ち着いた読みやすさ */
-      --text: #1a1f26;
-      --text-muted: #6b7280;
-      
-      /* ステータス・アラート色 */
-      --success: #3d7e4a;
-      --warning: #a67c52;
-      --error: #8b4545;
-      --info: #4a6fa5;
-      
+      --bg-main: #0f1419;
+      --bg-card: #1a1f28;
+      --bg-sidebar: #151a22;
+      --border: #2a3142;
+      --text: #e8eaed;
+      --text-muted: #9ca3af;
+      --top-bar-bg: #1f2937;
+      --top-bar-border: #374151;
+      --top-bar-text: #f3f4f6;
+
       /* ========== タイポグラフィ ========== */
-      --font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
-      
-      /* ========== 寸法・間隔 ========== */
-      --space-unit: 8px;
-      --control-height: 40px;
-      
-      /* 角丸：公式感を損なわないよう控えめに */
-      --radius-card: 4px;
-      --radius-control: 3px;
-      
-      /* ========== 枠線 ========== */
+      /* 県庁システムの格式を保ちながら、
+         セキュリティ監査の緊張感を和らげる可読性重視の書体選定 */
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+
+      /* ========== 角丸・影 ========== */
+      /* 公共機関の堅牢性と現代的な親しみやすさの折衷。
+         カード類は控えめな角丸で、影は淡く奥行きを表現。 */
+      --radius-card: 6px;
+      --radius-control: 4px;
+      --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+      /* ========== 境界・寸法 ========== */
+      /* セキュリティシステムの視認性を確保しつつ、
+         過度な装飾を避ける。境界線は控えめで、
+         要素間の距離で階層を表現。 */
       --border-width: 1px;
-      
-      /* ========== 影・奥行き ========== */
-      --shadow-card: 0 1px 3px rgba(28, 31, 38, 0.08);
-      
-      /* ========== モーション ========== */
+      --control-height: 36px;
+      --space-unit: 8px;
+
+      /* ========== アニメーション ========== */
+      /* 監査ログの大量データ処理時の応答性を示しながら、
+         落ち着きを損なわない速度。 */
       --motion-duration: 200ms;
-      
+
       /* ========== 質感・テクスチャ ========== */
-      /* 公文書の紙質感：微細な織目模様で、デジタルながら公式文書の重厚さを表現 */
-      --surface-texture: 
-        repeating-linear-gradient(
-          90deg,
-          transparent,
-          transparent 2px,
-          rgba(172, 167, 154, 0.03) 2px,
-          rgba(172, 167, 154, 0.03) 4px
-        ),
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(172, 167, 154, 0.02) 2px,
-          rgba(172, 167, 154, 0.02) 4px
-        );
+      /* 県庁の公式文書のような紙質感と、
+         デジタルシステムの清潔感を融合。
+         微細な織目パターンで深みを表現。 */
+      --surface-texture: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.02) 2px,
+        rgba(255, 255, 255, 0.02) 4px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.015) 2px,
+        rgba(255, 255, 255, 0.015) 4px
+      );
       --surface-texture-size: 100% 100%;
       --surface-texture-position: 0 0;
     }
@@ -81,25 +79,23 @@
     html, body {
       width: 100%;
       height: 100%;
+      font-family: var(--font-family);
+      background: var(--bg-main);
+      color: var(--text);
     }
 
     body {
-      font-family: var(--font-family);
-      background: var(--bg-main);
-      background-image: var(--surface-texture);
-      background-size: var(--surface-texture-size);
-      background-position: var(--surface-texture-position);
-      color: var(--text);
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      min-height: 100vh;
-      padding: var(--space-unit) * 2;
+      align-items: center;
+      overflow: hidden;
     }
 
     .login-container {
       width: 100%;
       max-width: 420px;
+      padding: calc(var(--space-unit) * 2);
     }
 
     .login-card {
@@ -110,39 +106,24 @@
       border: var(--border-width) solid var(--border);
       border-radius: var(--radius-card);
       box-shadow: var(--shadow-card);
-      padding: calc(var(--space-unit) * 6);
+      padding: calc(var(--space-unit) * 5);
     }
 
     .login-header {
+      margin-bottom: calc(var(--space-unit) * 4);
       text-align: center;
-      margin-bottom: calc(var(--space-unit) * 5);
-    }
-
-    .login-logo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      background: var(--primary);
-      border-radius: var(--radius-control);
-      margin-bottom: calc(var(--space-unit) * 2);
-      font-weight: 700;
-      color: #ffffff;
-      font-size: 20px;
-      letter-spacing: -0.5px;
     }
 
     .login-title {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
-      color: var(--text);
+      letter-spacing: -0.5px;
       margin-bottom: calc(var(--space-unit) * 1);
-      letter-spacing: -0.3px;
+      color: var(--text);
     }
 
     .login-subtitle {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text-muted);
       line-height: 1.5;
     }
@@ -156,26 +137,29 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: calc(var(--space-unit) * 1);
+      gap: calc(var(--space-unit) * 1.5);
     }
 
     .form-label {
       font-size: 13px;
       font-weight: 500;
       color: var(--text);
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      opacity: 0.9;
     }
 
     .form-input {
+      width: 100%;
       height: var(--control-height);
-      padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 1.5);
+      padding: 0 calc(var(--space-unit) * 1.5);
       border: var(--border-width) solid var(--border);
       border-radius: var(--radius-control);
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
       font-family: var(--font-family);
       font-size: 14px;
-      color: var(--text);
-      transition: border-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
+      transition: all var(--motion-duration) ease;
       outline: none;
     }
 
@@ -184,47 +168,45 @@
       opacity: 0.6;
     }
 
-    .form-input:focus {
+    .form-input:hover {
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
+      background: rgba(255, 255, 255, 0.06);
     }
 
-    .form-input:hover:not(:focus) {
-      border-color: #b8b3aa;
+    .form-input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
     }
 
     .login-button {
       height: var(--control-height);
       background: var(--primary);
-      color: #ffffff;
       border: none;
       border-radius: var(--radius-control);
+      color: var(--text);
       font-size: 14px;
       font-weight: 600;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      transition: background-color var(--motion-duration) ease, box-shadow var(--motion-duration) ease;
-      letter-spacing: 0.3px;
+      transition: all var(--motion-duration) ease;
       margin-top: calc(var(--space-unit) * 1);
+      text-transform: uppercase;
+      font-family: var(--font-family);
     }
 
     .login-button:hover {
       background: var(--primary-hover);
-      box-shadow: 0 2px 6px rgba(28, 31, 38, 0.12);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
     }
 
     .login-button:active {
-      transform: translateY(1px);
-      box-shadow: 0 1px 3px rgba(28, 31, 38, 0.08);
-    }
-
-    .login-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      transform: scale(0.98);
     }
 
     .login-footer {
-      margin-top: calc(var(--space-unit) * 5);
-      padding-top: calc(var(--space-unit) * 4);
+      margin-top: calc(var(--space-unit) * 4);
+      padding-top: calc(var(--space-unit) * 3);
       border-top: var(--border-width) solid var(--border);
       text-align: center;
       font-size: 12px;
@@ -233,6 +215,8 @@
     }
 
     .login-footer-note {
+      display: block;
+      margin-top: calc(var(--space-unit) * 1);
       font-style: italic;
       opacity: 0.8;
     }
@@ -243,11 +227,11 @@
       }
 
       .login-title {
-        font-size: 20px;
+        font-size: 24px;
       }
 
       .login-subtitle {
-        font-size: 12px;
+        font-size: 13px;
       }
     }
 
@@ -263,8 +247,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <div class="login-logo">施</div>
-        <h1 class="login-title" data-testid="login-title">公共施設予約</h1>
+        <h1 class="login-title" data-testid="login-title">ログイン</h1>
         <p class="login-subtitle">セキュリティインシデント対応・監査ログ分析システム</p>
       </div>
 
@@ -305,9 +288,8 @@
       </form>
 
       <div class="login-footer">
-        <p class="login-footer-note">
-          ※ サンプル実装ではどの入力でもログインできます
-        </p>
+        <p>セキュリティインシデント対応・監査ログ分析システム</p>
+        <span class="login-footer-note">※ サンプル実装ではどの入力でもログインできます</span>
       </div>
     </div>
   </div>
