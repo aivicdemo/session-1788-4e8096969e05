@@ -16,7 +16,7 @@ import {
 import { randomUUID } from 'crypto';
 import {
   extractRBACContext,
-  requirePermission,
+  checkPermissionOrThrow,
   ForbiddenError,
   NotFoundError,
   ValidationError,
@@ -31,12 +31,12 @@ interface AuditLogEntry {
   pk: string;
   sk: string;
   eventType: string;
-  userId?: string;
+  userId: string;
   targetResourceType: string;
   targetResourceId?: string;
   operationContent: string;
-  beforeValue?: string;
-  afterValue?: string;
+  changeBeforeValue?: string;
+  changeAfterValue?: string;
   ipAddress?: string;
   sessionId?: string;
   severity: string;
@@ -45,82 +45,77 @@ interface AuditLogEntry {
   updatedAt: number;
 }
 
-interface Resource {
-  id: string;
-  [key: string]: unknown;
-  createdAt: number;
-  updatedAt: number;
+interface BulkImportRequest {
+  items: Record<string, unknown>[];
 }
 
-const tableIndexMap: Record<string, string> = {
-  '0': 'USER',
-  '1': 'VULNERABILITY',
-  '2': 'SCAN_RESULT',
-  '3': 'AUDIT_LOG',
-  '4': 'TICKET',
-  '5': 'RESPONSE_HISTORY',
-  '6': 'IMPACT_ANALYSIS',
-  '7': 'REPORT',
-  '8': 'ASSET',
-  '9': 'PERMISSION',
-  '10': 'VULNERABILITY_MASTER',
-};
-
-function getTablePrefix(tableIndex: string): string {
-  const prefix = tableIndexMap[tableIndex];
-  if (!prefix) {
-    throw new ValidationError(`Invalid table index: ${tableIndex}`);
-  }
-  return prefix;
+interface BulkImportResponse {
+  imported: number;
+  failed: number;
+  errors: string[];
 }
 
-async function createAuditLog(
-  context: RBACContext,
+function createAuditLog(
   eventType: string,
+  userId: string,
   targetResourceType: string,
-  targetResourceId: string | undefined,
   operationContent: string,
-  beforeValue?: string,
-  afterValue?: string,
-  ipAddress?: string
-): Promise<void> {
-  const auditEntry: AuditLogEntry = {
+  targetResourceId?: string,
+  changeBeforeValue?: string,
+  changeAfterValue?: string,
+  ipAddress?: string,
+  sessionId?: string,
+  severity: string = 'medium',
+  status: string = 'completed'
+): AuditLogEntry {
+  const now = Date.now();
+  return {
     pk: 'AUDIT',
-    sk: `${Date.now()}#${randomUUID()}`,
+    sk: `${now}#${randomUUID()}`,
     eventType,
-    userId: context.userId,
+    userId,
     targetResourceType,
     targetResourceId,
     operationContent,
-    beforeValue,
-    afterValue,
-    ipAddress: ipAddress || 'unknown',
-    sessionId: randomUUID(),
-    severity: 'INFO',
-    status: 'COMPLETED',
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
+    changeBeforeValue,
+    changeAfterValue,
+    ipAddress,
+    sessionId,
+    severity,
+    status,
+    createdAt: now,
+    updatedAt: now,
   };
+}
 
+async function writeAuditLog(auditLog: AuditLogEntry): Promise<void> {
   await docClient.send(
     new PutCommand({
       TableName: tableName,
-      Item: auditEntry,
+      Item: auditLog,
     })
   );
 }
 
-function buildResponse(
+function errorResponse(
   statusCode: number,
-  body: Record<string, unknown> | string
+  message: string
 ): APIGatewayProxyResult {
   return {
     statusCode,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-    body: typeof body === 'string' ? body : JSON.stringify(body),
+    body: JSON.stringify({ error: message }),
+    headers: { 'Content-Type': 'application/json' },
+  };
+}
+
+function successResponse(
+  statusCode: number,
+  data: unknown
+): APIGatewayProxyResult {
+  return {
+    statusCode,
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
   };
 }
 
@@ -128,33 +123,37 @@ async function handleGetResources(
   event: APIGatewayProxyEvent,
   context: RBACContext
 ): Promise<APIGatewayProxyResult> {
-  try {
-    requirePermission(context, 'auditLogView');
+  checkPermissionOrThrow(context, 'assetManage');
 
+  const resourceId = event.pathParameters?.id;
+
+  if (resourceId) {
     const result = await docClient.send(
-      new ScanCommand({
+      new GetCommand({
         TableName: tableName,
-        FilterExpression: 'attribute_exists(id)',
-        Limit: 100,
+        Key: { pk: 'ASSET', sk: resourceId },
       })
     );
 
-    const resources = (result.Items || []).filter(
-      (item) => item.pk && item.pk !== 'AUDIT'
-    );
-
-    return buildResponse(200, {
-      success: true,
-      count: resources.length,
-      resources,
-    });
-  } catch (error) {
-    if (error instanceof ForbiddenError) {
-      return buildResponse(403, { error: error.message });
+    if (!result.Item) {
+      return errorResponse(404, 'Resource not found');
     }
-    console.error('Error in handleGetResources:', error);
-    return buildResponse(500, { error: 'Internal server error' });
+
+    return successResponse(200, result.Item);
   }
+
+  const result = await docClient.send(
+    new QueryCommand({
+      TableName: tableName,
+      KeyConditionExpression: 'pk = :pk',
+      ExpressionAttributeValues: { ':pk': 'ASSET' },
+    })
+  );
+
+  return successResponse(200, {
+    items: result.Items || [],
+    count: result.Count || 0,
+  });
 }
 
 async function handleBulkImport(
@@ -162,365 +161,115 @@ async function handleBulkImport(
   context: RBACContext,
   tableIndex: string
 ): Promise<APIGatewayProxyResult> {
+  checkPermissionOrThrow(context, 'bulkImport');
+
+  let body: BulkImportRequest;
   try {
-    requirePermission(context, 'bulkImport');
+    body = JSON.parse(event.body || '{}');
+  } catch {
+    return errorResponse(400, 'Invalid JSON body');
+  }
 
-    const body = JSON.parse(event.body || '{}');
-    const items = body.items as Record<string, unknown>[];
+  if (!Array.isArray(body.items)) {
+    return errorResponse(400, 'items must be an array');
+  }
 
-    if (!Array.isArray(items) || items.length === 0) {
-      return buildResponse(400, {
-        error: 'Invalid request: items must be a non-empty array',
-      });
-    }
+  const tableMap: Record<string, string> = {
+    '0': 'USER',
+    '1': 'VULNERABILITY',
+    '2': 'SCAN_RESULT',
+    '3': 'AUDIT',
+    '4': 'TICKET',
+    '5': 'RESPONSE_HISTORY',
+    '6': 'IMPACT_ANALYSIS',
+    '7': 'REPORT',
+    '8': 'ASSET',
+    '9': 'PERMISSION',
+    '10': 'VULNERABILITY_MASTER',
+  };
 
-    const prefix = getTablePrefix(tableIndex);
-    const now = Date.now();
-    const enrichedItems: Record<string, unknown>[] = [];
+  const pk = tableMap[tableIndex];
+  if (!pk) {
+    return errorResponse(400, 'Invalid table index');
+  }
 
-    for (const item of items) {
-      enrichedItems.push({
-        ...item,
-        pk: prefix,
-        sk: `${item.id || randomUUID()}#${now}`,
-        id: item.id || randomUUID(),
-        createdAt: now,
-        updatedAt: now,
-        createdBy: context.userId,
-        updatedBy: context.userId,
-      });
-    }
+  const now = Date.now();
+  const items = body.items.map((item) => ({
+    ...item,
+    pk,
+    sk: item.sk || randomUUID(),
+    id: item.id || randomUUID(),
+    createdAt: item.createdAt || now,
+    updatedAt: item.updatedAt || now,
+  }));
 
-    const batchSize = 25;
-    let imported = 0;
-    let failed = 0;
-    const errors: string[] = [];
+  const errors: string[] = [];
+  let imported = 0;
+  let failed = 0;
 
-    for (let i = 0; i < enrichedItems.length; i += batchSize) {
-      const batch = enrichedItems.slice(i, i + batchSize);
-      const writeRequests = batch.map((item) => ({
-        PutRequest: {
-          Item: item as Record<string, unknown>,
-        },
-      }));
-
-      try {
-        const params: BatchWriteItemCommandInput = {
-          RequestItems: {
-            [tableName]: writeRequests as never,
+  for (let i = 0; i < items.length; i += 25) {
+    const batch = items.slice(i, i + 25);
+    const writeRequests = batch.map((item) => ({
+      PutRequest: {
+        Item: Object.entries(item).reduce(
+          (acc, [key, value]) => {
+            if (value === null || value === undefined) return acc;
+            if (typeof value === 'string') {
+              acc[key] = { S: value };
+            } else if (typeof value === 'number') {
+              acc[key] = { N: String(value) };
+            } else if (typeof value === 'boolean') {
+              acc[key] = { BOOL: value };
+            } else if (Array.isArray(value)) {
+              acc[key] = { SS: value.map(String) };
+            } else {
+              acc[key] = { S: JSON.stringify(value) };
+            }
+            return acc;
           },
-        };
+          {} as Record<string, unknown>
+        ),
+      },
+    }));
 
-        await client.send(new BatchWriteItemCommand(params));
-        imported += batch.length;
-      } catch (batchError) {
-        failed += batch.length;
-        errors.push(
-          `Batch ${Math.floor(i / batchSize) + 1} failed: ${String(batchError)}`
-        );
-      }
-    }
-
-    await createAuditLog(
-      context,
-      'BULK_IMPORT',
-      prefix,
-      undefined,
-      `Bulk imported ${imported} items to ${prefix}`,
-      undefined,
-      JSON.stringify({ imported, failed }),
-      event.requestContext?.identity?.sourceIp
-    );
-
-    return buildResponse(200, {
-      success: true,
-      imported,
-      failed,
-      errors: errors.length > 0 ? errors : undefined,
-    });
-  } catch (error) {
-    if (error instanceof ForbiddenError) {
-      return buildResponse(403, { error: error.message });
-    }
-    if (error instanceof ValidationError) {
-      return buildResponse(400, { error: error.message });
-    }
-    console.error('Error in handleBulkImport:', error);
-    return buildResponse(500, { error: 'Internal server error' });
-  }
-}
-
-async function handleGetResourceById(
-  event: APIGatewayProxyEvent,
-  context: RBACContext,
-  tableIndex: string
-): Promise<APIGatewayProxyResult> {
-  try {
-    requirePermission(context, 'auditLogView');
-
-    const resourceId = event.pathParameters?.id;
-    if (!resourceId) {
-      return buildResponse(400, { error: 'Missing resource ID' });
-    }
-
-    const prefix = getTablePrefix(tableIndex);
-
-    const result = await docClient.send(
-      new QueryCommand({
-        TableName: tableName,
-        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
-        ExpressionAttributeValues: {
-          ':pk': prefix,
-          ':sk': `${resourceId}#`,
-        },
-        Limit: 1,
-      })
-    );
-
-    if (!result.Items || result.Items.length === 0) {
-      return buildResponse(404, { error: 'Resource not found' });
-    }
-
-    return buildResponse(200, {
-      success: true,
-      resource: result.Items[0],
-    });
-  } catch (error) {
-    if (error instanceof ForbiddenError) {
-      return buildResponse(403, { error: error.message });
-    }
-    if (error instanceof ValidationError) {
-      return buildResponse(400, { error: error.message });
-    }
-    console.error('Error in handleGetResourceById:', error);
-    return buildResponse(500, { error: 'Internal server error' });
-  }
-}
-
-async function handleCreateResource(
-  event: APIGatewayProxyEvent,
-  context: RBACContext,
-  tableIndex: string
-): Promise<APIGatewayProxyResult> {
-  try {
-    requirePermission(context, 'vulnerabilityManage');
-
-    const body = JSON.parse(event.body || '{}');
-    const prefix = getTablePrefix(tableIndex);
-    const now = Date.now();
-    const resourceId = randomUUID();
-
-    const resource: Resource = {
-      ...body,
-      pk: prefix,
-      sk: `${resourceId}#${now}`,
-      id: resourceId,
-      createdAt: now,
-      updatedAt: now,
-      createdBy: context.userId,
-      updatedBy: context.userId,
+    const params: BatchWriteItemCommandInput = {
+      RequestItems: {
+        [tableName]: writeRequests,
+      },
     };
 
-    await docClient.send(
-      new PutCommand({
-        TableName: tableName,
-        Item: resource,
-      })
-    );
-
-    await createAuditLog(
-      context,
-      'CREATE',
-      prefix,
-      resourceId,
-      `Created new ${prefix} resource`,
-      undefined,
-      JSON.stringify(resource),
-      event.requestContext?.identity?.sourceIp
-    );
-
-    return buildResponse(201, {
-      success: true,
-      resource,
-    });
-  } catch (error) {
-    if (error instanceof ForbiddenError) {
-      return buildResponse(403, { error: error.message });
+    try {
+      await client.send(new BatchWriteItemCommand(params));
+      imported += batch.length;
+    } catch (err) {
+      failed += batch.length;
+      errors.push(
+        `Batch ${Math.floor(i / 25) + 1} failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+      );
     }
-    if (error instanceof ValidationError) {
-      return buildResponse(400, { error: error.message });
-    }
-    console.error('Error in handleCreateResource:', error);
-    return buildResponse(500, { error: 'Internal server error' });
   }
-}
 
-async function handleUpdateResource(
-  event: APIGatewayProxyEvent,
-  context: RBACContext,
-  tableIndex: string
-): Promise<APIGatewayProxyResult> {
-  try {
-    requirePermission(context, 'vulnerabilityManage');
+  const auditLog = createAuditLog(
+    'BULK_IMPORT',
+    context.userId,
+    pk,
+    `Bulk imported ${imported} items to ${pk}`,
+    undefined,
+    undefined,
+    undefined,
+    event.requestContext?.identity?.sourceIp,
+    event.requestContext?.requestId,
+    'high',
+    'completed'
+  );
 
-    const resourceId = event.pathParameters?.id;
-    if (!resourceId) {
-      return buildResponse(400, { error: 'Missing resource ID' });
-    }
+  await writeAuditLog(auditLog);
 
-    const body = JSON.parse(event.body || '{}');
-    const prefix = getTablePrefix(tableIndex);
-    const now = Date.now();
-
-    const queryResult = await docClient.send(
-      new QueryCommand({
-        TableName: tableName,
-        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
-        ExpressionAttributeValues: {
-          ':pk': prefix,
-          ':sk': `${resourceId}#`,
-        },
-        Limit: 1,
-      })
-    );
-
-    if (!queryResult.Items || queryResult.Items.length === 0) {
-      return buildResponse(404, { error: 'Resource not found' });
-    }
-
-    const oldItem = queryResult.Items[0];
-    const sk = oldItem.sk as string;
-
-    const updateExpressions: string[] = [];
-    const expressionAttributeNames: Record<string, string> = {};
-    const expressionAttributeValues: Record<string, unknown> = {};
-
-    Object.entries(body).forEach(([key, value], index) => {
-      if (key !== 'pk' && key !== 'sk' && key !== 'id') {
-        const attrName = `#attr${index}`;
-        const attrValue = `:val${index}`;
-        updateExpressions.push(`${attrName} = ${attrValue}`);
-        expressionAttributeNames[attrName] = key;
-        expressionAttributeValues[attrValue] = value;
-      }
-    });
-
-    updateExpressions.push('#updatedAt = :updatedAt');
-    updateExpressions.push('#updatedBy = :updatedBy');
-    expressionAttributeNames['#updatedAt'] = 'updatedAt';
-    expressionAttributeNames['#updatedBy'] = 'updatedBy';
-    expressionAttributeValues[':updatedAt'] = now;
-    expressionAttributeValues[':updatedBy'] = context.userId;
-
-    await docClient.send(
-      new UpdateCommand({
-        TableName: tableName,
-        Key: {
-          pk: prefix,
-          sk,
-        },
-        UpdateExpression: `SET ${updateExpressions.join(', ')}`,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
-      })
-    );
-
-    await createAuditLog(
-      context,
-      'UPDATE',
-      prefix,
-      resourceId,
-      `Updated ${prefix} resource`,
-      JSON.stringify(oldItem),
-      JSON.stringify(body),
-      event.requestContext?.identity?.sourceIp
-    );
-
-    return buildResponse(200, {
-      success: true,
-      message: 'Resource updated successfully',
-    });
-  } catch (error) {
-    if (error instanceof ForbiddenError) {
-      return buildResponse(403, { error: error.message });
-    }
-    if (error instanceof ValidationError) {
-      return buildResponse(400, { error: error.message });
-    }
-    console.error('Error in handleUpdateResource:', error);
-    return buildResponse(500, { error: 'Internal server error' });
-  }
-}
-
-async function handleDeleteResource(
-  event: APIGatewayProxyEvent,
-  context: RBACContext,
-  tableIndex: string
-): Promise<APIGatewayProxyResult> {
-  try {
-    requirePermission(context, 'vulnerabilityManage');
-
-    const resourceId = event.pathParameters?.id;
-    if (!resourceId) {
-      return buildResponse(400, { error: 'Missing resource ID' });
-    }
-
-    const prefix = getTablePrefix(tableIndex);
-
-    const queryResult = await docClient.send(
-      new QueryCommand({
-        TableName: tableName,
-        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
-        ExpressionAttributeValues: {
-          ':pk': prefix,
-          ':sk': `${resourceId}#`,
-        },
-        Limit: 1,
-      })
-    );
-
-    if (!queryResult.Items || queryResult.Items.length === 0) {
-      return buildResponse(404, { error: 'Resource not found' });
-    }
-
-    const item = queryResult.Items[0];
-    const sk = item.sk as string;
-
-    await docClient.send(
-      new DeleteCommand({
-        TableName: tableName,
-        Key: {
-          pk: prefix,
-          sk,
-        },
-      })
-    );
-
-    await createAuditLog(
-      context,
-      'DELETE',
-      prefix,
-      resourceId,
-      `Deleted ${prefix} resource`,
-      JSON.stringify(item),
-      undefined,
-      event.requestContext?.identity?.sourceIp
-    );
-
-    return buildResponse(200, {
-      success: true,
-      message: 'Resource deleted successfully',
-    });
-  } catch (error) {
-    if (error instanceof ForbiddenError) {
-      return buildResponse(403, { error: error.message });
-    }
-    if (error instanceof ValidationError) {
-      return buildResponse(400, { error: error.message });
-    }
-    console.error('Error in handleDeleteResource:', error);
-    return buildResponse(500, { error: 'Internal server error' });
-  }
+  return successResponse(200, {
+    imported,
+    failed,
+    errors,
+  } as BulkImportResponse);
 }
 
 export async function handler(
@@ -531,39 +280,31 @@ export async function handler(
     const path = event.path || '';
     const method = event.httpMethod || 'GET';
 
-    if (path === '/resources' && method === 'GET') {
+    if (method === 'GET' && path === '/resources') {
       return await handleGetResources(event, context);
     }
 
     const bulkMatch = path.match(/^\/api\/(\d+)\/bulk$/);
-    if (bulkMatch && method === 'POST') {
-      return await handleBulkImport(event, context, bulkMatch[1]);
+    if (method === 'POST' && bulkMatch) {
+      const tableIndex = bulkMatch[1];
+      return await handleBulkImport(event, context, tableIndex);
     }
 
-    const getByIdMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
-    if (getByIdMatch && method === 'GET') {
-      return await handleGetResourceById(event, context, getByIdMatch[1]);
+    return errorResponse(404, 'Endpoint not found');
+  } catch (err) {
+    if (err instanceof ForbiddenError) {
+      return errorResponse(403, err.message);
     }
-
-    const createMatch = path.match(/^\/api\/(\d+)$/);
-    if (createMatch && method === 'POST') {
-      return await handleCreateResource(event, context, createMatch[1]);
+    if (err instanceof NotFoundError) {
+      return errorResponse(404, err.message);
     }
-
-    if (getByIdMatch && method === 'PUT') {
-      return await handleUpdateResource(event, context, getByIdMatch[1]);
+    if (err instanceof ValidationError) {
+      return errorResponse(400, err.message);
     }
-
-    if (getByIdMatch && method === 'DELETE') {
-      return await handleDeleteResource(event, context, getByIdMatch[1]);
-    }
-
-    return buildResponse(404, { error: 'Endpoint not found' });
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('Missing authorization')) {
-      return buildResponse(401, { error: 'Unauthorized' });
-    }
-    console.error('Unhandled error:', error);
-    return buildResponse(500, { error: 'Internal server error' });
+    console.error('Unhandled error:', err);
+    return errorResponse(
+      500,
+      err instanceof Error ? err.message : 'Internal server error'
+    );
   }
 }
