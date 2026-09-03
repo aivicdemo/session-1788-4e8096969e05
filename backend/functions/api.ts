@@ -1,667 +1,531 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBClient,
+  BatchWriteItemCommand,
+  BatchWriteItemCommandInput,
+} from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
+  ScanCommand,
+  QueryCommand,
   GetCommand,
   PutCommand,
   UpdateCommand,
   DeleteCommand,
-  ScanCommand,
-  QueryCommand,
-  BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { randomUUID } from 'crypto';
-import { extractRBACContext, requirePermission, requireRole } from './rbac';
+import { extractRBACContext, requirePermission, RBACContext } from './rbac';
 
-const client = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
+const client = new DynamoDBClient({ region: process.env.AWS_REGION || 'ap-northeast-1' });
 const docClient = DynamoDBDocumentClient.from(client);
-const TABLE_NAME = process.env.MAIN_TABLE || 'SecurityIncidentTable';
+const tableName = process.env.MAIN_TABLE || 'SecurityIncidentTable';
 
-interface AuditLogEntry {
-  pk: string;
-  sk: string;
-  eventType: string;
-  userId: string;
-  targetResourceType: string;
-  targetResourceId?: string;
-  operationContent: string;
-  beforeValue?: string;
-  afterValue?: string;
-  ipAddress?: string;
-  sessionId?: string;
-  severity: string;
-  status: string;
-  createdAt: number;
-  updatedAt: number;
+interface ApiResponse {
+  statusCode: number;
+  body: string;
 }
 
-interface User {
-  pk: string;
-  sk: string;
-  userId: string;
-  userName: string;
-  email: string;
-  department?: string;
-  position?: string;
-  role: string;
-  status: string;
-  lastLoginAt?: number;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-  updatedBy?: string;
-}
-
-interface Vulnerability {
-  pk: string;
-  sk: string;
-  vulnerabilityId: string;
-  vulnerabilityName: string;
-  description?: string;
-  cveIdentifier?: string;
-  severityLevel: string;
-  cvssScore?: number;
-  affectedSystem?: string;
-  detectedAt: number;
-  responseStatus: string;
-  responseDueDate?: number;
-  responseContent?: string;
-  responseCompletedAt?: number;
-  assignee?: string;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-  updatedBy: string;
-}
-
-interface VulnerabilityScanResult {
-  pk: string;
-  sk: string;
-  scanResultId: string;
-  vulnerabilityId: string;
-  scanExecutedAt: number;
-  targetResource: string;
-  severityLevel: string;
-  detectionStatus: string;
-  detailInfo?: string;
-  recommendedResponse?: string;
-  responseDueDate?: number;
-  assigneeId?: string;
-  createdAt: number;
-  updatedAt: number;
-  createdById: string;
-}
-
-interface AuditLog {
-  pk: string;
-  sk: string;
-  auditLogId: string;
-  eventType: string;
-  userId?: string;
-  targetResourceType: string;
-  targetResourceId?: string;
-  operationContent: string;
-  beforeValue?: string;
-  afterValue?: string;
-  ipAddress?: string;
-  sessionId?: string;
-  severity: string;
-  status: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-interface VulnerabilityResponseTicket {
-  pk: string;
-  sk: string;
-  ticketId: string;
-  vulnerabilityId: string;
-  scanResultId?: string;
-  ticketTitle: string;
-  description?: string;
-  status: string;
-  priority: string;
-  assigneeId?: string;
-  dueDate?: number;
-  completedAt?: number;
-  createdAt: number;
-  createdById: string;
-  updatedAt: number;
-  updatedById: string;
-}
-
-interface ResponseStatusHistory {
-  pk: string;
-  sk: string;
-  historyId: string;
-  ticketId: string;
-  beforeStatus: string;
-  afterStatus: string;
-  responseContent?: string;
-  responderId: string;
-  createdAt: number;
-  remarks?: string;
-}
-
-interface ImpactAnalysis {
-  pk: string;
-  sk: string;
-  analysisId: string;
-  vulnerabilityId: string;
-  scanResultId?: string;
-  ticketId?: string;
-  affectedUserCount: number;
-  affectedSystemCount: number;
-  impactLevel: string;
-  impactExplanation?: string;
-  responsePriority: string;
-  analysisStatus: string;
-  analysisCompletedAt?: number;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-  updatedBy?: string;
-}
-
-interface Report {
-  pk: string;
-  sk: string;
-  reportId: string;
-  reportName: string;
-  reportType: string;
-  periodStartDate: number;
-  periodEndDate: number;
-  foundVulnerabilityCount?: number;
-  completedVulnerabilityCount?: number;
-  incidentCount?: number;
-  severityAggregation?: string;
-  reportContent?: string;
-  status: string;
-  createdById: string;
-  approvedById?: string;
-  distributionList?: string;
-  createdAt: number;
-  updatedAt: number;
-  approvedAt?: number;
-  distributedAt?: number;
-}
-
-interface SystemAsset {
-  pk: string;
-  sk: string;
-  assetId: string;
-  assetName: string;
-  assetType: string;
-  ipAddress?: string;
-  hostName?: string;
-  osType?: string;
-  osVersion?: string;
-  ownerDepartment: string;
-  responsible?: string;
-  importanceLevel: string;
-  scanTargetFlag: boolean;
-  auditTargetFlag: boolean;
-  operatingStatus: string;
-  deploymentDate?: number;
-  decommissionDate?: number;
-  remarks?: string;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-  updatedBy: string;
-}
-
-interface PermissionSetting {
-  pk: string;
-  sk: string;
-  permissionId: string;
-  userId: string;
-  role: string;
-  auditLogViewPermission: boolean;
-  vulnerabilityManagePermission: boolean;
-  incidentRespondPermission: boolean;
-  reportGeneratePermission: boolean;
-  assetManagePermission: boolean;
-  permissionDeletePermission: boolean;
-  enabledFlag: boolean;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-  updatedBy: string;
-  remarks?: string;
-}
-
-interface VulnerabilityMaster {
-  pk: string;
-  sk: string;
-  vulnerabilityId: string;
-  cveId: string;
-  vulnerabilityName: string;
-  description: string;
-  cvssScore: number;
-  severity: string;
-  attackVector?: string;
-  impactScope?: string;
-  publishedAt?: number;
-  referenceUrl?: string;
-  responsePriority: string;
-  status: string;
-  createdAt: number;
-  updatedAt: number;
-  createdBy: string;
-}
-
-type TableType =
-  | 'USER'
-  | 'VULNERABILITY'
-  | 'SCAN_RESULT'
-  | 'AUDIT_LOG'
-  | 'TICKET'
-  | 'STATUS_HISTORY'
-  | 'IMPACT_ANALYSIS'
-  | 'REPORT'
-  | 'ASSET'
-  | 'PERMISSION'
-  | 'VULN_MASTER';
-
-const tableIndexMap: Record<number, TableType> = {
-  0: 'USER',
-  1: 'VULNERABILITY',
-  2: 'SCAN_RESULT',
-  3: 'AUDIT_LOG',
-  4: 'TICKET',
-  5: 'STATUS_HISTORY',
-  6: 'IMPACT_ANALYSIS',
-  7: 'REPORT',
-  8: 'ASSET',
-  9: 'PERMISSION',
-  10: 'VULN_MASTER',
-};
-
-function getPkSk(tableType: TableType, id: string): { pk: string; sk: string } {
+function response(statusCode: number, data: unknown): ApiResponse {
   return {
-    pk: tableType,
-    sk: id,
+    statusCode,
+    body: JSON.stringify(data),
   };
 }
 
+function errorResponse(statusCode: number, message: string): ApiResponse {
+  return response(statusCode, { error: message });
+}
+
 async function createAuditLog(
+  context: RBACContext,
   eventType: string,
-  userId: string,
-  targetResourceType: string,
-  targetResourceId: string | undefined,
-  operationContent: string,
-  beforeValue: string | undefined,
-  afterValue: string | undefined,
-  severity: string,
-  ipAddress?: string,
-  sessionId?: string
+  resourceType: string,
+  resourceId: string | undefined,
+  operation: string,
+  beforeValue?: string,
+  afterValue?: string,
+  ipAddress?: string
 ): Promise<void> {
   const auditLogId = randomUUID();
-  const now = Date.now();
-  const { pk, sk } = getPkSk('AUDIT_LOG', auditLogId);
+  const now = new Date().toISOString();
 
-  const auditLog: AuditLog = {
-    pk,
-    sk,
+  const auditLog = {
+    pk: 'AUDIT',
+    sk: `${now}#${auditLogId}`,
     auditLogId,
     eventType,
-    userId,
-    targetResourceType,
-    targetResourceId,
-    operationContent,
+    userId: context.userId,
+    resourceType,
+    resourceId,
+    operation,
     beforeValue,
     afterValue,
-    ipAddress,
-    sessionId,
-    severity,
-    status: 'UNPROCESSED',
+    ipAddress: ipAddress || 'unknown',
+    severity: 'info',
+    status: 'completed',
     createdAt: now,
     updatedAt: now,
   };
 
   await docClient.send(
     new PutCommand({
-      TableName: TABLE_NAME,
+      TableName: tableName,
       Item: auditLog,
     })
   );
 }
 
-function errorResponse(
-  statusCode: number,
-  message: string
-): APIGatewayProxyResult {
-  return {
-    statusCode,
-    body: JSON.stringify({ error: message }),
-    headers: { 'Content-Type': 'application/json' },
-  };
-}
-
-function successResponse(
-  statusCode: number,
-  data: unknown
-): APIGatewayProxyResult {
-  return {
-    statusCode,
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  };
-}
-
-export async function handler(
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> {
+async function handleGetResources(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
   try {
-    const rbacContext = extractRBACContext(event);
-    const method = event.httpMethod;
-    const path = event.path;
-    const pathParameters = event.pathParameters || {};
-    const queryStringParameters = event.queryStringParameters || {};
-    const body = event.body ? JSON.parse(event.body) : {};
+    requirePermission(context, 'assetManage');
 
-    // GET /resources
-    if (method === 'GET' && path === '/resources') {
-      if (!requirePermission(rbacContext, 'auditLogView')) {
-        return errorResponse(403, 'Forbidden: Insufficient permissions');
-      }
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'ASSET',
+        },
+      })
+    );
 
-      const result = await docClient.send(
-        new ScanCommand({
-          TableName: TABLE_NAME,
-          FilterExpression: 'begins_with(pk, :pk)',
-          ExpressionAttributeValues: {
-            ':pk': 'RESOURCE',
-          },
-        })
-      );
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Forbidden')) {
+      return errorResponse(403, message);
+    }
+    return errorResponse(500, message);
+  }
+}
 
-      return successResponse(200, {
-        resources: result.Items || [],
-        count: result.Count || 0,
-      });
+async function handleBulkImport(
+  event: APIGatewayProxyEvent,
+  context: RBACContext,
+  tableIndex: string
+): Promise<ApiResponse> {
+  try {
+    requirePermission(context, 'bulkImport');
+
+    if (!event.body) {
+      return errorResponse(400, 'Request body is required');
     }
 
-    // POST /api/{tableIndex}/bulk
-    const bulkMatch = path.match(/^\/api\/(\d+)\/bulk$/);
-    if (method === 'POST' && bulkMatch) {
-      if (!requireRole(rbacContext, ['admin', 'operator'])) {
-        return errorResponse(403, 'Forbidden: Only admin/operator can bulk import');
-      }
-
-      const tableIndex = parseInt(bulkMatch[1], 10);
-      const tableType = tableIndexMap[tableIndex];
-
-      if (!tableType) {
-        return errorResponse(400, 'Invalid table index');
-      }
-
-      const { items } = body as { items: Record<string, unknown>[] };
-
-      if (!Array.isArray(items)) {
-        return errorResponse(400, 'Items must be an array');
-      }
-
-      const now = Date.now();
-      const processedItems = items.map((item) => {
-        const id = randomUUID();
-        const { pk, sk } = getPkSk(tableType, id);
-        return {
-          ...item,
-          pk,
-          sk,
-          id,
-          createdAt: now,
-          updatedAt: now,
-          createdBy: rbacContext.userId,
-        };
-      });
-
-      const chunks = [];
-      for (let i = 0; i < processedItems.length; i += 25) {
-        chunks.push(processedItems.slice(i, i + 25));
-      }
-
-      let imported = 0;
-      const errors: string[] = [];
-
-      for (const chunk of chunks) {
-        const requests = chunk.map((item) => ({
-          PutRequest: {
-            Item: item,
-          },
-        }));
-
-        try {
-          await docClient.send(
-            new BatchWriteCommand({
-              RequestItems: {
-                [TABLE_NAME]: requests,
-              },
-            })
-          );
-          imported += chunk.length;
-        } catch (err) {
-          const errorMsg = err instanceof Error ? err.message : String(err);
-          errors.push(errorMsg);
-        }
-      }
-
-      await createAuditLog(
-        'BULK_IMPORT',
-        rbacContext.userId,
-        tableType,
-        undefined,
-        `Bulk imported ${imported} items to ${tableType}`,
-        undefined,
-        undefined,
-        'HIGH',
-        event.requestContext?.identity?.sourceIp
-      );
-
-      return successResponse(200, {
-        imported,
-        failed: items.length - imported,
-        errors,
-      });
+    let payload: { items: Record<string, unknown>[] };
+    try {
+      payload = JSON.parse(event.body);
+    } catch {
+      return errorResponse(400, 'Invalid JSON in request body');
     }
 
-    // GET /api/{tableIndex}/{id}
-    const getMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
-    if (method === 'GET' && getMatch) {
-      if (!requirePermission(rbacContext, 'auditLogView')) {
-        return errorResponse(403, 'Forbidden: Insufficient permissions');
-      }
-
-      const tableIndex = parseInt(getMatch[1], 10);
-      const id = getMatch[2];
-      const tableType = tableIndexMap[tableIndex];
-
-      if (!tableType) {
-        return errorResponse(400, 'Invalid table index');
-      }
-
-      const { pk, sk } = getPkSk(tableType, id);
-
-      const result = await docClient.send(
-        new GetCommand({
-          TableName: TABLE_NAME,
-          Key: { pk, sk },
-        })
-      );
-
-      if (!result.Item) {
-        return errorResponse(404, 'Resource not found');
-      }
-
-      return successResponse(200, result.Item);
+    if (!Array.isArray(payload.items)) {
+      return errorResponse(400, 'items must be an array');
     }
 
-    // POST /api/{tableIndex}
-    const postMatch = path.match(/^\/api\/(\d+)$/);
-    if (method === 'POST' && postMatch) {
-      if (!requirePermission(rbacContext, 'vulnerabilityManage')) {
-        return errorResponse(403, 'Forbidden: Insufficient permissions');
-      }
+    const now = new Date().toISOString();
+    const enrichedItems = payload.items.map((item) => ({
+      ...item,
+      pk: tableIndex.toUpperCase(),
+      sk: randomUUID(),
+      id: randomUUID(),
+      createdAt: now,
+      updatedAt: now,
+      createdBy: context.userId,
+    }));
 
-      const tableIndex = parseInt(postMatch[1], 10);
-      const tableType = tableIndexMap[tableIndex];
+    const chunks: typeof enrichedItems[] = [];
+    for (let i = 0; i < enrichedItems.length; i += 25) {
+      chunks.push(enrichedItems.slice(i, i + 25));
+    }
 
-      if (!tableType) {
-        return errorResponse(400, 'Invalid table index');
-      }
+    let imported = 0;
+    const errors: string[] = [];
 
-      const id = randomUUID();
-      const now = Date.now();
-      const { pk, sk } = getPkSk(tableType, id);
-
-      const item = {
-        ...body,
-        pk,
-        sk,
-        id,
-        createdAt: now,
-        updatedAt: now,
-        createdBy: rbacContext.userId,
-      };
-
-      await docClient.send(
-        new PutCommand({
-          TableName: TABLE_NAME,
+    for (const chunk of chunks) {
+      const writeRequests = chunk.map((item) => ({
+        PutRequest: {
           Item: item,
-        })
-      );
+        },
+      }));
 
-      await createAuditLog(
-        'CREATE',
-        rbacContext.userId,
-        tableType,
-        id,
-        `Created new ${tableType} record`,
-        undefined,
-        JSON.stringify(item),
-        'MEDIUM',
-        event.requestContext?.identity?.sourceIp
-      );
-
-      return successResponse(201, item);
-    }
-
-    // PUT /api/{tableIndex}/{id}
-    const putMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
-    if (method === 'PUT' && putMatch) {
-      if (!requirePermission(rbacContext, 'vulnerabilityManage')) {
-        return errorResponse(403, 'Forbidden: Insufficient permissions');
-      }
-
-      const tableIndex = parseInt(putMatch[1], 10);
-      const id = putMatch[2];
-      const tableType = tableIndexMap[tableIndex];
-
-      if (!tableType) {
-        return errorResponse(400, 'Invalid table index');
-      }
-
-      const { pk, sk } = getPkSk(tableType, id);
-
-      const existing = await docClient.send(
-        new GetCommand({
-          TableName: TABLE_NAME,
-          Key: { pk, sk },
-        })
-      );
-
-      if (!existing.Item) {
-        return errorResponse(404, 'Resource not found');
-      }
-
-      const now = Date.now();
-      const updated = {
-        ...existing.Item,
-        ...body,
-        pk,
-        sk,
-        updatedAt: now,
-        updatedBy: rbacContext.userId,
+      const batchParams: BatchWriteItemCommandInput = {
+        RequestItems: {
+          [tableName]: writeRequests,
+        },
       };
 
-      await docClient.send(
-        new PutCommand({
-          TableName: TABLE_NAME,
-          Item: updated,
-        })
-      );
-
-      await createAuditLog(
-        'UPDATE',
-        rbacContext.userId,
-        tableType,
-        id,
-        `Updated ${tableType} record`,
-        JSON.stringify(existing.Item),
-        JSON.stringify(updated),
-        'MEDIUM',
-        event.requestContext?.identity?.sourceIp
-      );
-
-      return successResponse(200, updated);
+      try {
+        await client.send(new BatchWriteItemCommand(batchParams));
+        imported += chunk.length;
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        errors.push(`Batch write failed: ${errorMsg}`);
+      }
     }
 
-    // DELETE /api/{tableIndex}/{id}
-    const deleteMatch = path.match(/^\/api\/(\d+)\/([a-f0-9-]+)$/);
-    if (method === 'DELETE' && deleteMatch) {
-      if (!requireRole(rbacContext, ['admin'])) {
-        return errorResponse(403, 'Forbidden: Only admin can delete');
-      }
+    await createAuditLog(
+      context,
+      'BULK_IMPORT',
+      tableIndex,
+      undefined,
+      `Bulk imported ${imported} items`,
+      undefined,
+      undefined,
+      event.requestContext?.identity?.sourceIp
+    );
 
-      const tableIndex = parseInt(deleteMatch[1], 10);
-      const id = deleteMatch[2];
-      const tableType = tableIndexMap[tableIndex];
+    return response(200, {
+      imported,
+      failed: payload.items.length - imported,
+      errors,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Forbidden')) {
+      return errorResponse(403, message);
+    }
+    return errorResponse(500, message);
+  }
+}
 
-      if (!tableType) {
-        return errorResponse(400, 'Invalid table index');
-      }
+async function handleGetUsers(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'USER',
+        },
+      })
+    );
 
-      const { pk, sk } = getPkSk(tableType, id);
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return errorResponse(500, message);
+  }
+}
 
-      const existing = await docClient.send(
-        new GetCommand({
-          TableName: TABLE_NAME,
-          Key: { pk, sk },
-        })
-      );
+async function handleGetVulnerabilities(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'VULNERABILITY',
+        },
+      })
+    );
 
-      if (!existing.Item) {
-        return errorResponse(404, 'Resource not found');
-      }
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return errorResponse(500, message);
+  }
+}
 
-      await docClient.send(
-        new DeleteCommand({
-          TableName: TABLE_NAME,
-          Key: { pk, sk },
-        })
-      );
+async function handleGetScanResults(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'SCANRESULT',
+        },
+      })
+    );
 
-      await createAuditLog(
-        'DELETE',
-        rbacContext.userId,
-        tableType,
-        id,
-        `Deleted ${tableType} record`,
-        JSON.stringify(existing.Item),
-        undefined,
-        'HIGH',
-        event.requestContext?.identity?.sourceIp
-      );
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return errorResponse(500, message);
+  }
+}
 
-      return successResponse(200, { message: 'Deleted successfully' });
+async function handleGetAuditLogs(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    requirePermission(context, 'auditLogView');
+
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'AUDIT',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Forbidden')) {
+      return errorResponse(403, message);
+    }
+    return errorResponse(500, message);
+  }
+}
+
+async function handleGetTickets(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    requirePermission(context, 'incidentRespond');
+
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'TICKET',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Forbidden')) {
+      return errorResponse(403, message);
+    }
+    return errorResponse(500, message);
+  }
+}
+
+async function handleGetReports(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    requirePermission(context, 'reportGenerate');
+
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'REPORT',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Forbidden')) {
+      return errorResponse(403, message);
+    }
+    return errorResponse(500, message);
+  }
+}
+
+async function handleGetImpactAnalysis(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'IMPACT',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return errorResponse(500, message);
+  }
+}
+
+async function handleGetPermissions(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    requirePermission(context, 'permissionDelete');
+
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'PERMISSION',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Forbidden')) {
+      return errorResponse(403, message);
+    }
+    return errorResponse(500, message);
+  }
+}
+
+async function handleGetVulnerabilityMaster(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'VULNMASTER',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return errorResponse(500, message);
+  }
+}
+
+async function handleGetStatusHistory(
+  event: APIGatewayProxyEvent,
+  context: RBACContext
+): Promise<ApiResponse> {
+  try {
+    const result = await docClient.send(
+      new ScanCommand({
+        TableName: tableName,
+        FilterExpression: 'pk = :pk',
+        ExpressionAttributeValues: {
+          ':pk': 'STATUSHISTORY',
+        },
+      })
+    );
+
+    return response(200, {
+      items: result.Items || [],
+      count: result.Count || 0,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return errorResponse(500, message);
+  }
+}
+
+export async function handler(event: APIGatewayProxyEvent): Promise<ApiResponse> {
+  try {
+    const context = extractRBACContext(event);
+    const path = event.path || '';
+    const method = event.httpMethod || 'GET';
+
+    if (method === 'GET' && path === '/resources') {
+      return await handleGetResources(event, context);
     }
 
-    return errorResponse(404, 'Endpoint not found');
-  } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    console.error('Error:', errorMsg);
-    return errorResponse(500, 'Internal server error');
+    if (method === 'GET' && path === '/users') {
+      return await handleGetUsers(event, context);
+    }
+
+    if (method === 'GET' && path === '/vulnerabilities') {
+      return await handleGetVulnerabilities(event, context);
+    }
+
+    if (method === 'GET' && path === '/scan-results') {
+      return await handleGetScanResults(event, context);
+    }
+
+    if (method === 'GET' && path === '/audit-logs') {
+      return await handleGetAuditLogs(event, context);
+    }
+
+    if (method === 'GET' && path === '/tickets') {
+      return await handleGetTickets(event, context);
+    }
+
+    if (method === 'GET' && path === '/reports') {
+      return await handleGetReports(event, context);
+    }
+
+    if (method === 'GET' && path === '/impact-analysis') {
+      return await handleGetImpactAnalysis(event, context);
+    }
+
+    if (method === 'GET' && path === '/permissions') {
+      return await handleGetPermissions(event, context);
+    }
+
+    if (method === 'GET' && path === '/vulnerability-master') {
+      return await handleGetVulnerabilityMaster(event, context);
+    }
+
+    if (method === 'GET' && path === '/status-history') {
+      return await handleGetStatusHistory(event, context);
+    }
+
+    const bulkImportMatch = path.match(/^\/api\/([a-z]+)\/bulk$/);
+    if (method === 'POST' && bulkImportMatch) {
+      const tableIndex = bulkImportMatch[1];
+      return await handleBulkImport(event, context, tableIndex);
+    }
+
+    return errorResponse(404, 'Not found');
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    if (message.includes('Missing authorization') || message.includes('Invalid token')) {
+      return errorResponse(401, message);
+    }
+    return errorResponse(500, message);
   }
 }
