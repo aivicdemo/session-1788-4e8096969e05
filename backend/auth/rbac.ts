@@ -12,7 +12,6 @@ export interface RBACContext {
     reportGenerate: boolean;
     assetManage: boolean;
     permissionDelete: boolean;
-    bulkImport: boolean;
   };
 }
 
@@ -24,7 +23,6 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: true,
     assetManage: true,
     permissionDelete: true,
-    bulkImport: true,
   },
   operator: {
     auditLogView: true,
@@ -33,7 +31,6 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: true,
     assetManage: true,
     permissionDelete: false,
-    bulkImport: true,
   },
   viewer: {
     auditLogView: true,
@@ -42,31 +39,21 @@ const rolePermissions: Record<Role, RBACContext['permissions']> = {
     reportGenerate: false,
     assetManage: false,
     permissionDelete: false,
-    bulkImport: false,
   },
 };
 
 export function extractRBACContext(event: APIGatewayProxyEvent): RBACContext {
   const authHeader = event.headers['Authorization'] || '';
-  const [, token] = authHeader.split(' ');
+  const roleHeader = event.headers['X-User-Role'] || 'viewer';
+  const userIdHeader = event.headers['X-User-Id'] || 'unknown';
 
-  let userId = 'unknown';
-  let role: Role = 'viewer';
-
-  if (token) {
-    try {
-      const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
-      userId = decoded.userId || 'unknown';
-      role = (decoded.role || 'viewer') as Role;
-    } catch {
-      role = 'viewer';
-    }
-  }
+  const role = (roleHeader as Role) || 'viewer';
+  const permissions = rolePermissions[role] || rolePermissions.viewer;
 
   return {
-    userId,
+    userId: userIdHeader,
     role,
-    permissions: rolePermissions[role],
+    permissions,
   };
 }
 
@@ -77,32 +64,6 @@ export function requirePermission(
   return context.permissions[permission];
 }
 
-export function checkPermissionOrThrow(
-  context: RBACContext,
-  permission: keyof RBACContext['permissions']
-): void {
-  if (!requirePermission(context, permission)) {
-    throw new ForbiddenError(`Permission denied: ${permission}`);
-  }
-}
-
-export class ForbiddenError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ForbiddenError';
-  }
-}
-
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NotFoundError';
-  }
-}
-
-export class ValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ValidationError';
-  }
+export function requireRole(context: RBACContext, allowedRoles: Role[]): boolean {
+  return allowedRoles.includes(context.role);
 }
